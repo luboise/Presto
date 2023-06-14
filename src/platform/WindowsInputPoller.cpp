@@ -1,8 +1,12 @@
 #include "WindowsInputPoller.h"
 #include <stdexcept>
 #include <iostream>
+#include <assert.h>
 
-WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance) {
+typedef unsigned __int64 QWORD;
+
+WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance)
+{
     this->Rid[0].usUsagePage = 0x01;
     this->Rid[0].usUsage = 0x06;
     this->Rid[0].dwFlags = RIDEV_NOLEGACY;
@@ -10,22 +14,23 @@ WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance) {
 
     if (RegisterRawInputDevices(this->Rid, 1, sizeof(this->Rid[0])) == FALSE)
     {
-        //registration failed. Call GetLastError for the cause of the error
+        // registration failed. Call GetLastError for the cause of the error
         throw std::exception("Invalid assignment.");
     };
-
 }
 
-bool WindowsInputPoller::poll() {
+bool WindowsInputPoller::poll()
+{
     UINT cbSize;
     Sleep(1000);
 
-    if (GetRawInputBuffer(NULL, &cbSize, sizeof(RAWINPUTHEADER)) != 0) {
+    if (GetRawInputBuffer(NULL, &cbSize, sizeof(RAWINPUTHEADER)) != 0)
+    {
         throw std::invalid_argument("NULL input buffer has a size greater than 0. Invalid access.");
     }
 
     cbSize *= 16; // up to 16 messages
-    // Log(_T("Allocating %d bytes"), cbSize);
+    std::cout << "Allocating " << cbSize << " bytes" << std::endl;
     PRAWINPUT pRawInput = (PRAWINPUT)malloc(cbSize);
     if (pRawInput == NULL)
     {
@@ -42,11 +47,11 @@ bool WindowsInputPoller::poll() {
             break;
         }
 
-        ASSERT(nInput > 0);
-        PRAWINPUT* paRawInput = (PRAWINPUT*)malloc(sizeof(PRAWINPUT) * nInput);
+        assert(nInput > 0);
+        PRAWINPUT *paRawInput = (PRAWINPUT *)malloc(sizeof(PRAWINPUT) * nInput);
         if (paRawInput == NULL)
         {
-            Log(_T("paRawInput NULL"));
+            std::cout << "paRawInput NULL" << std::endl;
             break;
         }
 
