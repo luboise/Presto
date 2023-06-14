@@ -1,20 +1,20 @@
-#include "InputPoller.h"
-#include <stdexcept>
+#include <WindowsInputPoller.h>
 
-InputPoller::InputPoller() {
-	this->Rid[0].usUsagePage = 0x01;
-	this->Rid[0].usUsage = 0x06;
-	this->Rid[0].dwFlags = RIDEV_NOLEGACY;
+WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance) {
+    this->Rid[0].usUsagePage = 0x01;
+    this->Rid[0].usUsage = 0x06;
+    this->Rid[0].dwFlags = RIDEV_NOLEGACY;
     this->Rid[0].hwndTarget = 0;
 
-	if (RegisterRawInputDevices(this->Rid, 1, sizeof(this->Rid[0])) == FALSE)
-	{
-		//registration failed. Call GetLastError for the cause of the error
-		throw std::exception("Invalid assignment.");
-	}
+    if (RegisterRawInputDevices(this->Rid, 1, sizeof(this->Rid[0])) == FALSE)
+    {
+        //registration failed. Call GetLastError for the cause of the error
+        throw std::exception("Invalid assignment.");
+    };
+
 }
 
-void InputPoller::poll() {
+bool WindowsInputPoller::poll() {
     UINT cbSize;
     Sleep(1000);
 
@@ -59,4 +59,4 @@ void InputPoller::poll() {
         free(paRawInput);
     }
     free(pRawInput);
-}
+};
