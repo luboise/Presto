@@ -1,4 +1,6 @@
 #include "WindowsInputPoller.h"
+#include <stdexcept>
+#include <iostream>
 
 WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance) {
     this->Rid[0].usUsagePage = 0x01;
@@ -34,7 +36,7 @@ bool WindowsInputPoller::poll() {
     {
         UINT cbSizeT = cbSize;
         UINT nInput = GetRawInputBuffer(pRawInput, &cbSizeT, sizeof(RAWINPUTHEADER));
-        Log(_T("nInput = %d"), nInput);
+        std::cout << "nInput = " << nInput << std::endl;
         if (nInput == 0)
         {
             break;
@@ -51,7 +53,7 @@ bool WindowsInputPoller::poll() {
         PRAWINPUT pri = pRawInput;
         for (UINT i = 0; i < nInput; ++i)
         {
-            Log(_T(" input[%d] = @%p"), i, pri);
+            std::cout << " input[" << i << "] = @" << pri << std::endl;
             paRawInput[i] = pri;
             pri = NEXTRAWINPUTBLOCK(pri);
         }
