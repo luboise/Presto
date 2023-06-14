@@ -21,7 +21,9 @@ WindowsInputPoller::WindowsInputPoller(HINSTANCE hInstance)
 
 bool WindowsInputPoller::poll()
 {
-    UINT cbSize;
+    bool isDown = false;
+
+    UINT cbSize = sizeof(this->Rid[0]);
     Sleep(1000);
 
     if (GetRawInputBuffer(NULL, &cbSize, sizeof(RAWINPUTHEADER)) != 0)
@@ -34,7 +36,8 @@ bool WindowsInputPoller::poll()
     PRAWINPUT pRawInput = (PRAWINPUT)malloc(cbSize);
     if (pRawInput == NULL)
     {
-        throw std::runtime_error("Unable to allocate memory for buffer read.");
+        std::cout << "Unable to allocate memory for buffer read." << std::endl;
+        return isDown;
     }
 
     for (;;)
@@ -66,4 +69,6 @@ bool WindowsInputPoller::poll()
         free(paRawInput);
     }
     free(pRawInput);
+
+    return isDown;
 };

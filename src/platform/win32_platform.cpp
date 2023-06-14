@@ -47,7 +47,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     }
 
     WindowsInputPoller poller(hInstance);
-    while (true)
+    while (running)
     {
         bool isDown = poller.poll();
         std::cout << "Value of a: " << (isDown ? "o" : "x") << std::endl;
