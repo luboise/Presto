@@ -41,15 +41,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     auto spacing = 1000ms;
 
-    UINT num_iterations = 0;
     auto prevTime = std::chrono::steady_clock::now();
-    
+    std::chrono::steady_clock::time_point currentTime;
+    std::chrono::microseconds duration;
+
+
     while (running)
     {
         SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
         auto currentTime = std::chrono::steady_clock::now();
 
-        std::cout << "pog" << std::endl;
+        std::cout << "pog sent the message" << std::endl;
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - prevTime);
         std::cout
@@ -58,14 +60,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             << (currentTime - prevTime) / 1ms << "ms ≈ " // almost equivalent form of the above, but
             << (currentTime - prevTime) / 1s << "s.\n";  // using milliseconds and seconds accordingly
 
-        if (duration > spacing) {
-            prevTime += spacing;
+        if (duration < spacing) {
+            std::this_thread::sleep_for(spacing - duration);
         }
-        std::this_thread::sleep_for(1s - duration);
 
-        SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
-        // std::cout << "Value of a: " << (isDown ? "o" : "x") << std::endl;
-        // std::this_thread::sleep_for(std::chrono::milliseconds(MS_BETWEEN_UPDATES));
+        prevTime += spacing;
     };
 
     return 0;
