@@ -7,11 +7,14 @@
 #include <thread>
 
 #define TICKS_PER_SECOND 1
+#define MSG_GETRIBUFFER 0x0400
+
+using namespace std::chrono_literals;
 
 typedef unsigned __int64 QWORD;
 
 static bool running = true;
-UINT MSG_GETRIBUFFER = RegisterWindowMessage(L"MSG_GETRIBUFFER");
+
 
 // Callback function occurs whenever windows does
 // literally anything concerning the window
@@ -36,11 +39,33 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     unsigned MS_BETWEEN_UPDATES = 1000 / TICKS_PER_SECOND;
 
+    auto spacing = 1000ms;
+
+    UINT num_iterations = 0;
+    auto prevTime = std::chrono::steady_clock::now();
+    
     while (running)
     {
-        // PostMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
+        SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
+        auto currentTime = std::chrono::steady_clock::now();
+
+        std::cout << "pog" << std::endl;
+
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - prevTime);
+        std::cout
+            << "Slow calculations took "
+            << duration << " ≈ "
+            << (currentTime - prevTime) / 1ms << "ms ≈ " // almost equivalent form of the above, but
+            << (currentTime - prevTime) / 1s << "s.\n";  // using milliseconds and seconds accordingly
+
+        if (duration > spacing) {
+            prevTime += spacing;
+        }
+        std::this_thread::sleep_for(1s - duration);
+
+        SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
         // std::cout << "Value of a: " << (isDown ? "o" : "x") << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(MS_BETWEEN_UPDATES));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(MS_BETWEEN_UPDATES));
     };
 
     return 0;
@@ -55,7 +80,8 @@ LRESULT CALLBACK platform_windows_callback(HWND hwnd, UINT uMsg, WPARAM wParam, 
         break;
 
     case MSG_GETRIBUFFER:
-        doPoll();
+        // doPoll();
+        std::cout << "MESSAGE RECEIVED!" << std::endl;
         break;
     }
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
@@ -63,7 +89,7 @@ LRESULT CALLBACK platform_windows_callback(HWND hwnd, UINT uMsg, WPARAM wParam, 
 
 HWND setupWindow(HINSTANCE hInstance)
 {
-	LPWSTR MAIN_WC_NAME = L"Sample Window Class";
+	LPCSTR MAIN_WC_NAME = "Sample Window Class";
 
     WNDCLASS MAIN_WC = {};
     MAIN_WC.lpfnWndProc = platform_windows_callback;
@@ -80,7 +106,7 @@ HWND setupWindow(HINSTANCE hInstance)
     HWND hwnd = CreateWindowEx(
         0,                   // Optional window styles.
         MAIN_WC_NAME,        // Window class
-        L"The funny pog",     // Window text
+        "The funny pog",     // Window text
         WS_OVERLAPPEDWINDOW, // Window style
 
         // Size and position
