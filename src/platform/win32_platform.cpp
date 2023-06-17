@@ -6,7 +6,9 @@
 #include <chrono>
 #include <thread>
 
-#define TICKS_PER_SECOND 2
+#define SECONDS_TO_RUN 10
+#define TICKS_PER_SECOND 250
+
 #define MSG_GETRIBUFFER 0x0400
 
 using namespace std::chrono_literals;
@@ -37,31 +39,33 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     ShowWindow(hwnd, SW_SHOW);
 
-    const auto spacing = 1s / TICKS_PER_SECOND;
+    const auto spacing = 1000ms / TICKS_PER_SECOND;
 
     auto prevTime = std::chrono::steady_clock::now();
     std::chrono::steady_clock::time_point currentTime;
     std::chrono::microseconds duration;
 
-    while (running)
+    auto TOTAL_TICKS = TICKS_PER_SECOND * SECONDS_TO_RUN;
+
+    for (auto i = 0; i < TOTAL_TICKS; i++)
     {
-        if (duration < spacing) {
-            std::this_thread::sleep_for(spacing - duration);
-        }
-
         currentTime = std::chrono::steady_clock::now();
-        SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
         
-        std::cout << "pog sent the message" << std::endl;
-
         duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - prevTime);
         std::cout
-            << "Slow calculations took "
-            << duration << " ≈ "
-            << (currentTime - prevTime) / 1ms << "ms ≈ " // almost equivalent form of the above, but
-            << (currentTime - prevTime) / 1s << "s.\n";  // using milliseconds and seconds accordingly
+            << "Length of previous iteration"
+            << duration << " ≈ " << (currentTime - prevTime) / 1ms << "ms" << std::endl;  // using milliseconds and seconds accordingly
 
-        prevTime += spacing;
+        if (duration < spacing) {
+            std::this_thread::sleep_for(spacing - duration);
+            prevTime += spacing;
+        } else {
+            prevTime += duration;
+        }
+
+        std::cout << "Sending new message." << std::endl;
+        SendMessage(hwnd, MSG_GETRIBUFFER, 0, 0);
+        
     };
 
     return 0;
