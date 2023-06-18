@@ -42,6 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     const auto spacing = 1000ms / TICKS_PER_SECOND;
 
     auto prevTime = std::chrono::steady_clock::now();
+
     std::chrono::steady_clock::time_point currentTime;
     std::chrono::microseconds duration;
 
@@ -51,6 +52,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     {
         currentTime = std::chrono::steady_clock::now();
         
+        // Duration of previous poll
         duration = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - prevTime);
         std::cout
             << "Length of previous iteration"
@@ -60,6 +62,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             std::this_thread::sleep_for(spacing - duration);
             prevTime += spacing;
         } else {
+            // Need to fix this to round up to the nearest spacing
             prevTime += duration;
         }
 
