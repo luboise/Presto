@@ -2,12 +2,11 @@
 
 #include <Windows.h>
 
-class WindowsInputPoller
-{
-public:
+class WindowsInputPoller {
+   public:
     WindowsInputPoller(HINSTANCE hInstance);
     bool poll();
 
-private:
+   private:
     RAWINPUTDEVICE Rid[1];
 };
