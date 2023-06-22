@@ -84,7 +84,6 @@
   <ItemGroup>
     <ClInclude Include="src\Presto\Log.h" />
     <ClInclude Include="src\Presto.h" />
-    <ClInclude Include="src\Presto\Core.h" />
     <ClInclude Include="src\Presto\Application.h" />
     <ClInclude Include="src\Presto\Core.h" />
     <ClInclude Include="src\Presto\EntryPoint.h" />
