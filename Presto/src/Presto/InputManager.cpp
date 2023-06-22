@@ -1,10 +1,8 @@
 #include "InputManager.h"
 #include "Log.h"
 
-#include <windows.h>
-#include <stdexcept>
-
 namespace Presto {
+    DWORD InputManager::controller_port;
     XINPUT_STATE InputManager::controller_state;
 
 	void InputManager::Init() {
@@ -16,15 +14,14 @@ namespace Presto {
 
         // Ensure controller is connected
         if (!GetState()) {
-            PR_CORE_ERROR("Controller in port ", controller_port,
-                            "is not connected.");
+            PR_CORE_ERROR("Controller in port {} is not connected.", controller_port);
         }
             
 	}
 
     void InputManager::SetPort(DWORD port) {
         if (port >= MAX_XINPUT_PORTS) {
-            PR_CORE_ERROR("Invalid port given. Continuing to use port ", controller_port);
+            PR_CORE_ERROR("Invalid port given. Continuing to use port {}", controller_port);
         } else {
             controller_port = port;
         }
@@ -37,11 +34,11 @@ namespace Presto {
         return (read_success == ERROR_SUCCESS);
     }
 
-        Thumbstick InputManager::GetLeftThumbStickXY() {
-            GetState();
+    Thumbstick InputManager::GetLeftThumbStickXY() {
+        GetState();
 
-            return Thumbstick(controller_state.Gamepad.sThumbLX,
-                              controller_state.Gamepad.sThumbLY);
-        }
+        return Thumbstick(controller_state.Gamepad.sThumbLX,
+                            controller_state.Gamepad.sThumbLY);
+    }
 
  }  // namespace Presto

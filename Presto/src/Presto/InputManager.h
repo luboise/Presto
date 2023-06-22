@@ -1,12 +1,18 @@
 #pragma once
 
 #include "Core.h"
-#include "Xinput.h"
+#include <windows.h>
+#include <Xinput.h>
 
 #define MAX_XINPUT_PORTS 4
 #define POLLING_RATE 1
 
 namespace Presto {
+
+struct Thumbstick {
+    short X;
+    short Y;
+};
 
 class PRESTO_API InputManager {
    public:
@@ -15,7 +21,7 @@ class PRESTO_API InputManager {
     static bool GetState();
     static void TogglePolling();
 
-    static Thumbstick GetLeftThumbStickXY();
+    static Presto::Thumbstick GetLeftThumbStickXY();
     
 
 
@@ -24,9 +30,6 @@ class PRESTO_API InputManager {
     static XINPUT_STATE controller_state;
 };
 
-struct Thumbstick {
-    short X;
-    short Y;
-};
+
 
 }  // namespace Presto
