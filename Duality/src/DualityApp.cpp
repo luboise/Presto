@@ -10,6 +10,8 @@ class DualityApp : public Presto::Application {
             Presto::Thumbstick vals = Presto::InputManager::GetLeftThumbStickXY();
             PR_INFO("Controller 1\nX: {}\nY: {}", vals.X, vals.Y);
         }
+        while (true) {
+        };
     }
 };
 

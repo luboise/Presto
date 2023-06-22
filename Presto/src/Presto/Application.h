@@ -9,7 +9,7 @@ class PRESTO_API Application {
     Application();
     virtual ~Application();
 
-    void Run();  
+    virtual void Run();  
 };
 
 // Defined by client (eg. Duality)

@@ -2,7 +2,7 @@
 
 #include "Core.h"
 #include <windows.h>
-#include <Xinput.h>
+#include <xinput.h>
 
 #define MAX_XINPUT_PORTS 4
 #define POLLING_RATE 1
