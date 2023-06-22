@@ -38,6 +38,8 @@ project "Presto"
 		postbuildcommands{
 			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Duality")
 		}
+		
+		links {"XInput9_1_0.lib"}
 
 	filter "configurations:Debug"
 		defines "PR_DEBUG"
