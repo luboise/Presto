@@ -150,10 +150,12 @@
     <ClInclude Include="src\Presto\Application.h" />
     <ClInclude Include="src\Presto\Core.h" />
     <ClInclude Include="src\Presto\EntryPoint.h" />
+    <ClInclude Include="src\Presto\InputManager.h" />
     <ClInclude Include="src\Presto\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Presto\Application.cpp" />
+    <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
