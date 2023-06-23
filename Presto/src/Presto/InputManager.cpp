@@ -57,7 +57,7 @@ namespace Presto {
     }
 
     void InputManager::PollInputs(std::atomic<bool>& continue_polling) {        
-        const auto spacing = (1000ms / POLLING_RATE);
+        const auto spacing = std::chrono::duration_cast<std::chrono::nanoseconds>(1s / POLLING_RATE);
 
         auto prevTime = std::chrono::steady_clock::now();
 
@@ -72,14 +72,15 @@ namespace Presto {
         std::thread logger_thread(log_lambda, std::ref(continue_polling), spacing);
 
         std::chrono::steady_clock::time_point currentTime;
-        std::chrono::milliseconds duration;
+        std::chrono::nanoseconds duration;
 
         while (continue_polling) {
+            std::this_thread::sleep_until(prevTime);
             GetState();
             currentTime = std::chrono::steady_clock::now();
 
             // Duration of previous poll
-            duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+            duration = std::chrono::duration_cast<std::chrono::nanoseconds>(
                            currentTime - prevTime);
 
             //PR_INFO("Length of previous iteration: {} ~= {}ms",
@@ -98,8 +99,6 @@ namespace Presto {
             if (step_count > 1) {
                 PR_INFO("Skipped {} polls.", step_count - 1);
             }
-
-            std::this_thread::sleep_until(prevTime);
         };
 
         // Ensure the logger thread terminates when this thread is terminating

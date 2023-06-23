@@ -424,3 +424,5 @@ build/
 
 # VS code stuff
 .vscode/
+*/Intel® VTune™ Profiler Results/
+/GPUCache
