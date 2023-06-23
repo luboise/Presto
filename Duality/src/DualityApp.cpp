@@ -1,17 +1,18 @@
 #include <Presto.h>
 
+#include <thread>
+#include <chrono>
+using namespace std::chrono_literals;
+
 class DualityApp : public Presto::Application {
    public:
     DualityApp(){}
     ~DualityApp(){}
 
     void Run() {
-        for (auto i = 0; i < 10; i++) {
-            Presto::Thumbstick vals = Presto::InputManager::GetLeftThumbStickXY();
-            PR_INFO("Controller 1\nX: {}\nY: {}", vals.X, vals.Y);
-        }
+        Presto::InputManager::TogglePolling();
         while (true) {
-        };
+        }
     }
 };
 
