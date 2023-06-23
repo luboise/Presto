@@ -1,9 +1,5 @@
 #include <Presto.h>
 
-#include <thread>
-#include <chrono>
-using namespace std::chrono_literals;
-
 class DualityApp : public Presto::Application {
    public:
     DualityApp(){}
