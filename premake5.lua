@@ -29,7 +29,7 @@ project "Presto"
 	filter "system:windows"  -- WINDOWS ONLY
 		cppdialect "C++20"
 		staticruntime "On"
-		systemversion "10.0.22621.0"  -- WINDOWS SDK VERSION
+		systemversion "10.0"  -- WINDOWS SDK VERSION
 
 		defines {
 			"PR_PLATFORM_WINDOWS", "PR_BUILD_DLL"
@@ -78,7 +78,7 @@ project "Duality"
 	filter "system:windows"  -- WINDOWS ONLY
 		cppdialect "C++20"
 		staticruntime "On"
-		systemversion "10.0.22621.0"  -- WINDOWS SDK VERSION
+		systemversion "10.0"  -- WINDOWS SDK VERSION
 
 		defines {
 			"PR_PLATFORM_WINDOWS"
