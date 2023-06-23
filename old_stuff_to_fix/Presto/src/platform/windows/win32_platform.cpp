@@ -39,8 +39,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     ShowWindow(hwnd, SW_SHOW);
 
-    const auto spacing = 1000ms / TICKS_PER_SECOND;
-
     auto prevTime = std::chrono::steady_clock::now();
 
     std::chrono::steady_clock::time_point currentTime;
