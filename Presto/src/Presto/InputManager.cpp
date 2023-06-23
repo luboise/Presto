@@ -97,7 +97,7 @@ namespace Presto {
             assert(step_count > 0);
 
             if (step_count > 1) {
-                PR_INFO("Skipped {} polls.", step_count - 1);
+                PR_WARN("Skipped {} polls.", step_count - 1);
             }
         };
 
