@@ -8,7 +8,7 @@
 #include <thread>
 
 #define MAX_XINPUT_PORTS 4
-#define POLLING_RATE 10
+#define POLLING_RATE 50
 
 namespace Presto {
 

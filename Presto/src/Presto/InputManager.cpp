@@ -61,12 +61,21 @@ namespace Presto {
 
         auto prevTime = std::chrono::steady_clock::now();
 
+        auto log_lambda = [](std::atomic<bool>& is_polling, auto wait_length) {
+            while (is_polling) {
+                LogGamepad();
+                std::this_thread::sleep_for(wait_length);
+            };
+        };
+
+        // Initialise logger_thread
+        std::thread logger_thread(log_lambda, std::ref(continue_polling), spacing);
+
         std::chrono::steady_clock::time_point currentTime;
         std::chrono::milliseconds duration;
 
         while (continue_polling) {
             GetState();
-            LogGamepad();
             currentTime = std::chrono::steady_clock::now();
 
             // Duration of previous poll
@@ -92,6 +101,9 @@ namespace Presto {
 
             std::this_thread::sleep_until(prevTime);
         };
+
+        // Ensure the logger thread terminates when this thread is terminating
+        logger_thread.join();
     }
 
     void InputManager::LogGamepad() {
