@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Core.h"
+#include "Window.h"
 
 namespace Presto {
 
@@ -10,6 +11,10 @@ namespace Presto {
         virtual ~Application();
 
         virtual void Run();
+
+       private:
+        std::unique_ptr<Window> app_window;
+        bool app_running = true;
     };
 
     // Defined by client (eg. Duality)

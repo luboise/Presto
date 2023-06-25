@@ -1,6 +1,5 @@
 #include "InputManager.h"
 
-#include "Presto/Log.h"
 #include "prpch.h"
 
 using namespace std::chrono_literals;

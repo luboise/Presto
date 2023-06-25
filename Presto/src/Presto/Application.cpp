@@ -3,10 +3,15 @@
 #include "prpch.h"
 
 namespace Presto {
-    Application::Application(){};
+    Application::Application() {
+        app_window = std::unique_ptr<Window>(Window::Create());
+    };
+
     Application::~Application(){};
+
     void Application::Run() {
-        while (true)
-            ;
+        while (app_running) {
+            app_window->OnUpdate();
+        }
     }
 }  // namespace Presto

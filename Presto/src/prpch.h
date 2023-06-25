@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "Presto/Log.h"
+
 #ifdef HZ_PLATFORM_WINDOWS
     #include <Windows.h>
     #include <Xinput.h>

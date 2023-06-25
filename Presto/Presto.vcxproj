@@ -152,16 +152,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Presto.h" />
     <ClInclude Include="src\Presto\Application.h" />
     <ClInclude Include="src\Presto\Core.h" />
     <ClInclude Include="src\Presto\EntryPoint.h" />
+    <ClInclude Include="src\Presto\Events\ApplicationEvents.h" />
+    <ClInclude Include="src\Presto\Events\Event.h" />
+    <ClInclude Include="src\Presto\Events\KeyEvent.h" />
+    <ClInclude Include="src\Presto\Events\MouseEvent.h" />
     <ClInclude Include="src\Presto\InputManager.h" />
     <ClInclude Include="src\Presto\Log.h" />
     <ClInclude Include="src\Presto\Window.h" />
     <ClInclude Include="src\prpch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Presto\Application.cpp" />
     <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
