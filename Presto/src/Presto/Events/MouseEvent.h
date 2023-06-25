@@ -57,8 +57,36 @@ namespace Presto {
        public:
         inline int GetMouseButton() const { return mouse_button; }
 
+        EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse |
+                             EventCategoryMouseButton)
        protected:
         MouseButtonEvent(int button) { this->mouse_button = button; }
         int mouse_button;
+    };
+
+    class PRESTO_API MouseButtonPressedEvent : public MouseButtonEvent {
+       public:
+        MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+
+        std::string ToString() {
+            std::stringstream ss;
+            ss << "MouseButtonPressedEvent:  Button " << mouse_button;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(MouseBtnPressed)
+    };
+
+    class PRESTO_API MouseButtonReleasedEvent : public MouseButtonEvent {
+       public:
+        MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+
+        std::string ToString() {
+            std::stringstream ss;
+            ss << "MouseButtonReleasedEvent:  Button " << mouse_button;
+            return ss.str();
+        }
+
+        EVENT_CLASS_TYPE(MouseBtnReleased)
     };
 }  // namespace Presto
