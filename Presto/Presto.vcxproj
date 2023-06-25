@@ -149,6 +149,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Presto\InputInterface.h" />
     <ClInclude Include="src\Presto.h" />
     <ClInclude Include="src\Presto\Application.h" />
     <ClInclude Include="src\Presto\Core.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\Presto\Log.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Presto\InputInterface.cpp" />
     <ClCompile Include="src\Presto\Application.cpp" />
     <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
