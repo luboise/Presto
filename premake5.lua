@@ -27,7 +27,8 @@ project "Presto"
 
 	includedirs {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/GLFW/include",
 	}
 
 	filter "system:windows"  -- WINDOWS ONLY
