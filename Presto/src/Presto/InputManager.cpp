@@ -1,3 +1,5 @@
+#include "prpch.h"
+
 #include "InputManager.h"
 #include "Presto/Log.h"
 

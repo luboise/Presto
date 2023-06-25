@@ -1,3 +1,5 @@
+#include "prpch.h"
+
 #include "Application.h"
 
 namespace Presto {

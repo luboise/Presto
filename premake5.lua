@@ -17,6 +17,9 @@ project "Presto"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "prpch.h" -- PRE-COMPILED HEADER
+	pchsource "Presto/src/prpch.cpp"
+
 	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
