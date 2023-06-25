@@ -2,8 +2,8 @@
 
 class DualityApp : public Presto::Application {
    public:
-    DualityApp(){}
-    ~DualityApp(){}
+    DualityApp() {}
+    ~DualityApp() {}
 
     void Run() {
         Presto::InputManager::TogglePolling();

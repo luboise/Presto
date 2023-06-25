@@ -158,6 +158,7 @@
     <ClInclude Include="src\Presto\EntryPoint.h" />
     <ClInclude Include="src\Presto\InputManager.h" />
     <ClInclude Include="src\Presto\Log.h" />
+    <ClInclude Include="src\Presto\Window.h" />
     <ClInclude Include="src\prpch.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,7 @@
-#include "prpch.h"
-
 #include "InputManager.h"
-#include "Presto/Log.h"
 
+#include "Presto/Log.h"
+#include "prpch.h"
 
 using namespace std::chrono_literals;
 
@@ -12,9 +11,9 @@ namespace Presto {
     std::atomic<bool> InputManager::is_polling;
     std::thread InputManager::input_thread;
 
-	void InputManager::Init() {
+    void InputManager::Init() {
         // Set port to 0 (controller 1)
-		SetPort(0);
+        SetPort(0);
 
         is_polling = false;
 
@@ -23,22 +22,22 @@ namespace Presto {
 
         // Ensure controller is connected
         if (!GetState()) {
-            PR_CORE_ERROR("Controller in port {} is not connected.", controller_port);
+            PR_CORE_ERROR("Controller in port {} is not connected.",
+                          controller_port);
         }
-            
-	}
+    }
 
     void InputManager::SetPort(DWORD port) {
         if (port >= MAX_XINPUT_PORTS) {
-            PR_CORE_ERROR("Invalid port given. Continuing to use port {}", controller_port);
+            PR_CORE_ERROR("Invalid port given. Continuing to use port {}",
+                          controller_port);
         } else {
             controller_port = port;
         }
     }
 
     bool InputManager::GetState() {
-        bool read_success =
-            XInputGetState(controller_port, &controller_state);
+        bool read_success = XInputGetState(controller_port, &controller_state);
 
         return (read_success == ERROR_SUCCESS);
     }
@@ -48,7 +47,8 @@ namespace Presto {
         if (!is_polling) {
             is_polling = true;
 
-            // std::ref used as thread makes a full copy of the variable, and we need a reference
+            // std::ref used as thread makes a full copy of the variable, and we
+            // need a reference
             input_thread = std::thread(PollInputs, std::ref(is_polling));
         }
         // Otherwise, end the polling thread
@@ -58,8 +58,10 @@ namespace Presto {
         }
     }
 
-    void InputManager::PollInputs(std::atomic<bool>& continue_polling) {        
-        const auto spacing = std::chrono::duration_cast<std::chrono::nanoseconds>(1s / POLLING_RATE);
+    void InputManager::PollInputs(std::atomic<bool>& continue_polling) {
+        const auto spacing =
+            std::chrono::duration_cast<std::chrono::nanoseconds>(1s /
+                                                                 POLLING_RATE);
 
         auto prevTime = std::chrono::steady_clock::now();
 
@@ -71,7 +73,8 @@ namespace Presto {
         };
 
         // Initialise logger_thread
-        std::thread logger_thread(log_lambda, std::ref(continue_polling), spacing);
+        std::thread logger_thread(log_lambda, std::ref(continue_polling),
+                                  spacing);
 
         std::chrono::steady_clock::time_point currentTime;
         std::chrono::nanoseconds duration;
@@ -83,11 +86,11 @@ namespace Presto {
 
             // Duration of previous poll
             duration = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                           currentTime - prevTime);
+                currentTime - prevTime);
 
-            //PR_INFO("Length of previous iteration: {} ~= {}ms",
-            //    duration.count(),
-            //    ((currentTime - prevTime) / 1ms)
+            // PR_INFO("Length of previous iteration: {} ~= {}ms",
+            //     duration.count(),
+            //     ((currentTime - prevTime) / 1ms)
             //);  // using milliseconds and seconds accordingly
 
             size_t step_count = 0;
@@ -113,4 +116,4 @@ namespace Presto {
                 InputManager::controller_state.Gamepad.sThumbLY);
     }
 
- }  // namespace Presto
+}  // namespace Presto

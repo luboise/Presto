@@ -4,15 +4,15 @@
 
 namespace Presto {
 
-class PRESTO_API Application {
-   public:
-    Application();
-    virtual ~Application();
+    class PRESTO_API Application {
+       public:
+        Application();
+        virtual ~Application();
 
-    virtual void Run();  
-};
+        virtual void Run();
+    };
 
-// Defined by client (eg. Duality)
-Application* CreateApplication();
+    // Defined by client (eg. Duality)
+    Application* CreateApplication();
 
 }  // namespace Presto

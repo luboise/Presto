@@ -23,6 +23,7 @@
       <Filter>Presto</Filter>
     </ClInclude>
     <ClInclude Include="src\prpch.h" />
+    <ClInclude Include="src\Presto\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Presto\Application.cpp">
