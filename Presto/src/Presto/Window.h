@@ -1,7 +1,5 @@
 #pragma once
 
-#include "prpch.h"
-
 #include "Presto/Core.h"
 #include "Presto/Events/Event.h"
 
