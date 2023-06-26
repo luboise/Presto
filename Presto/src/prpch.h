@@ -1,16 +1,22 @@
 #pragma once
 
+// Presto Includes
 #include "Presto/Log.h"
 
-#include <atomic>
+// Utility stuff
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <utility>
+
+// Data
 #include <sstream>
 #include <string>
-#include <thread>
-#include <utility>
 #include <vector>
+
+// Multi threading
+#include <atomic>
+#include <thread>
 
 #ifdef HZ_PLATFORM_WINDOWS
     #include <Windows.h>
