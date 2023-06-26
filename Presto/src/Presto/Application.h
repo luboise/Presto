@@ -1,7 +1,9 @@
 #pragma once
 
+#include "prpch.h"
+
 #include "Presto/Core.h"
-#include "Presto/Window.h"
+
 
 namespace Presto {
 
@@ -13,7 +15,7 @@ namespace Presto {
         virtual void Run();
 
        private:
-        std::unique_ptr<Window> app_window;
+        // std::unique_ptr<Window> app_window;
         bool app_running = true;
     };
 

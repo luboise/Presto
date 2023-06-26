@@ -2,3 +2,5 @@ BasedOnStyle: google
 IndentWidth: 4
 NamespaceIndentation: All
 IndentPPDirectives: BeforeHash
+
+IncludeBlocks: Preserve

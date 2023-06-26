@@ -1,7 +1,7 @@
-#include "WindowsWindow.h"
+#include "prpch.h"
 
 #include "Presto/Core.h"
-#include "prpch.h"
+#include "WindowsWindow.h"
 
 namespace Presto {
     static bool s_GLFWInitialised = false;

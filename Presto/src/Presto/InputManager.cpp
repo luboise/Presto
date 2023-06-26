@@ -1,6 +1,6 @@
-#include "InputManager.h"
-
 #include "prpch.h"
+
+#include "InputManager.h"
 
 // <chrono> included by utility in prpch.h
 
