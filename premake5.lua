@@ -9,6 +9,10 @@ workspace "Presto"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "Presto/vendor/GLFW/include"
+include "Presto/vendor"
+
 project "Presto"
 	location "Presto"
 	kind "SharedLib" -- DLL
@@ -28,7 +32,12 @@ project "Presto"
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/GLFW/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links {
+		"GLFW",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"  -- WINDOWS ONLY
