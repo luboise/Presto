@@ -171,7 +171,9 @@
     <ClCompile Include="src\Presto\Application.cpp" />
     <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
-    <ClCompile Include="src\prpch.cpp" />
+    <ClCompile Include="src\prpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
