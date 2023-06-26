@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Log.h"
+
 #include <atomic>
 #include <functional>
 #include <iostream>
@@ -9,8 +11,6 @@
 #include <thread>
 #include <utility>
 #include <vector>
-
-#include "Presto/Log.h"
 
 #ifdef HZ_PLATFORM_WINDOWS
     #include <Windows.h>
