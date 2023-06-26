@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.h"
-#include "Presto/Core.h"
 
 namespace Presto {
     /**
@@ -31,5 +30,37 @@ namespace Presto {
 
        private:
         unsigned width, height;
+    };
+
+    class PRESTO_API WindowCloseEvent : public Event {
+       public:
+        WindowCloseEvent() {}
+
+        EVENT_CLASS_TYPE(WindowClose)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
+    class PRESTO_API AppTickEvent : public Event {
+       public:
+        AppTickEvent() {}
+
+        EVENT_CLASS_TYPE(AppTick)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
+    class PRESTO_API AppUpdateEvent : public Event {
+       public:
+        AppUpdateEvent() {}
+
+        EVENT_CLASS_TYPE(AppUpdate)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+    };
+
+    class PRESTO_API AppRenderEvent : public Event {
+       public:
+        AppRenderEvent() {}
+
+        EVENT_CLASS_TYPE(AppRender)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 }  // namespace Presto

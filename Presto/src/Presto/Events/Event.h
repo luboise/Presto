@@ -74,7 +74,7 @@ namespace Presto {
     class EventDispatcher {
         template <typename T>
         // Reserved function pointer for a function that returns a bool and
-        // takes a T reference
+        // takes a T reference (any type of event)
         using EventFn = std::function<bool(T&)>;
 
        public:
@@ -95,4 +95,8 @@ namespace Presto {
        private:
         Event& event;
     };
+
+    inline std::ostream& operator<<(std::ostream& os, const Event& event) {
+        return os << event.ToString();
+    }
 }  // namespace Presto

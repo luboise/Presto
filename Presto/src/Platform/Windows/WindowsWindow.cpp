@@ -10,7 +10,11 @@ namespace Presto {
         return new WindowsWindow(props);
     }
 
-    WindowsWindow::WindowsWindow(const WindowProperties& props) { Init(props); }
+    WindowsWindow::WindowsWindow(const WindowProperties& props) {
+        this->Init(props);
+    }
+
+    WindowsWindow::~WindowsWindow() { this->Shutdown(); }
 
     void WindowsWindow::OnUpdate() {
         glfwPollEvents();
@@ -29,9 +33,9 @@ namespace Presto {
     bool WindowsWindow::IsVSyncEnabled() { return w_data.VSync; }
 
     void WindowsWindow::Init(const WindowProperties& props) {
-        w_data.title = props.title;
-        w_data.width = props.width;
-        w_data.height = props.height;
+        this->w_data.title = props.title;
+        this->w_data.width = props.width;
+        this->w_data.height = props.height;
 
         PR_CORE_INFO("Creating window \"{} ({}x{})", props.title, props.width,
                      props.height);
@@ -47,17 +51,18 @@ namespace Presto {
 
         // The 2 nulls are fullscreen monitor choice and graphics library object
         // linking
-        glfw_window = glfwCreateWindow((int)props.width, (int)props.height,
-                                       props.title.c_str(), NULL, NULL);
+        this->glfw_window =
+            glfwCreateWindow((int)props.width, (int)props.height,
+                             props.title.c_str(), NULL, NULL);
 
         // Set the window as the current context
-        glfwMakeContextCurrent(glfw_window);
+        glfwMakeContextCurrent(this->glfw_window);
 
         // Link props and glfw window
-        glfwSetWindowUserPointer(glfw_window, &w_data);
-        SetVSync(true);
+        glfwSetWindowUserPointer(this->glfw_window, &w_data);
+        this->SetVSync(true);
     }
 
-    void WindowsWindow::Shutdown() { glfwDestroyWindow; }
+    void WindowsWindow::Shutdown() { glfwDestroyWindow(this->glfw_window); }
 
 }  // namespace Presto

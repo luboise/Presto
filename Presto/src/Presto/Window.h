@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Core.h"
+#include "Presto/Events/Event.h"
 #include "prpch.h"
 
 namespace Presto {
@@ -12,9 +13,9 @@ namespace Presto {
 
         // Default constructor
         WindowProperties(
-            const std::string& title = "Untitled Presto application",
-            unsigned width = 1280, unsigned height = 720)
-            : title(title), width(width), height(height) {}
+            const std::string& d_title = "Untitled Presto application",
+            unsigned d_width = 1280, unsigned d_height = 720)
+            : title(d_title), width(d_width), height(d_height) {}
     };
 
     // Abstracted window interface to be implemented per platform
@@ -22,7 +23,7 @@ namespace Presto {
        public:
         using EventCallbackFn = std::function<void(Event&)>;
 
-        virtual ~Window();
+        virtual ~Window(){};
 
         virtual void OnUpdate() = 0;
 

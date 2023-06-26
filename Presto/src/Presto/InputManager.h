@@ -1,10 +1,6 @@
 #pragma once
 
-#include <windows.h>
-#include <xinput.h>
-
-#include <atomic>
-#include <thread>
+#include <Xinput.h>
 
 #include "Presto/Core.h"
 

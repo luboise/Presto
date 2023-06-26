@@ -11,19 +11,21 @@
 #endif
 
 #ifdef PR_ENABLE_ASSERTS
-    #define PR_ASSERT(x, ...) {
-if (!(x)) {
-    PR_ERROR("Assertion failed: {}", __VA_ARGS__);
-    __debugbreak();
-}
-}
+    #define PR_ASSERT(x, ...)                                  \
+        {                                                      \
+            if (!(x)) {                                        \
+                PR_ERROR("Assertion failed: {}", __VA_ARGS__); \
+                __debugbreak();                                \
+            }                                                  \
+        }
 
-    #define PR_CORE_ASSERT(x, ...) {
-if (!(x)) {
-    PR_CORE_ERROR("Assertion failed: {}", __VA_ARGS__);
-    __debugbreak();
-}
-}
+    #define PR_CORE_ASSERT(x, ...)                                  \
+        {                                                           \
+            if (!(x)) {                                             \
+                PR_CORE_ERROR("Assertion failed: {}", __VA_ARGS__); \
+                __debugbreak();                                     \
+            }                                                       \
+        }
 
 #else
     #define PR_ASSERT(x, ...)

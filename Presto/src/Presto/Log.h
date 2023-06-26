@@ -1,8 +1,7 @@
 #pragma once
 
-#include <memory>
-
 #include "Presto/Core.h"
+#include "spdlog/fmt/ostr.h"
 #include "spdlog/spdlog.h"
 
 namespace Presto {

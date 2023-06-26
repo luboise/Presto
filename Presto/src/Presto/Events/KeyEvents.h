@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.h"
-#include "prpch.h"
 
 namespace Presto {
     // Intended to be abstract
@@ -9,7 +8,7 @@ namespace Presto {
        public:
         inline int GetKeyCode() const { return this->keyCode; }
 
-        EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
+        EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
        protected:
         // Constructor

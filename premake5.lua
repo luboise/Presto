@@ -18,7 +18,7 @@ project "Presto"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "prpch.h" -- PRE-COMPILED HEADER
-	pchsource "Presto/src/prpch.cpp"
+	pchsource "${prj.name}/src/prpch.cpp"
 
 	files {
 		"%{prj.name}/src/**.h",
@@ -34,7 +34,7 @@ project "Presto"
 	filter "system:windows"  -- WINDOWS ONLY
 		cppdialect "C++20"
 		staticruntime "On"
-		systemversion "10.0"  -- WINDOWS SDK VERSION
+		systemversion "latest"  -- WINDOWS SDK VERSION
 
 		defines {
 			"PR_PLATFORM_WINDOWS", "PR_BUILD_DLL"
@@ -83,7 +83,7 @@ project "Duality"
 	filter "system:windows"  -- WINDOWS ONLY
 		cppdialect "C++20"
 		staticruntime "On"
-		systemversion "10.0"  -- WINDOWS SDK VERSION
+		systemversion "latest"  -- WINDOWS SDK VERSION
 
 		defines {
 			"PR_PLATFORM_WINDOWS"

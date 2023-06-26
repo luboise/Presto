@@ -2,9 +2,9 @@
 
 #include "prpch.h"
 
-using namespace std::chrono_literals;
-
 namespace Presto {
+    using namespace std::chrono_literals;
+
     DWORD InputManager::controller_port;
     XINPUT_STATE InputManager::controller_state;
     std::atomic<bool> InputManager::is_polling;

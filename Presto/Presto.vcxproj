@@ -159,8 +159,8 @@
     <ClInclude Include="src\Presto\EntryPoint.h" />
     <ClInclude Include="src\Presto\Events\ApplicationEvents.h" />
     <ClInclude Include="src\Presto\Events\Event.h" />
-    <ClInclude Include="src\Presto\Events\KeyEvent.h" />
-    <ClInclude Include="src\Presto\Events\MouseEvent.h" />
+    <ClInclude Include="src\Presto\Events\KeyEvents.h" />
+    <ClInclude Include="src\Presto\Events\MouseEvents.h" />
     <ClInclude Include="src\Presto\InputManager.h" />
     <ClInclude Include="src\Presto\Log.h" />
     <ClInclude Include="src\Presto\Window.h" />
@@ -171,9 +171,7 @@
     <ClCompile Include="src\Presto\Application.cpp" />
     <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
-    <ClCompile Include="src\prpch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="src\prpch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

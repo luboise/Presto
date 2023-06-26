@@ -1,3 +1,5 @@
+#include "Log.h"
+
 #include "prpch.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 

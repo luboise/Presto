@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Presto/Window.h"
-#include "prpch.h"
 
 namespace Presto {
     class WindowsWindow : public Window {
