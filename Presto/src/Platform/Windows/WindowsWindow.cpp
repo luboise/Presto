@@ -37,7 +37,7 @@ namespace Presto {
         this->w_data.width = props.width;
         this->w_data.height = props.height;
 
-        PR_CORE_INFO("Creating window \"{} ({}x{})", props.title, props.width,
+        PR_CORE_INFO("Creating window \"{}\" ({}x{})", props.title, props.width,
                      props.height);
 
         if (!s_GLFWInitialised) {
