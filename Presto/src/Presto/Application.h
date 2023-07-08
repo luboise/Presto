@@ -14,6 +14,8 @@ namespace Presto {
 
         virtual void Run();
 
+        void OnEvent(Event& e);
+
        private:
         std::unique_ptr<Window> app_window;
         bool app_running = true;

@@ -1,6 +1,10 @@
 #include "prpch.h"
 
 #include "Presto/Core.h"
+#include "Presto/Events/ApplicationEvents.h"
+#include "Presto/Events/KeyEvents.h"
+#include "Presto/Events/MouseEvents.h"
+
 #include "WindowsWindow.h"
 
 namespace Presto {
@@ -61,6 +65,81 @@ namespace Presto {
         // Link props and glfw window
         glfwSetWindowUserPointer(this->glfw_window, &w_data);
         this->SetVSync(true);
+
+        // Set platform specific callbacks
+        glfwSetWindowSizeCallback(this->glfw_window, [](GLFWwindow* window,
+                                                        int new_width,
+                                                        int new_height) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+
+            WindowResizeEvent e(new_width, new_height);
+            data.width = new_width;
+            data.height = new_height;
+            data.event_callback(e);
+        });
+
+        glfwSetWindowCloseCallback(this->glfw_window, [](GLFWwindow* window) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+            WindowCloseEvent e = WindowCloseEvent();
+            data.event_callback(e);
+        });
+
+        glfwSetKeyCallback(this->glfw_window, [](GLFWwindow* window,
+                                                 int keycode, int scancode,
+                                                 int action, int mods) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+            switch (action) {
+                case GLFW_PRESS: {
+                    KeyPressedEvent e(keycode, 0);
+                    data.event_callback(e);
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    KeyReleasedEvent e(keycode);
+                    data.event_callback(e);
+                    break;
+                }
+                case GLFW_REPEAT: {
+                    KeyPressedEvent e(keycode, 1);
+                    data.event_callback(e);
+                    break;
+                }
+            }
+        });
+
+        glfwSetMouseButtonCallback(this->glfw_window, [](GLFWwindow* window,
+                                                         int button, int action,
+                                                         int mods) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+            switch (action) {
+                case GLFW_PRESS: {
+                    MouseButtonPressedEvent e(button);
+                    data.event_callback(e);
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    MouseButtonReleasedEvent e(button);
+                    data.event_callback(e);
+                    break;
+                }
+            }
+        });
+
+        glfwSetCursorPosCallback(this->glfw_window, [](GLFWwindow* window,
+                                                       double xpos,
+                                                       double ypos) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+            MouseMovedEvent e((float)xpos, (float)ypos);
+            data.event_callback(e);
+        });
+
+        glfwSetScrollCallback(this->glfw_window, [](GLFWwindow* window,
+                                                    double xoffset,
+                                                    double yoffset) {
+            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
+            MouseScrolledEvent e((float)xoffset, (float)yoffset);
+            data.event_callback(e);
+        });
     }
 
     void WindowsWindow::Shutdown() { glfwDestroyWindow(this->glfw_window); }

@@ -2,9 +2,12 @@
 
 #include "Application.h"
 
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
 namespace Presto {
     Application::Application() {
         app_window = std::unique_ptr<Window>(Window::Create());
+        app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
     }
 
     Application::~Application(){};
@@ -13,5 +16,8 @@ namespace Presto {
         while (app_running) {
             app_window->OnUpdate();
         }
+    }
+
+    void Application::OnEvent(Event& e) { PR_CORE_INFO("{}", e.ToString());
     }
 }  // namespace Presto
