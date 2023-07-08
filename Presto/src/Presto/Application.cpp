@@ -18,6 +18,16 @@ namespace Presto {
         }
     }
 
-    void Application::OnEvent(Event& e) { PR_CORE_INFO("{}", e.ToString());
+    void Application::OnEvent(Event& e) {
+        EventDispatcher dispatcher(e);
+
+        dispatcher.Dispatch<WindowCloseEvent>(
+            BIND_EVENT_FN(Application::OnWindowClose));
+
+        PR_CORE_TRACE("{}", e.ToString());
+    }
+    bool Application::OnWindowClose(WindowCloseEvent& e) {
+        this->app_running = false;
+        return true;
     }
 }  // namespace Presto
