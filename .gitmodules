@@ -1,6 +1,9 @@
-[submodule "Presto/vendor/spdlog"]
-	path = Presto/vendor/spdlog
+[submodule "external/spdlog"]
+	path = external/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "Presto/vendor/GLFW"]
-	path = Presto/vendor/GLFW
+	ignore = dirty
+
+[submodule "external/GLFW"]
+	path = external/GLFW
 	url = https://github.com/glfw/glfw.git
+	ignore = dirty

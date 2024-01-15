@@ -1,0 +1,1 @@
+target_sources(Presto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/GraphicsModule/GraphicsModule.cpp)
