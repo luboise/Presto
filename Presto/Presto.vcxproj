@@ -155,6 +155,8 @@
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Presto.h" />
     <ClInclude Include="src\Presto\Application.h" />
+    <ClInclude Include="src\Presto\Common\Types.h" />
+    <ClInclude Include="src\Presto\Common\Vectors.h" />
     <ClInclude Include="src\Presto\Core.h" />
     <ClInclude Include="src\Presto\EntryPoint.h" />
     <ClInclude Include="src\Presto\Events\ApplicationEvents.h" />
@@ -163,14 +165,20 @@
     <ClInclude Include="src\Presto\Events\MouseEvents.h" />
     <ClInclude Include="src\Presto\InputManager.h" />
     <ClInclude Include="src\Presto\Log.h" />
+    <ClInclude Include="src\Presto\Modules\GraphicsModule\GraphicsModule.h" />
+    <ClInclude Include="src\Presto\Modules\GraphicsModule\GraphicsRenderer.h" />
+    <ClInclude Include="src\Presto\Modules\Module.h" />
+    <ClInclude Include="src\Presto\Objects\Object.h" />
     <ClInclude Include="src\Presto\Window.h" />
     <ClInclude Include="src\prpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Presto\Application.cpp" />
+    <ClCompile Include="src\Presto\Common\Vectors.cpp" />
     <ClCompile Include="src\Presto\InputManager.cpp" />
     <ClCompile Include="src\Presto\Log.cpp" />
+    <ClCompile Include="src\Presto\Modules\GraphicsModule\GraphicsModule.cpp" />
     <ClCompile Include="src\prpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
