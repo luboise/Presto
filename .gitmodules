@@ -1,9 +1,8 @@
-[submodule "external/spdlog"]
-	path = external/spdlog
+[submodule "spdlog"]
+	path = ext/spdlog
 	url = https://github.com/gabime/spdlog
 	ignore = dirty
-
-[submodule "external/GLFW"]
-	path = external/GLFW
+[submodule "GLFW"]
+	path = ext/GLFW
 	url = https://github.com/glfw/glfw.git
 	ignore = dirty

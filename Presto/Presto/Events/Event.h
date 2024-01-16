@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Presto/Core.h"
-#include "prpch.h"
+// #include "prpch.h"
 
 namespace Presto {
     enum class EventType {

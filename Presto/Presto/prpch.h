@@ -18,7 +18,7 @@
 #include <atomic>
 #include <thread>
 
-#ifdef HZ_PLATFORM_WINDOWS
+#ifdef PR_PLATFORM_WINDOWS
     #include <Windows.h>
     #include <Xinput.h>
 #endif

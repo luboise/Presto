@@ -1,1 +1,1 @@
-target_sources(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Windows/WindowsWindow.cpp)
+target_sources(Presto PRIVATE Windows/WindowsWindow.cpp Windows/WindowsWindow.h)
