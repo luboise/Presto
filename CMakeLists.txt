@@ -17,11 +17,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Install path" FORCE)
 endif()
 
-# Ensure x64
-# set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Platform (Win32 or x64)" FORCE)
-
 add_subdirectory(ext/spdlog)
-# target_include_directories(spdlog INTERFACE ${spdlog_SOURCE_DIR}/include)
 
 add_subdirectory(ext/GLFW)
 link_libraries(glfw)
