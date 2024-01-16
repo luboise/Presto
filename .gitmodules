@@ -1,6 +1,6 @@
 [submodule "spdlog"]
 	path = ext/spdlog
-	url = https://github.com/gabime/spdlog
+	url = https://github.com/gabime/spdlog.git
 	ignore = dirty
 [submodule "GLFW"]
 	path = ext/GLFW

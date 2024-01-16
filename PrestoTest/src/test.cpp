@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "Presto/Common/Types.h"
+#include "include/Types.h"
 
 TEST(DefaultConstructor, HasCorrectValues) {
     EXPECT_EQ(1, 1);

@@ -29,3 +29,5 @@ link_libraries(glfw)
 add_subdirectory(Presto)
 target_link_libraries(Presto PUBLIC spdlog glfw opengl32.lib dwmapi.lib XInput9_1_0.lib)
 # target_link_libraries(Presto PUBLIC glfw)
+
+add_subdirectory(PrestoTest)
