@@ -11,7 +11,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
-add_executable(PrestoTest src/main.cpp src/pch.cpp src/pch.h src/tests/_Vector2.cpp)
+add_executable(PrestoTest src/main.cpp src/pch.cpp src/pch.h src/tests/_Vector3.cpp)
 
 target_include_directories(PrestoTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(PrestoTest PRIVATE Presto gtest)

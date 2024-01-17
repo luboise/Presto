@@ -22,8 +22,13 @@ add_subdirectory(ext/spdlog)
 add_subdirectory(ext/GLFW)
 link_libraries(glfw)
 
+add_subdirectory(ext/glm)
+
+find_package(Vulkan REQUIRED)
+include_directories(${Vulkan_INCLUDE_DIRS})
+
 add_subdirectory(Presto)
-target_link_libraries(Presto PUBLIC spdlog glfw opengl32.lib dwmapi.lib XInput9_1_0.lib)
+target_link_libraries(Presto PUBLIC spdlog glfw glm ${Vulkan_LIBRARIES} opengl32.lib dwmapi.lib XInput9_1_0.lib)
 # target_link_libraries(Presto PUBLIC glfw)
 
 add_subdirectory(PrestoTest)

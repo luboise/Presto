@@ -1,5 +1,6 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include "Presto/Window.h"
@@ -24,6 +25,7 @@ namespace Presto {
 
        private:
         virtual void Init(const WindowProperties& props);
+        virtual void SetCallbacks();
         virtual void Shutdown();
 
         GLFWwindow* glfw_window;

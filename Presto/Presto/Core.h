@@ -33,3 +33,8 @@
 #endif
 
 #define AS_BIT(x) (1 << x)
+
+enum PR_RESULT {
+    PR_SUCCESS = 0,
+    PR_FAILURE = 1,
+};

@@ -3,18 +3,25 @@
 #include "Presto/Core.h"
 #include "Presto/Events/Event.h"
 
+#include "Modules/RenderingModule/_GraphicsRenderer.h"
+
 namespace Presto {
+    enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
 
     struct WindowProperties {
         std::string title;
         unsigned height;
         unsigned width;
+        RENDER_LIBRARY render_library;
 
         // Default constructor
         WindowProperties(
             const std::string& d_title = "Untitled Presto application",
             unsigned d_width = 1280, unsigned d_height = 720)
-            : title(d_title), width(d_width), height(d_height) {}
+            : title(d_title),
+              width(d_width),
+              height(d_height),
+              render_library(VULKAN) {}
     };
 
     // Abstracted window interface to be implemented per platform
@@ -37,6 +44,9 @@ namespace Presto {
         // Uses default props if unspecified
         static Window* Create(
             const WindowProperties& props = WindowProperties());
+
+       protected:
+        RenderingModule* _renderer;
     };
 
 }  // namespace Presto

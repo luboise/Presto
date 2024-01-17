@@ -7,6 +7,8 @@
 
 #include "WindowsWindow.h"
 
+#include "RenderingModule/VulkanRenderer.h"
+
 namespace Presto {
     static bool s_GLFWInitialised = false;
 
@@ -14,27 +16,16 @@ namespace Presto {
         return new WindowsWindow(props);
     }
 
+    void WindowsWindow::Shutdown() {
+        glfwDestroyWindow(this->glfw_window);
+        glfwTerminate();
+    }
+
     WindowsWindow::WindowsWindow(const WindowProperties& props) {
         this->Init(props);
     }
 
     WindowsWindow::~WindowsWindow() { this->Shutdown(); }
-
-    void WindowsWindow::OnUpdate() {
-        glfwPollEvents();
-        glfwSwapBuffers(glfw_window);
-    }
-
-    void WindowsWindow::SetVSync(bool vsync) {
-        if (vsync) {
-            glfwSwapInterval(1);
-        } else {
-            glfwSwapInterval(0);
-        }
-        this->w_data.VSync = vsync;
-    }
-
-    bool WindowsWindow::IsVSyncEnabled() { return w_data.VSync; }
 
     void WindowsWindow::Init(const WindowProperties& props) {
         this->w_data.title = props.title;
@@ -50,6 +41,10 @@ namespace Presto {
             PR_CORE_ASSERT(
                 success, "Unable to initialise GLFW. Program cannot continue.");
 
+            // Disable OpenGL
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
             s_GLFWInitialised = true;
         }
 
@@ -64,8 +59,19 @@ namespace Presto {
 
         // Link props and glfw window
         glfwSetWindowUserPointer(this->glfw_window, &w_data);
+        this->SetCallbacks();
         this->SetVSync(true);
 
+        switch (props.render_library) {
+            case VULKAN: {
+                this->_renderer = new VulkanRenderer();
+                PR_ASSERT(this->_renderer->IsInitialised());
+                break;
+            }
+        }
+    }
+
+    void WindowsWindow::SetCallbacks() {
         // Set platform specific callbacks
         glfwSetWindowSizeCallback(this->glfw_window, [](GLFWwindow* window,
                                                         int new_width,
@@ -142,6 +148,20 @@ namespace Presto {
         });
     }
 
-    void WindowsWindow::Shutdown() { glfwDestroyWindow(this->glfw_window); }
+    void WindowsWindow::OnUpdate() {
+        glfwPollEvents();
+        glfwSwapBuffers(glfw_window);
+    }
+
+    void WindowsWindow::SetVSync(bool vsync) {
+        if (vsync) {
+            glfwSwapInterval(1);
+        } else {
+            glfwSwapInterval(0);
+        }
+        this->w_data.VSync = vsync;
+    }
+
+    bool WindowsWindow::IsVSyncEnabled() { return w_data.VSync; }
 
 }  // namespace Presto

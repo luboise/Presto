@@ -1,7 +1,11 @@
 #pragma once
 
 // Presto Includes
+#include "Presto/Core.h"
 #include "Presto/Log.h"
+
+// External includes
+#include <glm/glm.hpp>
 
 // Utility stuff
 #include <functional>

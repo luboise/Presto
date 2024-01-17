@@ -6,3 +6,6 @@
 	path = ext/GLFW
 	url = https://github.com/glfw/glfw.git
 	ignore = dirty
+[submodule "glm"]
+	path = ext/glm
+	url = https://github.com/g-truc/glm
