@@ -12,6 +12,9 @@ namespace Presto {
         virtual void Shutdown();
 
        private:
-        VkInstance instance;
+        VkInstance _instance;
+
+        bool checkValidationLayerSupport();
+        void initialiseVulkanExtensions();
     };
 }  // namespace Presto
