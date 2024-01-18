@@ -1,6 +1,6 @@
 #include "VulkanRenderer.h"
 
-#include <GLFW/glfw3.h>
+#include <set>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -12,31 +12,50 @@ namespace Presto {
     const std::vector<const char*> validationLayers = {
         "VK_LAYER_KHRONOS_validation"};
 
-    VulkanRenderer::VulkanRenderer() { this->Init(); }
+    VulkanRenderer::VulkanRenderer(GLFWwindow* window) : _glfwWindow(window) {
+        this->Init();
+    }
 
     VulkanRenderer::~VulkanRenderer() {
         if (this->IsInitialised()) this->Shutdown();
     };
 
     void VulkanRenderer::Init() {
-        auto res = this->createInstance();
-        auto res2 = this->setupDebugMessenger();
-        auto res3 = this->pickPhysicalDevice();
+        PR_RESULT res;
+        res = this->createInstance();
+        if (res == PR_SUCCESS) {
+            res = this->setupDebugMessenger();
+        }
+        if (res == PR_SUCCESS) {
+            res = this->createSurface();
+        }
+        if (res == PR_SUCCESS) {
+            res = this->pickPhysicalDevice();
+        }
+        if (res == PR_SUCCESS) {
+            res = this->createLogicalDevice();
+        }
 
-        this->_initialised =
-            (res == PR_SUCCESS && res2 == PR_SUCCESS && res3 == PR_SUCCESS) ? true : false;
+        this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
         if (enableValidationLayers) {
             this->DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger,
                                                 nullptr);
+            this->_debugMessenger = nullptr;
         }
+
+        vkDestroySurfaceKHR(_instance, _surface, nullptr);
+        _surface = nullptr;
+
         vkDestroyInstance(_instance, nullptr);
+        this->_instance = nullptr;
+
+        vkDestroyDevice(_logicalDevice, nullptr);
+        this->_logicalDevice = nullptr;
 
         this->_initialised = false;
-        this->_instance = nullptr;
-        this->_debugMessenger = nullptr;
     }
 
     void VulkanRenderer::initialiseVulkanExtensions() {
@@ -139,8 +158,18 @@ namespace Presto {
         return (res == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
     }
 
+    PR_RESULT VulkanRenderer::createSurface() {
+        if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
+                                    &_surface) != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to create window surface.");
+            return PR_FAILURE;
+        } else {
+            return PR_SUCCESS;
+        }
+    }
+
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {
-        auto indices = findQueueFamilies(device);
+        auto indices = this->findQueueFamilies(device);
 
         return indices.isComplete();
     }
@@ -155,19 +184,28 @@ namespace Presto {
                                                  nullptr);
 
         if (queueFamilyCount != 0) {
-            std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+            std::vector<VkQueueFamilyProperties> queueFamilies(
+                queueFamilyCount);
             vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount,
                                                      queueFamilies.data());
-            int validCreatableQueues = 0;
+            int queue_index = 0;
             for (const auto& queueFamily : queueFamilies) {
                 // Check if family can do graphics
                 if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                    indices.graphicsFamily = validCreatableQueues;
+                    indices.graphicsFamily = queue_index;
+                }
+
+                // Check if queue family can present to the window
+                VkBool32 presentSupport = false;
+                vkGetPhysicalDeviceSurfaceSupportKHR(
+                    device, queue_index, _surface, &presentSupport);
+                if (presentSupport) {
+                    indices.presentFamily = queue_index;
                 }
 
                 if (indices.isComplete()) break;
 
-                validCreatableQueues++;
+                queue_index++;
             }
         }
 
@@ -175,14 +213,13 @@ namespace Presto {
     }
 
     PR_RESULT VulkanRenderer::pickPhysicalDevice() {
-        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(this->_instance, &deviceCount, nullptr);
 
         if (deviceCount == 0) {
             PR_CORE_CRITICAL(
-                "Unable to find a Vulkan compatible graphics device.");
+                "Unable to find a Vulkan compatible graphics "
+                "device.");
             return PR_FAILURE;
         }
 
@@ -193,15 +230,78 @@ namespace Presto {
         // Find first valid device
         for (const auto& device : devices) {
             if (VulkanRenderer::isDeviceSuitable(device)) {
-                physicalDevice = device;
+                this->_physicalDevice = device;
                 break;
             }
         }
 
-        if (physicalDevice == VK_NULL_HANDLE) {
+        if (this->_physicalDevice == VK_NULL_HANDLE) {
             PR_CORE_CRITICAL("No suitable graphics device found.");
             return PR_FAILURE;
         }
+
+        return PR_SUCCESS;
+    }
+
+    PR_RESULT VulkanRenderer::createLogicalDevice() {
+        QueueFamilyIndices indices = findQueueFamilies(_physicalDevice);
+
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::set<uint32_t> uniqueQueueFamilies = {
+            indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+        const float queuePriority = 1.0f;
+        for (uint32_t queueFamily : uniqueQueueFamilies) {
+            VkDeviceQueueCreateInfo queueCreateInfo{};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueCreateInfo.queueFamilyIndex = queueFamily;
+            queueCreateInfo.queueCount = 1;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(queueCreateInfo);
+        }
+
+        // Device Queue Props
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+        queueCreateInfo.queueCount = 1;
+
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        // Physical Device Features
+        VkPhysicalDeviceFeatures deviceFeatures{};
+
+        // Using these to create the logical device
+        VkDeviceCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+        createInfo.pEnabledFeatures = &deviceFeatures;
+
+        createInfo.queueCreateInfoCount =
+            static_cast<uint32_t>(queueCreateInfos.size());
+        createInfo.pQueueCreateInfos = queueCreateInfos.data();
+
+        createInfo.enabledExtensionCount = 0;
+
+        // Handle validation layers
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount =
+                static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else {
+            createInfo.enabledLayerCount = 0;
+        }
+
+        if (vkCreateDevice(_physicalDevice, &createInfo, nullptr,
+                           &_logicalDevice) != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to create logical device.");
+            return PR_FAILURE;
+        }
+
+        vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0,
+                         &_graphicsQueue);
+        vkGetDeviceQueue(_logicalDevice, indices.presentFamily.value(), 0,
+                         &_presentQueue);
 
         return PR_SUCCESS;
     }
@@ -273,8 +373,9 @@ namespace Presto {
         const char** glfwExtensions =
             glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-        // Copies required extensions from glfwExtensions (start pointer) up
-        // until glfwExtensions + glfwExtensionCount (Pointer at end)
+        // Copies required extensions from glfwExtensions (start
+        // pointer) up until glfwExtensions + glfwExtensionCount
+        // (Pointer at end)
         std::vector<const char*> extensions(
             glfwExtensions, glfwExtensions + glfwExtensionCount);
 

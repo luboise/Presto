@@ -65,7 +65,7 @@ namespace Presto {
 
         switch (props.render_library) {
             case VULKAN: {
-                this->_renderer = new VulkanRenderer();
+                this->_renderer = new VulkanRenderer(this->glfw_window);
                 PR_ASSERT(this->_renderer->IsInitialised());
                 break;
             }

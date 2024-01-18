@@ -1,36 +1,51 @@
 #include "_GraphicsRenderer.h"
 
 #include <vulkan/vulkan.h>
+// KEEP THESE SEPARATE
+#include <GLFW/glfw3.h>
 
 #include <optional>
 
 namespace Presto {
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
-        bool isComplete() { return this->graphicsFamily.has_value(); };
+        bool isComplete() {
+            return this->graphicsFamily.has_value() &&
+                   presentFamily.has_value();
+        };
     };
 
     class PRESTO_API VulkanRenderer : public RenderingModule {
        public:
-        VulkanRenderer();
+        VulkanRenderer(GLFWwindow* window);
         virtual ~VulkanRenderer();
 
         virtual void Init();
         virtual void Shutdown();
 
        private:
+        GLFWwindow* _glfwWindow;
+
         VkInstance _instance;
         VkDebugUtilsMessengerEXT _debugMessenger;
+        VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+        VkDevice _logicalDevice;
 
-        static bool isDeviceSuitable(const VkPhysicalDevice& device);
-        static QueueFamilyIndices findQueueFamilies(
-            const VkPhysicalDevice& device);
+        VkQueue _graphicsQueue;
+        VkQueue _presentQueue;
+        VkSurfaceKHR _surface;
+
+        bool isDeviceSuitable(const VkPhysicalDevice& device);
+        QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
 
         // High level init functions
         PR_RESULT createInstance();
         PR_RESULT setupDebugMessenger();
+        PR_RESULT createSurface();
         PR_RESULT pickPhysicalDevice();
+        PR_RESULT createLogicalDevice();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
