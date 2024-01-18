@@ -2,7 +2,15 @@
 
 #include <vulkan/vulkan.h>
 
+#include <optional>
+
 namespace Presto {
+    struct QueueFamilyIndices {
+        std::optional<uint32_t> graphicsFamily;
+
+        bool isComplete() { return this->graphicsFamily.has_value(); };
+    };
+
     class PRESTO_API VulkanRenderer : public RenderingModule {
        public:
         VulkanRenderer();
@@ -15,9 +23,14 @@ namespace Presto {
         VkInstance _instance;
         VkDebugUtilsMessengerEXT _debugMessenger;
 
+        static bool isDeviceSuitable(const VkPhysicalDevice& device);
+        static QueueFamilyIndices findQueueFamilies(
+            const VkPhysicalDevice& device);
+
         // High level init functions
         PR_RESULT createInstance();
         PR_RESULT setupDebugMessenger();
+        PR_RESULT pickPhysicalDevice();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();

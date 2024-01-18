@@ -21,9 +21,10 @@ namespace Presto {
     void VulkanRenderer::Init() {
         auto res = this->createInstance();
         auto res2 = this->setupDebugMessenger();
+        auto res3 = this->pickPhysicalDevice();
 
         this->_initialised =
-            (res == PR_SUCCESS && res2 == PR_SUCCESS) ? true : false;
+            (res == PR_SUCCESS && res2 == PR_SUCCESS && res3 == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
@@ -78,6 +79,7 @@ namespace Presto {
         }
         return true;
     }
+
     PR_RESULT VulkanRenderer::createInstance() {
         if (enableValidationLayers && !checkValidationLayerSupport()) {
             return PR_FAILURE;
@@ -135,6 +137,73 @@ namespace Presto {
             this->_instance, &createInfo, nullptr, &this->_debugMessenger);
 
         return (res == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
+    }
+
+    bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {
+        auto indices = findQueueFamilies(device);
+
+        return indices.isComplete();
+    }
+
+    QueueFamilyIndices VulkanRenderer::findQueueFamilies(
+        const VkPhysicalDevice& device) {
+        QueueFamilyIndices indices;
+
+        // Find queue family indices
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount,
+                                                 nullptr);
+
+        if (queueFamilyCount != 0) {
+            std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+            vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount,
+                                                     queueFamilies.data());
+            int validCreatableQueues = 0;
+            for (const auto& queueFamily : queueFamilies) {
+                // Check if family can do graphics
+                if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                    indices.graphicsFamily = validCreatableQueues;
+                }
+
+                if (indices.isComplete()) break;
+
+                validCreatableQueues++;
+            }
+        }
+
+        return indices;
+    }
+
+    PR_RESULT VulkanRenderer::pickPhysicalDevice() {
+        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(this->_instance, &deviceCount, nullptr);
+
+        if (deviceCount == 0) {
+            PR_CORE_CRITICAL(
+                "Unable to find a Vulkan compatible graphics device.");
+            return PR_FAILURE;
+        }
+
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(this->_instance, &deviceCount,
+                                   devices.data());
+
+        // Find first valid device
+        for (const auto& device : devices) {
+            if (VulkanRenderer::isDeviceSuitable(device)) {
+                physicalDevice = device;
+                break;
+            }
+        }
+
+        if (physicalDevice == VK_NULL_HANDLE) {
+            PR_CORE_CRITICAL("No suitable graphics device found.");
+            return PR_FAILURE;
+        }
+
+        return PR_SUCCESS;
     }
 
     VkResult VulkanRenderer::CreateDebugUtilsMessengerEXT(
