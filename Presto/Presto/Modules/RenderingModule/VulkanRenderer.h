@@ -6,7 +6,7 @@ namespace Presto {
     class PRESTO_API VulkanRenderer : public RenderingModule {
        public:
         VulkanRenderer();
-        ~VulkanRenderer();
+        virtual ~VulkanRenderer();
 
         virtual void Init();
         virtual void Shutdown();

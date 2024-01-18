@@ -14,7 +14,9 @@ namespace Presto {
 
     VulkanRenderer::VulkanRenderer() { this->Init(); }
 
-    VulkanRenderer::~VulkanRenderer() { this->Shutdown(); }
+    VulkanRenderer::~VulkanRenderer() {
+        if (this->IsInitialised()) this->Shutdown();
+    };
 
     void VulkanRenderer::Init() {
         auto res = this->createInstance();
@@ -30,7 +32,7 @@ namespace Presto {
                                                 nullptr);
         }
 
-        vkDestroyInstance(_instance, nullptr);
+        // vkDestroyInstance(_instance, nullptr);
     }
 
     void VulkanRenderer::initialiseVulkanExtensions() {
