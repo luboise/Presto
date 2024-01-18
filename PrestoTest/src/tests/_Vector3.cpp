@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "include/Types.h"
+#include "Presto.h"
 
 TEST(DefaultConstructor, HasCorrectValues) {
     Vector3 v;

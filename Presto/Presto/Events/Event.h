@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Core.h"
+#include <string>
 // #include "prpch.h"
 
 namespace Presto {

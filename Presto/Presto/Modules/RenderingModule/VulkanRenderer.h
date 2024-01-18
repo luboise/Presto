@@ -14,6 +14,9 @@ namespace Presto {
        private:
         VkInstance _instance;
 
+        VkApplicationInfo makeApplicationInfo();
+        VkInstanceCreateInfo makeCreationInfo();
+
         bool checkValidationLayerSupport();
         void initialiseVulkanExtensions();
     };

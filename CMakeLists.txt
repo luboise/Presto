@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.28)
 project(Presto)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin")
 
 if (WIN32)
 	add_compile_definitions(PR_PLATFORM_WINDOWS)
-	add_compile_definitions(PR_BUILD_DLL)
 endif()
 
 set(CMAKE_GENERATOR_PLATFORM "x64"
@@ -28,7 +28,12 @@ find_package(Vulkan REQUIRED)
 include_directories(${Vulkan_INCLUDE_DIRS})
 
 add_subdirectory(Presto)
-target_link_libraries(Presto PUBLIC spdlog glfw glm ${Vulkan_LIBRARIES} opengl32.lib dwmapi.lib XInput9_1_0.lib)
-# target_link_libraries(Presto PUBLIC glfw)
+target_link_libraries(Presto
+	PRIVATE glfw glm ${Vulkan_LIBRARIES} opengl32.lib dwmapi.lib XInput9_1_0.lib
+	PUBLIC spdlog
+)
+# target_link_libraries(Presto PRIVATE glfw)
 
 add_subdirectory(PrestoTest)
+
+add_subdirectory(Duality)

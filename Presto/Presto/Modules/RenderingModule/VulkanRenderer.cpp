@@ -29,43 +29,15 @@ namespace Presto {
             return PR_FAILURE;
         }
 
-        // Set App info
-        VkApplicationInfo appInfo{};
-
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.apiVersion = VK_API_VERSION_1_3;
-
-        appInfo.pApplicationName = "Vulkan App";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "Presto";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-
-        // Set instance info
-        VkInstanceCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        VkInstanceCreateInfo createInfo = this->makeCreationInfo();
+        VkApplicationInfo appInfo = this->makeApplicationInfo();
         createInfo.pApplicationInfo = &appInfo;
-
-        uint32_t glfwExtensionCount = 0;
-        const char** glfwExtensions =
-            glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-        createInfo.enabledExtensionCount = glfwExtensionCount;
-        createInfo.ppEnabledExtensionNames = glfwExtensions;
-
-        this->initialiseVulkanExtensions();
-
-        if (enableValidationLayers) {
-            createInfo.enabledLayerCount =
-                static_cast<uint32_t>(validationLayers.size());
-            createInfo.ppEnabledLayerNames = validationLayers.data();
-        } else {
-            createInfo.enabledLayerCount = 0;
-        }
 
         // Create and check instance
         VkResult result =
             vkCreateInstance(&createInfo, nullptr, &(this->_instance));
         PR_ASSERT(result == VK_SUCCESS, "Unable to create Vulkan instance.");
+
         PR_INFO("Created Vulkan instance.");
 
         PR_RESULT pr_result = (result == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
@@ -113,5 +85,45 @@ namespace Presto {
             }
         }
         return true;
+    }
+    VkApplicationInfo VulkanRenderer::makeApplicationInfo() {
+        // Set App info
+        VkApplicationInfo appInfo{};
+        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+        appInfo.apiVersion = VK_API_VERSION_1_3;
+        appInfo.pApplicationName = "Vulkan App";
+        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+        appInfo.pEngineName = "Presto";
+        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+
+        return appInfo;
+    }
+
+    VkInstanceCreateInfo VulkanRenderer::makeCreationInfo() {
+        // Instance info return object
+        VkInstanceCreateInfo createInfo{};
+
+       
+
+        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+
+        uint32_t glfwExtensionCount = 0;
+        const char** glfwExtensions =
+            glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+        createInfo.enabledExtensionCount = glfwExtensionCount;
+        createInfo.ppEnabledExtensionNames = glfwExtensions;
+
+        this->initialiseVulkanExtensions();
+
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount =
+                static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+        } else {
+            createInfo.enabledLayerCount = 0;
+        }
+
+        return createInfo;
     }
 }  // namespace Presto
