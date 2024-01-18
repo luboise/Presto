@@ -1,7 +1,10 @@
 add_library(Presto SHARED)
-target_compile_definitions(Presto
-	PRIVATE PR_BUILD_DLL
-)
+
+if (WIN32)
+	target_compile_definitions(Presto
+		PRIVATE PR_BUILD_DLL
+	)
+endif()
 
 target_precompile_headers(Presto PRIVATE Presto/prpch.h)
 

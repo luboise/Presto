@@ -34,6 +34,7 @@ target_link_libraries(Presto
 )
 # target_link_libraries(Presto PRIVATE glfw)
 
-add_subdirectory(PrestoTest)
-
 add_subdirectory(Duality)
+
+# add_subdirectory(PrestoTest)
+
