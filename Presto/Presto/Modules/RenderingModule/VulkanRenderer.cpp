@@ -31,8 +31,11 @@ namespace Presto {
             this->DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger,
                                                 nullptr);
         }
+        vkDestroyInstance(_instance, nullptr);
 
-        // vkDestroyInstance(_instance, nullptr);
+        this->_initialised = false;
+        this->_instance = nullptr;
+        this->_debugMessenger = nullptr;
     }
 
     void VulkanRenderer::initialiseVulkanExtensions() {
@@ -144,8 +147,7 @@ namespace Presto {
         auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
             instance, "vkCreateDebugUtilsMessengerEXT");
         if (func != nullptr) {
-            // Use the custom function creator to create a function based on our
-            // arguments
+            // Call the function if it exists
             return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
         } else {
             return VK_ERROR_EXTENSION_NOT_PRESENT;

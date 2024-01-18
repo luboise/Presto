@@ -17,6 +17,7 @@ namespace Presto {
     }
 
     void WindowsWindow::Shutdown() {
+        this->_renderer->Shutdown();
         glfwDestroyWindow(this->glfw_window);
         glfwTerminate();
     }

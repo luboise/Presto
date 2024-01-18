@@ -30,6 +30,7 @@ namespace Presto {
         using EventCallbackFn = std::function<void(Event&)>;
 
         virtual ~Window(){};
+        virtual void Shutdown() = 0;
 
         virtual void OnUpdate() = 0;
 

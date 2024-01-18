@@ -16,6 +16,8 @@ namespace Presto {
         while (app_running) {
             app_window->OnUpdate();
         }
+
+        this->app_window->Shutdown();
     }
 
     void Application::OnEvent(Event& e) {
