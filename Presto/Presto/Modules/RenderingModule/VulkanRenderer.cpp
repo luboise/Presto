@@ -1,5 +1,7 @@
 #include "VulkanRenderer.h"
 
+#include <algorithm>
+#include <limits>
 #include <set>
 
 #ifdef NDEBUG
@@ -11,6 +13,9 @@ const bool enableValidationLayers = true;
 namespace Presto {
     const std::vector<const char*> validationLayers = {
         "VK_LAYER_KHRONOS_validation"};
+
+    const std::vector<const char*> extensionList = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
     VulkanRenderer::VulkanRenderer(GLFWwindow* window) : _glfwWindow(window) {
         this->Init();
@@ -35,7 +40,9 @@ namespace Presto {
         if (res == PR_SUCCESS) {
             res = this->createLogicalDevice();
         }
-
+        if (res == PR_SUCCESS) {
+            res = this->createSwapChain();
+        }
         this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
@@ -46,14 +53,16 @@ namespace Presto {
             this->_debugMessenger = nullptr;
         }
 
+        vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
+
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         _surface = nullptr;
 
-        vkDestroyInstance(_instance, nullptr);
-        this->_instance = nullptr;
-
         vkDestroyDevice(_logicalDevice, nullptr);
         this->_logicalDevice = nullptr;
+
+        vkDestroyInstance(_instance, nullptr);
+        this->_instance = nullptr;
 
         this->_initialised = false;
     }
@@ -72,6 +81,38 @@ namespace Presto {
             ss << extension.extensionName << ", ";
         }
         PR_CORE_INFO(ss.str());
+    }
+
+    SwapChainSupportDetails VulkanRenderer::querySwapChainSupport(
+        VkPhysicalDevice device) const {
+        SwapChainSupportDetails details;
+
+        // Read surface capabilities into VkSurfaceCapabilitiesKHR
+        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, _surface,
+                                                  &details.capabilities);
+
+        uint32_t formatCount = 0;
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount,
+                                             nullptr);
+
+        if (formatCount != 0) {
+            details.formats.resize(formatCount);
+            vkGetPhysicalDeviceSurfaceFormatsKHR(device, _surface, &formatCount,
+                                                 details.formats.data());
+        }
+
+        uint32_t presentModeCount = 0;
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, _surface,
+                                                  &presentModeCount, nullptr);
+
+        if (presentModeCount != 0) {
+            details.presentModes.resize(presentModeCount);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(
+                device, _surface, &presentModeCount,
+                details.presentModes.data());
+        }
+
+        return details;
     }
 
     bool VulkanRenderer::checkValidationLayerSupport() {
@@ -97,6 +138,44 @@ namespace Presto {
             }
         }
         return true;
+    }
+
+    bool VulkanRenderer::checkDeviceExtensionSupport(
+        const VkPhysicalDevice& device) const {
+        // Get list of available extensions
+        uint32_t extensionCount = 0;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount,
+                                             nullptr);
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount,
+                                             availableExtensions.data());
+
+        std::set<std::string> requiredExtensions(extensionList.begin(),
+                                                 extensionList.end());
+
+        for (const auto& extension : availableExtensions) {
+            requiredExtensions.erase(extension.extensionName);
+        }
+
+        return requiredExtensions.empty();
+    }
+
+    VkSurfaceFormatKHR VulkanRenderer::chooseSwapSurfaceFormat(
+        const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+        PR_ASSERT(
+            availableFormats.size() > 0,
+            "Empty list of swap surfaces passed to chooseSwapSurfaceFormat.");
+
+        // Look for SRGB with 8 bit colors
+        for (const auto& formatKHR : availableFormats) {
+            if (formatKHR.format == VK_FORMAT_B8G8R8A8_SRGB &&
+                formatKHR.colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR) {
+                return formatKHR;
+            }
+        }
+
+        // Backup is to return the first format
+        return availableFormats[0];
     }
 
     PR_RESULT VulkanRenderer::createInstance() {
@@ -157,7 +236,6 @@ namespace Presto {
 
         return (res == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
     }
-
     PR_RESULT VulkanRenderer::createSurface() {
         if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
                                     &_surface) != VK_SUCCESS) {
@@ -167,11 +245,99 @@ namespace Presto {
             return PR_SUCCESS;
         }
     }
+    PR_RESULT VulkanRenderer::createSwapChain() {
+        SwapChainSupportDetails swapChainSupport =
+            querySwapChainSupport(this->_physicalDevice);
+
+        VkSurfaceFormatKHR surfaceFormat =
+            chooseSwapSurfaceFormat(swapChainSupport.formats);
+        VkPresentModeKHR presentMode =
+            chooseSwapPresentMode(swapChainSupport.presentModes);
+        VkExtent2D swapExtent = chooseSwapExtent(swapChainSupport.capabilities);
+
+        // Want an extra image that we can render to while the first x are
+        // performing operations
+        uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+        if (swapChainSupport.capabilities.maxImageCount > 0)
+            if (imageCount > swapChainSupport.capabilities.maxImageCount) {
+                imageCount = swapChainSupport.capabilities.maxImageCount;
+            }
+
+        VkSwapchainCreateInfoKHR createInfo{};
+
+        createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+        createInfo.surface = this->_surface;
+
+        createInfo.minImageCount = imageCount;
+        createInfo.imageFormat = surfaceFormat.format;
+        createInfo.imageColorSpace = surfaceFormat.colorSpace;
+
+        createInfo.imageExtent = swapExtent;
+
+        // Higher for stereoscopic 3D
+        createInfo.imageArrayLayers = 1;
+
+        // Render it straight (colour attachment). Could change this later to do
+        // post processing
+        createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+        QueueFamilyIndices indices = findQueueFamilies(this->_physicalDevice);
+        uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(),
+                                         indices.presentFamily.value()};
+
+        // Draw on graphics queue, then submit to presentation queue
+
+        // If different queues, use concurrent mode
+        if (indices.graphicsFamily != indices.presentFamily) {
+            createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+            createInfo.queueFamilyIndexCount = 2;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+        }  // Otherwise use exclusive
+        else {
+            createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.queueFamilyIndexCount = 0;      // Optional
+            createInfo.pQueueFamilyIndices = nullptr;  // Optional
+        }
+
+        // No rotation transformations
+        createInfo.preTransform =
+            swapChainSupport.capabilities.currentTransform;
+
+        // Ignore alpha channel between windows
+        createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+        createInfo.presentMode = presentMode;
+
+        // Ignore pixels that are obscured (eg. behind other windows)
+        createInfo.clipped = VK_TRUE;
+
+        // No old swapchain exists
+        createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+        auto res = vkCreateSwapchainKHR(this->_logicalDevice, &createInfo,
+                                        nullptr, &(this->_swapchain));
+
+        if (res != PR_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to create Vulkan swapchain.");
+            return PR_FAILURE;
+        } else
+            return PR_SUCCESS;
+    }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {
         auto indices = this->findQueueFamilies(device);
+        bool extensionsSupported = checkDeviceExtensionSupport(device);
 
-        return indices.isComplete();
+        bool swapChainAdequate = false;
+        if (extensionsSupported) {
+            SwapChainSupportDetails swapChainSupport =
+                querySwapChainSupport(device);
+            swapChainAdequate = !swapChainSupport.formats.empty() &&
+                                !swapChainSupport.presentModes.empty();
+        }
+
+        return indices.isComplete() && extensionsSupported && swapChainAdequate;
     }
 
     QueueFamilyIndices VulkanRenderer::findQueueFamilies(
@@ -197,8 +363,8 @@ namespace Presto {
 
                 // Check if queue family can present to the window
                 VkBool32 presentSupport = false;
-                vkGetPhysicalDeviceSurfaceSupportKHR(
-                    device, queue_index, _surface, &presentSupport);
+                vkGetPhysicalDeviceSurfaceSupportKHR(device, queue_index,
+                                                     _surface, &presentSupport);
                 if (presentSupport) {
                     indices.presentFamily = queue_index;
                 }
@@ -281,7 +447,9 @@ namespace Presto {
             static_cast<uint32_t>(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-        createInfo.enabledExtensionCount = 0;
+        createInfo.enabledExtensionCount =
+            static_cast<uint32_t>(extensionList.size());
+        createInfo.ppEnabledExtensionNames = extensionList.data();
 
         // Handle validation layers
         if (enableValidationLayers) {
@@ -304,6 +472,45 @@ namespace Presto {
                          &_presentQueue);
 
         return PR_SUCCESS;
+    }
+
+    VkPresentModeKHR VulkanRenderer::chooseSwapPresentMode(
+        const std::vector<VkPresentModeKHR>& availablePresentModes) {
+        // Check if mailbox is available
+        for (const auto& availablePresentMode : availablePresentModes) {
+            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+                return availablePresentMode;
+            }
+        }
+
+        // Default (always available)
+        return VK_PRESENT_MODE_FIFO_KHR;
+    }
+
+    VkExtent2D VulkanRenderer::chooseSwapExtent(
+        const VkSurfaceCapabilitiesKHR& capabilities) {
+        // Equal to (unsigned)-1 when we should select best ourself
+        if (capabilities.currentExtent.width !=
+            std::numeric_limits<uint32_t>::max()) {
+            return capabilities.currentExtent;
+        } else {
+            int width, height;
+            glfwGetFramebufferSize(this->_glfwWindow, &width, &height);
+
+            // Get size of framebuffer (size of window)
+            VkExtent2D actualExtent = {static_cast<uint32_t>(width),
+                                       static_cast<uint32_t>(height)};
+
+            // Clamp this to the valid range supported by the device
+            actualExtent.width = std::clamp(actualExtent.width,
+                                            capabilities.minImageExtent.width,
+                                            capabilities.maxImageExtent.width);
+            actualExtent.height = std::clamp(
+                actualExtent.height, capabilities.minImageExtent.height,
+                capabilities.maxImageExtent.height);
+
+            return actualExtent;
+        }
     }
 
     VkResult VulkanRenderer::CreateDebugUtilsMessengerEXT(

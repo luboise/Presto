@@ -17,6 +17,12 @@ namespace Presto {
         };
     };
 
+    struct SwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
     class PRESTO_API VulkanRenderer : public RenderingModule {
        public:
         VulkanRenderer(GLFWwindow* window);
@@ -32,6 +38,7 @@ namespace Presto {
         VkDebugUtilsMessengerEXT _debugMessenger;
         VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
         VkDevice _logicalDevice;
+        VkSwapchainKHR _swapchain = VK_NULL_HANDLE;
 
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
@@ -46,6 +53,7 @@ namespace Presto {
         PR_RESULT createSurface();
         PR_RESULT pickPhysicalDevice();
         PR_RESULT createLogicalDevice();
+        PR_RESULT createSwapChain();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
@@ -55,7 +63,20 @@ namespace Presto {
 
         std::vector<const char*> getRequiredExtensions();
         bool checkValidationLayerSupport();
+        bool checkDeviceExtensionSupport(const VkPhysicalDevice& device) const;
         void initialiseVulkanExtensions();
+
+        SwapChainSupportDetails querySwapChainSupport(
+            VkPhysicalDevice device) const;
+
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+            const std::vector<VkSurfaceFormatKHR>& availableFormats);
+
+        VkPresentModeKHR chooseSwapPresentMode(
+            const std::vector<VkPresentModeKHR>& availablePresentModes);
+
+        VkExtent2D chooseSwapExtent(
+            const VkSurfaceCapabilitiesKHR& capabilities);
 
         // Ping Vulkan for creation function
         static VkResult CreateDebugUtilsMessengerEXT(

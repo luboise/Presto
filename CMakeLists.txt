@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin")
 
 if (WIN32)
 	add_compile_definitions(PR_PLATFORM_WINDOWS)
+	add_compile_definitions(NOMINMAX)
 endif()
 
 set(CMAKE_GENERATOR_PLATFORM "x64"
