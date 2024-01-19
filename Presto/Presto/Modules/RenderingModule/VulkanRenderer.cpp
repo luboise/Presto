@@ -47,19 +47,20 @@ namespace Presto {
     }
 
     void VulkanRenderer::Shutdown() {
-        if (enableValidationLayers) {
-            this->DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger,
-                                                nullptr);
-            this->_debugMessenger = nullptr;
-        }
-
         vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
+        _swapchain = nullptr;
 
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         _surface = nullptr;
 
         vkDestroyDevice(_logicalDevice, nullptr);
         this->_logicalDevice = nullptr;
+
+        if (enableValidationLayers) {
+            this->DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger,
+                                                nullptr);
+            this->_debugMessenger = nullptr;
+        }
 
         vkDestroyInstance(_instance, nullptr);
         this->_instance = nullptr;
@@ -321,8 +322,18 @@ namespace Presto {
         if (res != PR_SUCCESS) {
             PR_CORE_CRITICAL("Unable to create Vulkan swapchain.");
             return PR_FAILURE;
-        } else
-            return PR_SUCCESS;
+        }
+
+        vkGetSwapchainImagesKHR(this->_logicalDevice, this->_swapchain,
+                                &imageCount, nullptr);
+        _swapchainImages.resize(imageCount);
+        vkGetSwapchainImagesKHR(this->_logicalDevice, this->_swapchain,
+                                &imageCount, _swapchainImages.data());
+
+        this->_swapchainImageFormat = surfaceFormat.format;
+        this->_swapchainExtent = swapExtent;
+
+        return PR_SUCCESS;
     }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {

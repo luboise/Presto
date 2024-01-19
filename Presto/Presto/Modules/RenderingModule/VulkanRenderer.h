@@ -38,7 +38,11 @@ namespace Presto {
         VkDebugUtilsMessengerEXT _debugMessenger;
         VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
         VkDevice _logicalDevice;
+
         VkSwapchainKHR _swapchain = VK_NULL_HANDLE;
+        std::vector<VkImage> _swapchainImages;
+        VkFormat _swapchainImageFormat;
+        VkExtent2D _swapchainExtent;
 
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
