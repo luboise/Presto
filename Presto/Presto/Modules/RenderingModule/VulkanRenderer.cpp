@@ -56,10 +56,19 @@ namespace Presto {
         if (res == PR_SUCCESS) {
             res = this->createFrameBuffers();
         }
+        if (res == PR_SUCCESS) {
+            PR_RESULT createCommandPool();
+        }
+        if (res == PR_SUCCESS) {
+            PR_RESULT createCommandBuffer();
+        }
+
         this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
+        vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
+
         for (auto framebuffer : _swapchainFramebuffers) {
             vkDestroyFramebuffer(_logicalDevice, framebuffer, nullptr);
         }
@@ -641,20 +650,6 @@ namespace Presto {
         }
 
         return PR_SUCCESS;
-
-        // // STORE
-        // VkViewport viewport{};
-        // viewport.x = 0.0f;
-        // viewport.y = 0.0f;
-        // viewport.width = (float)_swapchainExtent.width;
-        // viewport.height = (float)_swapchainExtent.height;
-        // viewport.minDepth = 0.0f;
-        // viewport.maxDepth = 1.0f;
-
-        // // Want size thats >= viewport, so it doesn't cut it off at all
-        // VkRect2D scissor{};
-        // scissor.offset = {0, 0};
-        // scissor.extent = _swapchainExtent;
     };
 
     PR_RESULT VulkanRenderer::createFrameBuffers() {
@@ -682,7 +677,104 @@ namespace Presto {
             }
         }
 
-                return PR_SUCCESS;
+        return PR_SUCCESS;
+    }
+
+    PR_RESULT VulkanRenderer::createCommandPool() {
+        QueueFamilyIndices familyIndices = findQueueFamilies(_physicalDevice);
+
+        VkCommandPoolCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+        // Allows command buffers to be reset individually
+        createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+        createInfo.queueFamilyIndex = familyIndices.graphicsFamily.value();
+
+        auto res = vkCreateCommandPool(_logicalDevice, &createInfo, nullptr,
+                                       &_commandPool);
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to create command pool.");
+            return PR_FAILURE;
+        }
+        return PR_SUCCESS;
+    }
+
+    PR_RESULT VulkanRenderer::createCommandBuffer() {
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = _commandPool;
+        // Primary commandbuffer (can submit directly)
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = 1;
+
+        auto res = vkAllocateCommandBuffers(_logicalDevice, &allocInfo,
+                                            &_commandBuffer);
+
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to create command buffer(s).");
+            return PR_FAILURE;
+        }
+        return PR_SUCCESS;
+    }
+
+    PR_RESULT VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
+                                                  uint32_t imageIndex) {
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.pInheritanceInfo = nullptr;
+
+        auto res = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
+        }
+
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = _renderPass;
+        renderPassInfo.framebuffer = _swapchainFramebuffers[imageIndex];
+
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = _swapchainExtent;
+
+        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        // INLINE -> execute from primary buffers
+        vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo,
+                             VK_SUBPASS_CONTENTS_INLINE);
+
+        // Bind the command buffer to the pipeline
+        vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          _graphicsPipeline);
+
+        // Set viewport
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(_swapchainExtent.width);
+        viewport.height = static_cast<float>(_swapchainExtent.height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
+
+        // Set scissor (cuts viewport)
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = _swapchainExtent;
+        vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
+
+        const uint32_t vertices = 3;
+        vkCmdDraw(_commandBuffer, vertices, 1, 0, 0);
+
+        vkCmdEndRenderPass(_commandBuffer);
+
+        auto res = vkEndCommandBuffer(_commandBuffer);
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to record command buffer!");
+            return PR_FAILURE;
+        }
+
+        return PR_SUCCESS;
     }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {

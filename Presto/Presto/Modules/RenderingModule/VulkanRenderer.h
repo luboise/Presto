@@ -55,6 +55,9 @@ namespace Presto {
         VkQueue _presentQueue;
         VkSurfaceKHR _surface;
 
+        VkCommandPool _commandPool;
+        VkCommandBuffer _commandBuffer;
+
         bool isDeviceSuitable(const VkPhysicalDevice& device);
         QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
 
@@ -69,6 +72,10 @@ namespace Presto {
         PR_RESULT createRenderPass();
         PR_RESULT createGraphicsPipeline();
         PR_RESULT createFrameBuffers();
+        PR_RESULT createCommandPool();
+        PR_RESULT createCommandBuffer();
+        PR_RESULT recordCommandBuffer(VkCommandBuffer commandBuffer,
+                                      uint32_t imageIndex);
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
