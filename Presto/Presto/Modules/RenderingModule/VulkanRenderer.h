@@ -45,6 +45,7 @@ namespace Presto {
 
         std::vector<VkImage> _swapchainImages;
         std::vector<VkImageView> _swapchainImageViews;
+        std::vector<VkFramebuffer> _swapchainFramebuffers;
 
         VkRenderPass _renderPass;
         VkPipelineLayout _pipelineLayout;
@@ -67,6 +68,7 @@ namespace Presto {
         PR_RESULT createImageViews();
         PR_RESULT createRenderPass();
         PR_RESULT createGraphicsPipeline();
+        PR_RESULT createFrameBuffers();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();

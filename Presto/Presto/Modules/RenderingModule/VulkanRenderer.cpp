@@ -53,10 +53,17 @@ namespace Presto {
         if (res == PR_SUCCESS) {
             res = this->createGraphicsPipeline();
         }
+        if (res == PR_SUCCESS) {
+            res = this->createFrameBuffers();
+        }
         this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
+        for (auto framebuffer : _swapchainFramebuffers) {
+            vkDestroyFramebuffer(_logicalDevice, framebuffer, nullptr);
+        }
+
         vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
         vkDestroyRenderPass(_logicalDevice, _renderPass, nullptr);
@@ -649,6 +656,34 @@ namespace Presto {
         // scissor.offset = {0, 0};
         // scissor.extent = _swapchainExtent;
     };
+
+    PR_RESULT VulkanRenderer::createFrameBuffers() {
+        // Get framebuffers from image view (?)
+        this->_swapchainFramebuffers.resize(_swapchainImageViews.size());
+
+        for (size_t i = 0; i < _swapchainImageViews.size(); i++) {
+            VkImageView attachments[] = {_swapchainImageViews[i]};
+
+            VkFramebufferCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            createInfo.renderPass = this->_renderPass;
+            createInfo.attachmentCount = 1;
+            createInfo.pAttachments = attachments;
+            createInfo.width = _swapchainExtent.width;
+            createInfo.height = _swapchainExtent.height;
+            createInfo.layers = 1;
+
+            auto res = vkCreateFramebuffer(_logicalDevice, &createInfo, nullptr,
+                                           &_swapchainFramebuffers[i]);
+
+            if (res != VK_SUCCESS) {
+                PR_CORE_CRITICAL("Unable to create framebuffer.");
+                return PR_FAILURE;
+            }
+        }
+
+                return PR_SUCCESS;
+    }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {
         auto indices = this->findQueueFamilies(device);
