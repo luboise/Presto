@@ -57,16 +57,26 @@ namespace Presto {
             res = this->createFrameBuffers();
         }
         if (res == PR_SUCCESS) {
-            PR_RESULT createCommandPool();
+            res = this->createCommandPool();
         }
         if (res == PR_SUCCESS) {
-            PR_RESULT createCommandBuffer();
+            res = this->createCommandBuffer();
+        }
+        if (res == PR_SUCCESS) {
+            res = this->createSyncObjects();
         }
 
         this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
+        // Ensure device is idle before cleaning up
+        vkDeviceWaitIdle(_logicalDevice);
+
+        vkDestroySemaphore(_logicalDevice, _imageAvailableSemaphore, nullptr);
+        vkDestroySemaphore(_logicalDevice, _renderFinishedSemaphore, nullptr);
+        vkDestroyFence(_logicalDevice, _inFlightFence, nullptr);
+
         vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
 
         for (auto framebuffer : _swapchainFramebuffers) {
@@ -461,6 +471,25 @@ namespace Presto {
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
 
+        // Use the implicit (previous) subpass as a dependency
+        VkSubpassDependency subpassDependency{};
+        subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+        // Index 0 is the only defined subpass
+        subpassDependency.dstSubpass = 0;
+
+        // THIS SUBPASS waits on color attachment stage before rendering to
+        // framebuffer
+        subpassDependency.srcStageMask =
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        subpassDependency.srcAccessMask = 0;
+
+        // OTHER (future) SUBPASSES wait on color attachment before
+        // transitioning to next subpass
+        subpassDependency.dstStageMask =
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        subpassDependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+        // Create the render pass info object
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 
@@ -469,6 +498,9 @@ namespace Presto {
 
         renderPassInfo.subpassCount = 1;
         renderPassInfo.pSubpasses = &subpass;
+        // Defines subpass transition behaviour
+        renderPassInfo.dependencyCount = 1;
+        renderPassInfo.pDependencies = &subpassDependency;
 
         auto res = vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
                                       &(this->_renderPass));
@@ -626,7 +658,7 @@ namespace Presto {
         createInfo.pDepthStencilState = nullptr;
         createInfo.pColorBlendState = &colorBlending;
         createInfo.pDynamicState = &dynamicState;
-        createInfo.pTessellationState = nullptr;
+        // createInfo.pTessellationState = nullptr;
 
         createInfo.layout = this->_pipelineLayout;
 
@@ -638,8 +670,8 @@ namespace Presto {
         createInfo.basePipelineIndex = -1;
 
         auto res =
-            vkCreateGraphicsPipelines(_logicalDevice, nullptr, 1, &createInfo,
-                                      nullptr, &_graphicsPipeline);
+            vkCreateGraphicsPipelines(_logicalDevice, VK_NULL_HANDLE, 1,
+                                      &createInfo, nullptr, &_graphicsPipeline);
 
         vkDestroyShaderModule(_logicalDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(_logicalDevice, vertShaderModule, nullptr);
@@ -716,13 +748,43 @@ namespace Presto {
         return PR_SUCCESS;
     }
 
+    PR_RESULT VulkanRenderer::createSyncObjects() {
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+
+        // Fence begins signalled to not block GPU
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+        auto res = vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
+                                     &_imageAvailableSemaphore);
+        if (res == VK_SUCCESS) {
+            res = vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
+                                    &_renderFinishedSemaphore);
+        }
+        if (res == VK_SUCCESS) {
+            res = vkCreateFence(_logicalDevice, &fenceInfo, nullptr,
+                                &_inFlightFence);
+        }
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to create sync objects.");
+            return PR_FAILURE;
+        }
+
+        return PR_SUCCESS;
+    }
+
     PR_RESULT VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
                                                   uint32_t imageIndex) {
+        VkResult res;
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.pInheritanceInfo = nullptr;
 
-        auto res = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
+        res = vkBeginCommandBuffer(commandBuffer, &beginInfo);
         if (res != VK_SUCCESS) {
             PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
         }
@@ -740,11 +802,11 @@ namespace Presto {
         renderPassInfo.pClearValues = &clearColor;
 
         // INLINE -> execute from primary buffers
-        vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo,
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
                              VK_SUBPASS_CONTENTS_INLINE);
 
         // Bind the command buffer to the pipeline
-        vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           _graphicsPipeline);
 
         // Set viewport
@@ -755,20 +817,20 @@ namespace Presto {
         viewport.height = static_cast<float>(_swapchainExtent.height);
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
         // Set scissor (cuts viewport)
         VkRect2D scissor{};
         scissor.offset = {0, 0};
         scissor.extent = _swapchainExtent;
-        vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
         const uint32_t vertices = 3;
-        vkCmdDraw(_commandBuffer, vertices, 1, 0, 0);
+        vkCmdDraw(commandBuffer, vertices, 1, 0, 0);
 
-        vkCmdEndRenderPass(_commandBuffer);
+        vkCmdEndRenderPass(commandBuffer);
 
-        auto res = vkEndCommandBuffer(_commandBuffer);
+        res = vkEndCommandBuffer(commandBuffer);
         if (res != VK_SUCCESS) {
             PR_CORE_CRITICAL("Failed to record command buffer!");
             return PR_FAILURE;
@@ -1065,6 +1127,79 @@ namespace Presto {
 
         // False as we dont want to cancel
         return VK_FALSE;
+    }
+
+    PR_RESULT VulkanRenderer::drawFrame() {
+        // Wait for previous frame (1 fence, wait all fences) then reset fence
+        // to unsignaled
+        vkWaitForFences(_logicalDevice, 1, &_inFlightFence, VK_TRUE,
+                        UINT64_MAX);
+        vkResetFences(_logicalDevice, 1, &_inFlightFence);
+
+        // Acquire image from swap chain to draw into
+        uint32_t imageIndex;
+        vkAcquireNextImageKHR(_logicalDevice, _swapchain, UINT64_MAX,
+                              _imageAvailableSemaphore, VK_NULL_HANDLE,
+                              &imageIndex);
+
+        // Reset, then record command buffer which draws our scene into the
+        // image
+        vkResetCommandBuffer(_commandBuffer, 0);
+        this->recordCommandBuffer(_commandBuffer, imageIndex);
+
+        // Which semaphores to wait on to draw
+        VkSemaphore waitSemaphores[] = {_imageAvailableSemaphore};
+        VkPipelineStageFlags waitStages[] = {
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+        // Signalled by submit queue
+        VkSemaphore signalSemaphores[] = {_renderFinishedSemaphore};
+
+        // Submit instructions (waits for waitSemaphores)
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = waitSemaphores;
+        // Which pipeline stages wait (want colour attachment to wait until
+        // buffer available)
+        submitInfo.pWaitDstStageMask = waitStages;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &_commandBuffer;
+
+        // Triggers these signals when finished
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = signalSemaphores;
+
+        // Presentation instructions (waits for signalSemaphores)
+        VkPresentInfoKHR presentInfo{};
+        presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+        presentInfo.waitSemaphoreCount = 1;
+        presentInfo.pWaitSemaphores = signalSemaphores;
+
+        // Which swapchains to draw to, and which image for each chain
+        presentInfo.swapchainCount = 1;
+        VkSwapchainKHR swapchains[] = {_swapchain};
+
+        // presentInfo.pSwapchains = &_swapchain;
+        presentInfo.pSwapchains = swapchains;
+        presentInfo.pImageIndices = &imageIndex;
+
+        VkResult res;
+
+        res = vkQueueSubmit(_graphicsQueue, 1, &submitInfo, _inFlightFence);
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to submit command buffer to GPU.");
+            return PR_FAILURE;
+        }
+
+        res = vkQueuePresentKHR(_presentQueue, &presentInfo);
+        if (res != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to present new frame from queue.");
+            return PR_FAILURE;
+        }
+        return PR_SUCCESS;
+
+        // Present swap chain image
     }
 
 }  // namespace Presto

@@ -151,7 +151,7 @@ namespace Presto {
 
     void WindowsWindow::OnUpdate() {
         glfwPollEvents();
-        glfwSwapBuffers(glfw_window);
+        _renderer->drawFrame();
     }
 
     void WindowsWindow::SetVSync(bool vsync) {

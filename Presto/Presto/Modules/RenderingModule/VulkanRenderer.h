@@ -31,6 +31,8 @@ namespace Presto {
         virtual void Init();
         virtual void Shutdown();
 
+        PR_RESULT drawFrame();
+
        private:
         GLFWwindow* _glfwWindow;
 
@@ -58,6 +60,10 @@ namespace Presto {
         VkCommandPool _commandPool;
         VkCommandBuffer _commandBuffer;
 
+        VkSemaphore _imageAvailableSemaphore;
+        VkSemaphore _renderFinishedSemaphore;
+        VkFence _inFlightFence;
+
         bool isDeviceSuitable(const VkPhysicalDevice& device);
         QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
 
@@ -74,6 +80,8 @@ namespace Presto {
         PR_RESULT createFrameBuffers();
         PR_RESULT createCommandPool();
         PR_RESULT createCommandBuffer();
+        PR_RESULT createSyncObjects();
+
         PR_RESULT recordCommandBuffer(VkCommandBuffer commandBuffer,
                                       uint32_t imageIndex);
 

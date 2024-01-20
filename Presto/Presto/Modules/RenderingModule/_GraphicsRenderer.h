@@ -5,8 +5,7 @@
 
 namespace Presto {
     class PRESTO_API RenderingModule : public Module {
-        //    public:
-        //     virtual void Init() = 0;
-        //     virtual void Shutdown() = 0;
+       public:
+        virtual PR_RESULT drawFrame() = 0;
     };
 }  // namespace Presto
