@@ -6,7 +6,7 @@ PUBLIC	Module.h
 PRIVATE RenderingModule/VulkanRenderer.cpp
 
 PUBLIC	ResourcesModule/ResourceManager.h
-		ResourcesModule/ResourceManager.cpp
+PRIVATE	ResourcesModule/ResourceManager.cpp
 )
 
 target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

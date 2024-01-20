@@ -48,6 +48,7 @@ namespace Presto {
 
         VkRenderPass _renderPass;
         VkPipelineLayout _pipelineLayout;
+        VkPipeline _graphicsPipeline;
 
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;

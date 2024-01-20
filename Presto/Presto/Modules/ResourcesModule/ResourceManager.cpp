@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <vector>
+#include <filesystem>
 
 namespace Presto {
     ResourceManager::ResourceManager() { this->Init(); }
@@ -10,6 +11,7 @@ namespace Presto {
 
     std::vector<char> ResourceManager::readFile(const std::string& filename) {
         // ate <-> start at end of file
+        PR_CORE_TRACE(std::filesystem::current_path().string());
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {

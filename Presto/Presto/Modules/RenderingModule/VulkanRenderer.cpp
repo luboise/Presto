@@ -103,6 +103,9 @@ namespace Presto {
 
     VkShaderModule VulkanRenderer::createShaderModule(
         const std::vector<char>& code) {
+        PR_ASSERT(code.size() > 0,
+                  "Attempted to create a shader from an empty code vector.");
+
         VkShaderModuleCreateInfo createInfo{};
 
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -452,14 +455,17 @@ namespace Presto {
 
         auto res = vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
                                       &(this->_renderPass));
+        if (res != VK_SUCCESS) {
+            PR_CORE_ERROR("Unable to create render pass.");
+            return PR_FAILURE;
+        }
+
+        return PR_SUCCESS;
     }
 
     PR_RESULT VulkanRenderer::createGraphicsPipeline() {
-        VkGraphicsPipelineCreateInfo createInfo{};
-
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 
         auto vertShaderCode = ResourceManager::readFile("shaders/vert.spv");
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
@@ -482,9 +488,7 @@ namespace Presto {
         VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo,
                                                           fragShaderStageInfo};
 
-        createInfo.stageCount = 2;
-        createInfo.pStages = shaderStages;
-
+        // Vertex input info (VBO/VBA)
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -493,15 +497,13 @@ namespace Presto {
         vertexInputInfo.vertexAttributeDescriptionCount = 0;
         vertexInputInfo.pVertexAttributeDescriptions = nullptr;
 
-        createInfo.pVertexInputState = &vertexInputInfo;
+        // Input assembly (first stage)
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
         inputAssembly.sType =
             VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
-
-        createInfo.pInputAssemblyState = &inputAssembly;
 
         // Dynamic stages (can define later at render time)
         std::vector<VkDynamicState> dynamicStages = {VK_DYNAMIC_STATE_VIEWPORT,
@@ -513,16 +515,12 @@ namespace Presto {
             static_cast<uint32_t>(dynamicStages.size());
         dynamicState.pDynamicStates = dynamicStages.data();
 
-        createInfo.pDynamicState = &dynamicState;
-
         // Viewport
         VkPipelineViewportStateCreateInfo viewportState{};
         viewportState.sType =
             VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
         viewportState.viewportCount = 1;
         viewportState.scissorCount = 1;
-
-        createInfo.pViewportState = &viewportState;
 
         // Rasteriser
         VkPipelineRasterizationStateCreateInfo rasterizer{};
@@ -547,8 +545,6 @@ namespace Presto {
         rasterizer.depthBiasClamp = 0.0f;           // Optional
         rasterizer.depthBiasSlopeFactor = 0.0f;     // Optional
 
-        createInfo.pRasterizationState = &rasterizer;
-
         // Multisampling (currently disabled)
         VkPipelineMultisampleStateCreateInfo multisampling{};
         multisampling.sType =
@@ -559,8 +555,6 @@ namespace Presto {
         multisampling.pSampleMask = nullptr;             // Optional
         multisampling.alphaToCoverageEnable = VK_FALSE;  // Optional
         multisampling.alphaToOneEnable = VK_FALSE;       // Optional
-
-        createInfo.pMultisampleState = &multisampling;
 
         // Color blending options
         VkPipelineColorBlendAttachmentState colorBlendAttachment{};
@@ -585,7 +579,7 @@ namespace Presto {
             VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         colorBlending.logicOpEnable = VK_FALSE;
         colorBlending.attachmentCount = 1;
-        createInfo.pColorBlendState = &colorBlending;
+        colorBlending.pAttachments = &colorBlendAttachment;
 
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType =
@@ -596,43 +590,63 @@ namespace Presto {
         pipelineLayoutInfo.pushConstantRangeCount = 0;     // Optional
         pipelineLayoutInfo.pPushConstantRanges = nullptr;  // Optional
 
-        auto res = vkCreatePipelineLayout(_logicalDevice, &pipelineLayoutInfo,
-                                          nullptr, &_pipelineLayout);
-
-        if (res != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(_logicalDevice, &pipelineLayoutInfo, nullptr,
+                                   &_pipelineLayout) != VK_SUCCESS) {
             PR_CORE_ERROR("Unable to create graphics pipeline layout.");
             return PR_FAILURE;
         }
+
+        VkGraphicsPipelineCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        createInfo.stageCount = 2;
+        createInfo.pStages = shaderStages;
+
+        createInfo.pVertexInputState = &vertexInputInfo;
+        createInfo.pInputAssemblyState = &inputAssembly;
+        createInfo.pViewportState = &viewportState;
+        createInfo.pRasterizationState = &rasterizer;
+        createInfo.pMultisampleState = &multisampling;
+        createInfo.pDepthStencilState = nullptr;
+        createInfo.pColorBlendState = &colorBlending;
+        createInfo.pDynamicState = &dynamicState;
+        createInfo.pTessellationState = nullptr;
+
         createInfo.layout = this->_pipelineLayout;
 
-        VkRenderPass renderPass;
-        uint32_t subpass;
-        VkPipeline basePipelineHandle;
-        int32_t basePipelineIndex;
+        createInfo.renderPass = this->_renderPass;
+        createInfo.subpass = 0;
 
-        // VkPipelineCreateFlags = flags;
-        createInfo.pDepthStencilState = nullptr;
-        createInfo.pTessellationState = nullptr;
-        VkPipeline pipeline;
-        vkCreateGraphicsPipelines(_logicalDevice, nullptr, 2, &shaderStages,
-                                  nullptr, &pipeline);
+        // Use when deriving from another pipeline
+        createInfo.basePipelineHandle = VK_NULL_HANDLE;
+        createInfo.basePipelineIndex = -1;
+
+        auto res =
+            vkCreateGraphicsPipelines(_logicalDevice, nullptr, 1, &createInfo,
+                                      nullptr, &_graphicsPipeline);
 
         vkDestroyShaderModule(_logicalDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(_logicalDevice, vertShaderModule, nullptr);
 
-        // STORE
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = (float)_swapchainExtent.width;
-        viewport.height = (float)_swapchainExtent.height;
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
+        if (res != VK_SUCCESS) {
+            PR_CORE_ERROR("Unable to create graphics pipeline.");
+            return PR_FAILURE;
+        }
 
-        // Want size thats >= viewport, so it doesn't cut it off at all
-        VkRect2D scissor{};
-        scissor.offset = {0, 0};
-        scissor.extent = _swapchainExtent;
+        return PR_SUCCESS;
+
+        // // STORE
+        // VkViewport viewport{};
+        // viewport.x = 0.0f;
+        // viewport.y = 0.0f;
+        // viewport.width = (float)_swapchainExtent.width;
+        // viewport.height = (float)_swapchainExtent.height;
+        // viewport.minDepth = 0.0f;
+        // viewport.maxDepth = 1.0f;
+
+        // // Want size thats >= viewport, so it doesn't cut it off at all
+        // VkRect2D scissor{};
+        // scissor.offset = {0, 0};
+        // scissor.extent = _swapchainExtent;
     };
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {
