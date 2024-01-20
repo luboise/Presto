@@ -57,6 +57,7 @@ namespace Presto {
     }
 
     void VulkanRenderer::Shutdown() {
+        vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
         vkDestroyRenderPass(_logicalDevice, _renderPass, nullptr);
 
