@@ -43,10 +43,17 @@ namespace Presto {
         if (res == PR_SUCCESS) {
             res = this->createSwapChain();
         }
+        if (res == PR_SUCCESS) {
+            res = this->createImageViews();
+        }
         this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
+        for (auto imageView : _swapchainImageViews) {
+            vkDestroyImageView(_logicalDevice, imageView, nullptr);
+        }
+
         vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
         _swapchain = nullptr;
 
@@ -332,6 +339,45 @@ namespace Presto {
 
         this->_swapchainImageFormat = surfaceFormat.format;
         this->_swapchainExtent = swapExtent;
+
+        return PR_SUCCESS;
+    }
+
+    PR_RESULT VulkanRenderer::createImageViews() {
+        _swapchainImageViews.resize(_swapchainImages.size());
+
+        for (size_t i = 0; i < _swapchainImages.size(); i++) {
+            VkImageViewCreateInfo createInfo{};
+
+            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            createInfo.image = _swapchainImages[i];
+
+            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            createInfo.format = _swapchainImageFormat;
+
+            // DONT swap any colour channels
+            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+            // Using image for colour, and no mipmapping
+            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+            createInfo.subresourceRange.baseMipLevel = 0;
+            createInfo.subresourceRange.levelCount = 1;
+            createInfo.subresourceRange.baseArrayLayer = 0;
+            createInfo.subresourceRange.layerCount = 1;
+
+            VkResult res =
+                vkCreateImageView(_logicalDevice, &createInfo, nullptr,
+                                  &(_swapchainImageViews[i]));
+
+            if (res != VK_SUCCESS) {
+                PR_CORE_CRITICAL("Failed to create image views.");
+                return PR_FAILURE;
+            }
+        };
 
         return PR_SUCCESS;
     }

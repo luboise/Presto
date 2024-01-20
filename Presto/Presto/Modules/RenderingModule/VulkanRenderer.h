@@ -40,9 +40,11 @@ namespace Presto {
         VkDevice _logicalDevice;
 
         VkSwapchainKHR _swapchain = VK_NULL_HANDLE;
-        std::vector<VkImage> _swapchainImages;
         VkFormat _swapchainImageFormat;
         VkExtent2D _swapchainExtent;
+
+        std::vector<VkImage> _swapchainImages;
+        std::vector<VkImageView> _swapchainImageViews;
 
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
@@ -58,6 +60,7 @@ namespace Presto {
         PR_RESULT pickPhysicalDevice();
         PR_RESULT createLogicalDevice();
         PR_RESULT createSwapChain();
+        PR_RESULT createImageViews();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
