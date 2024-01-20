@@ -1,8 +1,12 @@
 target_sources(Presto
-PUBLIC	RenderingModule/_GraphicsRenderer.h
+PUBLIC	Module.h
+		RenderingModule/_GraphicsRenderer.h
 		# RenderingModule/_GraphicsRenderer.cpp
-PUBLIC	RenderingModule/VulkanRenderer.h
+		RenderingModule/VulkanRenderer.h
 PRIVATE RenderingModule/VulkanRenderer.cpp
-PUBLIC	Module.h)
+
+PUBLIC	ResourcesModule/ResourceManager.h
+		ResourcesModule/ResourceManager.cpp
+)
 
 target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -46,6 +46,9 @@ namespace Presto {
         std::vector<VkImage> _swapchainImages;
         std::vector<VkImageView> _swapchainImageViews;
 
+        VkRenderPass _renderPass;
+        VkPipelineLayout _pipelineLayout;
+
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
         VkSurfaceKHR _surface;
@@ -61,17 +64,18 @@ namespace Presto {
         PR_RESULT createLogicalDevice();
         PR_RESULT createSwapChain();
         PR_RESULT createImageViews();
+        PR_RESULT createRenderPass();
+        PR_RESULT createGraphicsPipeline();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
-
-        void populateDebugMessengerCreateInfo(
-            VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
         std::vector<const char*> getRequiredExtensions();
         bool checkValidationLayerSupport();
         bool checkDeviceExtensionSupport(const VkPhysicalDevice& device) const;
         void initialiseVulkanExtensions();
+
+        VkShaderModule createShaderModule(const std::vector<char>& code);
 
         SwapChainSupportDetails querySwapChainSupport(
             VkPhysicalDevice device) const;
@@ -84,6 +88,9 @@ namespace Presto {
 
         VkExtent2D chooseSwapExtent(
             const VkSurfaceCapabilitiesKHR& capabilities);
+
+        void populateDebugMessengerCreateInfo(
+            VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
         // Ping Vulkan for creation function
         static VkResult CreateDebugUtilsMessengerEXT(
