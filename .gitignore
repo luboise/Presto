@@ -1,7 +1,8 @@
+# Build files
 .vs/
 /bin/
 /bin-int/
-
+*.spv
 
 
 

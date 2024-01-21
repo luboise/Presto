@@ -14,3 +14,8 @@ target_include_directories(Presto PUBLIC include)
 target_sources(Presto PRIVATE include/Presto.h)
 
 add_subdirectory(Presto)
+
+include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
+
+# Set the source and build directories
+CompileShadersForTarget(Presto ${CMAKE_CURRENT_SOURCE_DIR}/Presto/Shaders)

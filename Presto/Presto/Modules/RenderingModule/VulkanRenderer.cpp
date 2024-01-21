@@ -516,7 +516,8 @@ namespace Presto {
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 
-        auto vertShaderCode = ResourceManager::readFile("shaders/vert.spv");
+        auto vertShaderCode =
+            ResourceManager::readFile("shaders/core/basic_triangle_vert.spv");
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
         vertShaderStageInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -525,7 +526,8 @@ namespace Presto {
         vertShaderStageInfo.pName = "main";
         // Entrypoint of shader ^
 
-        auto fragShaderCode = ResourceManager::readFile("shaders/frag.spv");
+        auto fragShaderCode =
+            ResourceManager::readFile("shaders/core/basic_triangle_frag.spv");
         VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
         fragShaderStageInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -1162,6 +1164,7 @@ namespace Presto {
         // Which pipeline stages wait (want colour attachment to wait until
         // buffer available)
         submitInfo.pWaitDstStageMask = waitStages;
+
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &_commandBuffer;
 

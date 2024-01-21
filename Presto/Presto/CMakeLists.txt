@@ -17,5 +17,3 @@ target_include_directories(Presto
 target_sources(Presto
 	PRIVATE Application.cpp Application.h Core.h EntryPoint.h InputManager.cpp InputManager.h Log.h Log.cpp prpch.cpp prpch.h Window.h
 )
-
-# target_include_header(Presto PRIVATE prpch.h)
