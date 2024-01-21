@@ -4,6 +4,10 @@ PUBLIC	Module.h
 		# RenderingModule/_GraphicsRenderer.cpp
 		RenderingModule/VulkanRenderer.h
 PRIVATE RenderingModule/VulkanRenderer.cpp
+		RenderingModule/VulkanRenderer_draw.cpp
+		RenderingModule/VulkanRenderer_validation.cpp
+		RenderingModule/VulkanRenderer_init.cpp
+		RenderingModule/VulkanRenderer_shading.cpp
 
 PUBLIC	ResourcesModule/ResourceManager.h
 PRIVATE	ResourcesModule/ResourceManager.cpp

@@ -7,6 +7,17 @@
 #include <optional>
 
 namespace Presto {
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
+
+    const std::vector<const char*> extensionList = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    const std::vector<const char*> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"};
+
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
@@ -93,7 +104,10 @@ namespace Presto {
         bool checkDeviceExtensionSupport(const VkPhysicalDevice& device) const;
         void initialiseVulkanExtensions();
 
+        VkShaderModule createShaderModule(const std::string& filepath);
         VkShaderModule createShaderModule(const std::vector<char>& code);
+
+        VkPipelineRasterizationStateCreateInfo makeRasterizerInfo();
 
         SwapChainSupportDetails querySwapChainSupport(
             VkPhysicalDevice device) const;
@@ -106,6 +120,8 @@ namespace Presto {
 
         VkExtent2D chooseSwapExtent(
             const VkSurfaceCapabilitiesKHR& capabilities);
+
+        // Validation functions
 
         void populateDebugMessengerCreateInfo(
             VkDebugUtilsMessengerCreateInfoEXT& createInfo);

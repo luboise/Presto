@@ -1,21 +1,28 @@
 #include "ResourceManager.h"
 
+#include <filesystem>
 #include <fstream>
 #include <vector>
-#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace Presto {
+    // const fs::path executableDirectory =
+    // fs::absolute(fs::path(argv[0])).parent_path();
+
+    const fs::path executableDirectory = std::filesystem::current_path();
+
     ResourceManager::ResourceManager() { this->Init(); }
 
     ResourceManager::~ResourceManager() {}
 
     std::vector<char> ResourceManager::readFile(const std::string& filename) {
         // ate <-> start at end of file
-        PR_CORE_TRACE(std::filesystem::current_path().string());
-        std::ifstream file(filename, std::ios::ate | std::ios::binary);
+        auto filepath = executableDirectory / fs::path(filename);
+        PR_CORE_TRACE(filepath.generic_string());
+        std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
-            PR_CORE_ERROR("Unable to load file \"{}\"", filename);
+            PR_CORE_ERROR("Unable to load file \"{}\"", filepath.string());
             return std::vector<char>(0);
         }
 
