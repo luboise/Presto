@@ -68,19 +68,19 @@ namespace Presto {
         QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
 
         // High level init functions
-        PR_RESULT createInstance();
-        PR_RESULT setupDebugMessenger();
-        PR_RESULT createSurface();
-        PR_RESULT pickPhysicalDevice();
-        PR_RESULT createLogicalDevice();
-        PR_RESULT createSwapChain();
-        PR_RESULT createImageViews();
-        PR_RESULT createRenderPass();
-        PR_RESULT createGraphicsPipeline();
-        PR_RESULT createFrameBuffers();
-        PR_RESULT createCommandPool();
-        PR_RESULT createCommandBuffer();
-        PR_RESULT createSyncObjects();
+        void createInstance();
+        void setupDebugMessenger();
+        void createSurface();
+        void pickPhysicalDevice();
+        void createLogicalDevice();
+        void createSwapChain();
+        void createImageViews();
+        void createRenderPass();
+        void createGraphicsPipeline();
+        void createFrameBuffers();
+        void createCommandPool();
+        void createCommandBuffer();
+        void createSyncObjects();
 
         PR_RESULT recordCommandBuffer(VkCommandBuffer commandBuffer,
                                       uint32_t imageIndex);

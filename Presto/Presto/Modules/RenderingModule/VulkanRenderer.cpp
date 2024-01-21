@@ -27,46 +27,27 @@ namespace Presto {
     };
 
     void VulkanRenderer::Init() {
-        PR_RESULT res;
-        res = this->createInstance();
-        if (res == PR_SUCCESS) {
-            res = this->setupDebugMessenger();
+        this->_initialised = true;
+        try {
+            this->createInstance();
+            this->setupDebugMessenger();
+            this->createSurface();
+            this->pickPhysicalDevice();
+            this->createLogicalDevice();
+            this->createSwapChain();
+            this->createImageViews();
+            this->createRenderPass();
+            this->createGraphicsPipeline();
+            this->createFrameBuffers();
+            this->createCommandPool();
+            this->createCommandBuffer();
+            this->createSyncObjects();
+        } catch (const std::runtime_error& e) {
+            PR_CORE_ASSERT(
+                "Unable to initialise Vulkan renderer. Runtime error: {}",
+                e.what());
+            this->_initialised = false;
         }
-        if (res == PR_SUCCESS) {
-            res = this->createSurface();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->pickPhysicalDevice();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createLogicalDevice();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createSwapChain();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createImageViews();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createRenderPass();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createGraphicsPipeline();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createFrameBuffers();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createCommandPool();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createCommandBuffer();
-        }
-        if (res == PR_SUCCESS) {
-            res = this->createSyncObjects();
-        }
-
-        this->_initialised = (res == PR_SUCCESS) ? true : false;
     }
 
     void VulkanRenderer::Shutdown() {
@@ -141,12 +122,14 @@ namespace Presto {
 
         VkShaderModule shaderModule;
 
-        auto res = vkCreateShaderModule(_logicalDevice, &createInfo, nullptr,
-                                        &shaderModule);
+        if (vkCreateShaderModule(_logicalDevice, &createInfo, nullptr,
+                                 &shaderModule) != VK_SUCCESS) {
+            std::stringstream ss;
 
-        if (res != VK_SUCCESS) {
-            PR_CORE_ERROR("Failed to create shader module of size {}",
-                          code.size());
+            ss << "Failed to create shader module of size " << code.size()
+               << ".";
+
+            throw std::runtime_error(ss.str());
         }
 
         return shaderModule;
@@ -247,9 +230,11 @@ namespace Presto {
         return availableFormats[0];
     }
 
-    PR_RESULT VulkanRenderer::createInstance() {
+    void VulkanRenderer::createInstance() {
         if (enableValidationLayers && !checkValidationLayerSupport()) {
-            return PR_FAILURE;
+            throw std::runtime_error(
+                "Validation layers not supported, but checks for validation "
+                "layers are on.");
         }
 
         // Instance info return object
@@ -284,37 +269,32 @@ namespace Presto {
         createInfo.pApplicationInfo = &appInfo;
 
         // Create and check instance
-        VkResult result =
-            vkCreateInstance(&createInfo, nullptr, &(this->_instance));
-
-        PR_ASSERT(result == VK_SUCCESS, "Unable to create Vulkan instance.");
-
+        if (vkCreateInstance(&createInfo, nullptr, &(this->_instance)) !=
+            VK_SUCCESS) {
+            throw std::runtime_error("Unable to create Vulkan instance.");
+        }
         PR_CORE_INFO("Created Vulkan instance.");
-
-        PR_RESULT pr_result = (result == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
-        return pr_result;
     }
-    PR_RESULT VulkanRenderer::setupDebugMessenger() {
-        if (!enableValidationLayers) return PR_SUCCESS;
+    void VulkanRenderer::setupDebugMessenger() {
+        // Return if no validation layers
+        if (!enableValidationLayers) return;
 
         VkDebugUtilsMessengerCreateInfoEXT createInfo{};
         populateDebugMessengerCreateInfo(createInfo);
 
-        auto res = CreateDebugUtilsMessengerEXT(
-            this->_instance, &createInfo, nullptr, &this->_debugMessenger);
-
-        return (res == VK_SUCCESS) ? PR_SUCCESS : PR_FAILURE;
-    }
-    PR_RESULT VulkanRenderer::createSurface() {
-        if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
-                                    &_surface) != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Failed to create window surface.");
-            return PR_FAILURE;
-        } else {
-            return PR_SUCCESS;
+        if (CreateDebugUtilsMessengerEXT(this->_instance, &createInfo, nullptr,
+                                         &this->_debugMessenger) !=
+            VK_SUCCESS) {
+            throw std::runtime_error("Unable to create debug utils messenger.");
         }
     }
-    PR_RESULT VulkanRenderer::createSwapChain() {
+    void VulkanRenderer::createSurface() {
+        if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
+                                    &_surface) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create window surface.");
+        }
+    }
+    void VulkanRenderer::createSwapChain() {
         SwapChainSupportDetails swapChainSupport =
             querySwapChainSupport(this->_physicalDevice);
 
@@ -384,12 +364,9 @@ namespace Presto {
         // No old swapchain exists
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        auto res = vkCreateSwapchainKHR(this->_logicalDevice, &createInfo,
-                                        nullptr, &(this->_swapchain));
-
-        if (res != PR_SUCCESS) {
-            PR_CORE_CRITICAL("Unable to create Vulkan swapchain.");
-            return PR_FAILURE;
+        if (vkCreateSwapchainKHR(this->_logicalDevice, &createInfo, nullptr,
+                                 &(this->_swapchain)) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create Vulkan swapchain.");
         }
 
         vkGetSwapchainImagesKHR(this->_logicalDevice, this->_swapchain,
@@ -400,10 +377,8 @@ namespace Presto {
 
         this->_swapchainImageFormat = surfaceFormat.format;
         this->_swapchainExtent = swapExtent;
-
-        return PR_SUCCESS;
     }
-    PR_RESULT VulkanRenderer::createImageViews() {
+    void VulkanRenderer::createImageViews() {
         _swapchainImageViews.resize(_swapchainImages.size());
 
         for (size_t i = 0; i < _swapchainImages.size(); i++) {
@@ -429,20 +404,14 @@ namespace Presto {
             createInfo.subresourceRange.baseArrayLayer = 0;
             createInfo.subresourceRange.layerCount = 1;
 
-            VkResult res =
-                vkCreateImageView(_logicalDevice, &createInfo, nullptr,
-                                  &(_swapchainImageViews[i]));
-
-            if (res != VK_SUCCESS) {
-                PR_CORE_CRITICAL("Failed to create image views.");
-                return PR_FAILURE;
+            if (vkCreateImageView(_logicalDevice, &createInfo, nullptr,
+                                  &(_swapchainImageViews[i])) != VK_SUCCESS) {
+                throw std::runtime_error("Unable to create image views.");
             }
         };
-
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createRenderPass() {
+    void VulkanRenderer::createRenderPass() {
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = _swapchainImageFormat;
 
@@ -502,17 +471,13 @@ namespace Presto {
         renderPassInfo.dependencyCount = 1;
         renderPassInfo.pDependencies = &subpassDependency;
 
-        auto res = vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
-                                      &(this->_renderPass));
-        if (res != VK_SUCCESS) {
-            PR_CORE_ERROR("Unable to create render pass.");
-            return PR_FAILURE;
+        if (vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
+                               &(this->_renderPass)) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create render pass.");
         }
-
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createGraphicsPipeline() {
+    void VulkanRenderer::createGraphicsPipeline() {
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 
@@ -643,8 +608,8 @@ namespace Presto {
 
         if (vkCreatePipelineLayout(_logicalDevice, &pipelineLayoutInfo, nullptr,
                                    &_pipelineLayout) != VK_SUCCESS) {
-            PR_CORE_ERROR("Unable to create graphics pipeline layout.");
-            return PR_FAILURE;
+            throw std::runtime_error(
+                "Unable to create graphics pipeline layout.");
         }
 
         VkGraphicsPipelineCreateInfo createInfo{};
@@ -679,14 +644,11 @@ namespace Presto {
         vkDestroyShaderModule(_logicalDevice, vertShaderModule, nullptr);
 
         if (res != VK_SUCCESS) {
-            PR_CORE_ERROR("Unable to create graphics pipeline.");
-            return PR_FAILURE;
+            throw std::runtime_error("Unable to create graphics pipeline.");
         }
-
-        return PR_SUCCESS;
     };
 
-    PR_RESULT VulkanRenderer::createFrameBuffers() {
+    void VulkanRenderer::createFrameBuffers() {
         // Get framebuffers from image view (?)
         this->_swapchainFramebuffers.resize(_swapchainImageViews.size());
 
@@ -702,19 +664,14 @@ namespace Presto {
             createInfo.height = _swapchainExtent.height;
             createInfo.layers = 1;
 
-            auto res = vkCreateFramebuffer(_logicalDevice, &createInfo, nullptr,
-                                           &_swapchainFramebuffers[i]);
-
-            if (res != VK_SUCCESS) {
-                PR_CORE_CRITICAL("Unable to create framebuffer.");
-                return PR_FAILURE;
+            if (vkCreateFramebuffer(_logicalDevice, &createInfo, nullptr,
+                                    &_swapchainFramebuffers[i]) != VK_SUCCESS) {
+                throw std::runtime_error("Unable to create framebuffer.");
             }
         }
-
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createCommandPool() {
+    void VulkanRenderer::createCommandPool() {
         QueueFamilyIndices familyIndices = findQueueFamilies(_physicalDevice);
 
         VkCommandPoolCreateInfo createInfo{};
@@ -723,16 +680,13 @@ namespace Presto {
         createInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         createInfo.queueFamilyIndex = familyIndices.graphicsFamily.value();
 
-        auto res = vkCreateCommandPool(_logicalDevice, &createInfo, nullptr,
-                                       &_commandPool);
-        if (res != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Unable to create command pool.");
-            return PR_FAILURE;
+        if (vkCreateCommandPool(_logicalDevice, &createInfo, nullptr,
+                                &_commandPool) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create command pool.");
         }
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createCommandBuffer() {
+    void VulkanRenderer::createCommandBuffer() {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = _commandPool;
@@ -740,17 +694,13 @@ namespace Presto {
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = 1;
 
-        auto res = vkAllocateCommandBuffers(_logicalDevice, &allocInfo,
-                                            &_commandBuffer);
-
-        if (res != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Unable to create command buffer(s).");
-            return PR_FAILURE;
+        if (vkAllocateCommandBuffers(_logicalDevice, &allocInfo,
+                                     &_commandBuffer) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create command buffer(s).");
         }
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createSyncObjects() {
+    void VulkanRenderer::createSyncObjects() {
         VkSemaphoreCreateInfo semaphoreInfo{};
         semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -760,35 +710,29 @@ namespace Presto {
         // Fence begins signalled to not block GPU
         fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-        auto res = vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
-                                     &_imageAvailableSemaphore);
-        if (res == VK_SUCCESS) {
-            res = vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
-                                    &_renderFinishedSemaphore);
+        if (vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
+                              &_imageAvailableSemaphore) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create semaphore.");
         }
-        if (res == VK_SUCCESS) {
-            res = vkCreateFence(_logicalDevice, &fenceInfo, nullptr,
-                                &_inFlightFence);
+        if (vkCreateSemaphore(_logicalDevice, &semaphoreInfo, nullptr,
+                              &_renderFinishedSemaphore) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create semaphore.");
         }
-        if (res != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Failed to create sync objects.");
-            return PR_FAILURE;
+        if (vkCreateFence(_logicalDevice, &fenceInfo, nullptr,
+                          &_inFlightFence) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create semaphore.");
         }
-
-        return PR_SUCCESS;
     }
 
     PR_RESULT VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
                                                   uint32_t imageIndex) {
-        VkResult res;
-
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.pInheritanceInfo = nullptr;
 
-        res = vkBeginCommandBuffer(commandBuffer, &beginInfo);
-        if (res != VK_SUCCESS) {
+        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
             PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
+            return PR_FAILURE;
         }
 
         VkRenderPassBeginInfo renderPassInfo{};
@@ -832,8 +776,7 @@ namespace Presto {
 
         vkCmdEndRenderPass(commandBuffer);
 
-        res = vkEndCommandBuffer(commandBuffer);
-        if (res != VK_SUCCESS) {
+        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
             PR_CORE_CRITICAL("Failed to record command buffer!");
             return PR_FAILURE;
         }
@@ -894,15 +837,14 @@ namespace Presto {
         return indices;
     }
 
-    PR_RESULT VulkanRenderer::pickPhysicalDevice() {
+    void VulkanRenderer::pickPhysicalDevice() {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(this->_instance, &deviceCount, nullptr);
 
         if (deviceCount == 0) {
-            PR_CORE_CRITICAL(
+            throw std::runtime_error(
                 "Unable to find a Vulkan compatible graphics "
                 "device.");
-            return PR_FAILURE;
         }
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -918,14 +860,11 @@ namespace Presto {
         }
 
         if (this->_physicalDevice == VK_NULL_HANDLE) {
-            PR_CORE_CRITICAL("No suitable graphics device found.");
-            return PR_FAILURE;
+            throw std::runtime_error("No suitable graphics device found.");
         }
-
-        return PR_SUCCESS;
     }
 
-    PR_RESULT VulkanRenderer::createLogicalDevice() {
+    void VulkanRenderer::createLogicalDevice() {
         QueueFamilyIndices indices = findQueueFamilies(_physicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -978,16 +917,13 @@ namespace Presto {
 
         if (vkCreateDevice(_physicalDevice, &createInfo, nullptr,
                            &_logicalDevice) != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Unable to create logical device.");
-            return PR_FAILURE;
+            throw std::runtime_error("Unable to create logical device.");
         }
 
         vkGetDeviceQueue(_logicalDevice, indices.graphicsFamily.value(), 0,
                          &_graphicsQueue);
         vkGetDeviceQueue(_logicalDevice, indices.presentFamily.value(), 0,
                          &_presentQueue);
-
-        return PR_SUCCESS;
     }
 
     VkPresentModeKHR VulkanRenderer::chooseSwapPresentMode(
