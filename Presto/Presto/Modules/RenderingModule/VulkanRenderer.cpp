@@ -517,7 +517,7 @@ namespace Presto {
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 
         auto vertShaderCode =
-            ResourceManager::readFile("shaders/core/basic_triangle_vert.spv");
+            ResourceManager::readFile("Shaders/Core/basic_triangle_vert.spv");
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
         vertShaderStageInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -527,7 +527,7 @@ namespace Presto {
         // Entrypoint of shader ^
 
         auto fragShaderCode =
-            ResourceManager::readFile("shaders/core/basic_triangle_frag.spv");
+            ResourceManager::readFile("Shaders/Core/basic_triangle_frag.spv");
         VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
         fragShaderStageInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
