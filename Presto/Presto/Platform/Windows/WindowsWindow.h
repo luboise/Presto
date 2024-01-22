@@ -24,6 +24,8 @@ namespace Presto {
         bool IsVSyncEnabled() override;
 
        private:
+        double _glfwTime;
+
         virtual void Init(const WindowProperties& props);
         virtual void SetCallbacks();
         virtual void Shutdown();

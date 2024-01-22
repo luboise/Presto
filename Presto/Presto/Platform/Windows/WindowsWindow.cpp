@@ -160,6 +160,14 @@ namespace Presto {
     }
 
     void WindowsWindow::OnUpdate() {
+        auto new_time = glfwGetTime();
+        double delta = new_time - _glfwTime;
+
+        // PRINT FPS
+        // PR_CORE_TRACE("{:.2f} FPS", 1 / delta);
+
+        _glfwTime = new_time;
+
         glfwPollEvents();
         _renderer->drawFrame();
     }
