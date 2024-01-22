@@ -11,11 +11,11 @@ namespace Presto {
                         VK_TRUE, UINT64_MAX);
 
         // Check for framebuffer resize
-        if (_framebufferResized) {
-            _framebufferResized = false;
-            this->recreateSwapChain();
-            return PR_SUCCESS;
-        }
+        // if (_framebufferResized) {
+        //     _framebufferResized = false;
+        //     this->recreateSwapChain();
+        //     return PR_SUCCESS;
+        // }
 
         // Acquire image from swap chain to draw into
         uint32_t imageIndex;
@@ -89,9 +89,11 @@ namespace Presto {
 
         // Check that the image was presented properly
         res = vkQueuePresentKHR(_presentQueue, &presentInfo);
-        if (res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR) {
+        if (res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR ||
+            _framebufferResized) {
             // If the swapchain was out of date when we went to present it,
             // recreate it and try again next frame
+            _framebufferResized = false;
             this->recreateSwapChain();
         } else if (res != VK_SUCCESS) {
             PR_CORE_CRITICAL("Failed to present new frame from queue.");
