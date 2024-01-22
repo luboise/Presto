@@ -28,6 +28,7 @@ namespace Presto {
             this->createGraphicsPipeline();
             this->createFrameBuffers();
             this->createCommandPool();
+            this->createVertexBuffer();
             this->createCommandBuffers();
             this->createSyncObjects();
         } catch (const std::runtime_error& e) {
@@ -41,6 +42,9 @@ namespace Presto {
     void VulkanRenderer::Shutdown() {
         // Cleanup swapchian has vkDeviceWaitIdle call inside
         this->cleanupSwapChain();
+
+        vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
+        vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
 
         vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
@@ -250,7 +254,7 @@ namespace Presto {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           _graphicsPipeline);
 
-        // Set viewport
+                // Set viewport
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
@@ -266,8 +270,13 @@ namespace Presto {
         scissor.extent = _swapchainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-        const uint32_t vertices = 3;
-        vkCmdDraw(commandBuffer, vertices, 1, 0, 0);
+        // Bind the vertex buffer for the operation
+        VkBuffer vertexBuffers[] = {_vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0,
+                  0);
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -277,6 +286,23 @@ namespace Presto {
         }
 
         return PR_SUCCESS;
+    }
+
+    uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,
+                                            VkMemoryPropertyFlags properties) {
+        VkPhysicalDeviceMemoryProperties memProperties;
+        vkGetPhysicalDeviceMemoryProperties(_physicalDevice, &memProperties);
+
+        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+            // Checks i'th bit from right
+            if ((typeFilter & (1 << i)) &&
+                (memProperties.memoryTypes[i].propertyFlags & properties)) {
+                return i;
+            }
+        }
+
+        // Error value
+        return -1;
     }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device) {

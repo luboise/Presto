@@ -21,6 +21,10 @@ namespace Presto {
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
+    const std::vector<VulkanVertex> vertices = {{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                                          {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+                                          {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
@@ -74,11 +78,17 @@ namespace Presto {
         VkCommandPool _commandPool;
         std::vector<VkCommandBuffer> _commandBuffers;
 
+        VkBuffer _vertexBuffer;
+        VkDeviceMemory _vertexBufferMemory;
+
         std::vector<VkSemaphore> _imageAvailableSemaphores;
         std::vector<VkSemaphore> _renderFinishedSemaphores;
         std::vector<VkFence> _inFlightFences;
 
         uint32_t _currentFrame = 0;
+
+        uint32_t findMemoryType(uint32_t typeFilter,
+                                VkMemoryPropertyFlags properties);
 
         bool isDeviceSuitable(const VkPhysicalDevice& device);
         QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
@@ -95,6 +105,7 @@ namespace Presto {
         void createGraphicsPipeline();
         void createFrameBuffers();
         void createCommandPool();
+        void createVertexBuffer();
         void createCommandBuffers();
         void createSyncObjects();
 

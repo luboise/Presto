@@ -215,14 +215,20 @@ namespace Presto {
         VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo,
                                                           fragShaderStageInfo};
 
+        auto bindingDescription = VulkanVertex::getBindingDescription();
+        auto attributeDescriptions = VulkanVertex::getAttributeDescriptions();
+
         // Vertex input info (VBO/VBA)
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.pVertexBindingDescriptions = nullptr;
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+        vertexInputInfo.vertexBindingDescriptionCount = 1;
+        vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+
+        vertexInputInfo.vertexAttributeDescriptionCount =
+            static_cast<uint32_t>(attributeDescriptions.size());
+        vertexInputInfo.pVertexAttributeDescriptions =
+            attributeDescriptions.data();
 
         // Input assembly (first stage)
 
@@ -376,6 +382,56 @@ namespace Presto {
                                 &_commandPool) != VK_SUCCESS) {
             throw std::runtime_error("Unable to create command pool.");
         }
+    }
+
+    void VulkanRenderer::createVertexBuffer() {
+        // Create buffer
+        VkBufferCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        createInfo.size = sizeof(vertices[0]) * vertices.size();
+        createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateBuffer(_logicalDevice, &createInfo, nullptr,
+                           &_vertexBuffer)) {
+            throw std::runtime_error("Failed to create vertex buffer.");
+        }
+
+        // Allocate memory on GPU
+
+        // Get memory requirements of device to allocate memory
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(_logicalDevice, _vertexBuffer,
+                                      &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+
+        VkMemoryPropertyFlags requiredProperties =
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+
+        allocInfo.memoryTypeIndex =
+            findMemoryType(memRequirements.memoryTypeBits, requiredProperties);
+
+        if (vkAllocateMemory(_logicalDevice, &allocInfo, nullptr,
+                             &_vertexBufferMemory) != VK_SUCCESS) {
+            throw std::runtime_error(
+                "Failed to allocate vertex buffer memory.");
+        }
+
+        // Bind allocate memory to buffer (at offset 0, otherwise must be
+        // divisible by memRequirements.alignment)
+        vkBindBufferMemory(_logicalDevice, _vertexBuffer, _vertexBufferMemory,
+                           0);
+
+        // Create mapping from CPU to GPU, then copy the data into it
+        void* data;
+        vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, createInfo.size, 0,
+                    &data);
+        memcpy(data, vertices.data(), (size_t)createInfo.size);
+        vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
     }
 
     void VulkanRenderer::createCommandBuffers() {
