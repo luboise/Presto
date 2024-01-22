@@ -1,29 +1,53 @@
 #include "VulkanRenderer.h"
+
+#include <GLFW/glfw3.h>
+
 namespace Presto {
     PR_RESULT VulkanRenderer::drawFrame() {
+        VkResult res;
         // Wait for previous frame (1 fence, wait all fences) then reset fence
         // to unsignaled
-        vkWaitForFences(_logicalDevice, 1, &_inFlightFence, VK_TRUE,
-                        UINT64_MAX);
-        vkResetFences(_logicalDevice, 1, &_inFlightFence);
+        vkWaitForFences(_logicalDevice, 1, &_inFlightFences[_currentFrame],
+                        VK_TRUE, UINT64_MAX);
+
+        // Check for framebuffer resize
+        if (_framebufferResized) {
+            _framebufferResized = false;
+            this->recreateSwapChain();
+            return PR_SUCCESS;
+        }
 
         // Acquire image from swap chain to draw into
         uint32_t imageIndex;
-        vkAcquireNextImageKHR(_logicalDevice, _swapchain, UINT64_MAX,
-                              _imageAvailableSemaphore, VK_NULL_HANDLE,
-                              &imageIndex);
+        res = vkAcquireNextImageKHR(_logicalDevice, _swapchain, UINT64_MAX,
+                                    _imageAvailableSemaphores[_currentFrame],
+                                    VK_NULL_HANDLE, &imageIndex);
+
+        if (res == VK_ERROR_OUT_OF_DATE_KHR) {
+            _framebufferResized = false;
+            this->recreateSwapChain();
+            return PR_SUCCESS;
+        } else if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR) {
+            PR_CORE_ERROR("Failed to acquire swap chain image.");
+            return PR_FAILURE;
+        }
+
+        // Only reset fence if image is acquired
+        vkResetFences(_logicalDevice, 1, &_inFlightFences[_currentFrame]);
 
         // Reset, then record command buffer which draws our scene into the
         // image
-        vkResetCommandBuffer(_commandBuffer, 0);
-        this->recordCommandBuffer(_commandBuffer, imageIndex);
+        vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
+        this->recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
 
         // Which semaphores to wait on to draw
-        VkSemaphore waitSemaphores[] = {_imageAvailableSemaphore};
+        VkSemaphore waitSemaphores[] = {
+            _imageAvailableSemaphores[_currentFrame]};
         VkPipelineStageFlags waitStages[] = {
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
         // Signalled by submit queue
-        VkSemaphore signalSemaphores[] = {_renderFinishedSemaphore};
+        VkSemaphore signalSemaphores[] = {
+            _renderFinishedSemaphores[_currentFrame]};
 
         // Submit instructions (waits for waitSemaphores)
         VkSubmitInfo submitInfo{};
@@ -35,7 +59,7 @@ namespace Presto {
         submitInfo.pWaitDstStageMask = waitStages;
 
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &_commandBuffer;
+        submitInfo.pCommandBuffers = &_commandBuffers[_currentFrame];
 
         // Triggers these signals when finished
         submitInfo.signalSemaphoreCount = 1;
@@ -56,22 +80,60 @@ namespace Presto {
         presentInfo.pSwapchains = swapchains;
         presentInfo.pImageIndices = &imageIndex;
 
-        VkResult res;
-
-        res = vkQueueSubmit(_graphicsQueue, 1, &submitInfo, _inFlightFence);
+        res = vkQueueSubmit(_graphicsQueue, 1, &submitInfo,
+                            _inFlightFences[_currentFrame]);
         if (res != VK_SUCCESS) {
             PR_CORE_CRITICAL("Failed to submit command buffer to GPU.");
             return PR_FAILURE;
         }
 
+        // Check that the image was presented properly
         res = vkQueuePresentKHR(_presentQueue, &presentInfo);
-        if (res != VK_SUCCESS) {
+        if (res == VK_ERROR_OUT_OF_DATE_KHR || res == VK_SUBOPTIMAL_KHR) {
+            // If the swapchain was out of date when we went to present it,
+            // recreate it and try again next frame
+            this->recreateSwapChain();
+        } else if (res != VK_SUCCESS) {
             PR_CORE_CRITICAL("Failed to present new frame from queue.");
             return PR_FAILURE;
         }
-        return PR_SUCCESS;
 
-        // Present swap chain image
+        _currentFrame = (_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+        return PR_SUCCESS;
+    }
+
+    void VulkanRenderer::recreateSwapChain() {
+        int width, height = 0;
+
+        // TODO: Move this logic out
+        glfwGetFramebufferSize(this->_glfwWindow, &width, &height);
+        while (width == 0 || height == 0) {
+            glfwGetFramebufferSize(this->_glfwWindow, &width, &height);
+            glfwWaitEvents();
+        }
+
+        vkDeviceWaitIdle(_logicalDevice);
+
+        cleanupSwapChain();
+
+        createSwapChain();
+        createImageViews();
+        createFrameBuffers();
+    }
+
+    void VulkanRenderer::cleanupSwapChain() {
+        for (size_t i = 0; i < _swapchainFramebuffers.size(); i++) {
+            vkDestroyFramebuffer(_logicalDevice,
+                                 this->_swapchainFramebuffers[i], nullptr);
+        }
+
+        for (size_t i = 0; i < _swapchainImageViews.size(); i++) {
+            vkDestroyImageView(_logicalDevice, _swapchainImageViews[i],
+                               nullptr);
+        }
+
+        vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
     }
 
 }  // namespace Presto

@@ -58,11 +58,6 @@ namespace Presto {
         // Set the window as the current context
         glfwMakeContextCurrent(this->glfw_window);
 
-        // Link props and glfw window
-        glfwSetWindowUserPointer(this->glfw_window, &w_data);
-        this->SetCallbacks();
-        this->SetVSync(true);
-
         switch (props.render_library) {
             case VULKAN: {
                 this->_renderer = new VulkanRenderer(this->glfw_window);
@@ -70,6 +65,13 @@ namespace Presto {
                 break;
             }
         }
+
+        w_data.pRenderer = this->_renderer;
+
+        // Link props and glfw window
+        glfwSetWindowUserPointer(this->glfw_window, &w_data);
+        this->SetCallbacks();
+        this->SetVSync(true);
     }
 
     void WindowsWindow::SetCallbacks() {
@@ -147,6 +149,14 @@ namespace Presto {
             MouseScrolledEvent e((float)xoffset, (float)yoffset);
             data.event_callback(e);
         });
+
+        glfwSetFramebufferSizeCallback(
+            this->glfw_window, [](GLFWwindow* window, int width, int height) {
+                WindowData& data =
+                    *(WindowData*)(glfwGetWindowUserPointer(window));
+
+                data.pRenderer->framebufferResized();
+            });
     }
 
     void WindowsWindow::OnUpdate() {

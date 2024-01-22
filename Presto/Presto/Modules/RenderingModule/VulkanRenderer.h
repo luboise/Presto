@@ -18,6 +18,8 @@ namespace Presto {
     const std::vector<const char*> validationLayers = {
         "VK_LAYER_KHRONOS_validation"};
 
+    const int MAX_FRAMES_IN_FLIGHT = 2;
+
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
@@ -69,11 +71,13 @@ namespace Presto {
         VkSurfaceKHR _surface;
 
         VkCommandPool _commandPool;
-        VkCommandBuffer _commandBuffer;
+        std::vector<VkCommandBuffer> _commandBuffers;
 
-        VkSemaphore _imageAvailableSemaphore;
-        VkSemaphore _renderFinishedSemaphore;
-        VkFence _inFlightFence;
+        std::vector<VkSemaphore> _imageAvailableSemaphores;
+        std::vector<VkSemaphore> _renderFinishedSemaphores;
+        std::vector<VkFence> _inFlightFences;
+
+        uint32_t _currentFrame = 0;
 
         bool isDeviceSuitable(const VkPhysicalDevice& device);
         QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice& device);
@@ -90,11 +94,14 @@ namespace Presto {
         void createGraphicsPipeline();
         void createFrameBuffers();
         void createCommandPool();
-        void createCommandBuffer();
+        void createCommandBuffers();
         void createSyncObjects();
 
         PR_RESULT recordCommandBuffer(VkCommandBuffer commandBuffer,
                                       uint32_t imageIndex);
+
+        void cleanupSwapChain();
+        void recreateSwapChain();
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();

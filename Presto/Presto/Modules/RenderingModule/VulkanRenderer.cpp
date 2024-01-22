@@ -28,7 +28,7 @@ namespace Presto {
             this->createGraphicsPipeline();
             this->createFrameBuffers();
             this->createCommandPool();
-            this->createCommandBuffer();
+            this->createCommandBuffers();
             this->createSyncObjects();
         } catch (const std::runtime_error& e) {
             PR_CORE_ASSERT(
@@ -39,34 +39,26 @@ namespace Presto {
     }
 
     void VulkanRenderer::Shutdown() {
-        // Ensure device is idle before cleaning up
-        vkDeviceWaitIdle(_logicalDevice);
-
-        vkDestroySemaphore(_logicalDevice, _imageAvailableSemaphore, nullptr);
-        vkDestroySemaphore(_logicalDevice, _renderFinishedSemaphore, nullptr);
-        vkDestroyFence(_logicalDevice, _inFlightFence, nullptr);
-
-        vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
-
-        for (auto framebuffer : _swapchainFramebuffers) {
-            vkDestroyFramebuffer(_logicalDevice, framebuffer, nullptr);
-        }
+        // Cleanup swapchian has vkDeviceWaitIdle call inside
+        this->cleanupSwapChain();
 
         vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
+
         vkDestroyRenderPass(_logicalDevice, _renderPass, nullptr);
 
-        for (auto imageView : _swapchainImageViews) {
-            vkDestroyImageView(_logicalDevice, imageView, nullptr);
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroySemaphore(_logicalDevice, _renderFinishedSemaphores[i],
+                               nullptr);
+            vkDestroySemaphore(_logicalDevice, _imageAvailableSemaphores[i],
+                               nullptr);
+            vkDestroyFence(_logicalDevice, _inFlightFences[i], nullptr);
         }
 
-        vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
-        _swapchain = nullptr;
-
-        vkDestroySurfaceKHR(_instance, _surface, nullptr);
-        _surface = nullptr;
+        vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
 
         vkDestroyDevice(_logicalDevice, nullptr);
+
         this->_logicalDevice = nullptr;
 
         if (enableValidationLayers) {
@@ -75,8 +67,8 @@ namespace Presto {
             this->_debugMessenger = nullptr;
         }
 
+        vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkDestroyInstance(_instance, nullptr);
-        this->_instance = nullptr;
 
         this->_initialised = false;
     }

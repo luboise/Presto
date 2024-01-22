@@ -37,6 +37,7 @@ namespace Presto {
             bool VSync;
 
             EventCallbackFn event_callback;
+            RenderingModule* pRenderer;
         };
 
         WindowData w_data;
