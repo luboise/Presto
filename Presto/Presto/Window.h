@@ -3,7 +3,7 @@
 #include "Presto/Core.h"
 #include "Presto/Events/Event.h"
 
-#include "Modules/RenderingModule/_GraphicsRenderer.h"
+#include "Modules/RenderingModule/_Renderer.h"
 
 namespace Presto {
     enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
@@ -47,7 +47,7 @@ namespace Presto {
             const WindowProperties& props = WindowProperties());
 
        protected:
-        RenderingModule* _renderer;
+        Renderer* _renderer;
     };
 
 }  // namespace Presto

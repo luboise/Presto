@@ -7,7 +7,7 @@
 
 #include "WindowsWindow.h"
 
-#include "RenderingModule/VulkanRenderer.h"
+#include "RenderingModule/Vulkan/VulkanRenderer.h"
 
 namespace Presto {
     static bool s_GLFWInitialised = false;

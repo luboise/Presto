@@ -1,13 +1,15 @@
 target_sources(Presto
 PUBLIC	Module.h
-		RenderingModule/_GraphicsRenderer.h
-		# RenderingModule/_GraphicsRenderer.cpp
-		RenderingModule/VulkanRenderer.h
-PRIVATE RenderingModule/VulkanRenderer.cpp
-		RenderingModule/VulkanRenderer_draw.cpp
-		RenderingModule/VulkanRenderer_validation.cpp
-		RenderingModule/VulkanRenderer_init.cpp
-		RenderingModule/VulkanRenderer_shading.cpp
+		RenderingModule/_Renderer.h
+		# RenderingModule/_Renderer.cpp
+		RenderingModule/Vulkan/VulkanRenderer.h
+		RenderingModule/Vulkan/VulkanVertex.h
+PRIVATE RenderingModule/Vulkan/VulkanRenderer.cpp
+		RenderingModule/Vulkan/VulkanRenderer_draw.cpp
+		RenderingModule/Vulkan/VulkanRenderer_validation.cpp
+		RenderingModule/Vulkan/VulkanRenderer_init.cpp
+		RenderingModule/Vulkan/VulkanRenderer_shading.cpp
+		RenderingModule/Vulkan/VulkanVertex.cpp
 
 PUBLIC	ResourcesModule/ResourceManager.h
 PRIVATE	ResourcesModule/ResourceManager.cpp

@@ -1,4 +1,5 @@
-#include "_GraphicsRenderer.h"
+#include "Presto/Modules/RenderingModule/_Renderer.h"
+#include "VulkanVertex.h"
 
 #include <vulkan/vulkan.h>
 // KEEP THESE SEPARATE
@@ -36,7 +37,7 @@ namespace Presto {
         std::vector<VkPresentModeKHR> presentModes;
     };
 
-    class PRESTO_API VulkanRenderer : public RenderingModule {
+    class PRESTO_API VulkanRenderer : public Renderer {
        public:
         VulkanRenderer(GLFWwindow* window);
         virtual ~VulkanRenderer();

@@ -4,7 +4,7 @@
 #include "Presto/Modules/Module.h"
 
 namespace Presto {
-    class PRESTO_API RenderingModule : public Module {
+    class PRESTO_API Renderer : public Module {
        public:
         virtual PR_RESULT drawFrame() = 0;
 
