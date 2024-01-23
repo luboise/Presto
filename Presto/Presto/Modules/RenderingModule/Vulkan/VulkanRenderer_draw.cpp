@@ -47,9 +47,13 @@ namespace Presto {
         std::vector<VulkanVertex> verticesCopy = vertices;
 
         auto time = glfwGetTime();
-        auto angle = glm::vec3(time, 0, glm::sin(time) * 0.5);
+        auto angle = glm::vec3(time, 0, 0);
+
+        // auto cameraPos = glm::vec3(0, -2, 2);
+        auto cameraPos = glm::vec3(0, -2, 2);
+
         for (auto& vertex : verticesCopy) {
-            vertex.pos = vertex.getProjected(angle);
+            vertex.pos = vertex.getProjected(angle, cameraPos);
         }
 
         auto bufferSize = sizeof(vertices[0]) * vertices.size();

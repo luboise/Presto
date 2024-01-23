@@ -11,6 +11,8 @@ namespace Presto {
         glm::vec3 color;
 
         glm::vec3 getProjected(glm::vec3 yawPitchRoll) const;
+        glm::vec3 getProjected(glm::vec3 yawPitchRoll,
+                               glm::vec3 cameraPos) const;
 
         static VkVertexInputBindingDescription getBindingDescription();
         static std::array<VkVertexInputAttributeDescription, 2>
