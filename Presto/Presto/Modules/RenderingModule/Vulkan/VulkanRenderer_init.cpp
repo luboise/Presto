@@ -425,13 +425,6 @@ namespace Presto {
         // divisible by memRequirements.alignment)
         vkBindBufferMemory(_logicalDevice, _vertexBuffer, _vertexBufferMemory,
                            0);
-
-        // Create mapping from CPU to GPU, then copy the data into it
-        void* data;
-        vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, createInfo.size, 0,
-                    &data);
-        memcpy(data, vertices.data(), (size_t)createInfo.size);
-        vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
     }
 
     void VulkanRenderer::createCommandBuffers() {
@@ -497,7 +490,7 @@ namespace Presto {
         // Line thickness in fragments
         rasterizer.lineWidth = 1.0f;
 
-        rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+        rasterizer.cullMode = VK_CULL_MODE_NONE;
         rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
         // Depth bias settings

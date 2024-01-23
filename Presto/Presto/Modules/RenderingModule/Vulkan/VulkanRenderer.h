@@ -21,9 +21,27 @@ namespace Presto {
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    const std::vector<VulkanVertex> vertices = {{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                                          {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-                                          {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+    const std::vector<VulkanVertex> vertices = {
+        // // Tri 1
+        // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        // {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+
+        // // Tri 2
+        // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+        // {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+
+        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+
+        // Tri 2
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+
+    };
 
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;

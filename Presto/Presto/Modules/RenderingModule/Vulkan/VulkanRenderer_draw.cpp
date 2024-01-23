@@ -40,6 +40,26 @@ namespace Presto {
         vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
         this->recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
 
+        // PUT STUFF IN GPU BUFFER
+        // Create mapping from CPU to GPU, then copy the data into it
+        void* data;
+
+        std::vector<VulkanVertex> verticesCopy = vertices;
+
+        auto time = glfwGetTime();
+        auto angle = glm::vec3(time, 0, glm::sin(time) * 0.5);
+        for (auto& vertex : verticesCopy) {
+            vertex.pos = vertex.getProjected(angle);
+        }
+
+        auto bufferSize = sizeof(vertices[0]) * vertices.size();
+        vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, verticesCopy.data(), (size_t)bufferSize);
+        vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
+
+        // END PUTTING STUFF IN GPU BUFFER
+
         // Which semaphores to wait on to draw
         VkSemaphore waitSemaphores[] = {
             _imageAvailableSemaphores[_currentFrame]};
