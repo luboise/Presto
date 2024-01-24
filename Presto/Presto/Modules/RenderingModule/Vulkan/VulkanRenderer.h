@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Presto/Modules/RenderingModule/_Renderer.h"
 #include "VulkanVertex.h"
 
@@ -13,7 +15,6 @@ namespace Presto {
 #else
     const bool enableValidationLayers = true;
 #endif
-
     const std::vector<const char*> extensionList = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     const std::vector<const char*> validationLayers = {
@@ -21,27 +22,19 @@ namespace Presto {
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    const std::vector<VulkanVertex> vertices = {
-        // // Tri 1
-        // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        // {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    extern const std::vector<VulkanVertex> vertices;
+    // {
 
-        // // Tri 2
-        // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-        // {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+    // // Tri 1
+    // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+    // {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+    // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
 
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-
-        // Tri 2
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-        {{-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-
-    };
+    // // Tri 2
+    // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+    // {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+    // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+    // };
 
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;

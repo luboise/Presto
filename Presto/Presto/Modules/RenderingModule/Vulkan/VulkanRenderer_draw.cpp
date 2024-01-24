@@ -2,8 +2,89 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/constants.hpp>
+
 namespace Presto {
-    PR_RESULT VulkanRenderer::drawFrame() {
+
+    glm::vec3 getRandomRed(const double maxNonRed) {
+        auto vec = glm::vec3(1.0f, ((rand() % 101) / 100.0) * maxNonRed,
+                             ((rand() % 101) / 100.0) * maxNonRed);
+        return vec;
+    }
+
+    glm::vec3 getRandomRed() { return getRandomRed(0.05); }
+
+    std::vector<VulkanVertex> makeHeartSlow() {
+        std::vector<VulkanVertex> heart;
+
+        VulkanVertex startingPoint = {{0.0f, 0.5f, 0.0f}, getRandomRed()};
+        VulkanVertex middlePoint = {{.0f, -.25f, .0f}, getRandomRed()};
+        std::vector<VulkanVertex> leftHalf = {
+            {{-0.5f, -0.15f, 0.0f}, getRandomRed()},
+            {{-0.25f, -0.5f, 0.0f}, getRandomRed()},
+        };
+
+        std::vector<VulkanVertex> rightHalf;
+        for (auto it = leftHalf.rbegin(); it != leftHalf.rend(); it++) {
+            const auto& vertex = *it;
+            auto vertexCopy = vertex;
+            vertexCopy.pos.x *= -1;
+            vertexCopy.color = getRandomRed();
+            rightHalf.push_back(vertexCopy);
+        }
+
+        heart.push_back(startingPoint);
+        for (const auto& v : leftHalf) {
+            heart.push_back(v);
+        };
+
+        heart.push_back(middlePoint);
+
+        for (auto it = leftHalf.rbegin(); it != leftHalf.rend(); it++) {
+            VulkanVertex v = *it;
+            v.pos.x *= -1;
+            heart.push_back(v);
+        }
+
+        return heart;
+    }
+
+    // Curve modified from https://mathworld.wolfram.com/HeartCurve.html,
+    // subtracted 2.5 and then divided by 15 to roughly scale the range
+    // to [-1, 1]
+    std::vector<VulkanVertex> makeHeart(uint32_t points) {
+        // Symmetric shape, so need even number of points
+        if (points % 2 == 1) points++;
+
+        std::vector<VulkanVertex> heart(points);
+
+        const float width = 1;
+        const float height = width;
+
+        const double denom = glm::two_pi<double>() / (points);
+        double t = 0;
+        for (auto i = 0; i < points; i++) {
+            t = i * denom;
+
+            float x = (width / 2.0f) * glm::pow(glm::sin(t), 3);
+            // Normalised height
+            float y = (13 * glm::cos(t) - 2 * glm::cos(3 * t) -
+                       glm::cos(4 * t) - 5 * glm::cos(2 * t));
+            y += 2.5;
+            y /= 15;
+            // Scale to desired height
+            y *= (height / 2);
+
+            heart[i] = VulkanVertex{{x, -y, 0.0f}, getRandomRed()};
+        }
+
+        return heart;
+    }
+
+    const std::vector<VulkanVertex> vertices = makeHeart(300);
+
+    PR_RESULT
+    VulkanRenderer::drawFrame() {
         VkResult res;
         // Wait for previous frame (1 fence, wait all fences) then reset fence
         // to unsignaled
@@ -47,13 +128,16 @@ namespace Presto {
         std::vector<VulkanVertex> verticesCopy = vertices;
 
         auto time = glfwGetTime();
-        auto angle = glm::vec3(time, 0, 0);
+        auto angle = glm::vec3(0, 0, 0);
 
         // auto cameraPos = glm::vec3(0, -2, 2);
-        auto cameraPos = glm::vec3(0, -2, 2);
+        auto cameraPos = glm::vec3(0, 0, 0.75);
+
+        double scale = (glm::sin(time * glm::two_pi<double>() / 3) * 0.15) + 0.85;
 
         for (auto& vertex : verticesCopy) {
-            vertex.pos = vertex.getProjected(angle, cameraPos);
+            vertex.pos =
+                vertex.getProjected(angle, cameraPos, scale);
         }
 
         auto bufferSize = sizeof(vertices[0]) * vertices.size();

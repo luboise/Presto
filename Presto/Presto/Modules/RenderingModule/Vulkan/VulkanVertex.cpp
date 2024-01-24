@@ -43,16 +43,19 @@ namespace Presto {
 
     glm::vec3 VulkanVertex::getProjected(glm::vec3 yawPitchRoll,
                                          glm::vec3 cameraPos) const {
+        return getProjected(yawPitchRoll, cameraPos, 1.0);
+    }
+
+    glm::vec3 VulkanVertex::getProjected(glm::vec3 yawPitchRoll,
+                                         glm::vec3 cameraPos,
+                                         glm::float32 scale) const {
         auto fovYDeg = 90;
         VkExtent2D viewport{1280, 720};
-
-        auto scale = 1;
 
         auto mvm = getModelViewMatrix(cameraPos, yawPitchRoll, scale);
         auto pm = getProjectionMatrix(fovYDeg, viewport);
 
-        auto projected =
-            pm * mvm * glm::vec4(this->pos, 1);
+        auto projected = pm * mvm * glm::vec4(this->pos, 1);
 
         // Normalise to -1, 1
         auto normalised = glm::vec3(projected) / projected.w;
@@ -69,8 +72,8 @@ namespace Presto {
                                                glm::float32 scale) {
         glm::mat4 model(1.0f);
 
-        model = glm::rotate(model, yawPitchRoll.x, glm::vec3(0, 1, 0));
         model = glm::rotate(model, yawPitchRoll.y, glm::vec3(1, 0, 0));
+        model = glm::rotate(model, yawPitchRoll.x, glm::vec3(0, 1, 0));
         model = glm::rotate(model, yawPitchRoll.z, glm::vec3(0, 0, 1));
 
         glm::mat4 scaleMatrix = {
@@ -83,7 +86,7 @@ namespace Presto {
 
         // Calculate offset pointing at origin with the y axis up
         glm::mat4 view =
-            glm::lookAt(offset, glm::vec3(0.0f), glm::vec3(0, 1, 0));
+            glm::lookAt(offset, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
         return view * model;
     }
