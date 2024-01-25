@@ -44,11 +44,14 @@ namespace Presto {
         // Cleanup swapchian has vkDeviceWaitIdle call inside
         this->cleanupSwapChain();
 
-        vkDestroyBuffer(_logicalDevice, _stagingBuffer, nullptr);
-        vkFreeMemory(_logicalDevice, _stagingBufferMemory, nullptr);
-
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
+
+        vkDestroyBuffer(_logicalDevice, _indexBuffer, nullptr);
+        vkFreeMemory(_logicalDevice, _indexBufferMemory, nullptr);
+
+        vkDestroyBuffer(_logicalDevice, _stagingBuffer, nullptr);
+        vkFreeMemory(_logicalDevice, _stagingBufferMemory, nullptr);
 
         vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
@@ -279,8 +282,13 @@ namespace Presto {
         VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0,
-                  0);
+        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0,
+                             VK_INDEX_TYPE_UINT16);
+
+        uint32_t vertexOffset = 0;
+        uint16_t indexOffset = 0;
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()),
+                         1, vertexOffset, indexOffset, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 

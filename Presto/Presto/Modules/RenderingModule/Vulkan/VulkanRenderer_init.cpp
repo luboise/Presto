@@ -385,7 +385,9 @@ namespace Presto {
     }
 
     void VulkanRenderer::createBuffers() {
-        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+        VkDeviceSize bufferSize;
+        bufferSize
+        = sizeof(vertices[0]) * vertices.size();
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
@@ -398,8 +400,9 @@ namespace Presto {
                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer,
                      _vertexBufferMemory);
 
+        bufferSize = sizeof(indices[0]) * indices.size();
         createBuffer(
-            HEART_POINTS,
+            bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer,
             _indexBufferMemory);
