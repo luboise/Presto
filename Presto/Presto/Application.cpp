@@ -10,14 +10,15 @@ namespace Presto {
         app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
     }
 
-    Application::~Application(){};
+    Application::~Application() { /*this->app_window->Shutdown();*/
+        this->app_window->Shutdown();
+        this->app_window.release();
+    };
 
     void Application::Run() {
         while (app_running) {
             app_window->OnUpdate();
         }
-
-        this->app_window->Shutdown();
     }
 
     void Application::OnEvent(Event& e) {

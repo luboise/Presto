@@ -17,9 +17,11 @@ namespace Presto {
     }
 
     void WindowsWindow::Shutdown() {
-        this->_renderer->Shutdown();
-        glfwDestroyWindow(this->glfw_window);
-        glfwTerminate();
+        if (this->glfw_window != nullptr) {
+            this->_renderer->Shutdown();
+            glfwDestroyWindow(this->glfw_window);
+            this->glfw_window = nullptr;
+        }
     }
 
     WindowsWindow::WindowsWindow(const WindowProperties& props) {

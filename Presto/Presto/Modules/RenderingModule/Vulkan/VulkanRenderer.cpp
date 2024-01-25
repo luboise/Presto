@@ -41,6 +41,7 @@ namespace Presto {
     }
 
     void VulkanRenderer::Shutdown() {
+        if (!_initialised) return;
         // Cleanup swapchian has vkDeviceWaitIdle call inside
         this->cleanupSwapChain();
 
