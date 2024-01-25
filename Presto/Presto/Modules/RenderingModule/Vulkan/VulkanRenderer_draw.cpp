@@ -5,7 +5,6 @@
 #include <glm/gtc/constants.hpp>
 
 namespace Presto {
-
     glm::vec3 getRandomRed(const double maxNonRed) {
         auto vec = glm::vec3(1.0f, ((rand() % 101) / 100.0) * maxNonRed,
                              ((rand() % 101) / 100.0) * maxNonRed);
@@ -79,9 +78,17 @@ namespace Presto {
         }
 
         return heart;
-    }
+    };
 
-    const std::vector<VulkanVertex> vertices = makeHeart(300);
+    const std::vector<uint16_t> makeIndices(uint16_t vertexCount) {
+        std::vector<uint16_t> indices(vertexCount);
+        for (auto i = 0; i < vertexCount; i++) indices[i] = i;
+        return indices;
+    };
+
+    // Defined external vectors
+    const std::vector<VulkanVertex> vertices = makeHeart(HEART_POINTS);
+    const std::vector<uint16_t> indices = makeIndices(HEART_POINTS);
 
     PR_RESULT
     VulkanRenderer::drawFrame() {
@@ -133,18 +140,18 @@ namespace Presto {
         // auto cameraPos = glm::vec3(0, -2, 2);
         auto cameraPos = glm::vec3(0, 0, 0.75);
 
-        double scale = (glm::sin(time * glm::two_pi<double>() / 3) * 0.15) + 0.85;
+        double scale =
+            (glm::sin(time * glm::two_pi<double>() / 3) * 0.15) + 0.85;
 
         for (auto& vertex : verticesCopy) {
-            vertex.pos =
-                vertex.getProjected(angle, cameraPos, scale);
+            vertex.pos = vertex.getProjected(angle, cameraPos, scale);
         }
 
-        auto bufferSize = sizeof(vertices[0]) * vertices.size();
-        vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, bufferSize, 0,
-                    &data);
-        memcpy(data, verticesCopy.data(), (size_t)bufferSize);
-        vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
+        // auto bufferSize = sizeof(vertices[0]) * vertices.size();
+        // vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, bufferSize, 0,
+        //             &data);
+        // memcpy(data, verticesCopy.data(), (size_t)bufferSize);
+        // vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
 
         // END PUTTING STUFF IN GPU BUFFER
 
@@ -230,6 +237,45 @@ namespace Presto {
         createSwapChain();
         createImageViews();
         createFrameBuffers();
+    }
+
+    void VulkanRenderer::copyBuffer(VkBuffer src, VkBuffer dst,
+                                    VkDeviceSize copySize) {
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = _commandPool;
+        allocInfo.commandBufferCount = 1;
+
+        VkCommandBuffer copyCommandBuffer;
+        vkAllocateCommandBuffers(_logicalDevice, &allocInfo,
+                                 &copyCommandBuffer);
+
+        // Begin recording command buffer
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        vkBeginCommandBuffer(copyCommandBuffer, &beginInfo);
+
+        VkBufferCopy copyRegion{};
+        copyRegion.srcOffset = 0;
+        copyRegion.dstOffset = 0;
+        copyRegion.size = copySize;
+
+        vkCmdCopyBuffer(copyCommandBuffer, src, dst, 1, &copyRegion);
+        vkEndCommandBuffer(copyCommandBuffer);
+
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &copyCommandBuffer;
+
+        // Wait for submission (can use a fence instead for multiple transfers)
+        vkQueueSubmit(_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(_graphicsQueue);
+
+        vkFreeCommandBuffers(_logicalDevice, _commandPool, 1,
+                             &copyCommandBuffer);
     }
 
     void VulkanRenderer::cleanupSwapChain() {

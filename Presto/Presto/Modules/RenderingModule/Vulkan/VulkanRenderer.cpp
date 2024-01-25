@@ -28,7 +28,8 @@ namespace Presto {
             this->createGraphicsPipeline();
             this->createFrameBuffers();
             this->createCommandPool();
-            this->createVertexBuffer();
+            this->createBuffers();
+            this->initialiseBuffers();
             this->createCommandBuffers();
             this->createSyncObjects();
         } catch (const std::runtime_error& e) {
@@ -42,6 +43,9 @@ namespace Presto {
     void VulkanRenderer::Shutdown() {
         // Cleanup swapchian has vkDeviceWaitIdle call inside
         this->cleanupSwapChain();
+
+        vkDestroyBuffer(_logicalDevice, _stagingBuffer, nullptr);
+        vkFreeMemory(_logicalDevice, _stagingBufferMemory, nullptr);
 
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
@@ -254,7 +258,7 @@ namespace Presto {
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
                           _graphicsPipeline);
 
-                // Set viewport
+        // Set viewport
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
@@ -286,6 +290,46 @@ namespace Presto {
         }
 
         return PR_SUCCESS;
+    }
+
+    void VulkanRenderer::createBuffer(VkDeviceSize size,
+                                      VkBufferUsageFlags usageFlags,
+                                      VkMemoryPropertyFlags propFlags,
+                                      VkBuffer& buffer,
+                                      VkDeviceMemory& bufferMemory) {
+        // Create buffer
+        VkBufferCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        createInfo.size = size;
+        createInfo.usage = usageFlags;
+        createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateBuffer(_logicalDevice, &createInfo, nullptr, &buffer)) {
+            throw std::runtime_error("Failed to create vertex buffer.");
+        }
+
+        // Allocate memory on GPU
+
+        // Get memory requirements of device to allocate memory
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(_logicalDevice, buffer, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+
+        allocInfo.memoryTypeIndex =
+            findMemoryType(memRequirements.memoryTypeBits, propFlags);
+
+        if (vkAllocateMemory(_logicalDevice, &allocInfo, nullptr,
+                             &bufferMemory) != VK_SUCCESS) {
+            throw std::runtime_error(
+                "Failed to allocate vertex buffer memory.");
+        }
+
+        // Bind allocate memory to buffer (at offset 0, otherwise must be
+        // divisible by memRequirements.alignment)
+        vkBindBufferMemory(_logicalDevice, buffer, bufferMemory, 0);
     }
 
     uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter,

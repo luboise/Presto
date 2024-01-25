@@ -384,47 +384,48 @@ namespace Presto {
         }
     }
 
-    void VulkanRenderer::createVertexBuffer() {
-        // Create buffer
-        VkBufferCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        createInfo.size = sizeof(vertices[0]) * vertices.size();
-        createInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    void VulkanRenderer::createBuffers() {
+        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
-        if (vkCreateBuffer(_logicalDevice, &createInfo, nullptr,
-                           &_vertexBuffer)) {
-            throw std::runtime_error("Failed to create vertex buffer.");
-        }
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                         VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                     _stagingBuffer, _stagingBufferMemory);
 
-        // Allocate memory on GPU
+        createBuffer(bufferSize,
+                     VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+                         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer,
+                     _vertexBufferMemory);
 
-        // Get memory requirements of device to allocate memory
-        VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(_logicalDevice, _vertexBuffer,
-                                      &memRequirements);
+        createBuffer(
+            HEART_POINTS,
+            VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer,
+            _indexBufferMemory);
+    }
 
-        VkMemoryAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        allocInfo.allocationSize = memRequirements.size;
+    void VulkanRenderer::initialiseBuffers() {
+        VkDeviceSize bufferSize;
+        void* data;
 
-        VkMemoryPropertyFlags requiredProperties =
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+        // Copy vertices into staging buffer
+        bufferSize = sizeof(vertices[0]) * vertices.size();
+        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, vertices.data(), (size_t)bufferSize);
+        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-        allocInfo.memoryTypeIndex =
-            findMemoryType(memRequirements.memoryTypeBits, requiredProperties);
+        copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
 
-        if (vkAllocateMemory(_logicalDevice, &allocInfo, nullptr,
-                             &_vertexBufferMemory) != VK_SUCCESS) {
-            throw std::runtime_error(
-                "Failed to allocate vertex buffer memory.");
-        }
+        // Copy indices into index buffer
+        bufferSize = sizeof(indices[0]) * indices.size();
+        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, indices.data(), (size_t)bufferSize);
+        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-        // Bind allocate memory to buffer (at offset 0, otherwise must be
-        // divisible by memRequirements.alignment)
-        vkBindBufferMemory(_logicalDevice, _vertexBuffer, _vertexBufferMemory,
-                           0);
+        copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
     }
 
     void VulkanRenderer::createCommandBuffers() {

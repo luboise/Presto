@@ -22,19 +22,9 @@ namespace Presto {
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
+#define HEART_POINTS 300
     extern const std::vector<VulkanVertex> vertices;
-    // {
-
-    // // Tri 1
-    // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-    // {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-    // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-
-    // // Tri 2
-    // {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}},
-    // {{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-    // {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-    // };
+    extern const std::vector<uint16_t> indices;
 
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
@@ -89,8 +79,14 @@ namespace Presto {
         VkCommandPool _commandPool;
         std::vector<VkCommandBuffer> _commandBuffers;
 
+        VkBuffer _stagingBuffer;
+        VkDeviceMemory _stagingBufferMemory;
+
         VkBuffer _vertexBuffer;
         VkDeviceMemory _vertexBufferMemory;
+
+        VkBuffer _indexBuffer;
+        VkDeviceMemory _indexBufferMemory;
 
         std::vector<VkSemaphore> _imageAvailableSemaphores;
         std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -116,7 +112,8 @@ namespace Presto {
         void createGraphicsPipeline();
         void createFrameBuffers();
         void createCommandPool();
-        void createVertexBuffer();
+        void createBuffers();
+        void initialiseBuffers();
         void createCommandBuffers();
         void createSyncObjects();
 
@@ -128,6 +125,10 @@ namespace Presto {
 
         // Low level init functions
         VkApplicationInfo makeApplicationInfo();
+        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags,
+                          VkMemoryPropertyFlags propFlags, VkBuffer& buffer,
+                          VkDeviceMemory& bufferMemory);
+        void copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize bufferSize);
 
         std::vector<const char*> getRequiredExtensions();
         bool checkValidationLayerSupport();
