@@ -25,11 +25,20 @@ namespace Presto {
             this->createSwapChain();
             this->createImageViews();
             this->createRenderPass();
+            // Descriptor sets
+            this->createDescriptorSetLayout();
+            // Make pipeline
             this->createGraphicsPipeline();
+
             this->createFrameBuffers();
             this->createCommandPool();
+
+            // Buffers
             this->createBuffers();
             this->initialiseBuffers();
+            this->createDescriptorPool();
+            this->createDescriptorSets();
+
             this->createCommandBuffers();
             this->createSyncObjects();
         } catch (const std::runtime_error& e) {
@@ -44,6 +53,17 @@ namespace Presto {
         if (!_initialised) return;
         // Cleanup swapchian has vkDeviceWaitIdle call inside
         this->cleanupSwapChain();
+
+        // Cleanup uniform buffers
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroyBuffer(_logicalDevice, _uniformBuffers[i], nullptr);
+            vkFreeMemory(_logicalDevice, _uniformBuffersMemory[i], nullptr);
+        }
+
+        vkDestroyDescriptorPool(_logicalDevice, _descriptorPool, nullptr);
+
+        vkDestroyDescriptorSetLayout(_logicalDevice, _descriptorSetLayout,
+                                     nullptr);
 
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
@@ -286,6 +306,10 @@ namespace Presto {
         vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0,
                              VK_INDEX_TYPE_UINT16);
 
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                _pipelineLayout, 0, 1,
+                                &(_descriptorSets[_currentFrame]), 0, nullptr);
+
         uint32_t vertexOffset = 0;
         uint16_t indexOffset = 0;
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()),
@@ -412,16 +436,24 @@ namespace Presto {
     }
 
     void VulkanRenderer::createDescriptorSetLayout() {
+        // Create binding
         VkDescriptorSetLayoutBinding layoutBinding{};
         layoutBinding.binding = 0;
         layoutBinding.descriptorCount = 1;
         layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+        // Create descriptor set with binding
         VkDescriptorSetLayoutCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        createInfo.pNext = NULL;
         createInfo.bindingCount = 1;
-        createInfo.
+        createInfo.pBindings = &layoutBinding;
+
+        if (vkCreateDescriptorSetLayout(_logicalDevice, &createInfo, nullptr,
+                                        &_descriptorSetLayout) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create descriptor set layout.");
+        };
     }
 
     void VulkanRenderer::pickPhysicalDevice() {

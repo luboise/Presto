@@ -298,11 +298,13 @@ namespace Presto {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType =
             VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipelineLayoutInfo.pNext = NULL;
+
         // Number of uniform variables
-        pipelineLayoutInfo.setLayoutCount = 0;             // Optional
-        pipelineLayoutInfo.pSetLayouts = nullptr;          // Optional
-        pipelineLayoutInfo.pushConstantRangeCount = 0;     // Optional
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;  // Optional
+        pipelineLayoutInfo.setLayoutCount = 1;                   // Optional
+        pipelineLayoutInfo.pSetLayouts = &_descriptorSetLayout;  // Optional
+        pipelineLayoutInfo.pushConstantRangeCount = 0;           // Optional
+        pipelineLayoutInfo.pPushConstantRanges = nullptr;        // Optional
 
         if (vkCreatePipelineLayout(_logicalDevice, &pipelineLayoutInfo, nullptr,
                                    &_pipelineLayout) != VK_SUCCESS) {
@@ -386,9 +388,9 @@ namespace Presto {
 
     void VulkanRenderer::createBuffers() {
         VkDeviceSize bufferSize;
-        bufferSize
-        = sizeof(vertices[0]) * vertices.size();
 
+        // Vertex buffers
+        bufferSize = sizeof(vertices[0]) * vertices.size();
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -400,12 +402,89 @@ namespace Presto {
                      VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _vertexBuffer,
                      _vertexBufferMemory);
 
+        // Index buffer
         bufferSize = sizeof(indices[0]) * indices.size();
         createBuffer(
             bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, _indexBuffer,
             _indexBufferMemory);
+
+        // Uniform buffers
+        bufferSize = sizeof(ShaderMatrices);
+
+        _uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        _uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+        _uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                             VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                         _uniformBuffers[i], _uniformBuffersMemory[i]);
+
+            vkMapMemory(_logicalDevice, _uniformBuffersMemory[i], 0, bufferSize,
+                        0, &_uniformBuffersMapped[i]);
+        }
+    }
+
+    void VulkanRenderer::createDescriptorPool() {
+        VkDescriptorPoolSize poolSize{};
+        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+        VkDescriptorPoolCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        createInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        createInfo.poolSizeCount = 1;
+        createInfo.pPoolSizes = &poolSize;
+
+        if (vkCreateDescriptorPool(_logicalDevice, &createInfo, nullptr,
+                                   &_descriptorPool) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to create descriptor pool.");
+        };
+    }
+
+    void VulkanRenderer::createDescriptorSets() {
+        std::vector<VkDescriptorSetLayout> setLayouts(MAX_FRAMES_IN_FLIGHT,
+                                                      _descriptorSetLayout);
+
+        VkDescriptorSetAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = _descriptorPool;
+        allocInfo.descriptorSetCount =
+            static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        allocInfo.pSetLayouts = setLayouts.data();
+
+        _descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        if (vkAllocateDescriptorSets(_logicalDevice, &allocInfo,
+                                     _descriptorSets.data()) != VK_SUCCESS) {
+            throw std::runtime_error("Unable to allocate descriptor sets.");
+        };
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = _uniformBuffers[i];
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(ShaderMatrices);
+
+            VkWriteDescriptorSet descriptorWrite{};
+            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrite.dstSet = _descriptorSets[i];
+            descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.pBufferInfo = &bufferInfo;
+
+            // Unused
+            descriptorWrite.dstBinding = NULL;
+            descriptorWrite.dstArrayElement = NULL;
+
+            descriptorWrite.pImageInfo = nullptr;
+            descriptorWrite.pTexelBufferView = nullptr;
+
+            vkUpdateDescriptorSets(_logicalDevice, 1, &descriptorWrite, 0,
+                                   nullptr);
+        }
     }
 
     void VulkanRenderer::initialiseBuffers() {

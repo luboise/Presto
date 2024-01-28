@@ -71,6 +71,7 @@ namespace Presto {
         VkRenderPass _renderPass;
         VkPipelineLayout _pipelineLayout;
         VkPipeline _graphicsPipeline;
+        VkDescriptorSetLayout _descriptorSetLayout;
 
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
@@ -87,6 +88,13 @@ namespace Presto {
 
         VkBuffer _indexBuffer;
         VkDeviceMemory _indexBufferMemory;
+
+        std::vector<VkBuffer> _uniformBuffers;
+        std::vector<VkDeviceMemory> _uniformBuffersMemory;
+        std::vector<void*> _uniformBuffersMapped;
+
+        VkDescriptorPool _descriptorPool;
+        std::vector<VkDescriptorSet> _descriptorSets;
 
         std::vector<VkSemaphore> _imageAvailableSemaphores;
         std::vector<VkSemaphore> _renderFinishedSemaphores;
@@ -114,6 +122,8 @@ namespace Presto {
         void createFrameBuffers();
         void createCommandPool();
         void createBuffers();
+        void createDescriptorPool();
+        void createDescriptorSets();
         void initialiseBuffers();
         void createCommandBuffers();
         void createSyncObjects();

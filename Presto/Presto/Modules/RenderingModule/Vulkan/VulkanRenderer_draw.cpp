@@ -128,31 +128,25 @@ namespace Presto {
         vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
         this->recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
 
-        // PUT STUFF IN GPU BUFFER
-        // Create mapping from CPU to GPU, then copy the data into it
-        void* data;
+        ShaderMatrices mats{};
 
-        std::vector<VulkanVertex> verticesCopy = vertices;
-
+        // Update uniform buffers
         auto time = glfwGetTime();
         auto angle = glm::vec3(0, 0, 0);
 
         // auto cameraPos = glm::vec3(0, -2, 2);
         auto cameraPos = glm::vec3(0, 0, 0.75);
 
+        auto fovYDeg = 90;
         double scale =
             (glm::sin(time * glm::two_pi<double>() / 3) * 0.15) + 0.85;
 
-        for (auto& vertex : verticesCopy) {
-            vertex.pos = vertex.getProjected(angle, cameraPos, scale);
-        }
+        mats.modelView =
+            vertices[0].getModelViewMatrix(cameraPos, angle, scale);
+        mats.projection =
+            vertices[0].getProjectionMatrix(fovYDeg, this->_swapchainExtent);
 
-        // auto bufferSize = sizeof(vertices[0]) * vertices.size();
-        // vkMapMemory(_logicalDevice, _vertexBufferMemory, 0, bufferSize, 0,
-        //             &data);
-        // memcpy(data, verticesCopy.data(), (size_t)bufferSize);
-        // vkUnmapMemory(_logicalDevice, _vertexBufferMemory);
-
+        memcpy(_uniformBuffersMapped[_currentFrame], &mats, sizeof(mats));
         // END PUTTING STUFF IN GPU BUFFER
 
         // Which semaphores to wait on to draw
