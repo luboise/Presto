@@ -26,6 +26,6 @@ namespace Presto {
         static glm::mat4 getModelViewMatrix(glm::vec3 offset,
                                             glm::float32 scale);
         static glm::mat4 getProjectionMatrix(glm::float32 fovRad,
-                                                           VkExtent2D extents);
+                                             VkExtent2D extents);
     };
 }  // namespace Presto

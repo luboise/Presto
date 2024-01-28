@@ -109,6 +109,7 @@ namespace Presto {
         void createSwapChain();
         void createImageViews();
         void createRenderPass();
+        void createDescriptorSetLayout();
         void createGraphicsPipeline();
         void createFrameBuffers();
         void createCommandPool();
