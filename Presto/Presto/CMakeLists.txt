@@ -1,6 +1,7 @@
 add_subdirectory(Common)
 add_subdirectory(Modules)
 add_subdirectory(Platform)
+add_subdirectory(Objects)
 target_sources(Presto PRIVATE Objects/Object.h)
 
 target_sources(Presto
