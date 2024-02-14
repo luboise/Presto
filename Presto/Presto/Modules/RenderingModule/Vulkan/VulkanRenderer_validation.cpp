@@ -20,6 +20,11 @@ namespace Presto {
                 }
             }
             if (!layerFound) {
+                if (strcmp(layerName, "VK_LAYER_KHRONOS_validation") == 0) {
+                    throw std::runtime_error(
+                        "Unable to locate the Vulkan validation layers. Please "
+                        "check that the Vulkan SDK is installed.");
+                }
                 return false;
             }
         }

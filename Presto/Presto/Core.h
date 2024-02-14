@@ -16,12 +16,23 @@
     #error Build platform not specified. Expected PR_PLATFORM_WINDOWS or PR_PLATFORM_UNIX
 #endif
 
-#ifdef PR_ENABLE_ASSERTS
+#ifndef NDEBUG
+    #if defined(PR_PLATFORM_WINDOWS)
+        #define TRIP_DEBUGGER() __debugbreak()
+    #elif defined(PR_PLATFORM_UNIX)
+        #include "signal.h"
+        #if defined(SIGTRAP)
+            #define TRIP_DEBUGGER() raise(SIGTRAP)
+        #else
+            #define TRIP_DEBUGGER() raise(SIGABRT)
+        #endif
+    #endif
+
     #define PR_ASSERT(x, ...)                                  \
         {                                                      \
             if (!(x)) {                                        \
                 PR_ERROR("Assertion failed: {}", __VA_ARGS__); \
-                __debugbreak();                                \
+                TRIP_DEBUGGER();                               \
             }                                                  \
         }
 
@@ -29,7 +40,7 @@
         {                                                           \
             if (!(x)) {                                             \
                 PR_CORE_ERROR("Assertion failed: {}", __VA_ARGS__); \
-                __debugbreak();                                     \
+                TRIP_DEBUGGER();                                    \
             }                                                       \
         }
 
