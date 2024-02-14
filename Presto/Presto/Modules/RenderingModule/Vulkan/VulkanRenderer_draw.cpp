@@ -1,7 +1,7 @@
+#include "RenderingModule/RenderTypes.h"
 #include "VulkanRenderer.h"
 
 #include <GLFW/glfw3.h>
-
 #include <glm/gtc/constants.hpp>
 
 namespace Presto {

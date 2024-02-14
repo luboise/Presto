@@ -4,11 +4,7 @@
 #include "Presto/Core.h"
 #include "Presto/Log.h"
 
-// External includes
-#include <glm/glm.hpp>
-
 // Utility stuff
-#include <functional>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -17,6 +13,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+// Maths
+#include <glm/glm.hpp>
 
 // Multi threading
 #include <atomic>

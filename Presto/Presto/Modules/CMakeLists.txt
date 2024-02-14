@@ -10,9 +10,12 @@ PRIVATE RenderingModule/Vulkan/VulkanRenderer.cpp
 		RenderingModule/Vulkan/VulkanRenderer_init.cpp
 		RenderingModule/Vulkan/VulkanRenderer_shading.cpp
 		RenderingModule/Vulkan/VulkanVertex.cpp
+		RenderingModule/RenderTypes.h
 
 PUBLIC	ResourcesModule/ResourceManager.h
 PRIVATE	ResourcesModule/ResourceManager.cpp
+
+PUBLIC 	InputModule/InputManager.h
 )
 
 target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

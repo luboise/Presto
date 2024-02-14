@@ -1,10 +1,17 @@
 add_library(Presto SHARED)
+# Needed for shared library
+set_property(TARGET Presto PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-if (WIN32)
-	target_compile_definitions(Presto
-		PRIVATE PR_BUILD_DLL
-	)
-endif()
+
+# if (WIN32)
+# 	target_compile_definitions(Presto
+# 		PRIVATE PR_BUILD_LIB
+# 	)
+# endif()
+
+target_compile_definitions(Presto
+	PRIVATE PR_BUILD_LIB
+)
 
 target_precompile_headers(Presto PRIVATE Presto/prpch.h)
 

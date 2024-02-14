@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef PR_PLATFORM_WINDOWS
+// #ifdef PR_PLATFORM_WINDOWS
 
 // Pulled from somewhere else
 extern Presto::Application* Presto::CreateApplication();
@@ -15,4 +15,4 @@ int main(int argc, char** argv) {
     delete app;
 }
 
-#endif
+// #endif

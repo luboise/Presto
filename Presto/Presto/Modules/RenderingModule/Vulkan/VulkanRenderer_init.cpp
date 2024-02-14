@@ -1,5 +1,7 @@
 #include "VulkanRenderer.h"
 
+#include "RenderingModule/RenderTypes.h"
+
 namespace Presto {
     void VulkanRenderer::createSurface() {
         if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
@@ -476,8 +478,8 @@ namespace Presto {
             descriptorWrite.pBufferInfo = &bufferInfo;
 
             // Unused
-            descriptorWrite.dstBinding = NULL;
-            descriptorWrite.dstArrayElement = NULL;
+            descriptorWrite.dstBinding = 0;
+            descriptorWrite.dstArrayElement = 0;
 
             descriptorWrite.pImageInfo = nullptr;
             descriptorWrite.pTexelBufferView = nullptr;

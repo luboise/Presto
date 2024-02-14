@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Presto/Core.h"
+
+#include <functional>
+#include <memory>
 #include <string>
-// #include "prpch.h"
 
 namespace Presto {
     enum class EventType {
@@ -42,11 +44,11 @@ namespace Presto {
     // Defines that can be reused between child classes to get event types,
     // consistent between classes
 
-#define EVENT_CLASS_TYPE(type)                                     \
-    static EventType GetStaticType() { return EventType::##type; } \
-    virtual EventType GetEventType() const override {              \
-        return GetStaticType();                                    \
-    }                                                              \
+#define EVENT_CLASS_TYPE(type)                                   \
+    static EventType GetStaticType() { return EventType::type; } \
+    virtual EventType GetEventType() const override {            \
+        return GetStaticType();                                  \
+    }                                                            \
     virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) \

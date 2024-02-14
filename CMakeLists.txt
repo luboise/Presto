@@ -9,15 +9,6 @@ project(Presto)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
-if (WIN32)
-	add_compile_definitions(PR_PLATFORM_WINDOWS)
-	add_compile_definitions(NOMINMAX)
-endif()
-
-set(CMAKE_GENERATOR_PLATFORM "x64"
-	CACHE STRING "Platform (x64)" FORCE
-)
-
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Dist" CACHE STRING "Build Configurations" FORCE)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -25,6 +16,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 add_subdirectory(ext/spdlog)
+set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(ext/GLFW)
 link_libraries(glfw)
@@ -94,12 +86,35 @@ macro(CompileShadersForTarget TARGET_NAME SHADER_SOURCE_DIR)
 	endforeach()
 endmacro()
 
+if (WIN32)
+	set(PLATFORM Windows)
+
+	add_compile_definitions(PR_PLATFORM_WINDOWS)
+	add_compile_definitions(NOMINMAX)
+	
+	set(CMAKE_GENERATOR_PLATFORM "x64"
+		CACHE STRING "Platform (x64)" FORCE
+	)
+elseif(UNIX)
+	set(PLATFORM Unix)
+	add_compile_definitions(PR_PLATFORM_UNIX)
+else()
+	message(FATAL_ERROR "Platform not selected. Expected Windows or Unix platform for compilation.")
+endif()
+
 add_subdirectory(Presto)
 target_link_libraries(Presto
-	PRIVATE glfw glm ${Vulkan_LIBRARIES} opengl32.lib dwmapi.lib XInput9_1_0.lib
-	PUBLIC spdlog
+	PRIVATE glfw ${Vulkan_LIBRARIES}
+	PUBLIC spdlog glm
+)
+target_include_directories(Presto
+	PRIVATE ext/spdlog/include ext/glm/include
 )
 # target_link_libraries(Presto PRIVATE glfw)
+if(PLATFORM STREQUAL "Windows")
+	target_link_libraries(Presto PRIVATE dwmapi.lib XInput9_1_0.lib)
+endif()
+
 
 add_subdirectory(Duality)
 
