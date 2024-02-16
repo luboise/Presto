@@ -1,5 +1,8 @@
 #pragma once
 
+#include <signal.h>
+#include <stdio.h>
+
 #if defined(PR_PLATFORM_WINDOWS)
     #ifdef PR_BUILD_LIB
         #define PRESTO_API __declspec(dllexport)
@@ -20,7 +23,6 @@
     #if defined(PR_PLATFORM_WINDOWS)
         #define TRIP_DEBUGGER() __debugbreak()
     #elif defined(PR_PLATFORM_UNIX)
-        #include "signal.h"
         #if defined(SIGTRAP)
             #define TRIP_DEBUGGER() raise(SIGTRAP)
         #else

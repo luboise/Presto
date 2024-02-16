@@ -42,7 +42,7 @@ namespace Presto {
             this->createCommandBuffers();
             this->createSyncObjects();
         } catch (const std::runtime_error& e) {
-            PR_CORE_ASSERT(
+            PR_CORE_ERROR(
                 "Unable to initialise Vulkan renderer. Runtime error: {}",
                 e.what());
             this->_initialised = false;
