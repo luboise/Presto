@@ -6,6 +6,10 @@ namespace Presto {
     VkShaderModule VulkanRenderer::createShaderModule(
         const std::string& filepath) {
         auto code = ResourceManager::readFile(filepath);
+        PR_CORE_ASSERT(code.size() > 0,
+                       "An input shader \"" + filepath +
+                           "\" has a length of 0. A valid shader can not be "
+                           "made out of this.");
         return createShaderModule(code);
     }
 
