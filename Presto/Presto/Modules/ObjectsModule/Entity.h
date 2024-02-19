@@ -1,10 +1,10 @@
 #pragma once
 
 namespace Presto {
-    class PRESTO_API Object {
+    class PRESTO_API Entity {
        public:
-        Object();
-        virtual ~Object();
+        Entity();
+        virtual ~Entity();
 
         uint32_t getId() const;
 

@@ -1,1 +1,0 @@
-target_sources(Presto PRIVATE Object.h Object.cpp)
