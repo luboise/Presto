@@ -1,0 +1,15 @@
+Engine controls
+- main loop	
+	- Create new entities
+	- Run user logic (virtual function)
+	- Run modules
+	- Run systems on components for relevant entities
+	- Render
+	- Update (renderer etc)
+
+- updating all of the systems
+	- default systems to use
+
+Game controls
+- Entities
+	- Public components of those entities

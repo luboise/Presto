@@ -117,6 +117,7 @@ endif()
 
 
 add_subdirectory(Duality)
+target_include_directories(Duality PRIVATE ${PRESTO_INCLUDE_DIRS})
 
 # add_subdirectory(PrestoTest)
 

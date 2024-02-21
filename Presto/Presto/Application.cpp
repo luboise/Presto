@@ -1,6 +1,6 @@
-// #include "prpch.h"
 
 #include "Application.h"
+#include "Modules/ObjectsModule/EntityManager.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
@@ -17,6 +17,20 @@ namespace Presto {
 
     void Application::Run() {
         while (app_running) {
+            // Create new entities
+
+            // Run user logic
+            GameLoop();
+
+            // Run modules
+            RunModules();
+
+            // Run systems
+
+            for (auto& system : _systems) {
+                system.Update();
+            }
+
             app_window->OnUpdate();
         }
     }
@@ -29,8 +43,15 @@ namespace Presto {
 
         PR_CORE_TRACE("{}", e.ToString());
     }
+
     bool Application::OnWindowClose(WindowCloseEvent& e) {
         this->app_running = false;
         return true;
+    }
+
+    void Application::RunModules() {
+        for (auto& module : _modules) {
+            module.Update();
+        }
     }
 }  // namespace Presto

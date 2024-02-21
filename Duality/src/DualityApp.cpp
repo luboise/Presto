@@ -1,11 +1,15 @@
-#include <Presto.h>
+#include <Presto/Presto.h>
 
-// #include <Presto/EntryPoint.h>
+namespace Pr = Presto;
 
 class DualityApp : public Presto::Application {
    public:
-    DualityApp() {}
+    DualityApp() { this->_heart = Pr::EntityManager::newEntity(); }
+
     ~DualityApp() {}
+
+   private:
+    Pr::Entity* _heart;
 };
 
 Presto::Application* Presto::CreateApplication() { return new DualityApp(); }

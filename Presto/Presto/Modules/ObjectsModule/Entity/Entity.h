@@ -14,4 +14,6 @@ namespace Presto {
         static uint32_t getNextAvailableId(void);
         static uint32_t _currentId;
     };
+
+    typedef Entity* entity_t;
 }  // namespace Presto

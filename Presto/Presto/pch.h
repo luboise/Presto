@@ -9,9 +9,6 @@
 #include <memory>
 #include <utility>
 
-// Typing
-#include <stdint.h>
-
 // Data
 #include <sstream>
 #include <string>

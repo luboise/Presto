@@ -1,7 +1,7 @@
 #pragma once
 
-#include <signal.h>
-#include <stdio.h>
+// Mandatory libraries
+#include <stdint.h>
 
 #if defined(PR_PLATFORM_WINDOWS)
     #ifdef PR_BUILD_LIB
@@ -10,6 +10,9 @@
         #define PRESTO_API __declspec(dllimport)
     #endif
 #elif defined(PR_PLATFORM_UNIX)
+    #include <signal.h>
+    #include <stdio.h>
+
     #ifdef PR_BUILD_LIB
         #define PRESTO_API __attribute__((visibility("default")))
     #else

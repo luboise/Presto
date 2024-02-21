@@ -14,6 +14,6 @@ target_include_directories(Presto
 # target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(Presto
-	PRIVATE Application.cpp Core.h EntryPoint.h Log.h Log.cpp prpch.cpp prpch.h
+	PRIVATE Application.cpp Core.h EntryPoint.h Log.h Log.cpp pch.cpp pch.h
 	PUBLIC Window.h Application.h
 )

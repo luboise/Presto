@@ -1,8 +1,7 @@
-// #include "prpch.h"
 
 #include "InputManager.h"
 
-// <chrono> included by utility in prpch.h
+// <chrono> included by utility in pch.h
 
 namespace Presto {
     using namespace std::chrono_literals;
