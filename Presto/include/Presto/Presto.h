@@ -8,5 +8,11 @@
 // Object includes
 #include "Presto/Modules/ObjectsModule/_EntityHeader.h"
 
+// Available components
+#include "Presto/Components/_ComponentHeader.h"
+
+// Type includes
+#include "Presto/Modules/RenderingModule/Vulkan/VulkanVertex.h"
+
 // ENTRY POINT - NEED TO ENTER THIS YOURSELF
 #include "Presto/EntryPoint.h"

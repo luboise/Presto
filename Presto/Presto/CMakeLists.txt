@@ -17,3 +17,5 @@ target_sources(Presto
 	PRIVATE Application.cpp Core.h EntryPoint.h Log.h Log.cpp pch.cpp pch.h
 	PUBLIC Window.h Application.h
 )
+
+add_subdirectory(Components)
