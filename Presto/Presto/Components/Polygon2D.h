@@ -1,5 +1,6 @@
 #include "Presto/Modules/ObjectsModule/Component/Component.h"
 
+#include "Presto/Modules/RenderingModule/Types/ModelComponent.h"
 #include "Presto/Modules/RenderingModule/Vulkan/VulkanVertex.h"
 
 namespace Presto {

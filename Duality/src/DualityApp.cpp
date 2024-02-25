@@ -39,9 +39,9 @@ class DualityApp : public Presto::Application {
         this->_heart = Pr::EntityManager::newEntity();
 
         Pr::VertexList vertices = makeHeart(200);
-        Pr::Polygon2D* shape(vertices);
+        Pr::Polygon2D* shape = new Pr::Polygon2D(vertices);
 
-        this->_heart.addComponent();
+        this->_heart->addComponent(shape);
     }
 
     ~DualityApp() {}
