@@ -12,7 +12,7 @@ namespace Presto {
 
     VulkanRenderer::~VulkanRenderer() {
         if (this->IsInitialised()) this->Shutdown();
-    };
+    }
 
     void VulkanRenderer::Init() {
         this->_initialised = true;
@@ -24,11 +24,6 @@ namespace Presto {
             this->createLogicalDevice();
             this->createSwapChain();
             this->createImageViews();
-            this->createRenderPass();
-            // Descriptor sets
-            this->createDescriptorSetLayout();
-            // Make pipeline
-            this->createGraphicsPipeline();
 
             this->createFrameBuffers();
             this->createCommandPool();
@@ -41,6 +36,8 @@ namespace Presto {
 
             this->createCommandBuffers();
             this->createSyncObjects();
+
+            this->createDefaultPipeline();
         } catch (const std::runtime_error& e) {
             PR_CORE_ERROR(
                 "Unable to initialise Vulkan renderer. Runtime error: {}",
@@ -251,8 +248,18 @@ namespace Presto {
         }
     }
 
-    PR_RESULT VulkanRenderer::recordCommandBuffer(VkCommandBuffer commandBuffer,
-                                                  uint32_t imageIndex) {
+    void VulkanRenderer::createDefaultPipeline() {
+        VulkanPipeline pipeline;
+
+        createRenderPass(pipeline);
+        createRenderPass(pipeline);
+
+        _graphicsPipelines.push_back(pipeline);
+    }
+
+    PR_RESULT VulkanRenderer::recordCommandBuffer(
+        const VulkanPipeline& pipeline, VkCommandBuffer commandBuffer,
+        uint32_t imageIndex) {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.pInheritanceInfo = nullptr;

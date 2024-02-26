@@ -4,6 +4,9 @@
 #include "VulkanVertex.h"
 
 #include <vulkan/vulkan.h>
+
+#include "Presto/Modules/ObjectsModule/Entity/Entity.h"
+
 // KEEP THESE SEPARATE
 #include <GLFW/glfw3.h>
 
@@ -22,10 +25,6 @@ namespace Presto {
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-#define HEART_POINTS 300
-    extern const std::vector<VulkanVertex> vertices;
-    extern const std::vector<uint16_t> indices;
-
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
@@ -42,19 +41,40 @@ namespace Presto {
         std::vector<VkPresentModeKHR> presentModes;
     };
 
+    struct VulkanPipeline {
+        VkRenderPass renderPass;
+        VkPipelineLayout pipelineLayout;
+        VkPipeline graphicsPipeline;
+    };
+
+    struct VulkanPipelineOptions {};
+
     class PRESTO_API VulkanRenderer : public Renderer {
        public:
         VulkanRenderer(GLFWwindow* window);
         virtual ~VulkanRenderer();
+
+        virtual void Update() override;
 
         virtual void Init();
         virtual void Shutdown();
 
         PR_RESULT drawFrame();
 
+        PR_RESULT render();
+
        private:
         GLFWwindow* _glfwWindow;
 
+        PR_RESULT nextFrame();
+
+        // User members
+        void AddToRenderPool(entity_t entity_ptr) override;
+        void DrawEntity(entity_t entity_ptr) override;
+
+        std::vector<VulkanPipeline> _graphicsPipelines;
+
+        // Background members
         VkInstance _instance;
         VkDebugUtilsMessengerEXT _debugMessenger;
         VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
@@ -68,9 +88,6 @@ namespace Presto {
         std::vector<VkImageView> _swapchainImageViews;
         std::vector<VkFramebuffer> _swapchainFramebuffers;
 
-        VkRenderPass _renderPass;
-        VkPipelineLayout _pipelineLayout;
-        VkPipeline _graphicsPipeline;
         VkDescriptorSetLayout _descriptorSetLayout;
 
         VkQueue _graphicsQueue;
@@ -116,9 +133,7 @@ namespace Presto {
         void createLogicalDevice();
         void createSwapChain();
         void createImageViews();
-        void createRenderPass();
-        void createDescriptorSetLayout();
-        void createGraphicsPipeline();
+
         void createFrameBuffers();
         void createCommandPool();
         void createBuffers();
@@ -128,7 +143,16 @@ namespace Presto {
         void createCommandBuffers();
         void createSyncObjects();
 
-        PR_RESULT recordCommandBuffer(VkCommandBuffer commandBuffer,
+        void createRenderPass(VulkanPipeline& pipeline);
+        void createDescriptorSetLayout(VulkanPipeline& pipeline);
+        void buildGraphicsPipeline(VulkanPipeline& pipeline);
+
+        size_t createGraphicsPipeline(VulkanPipelineOptions& options);
+
+        void createDefaultPipeline();
+
+        PR_RESULT recordCommandBuffer(const VulkanPipeline& pipeline,
+                                      VkCommandBuffer commandBuffer,
                                       uint32_t imageIndex);
 
         void cleanupSwapChain();

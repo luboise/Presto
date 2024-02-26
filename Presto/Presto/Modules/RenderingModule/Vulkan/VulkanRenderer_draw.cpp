@@ -13,57 +13,18 @@ namespace Presto {
 
     glm::vec3 getRandomRed() { return getRandomRed(0.05); }
 
-    std::vector<VulkanVertex> makeHeartSlow() {
-        std::vector<VulkanVertex> heart;
-
-        VulkanVertex startingPoint = {{0.0f, 0.5f, 0.0f}, getRandomRed()};
-        VulkanVertex middlePoint = {{.0f, -.25f, .0f}, getRandomRed()};
-        std::vector<VulkanVertex> leftHalf = {
-            {{-0.5f, -0.15f, 0.0f}, getRandomRed()},
-            {{-0.25f, -0.5f, 0.0f}, getRandomRed()},
-        };
-
-        std::vector<VulkanVertex> rightHalf;
-        for (auto it = leftHalf.rbegin(); it != leftHalf.rend(); it++) {
-            const auto& vertex = *it;
-            auto vertexCopy = vertex;
-            vertexCopy.pos.x *= -1;
-            vertexCopy.color = getRandomRed();
-            rightHalf.push_back(vertexCopy);
-        }
-
-        heart.push_back(startingPoint);
-        for (const auto& v : leftHalf) {
-            heart.push_back(v);
-        };
-
-        heart.push_back(middlePoint);
-
-        for (auto it = leftHalf.rbegin(); it != leftHalf.rend(); it++) {
-            VulkanVertex v = *it;
-            v.pos.x *= -1;
-            heart.push_back(v);
-        }
-
-        return heart;
-    }
-
-    // Curve modified from https://mathworld.wolfram.com/HeartCurve.html,
-    // subtracted 2.5 and then divided by 15 to roughly scale the range
-    // to [-1, 1]
-
     const std::vector<uint16_t> makeIndices(uint16_t vertexCount) {
         std::vector<uint16_t> indices(vertexCount);
         for (auto i = 0; i < vertexCount; i++) indices[i] = i;
         return indices;
     };
 
-    // Defined external vectors
-    const std::vector<VulkanVertex> vertices = makeHeart(HEART_POINTS);
-    const std::vector<uint16_t> indices = makeIndices(HEART_POINTS);
+    void VulkanRenderer::Update(){
+
+    };
 
     PR_RESULT
-    VulkanRenderer::drawFrame() {
+    VulkanRenderer::render() {
         VkResult res;
         // Wait for previous frame (1 fence, wait all fences) then reset fence
         // to unsignaled
@@ -98,7 +59,7 @@ namespace Presto {
         // Reset, then record command buffer which draws our scene into the
         // image
         vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
-        this->recordCommandBuffer(_commandBuffers[_currentFrame], imageIndex);
+        this->recordCommandBuffer(, _commandBuffers[_currentFrame], imageIndex);
 
         ShaderMatrices mats{};
 

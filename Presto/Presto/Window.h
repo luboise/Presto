@@ -32,7 +32,7 @@ namespace Presto {
         virtual ~Window(){};
         virtual void Shutdown() = 0;
 
-        virtual void OnUpdate() = 0;
+        virtual void RenderFrame() = 0;
 
         virtual unsigned GetWidth() const = 0;
         virtual unsigned GetHeight() const = 0;
@@ -45,9 +45,6 @@ namespace Presto {
         // Uses default props if unspecified
         static Window* Create(
             const WindowProperties& props = WindowProperties());
-
-       protected:
-        Renderer* _renderer;
     };
 
 }  // namespace Presto

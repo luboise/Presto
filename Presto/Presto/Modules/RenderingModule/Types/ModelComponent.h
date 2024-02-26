@@ -1,21 +1,26 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+
 namespace Presto {
     class ModelComponent {
        public:
-        glm::vec3 getProjected(glm::vec3 yawPitchRoll) const;
-        glm::vec3 getProjected(glm::vec3 yawPitchRoll,
-                               glm::vec3 cameraPos) const;
-        glm::vec3 getProjected(glm::vec3 yawPitchRoll, glm::vec3 cameraPos,
-                               glm::float32 scale) const;
+        // glm::vec3 getProjected(glm::vec3 yawPitchRoll) const;
+        // glm::vec3 getProjected(glm::vec3 yawPitchRoll,
+        //                        glm::vec3 cameraPos) const;
+        // glm::vec3 getProjected(glm::vec3 yawPitchRoll, glm::vec3 cameraPos,
+        //                        glm::float32 scale) const;
 
         static glm::mat4 getModelViewMatrix(glm::vec3 offset,
                                             glm::vec3 yawPitchRoll,
                                             glm::float32 scale);
         static glm::mat4 getModelViewMatrix(glm::vec3 offset,
                                             glm::float32 scale);
-        static glm::mat4 getProjectionMatrix(glm::float32 fovRad,
-                                             VkExtent2D extents);
+        // static glm::mat4 getProjectionMatrix(glm::float32 fovRad,
+        //                                      VkExtent2D extents);
 
         void setScale(glm::vec3 scale);
         void setTranslation(glm::vec3 translation);

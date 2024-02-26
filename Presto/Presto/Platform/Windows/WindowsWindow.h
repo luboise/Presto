@@ -11,7 +11,7 @@ namespace Presto {
         WindowsWindow(const WindowProperties& props);
         virtual ~WindowsWindow();
 
-        void OnUpdate() override;
+        void RenderFrame() override;
 
         inline unsigned GetWidth() const override { return w_data.width; }
         inline unsigned GetHeight() const override { return w_data.height; }

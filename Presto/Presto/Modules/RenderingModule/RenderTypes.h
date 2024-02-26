@@ -1,3 +1,5 @@
+#include "Presto/Modules/RenderingModule/Types/RenderLayer.h"
+
 namespace Presto {
     struct ShaderMatrices {
         glm::mat4 modelView;

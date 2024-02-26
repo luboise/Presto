@@ -31,7 +31,7 @@ namespace Presto {
                 system.Update();
             }
 
-            app_window->OnUpdate();
+            app_window->RenderFrame();
         }
     }
 

@@ -1,10 +1,5 @@
 #include "VulkanVertex.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtc/constants.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-
 namespace Presto {
     const glm::float32 cameraZDistance = 2.0f;
 

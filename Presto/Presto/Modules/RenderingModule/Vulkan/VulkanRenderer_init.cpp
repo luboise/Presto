@@ -126,7 +126,7 @@ namespace Presto {
         };
     }
 
-    void VulkanRenderer::createRenderPass() {
+    void VulkanRenderer::createRenderPass(VulkanPipeline& pipeline) {
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = _swapchainImageFormat;
 
@@ -187,12 +187,12 @@ namespace Presto {
         renderPassInfo.pDependencies = &subpassDependency;
 
         if (vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
-                               &(this->_renderPass)) != VK_SUCCESS) {
+                               &(pipeline.renderPass)) != VK_SUCCESS) {
             throw std::runtime_error("Unable to create render pass.");
         }
     }
 
-    void VulkanRenderer::createGraphicsPipeline() {
+    void VulkanRenderer::buildGraphicsPipeline(VulkanPipeline& pipeline) {
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
 
@@ -309,7 +309,7 @@ namespace Presto {
         pipelineLayoutInfo.pPushConstantRanges = nullptr;        // Optional
 
         if (vkCreatePipelineLayout(_logicalDevice, &pipelineLayoutInfo, nullptr,
-                                   &_pipelineLayout) != VK_SUCCESS) {
+                                   &pipeline.pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error(
                 "Unable to create graphics pipeline layout.");
         }
@@ -329,18 +329,18 @@ namespace Presto {
         createInfo.pDynamicState = &dynamicState;
         // createInfo.pTessellationState = nullptr;
 
-        createInfo.layout = this->_pipelineLayout;
+        createInfo.layout = pipeline.pipelineLayout;
 
-        createInfo.renderPass = this->_renderPass;
+        createInfo.renderPass = pipeline.renderPass;
         createInfo.subpass = 0;
 
         // Use when deriving from another pipeline
         createInfo.basePipelineHandle = VK_NULL_HANDLE;
         createInfo.basePipelineIndex = -1;
 
-        auto res =
-            vkCreateGraphicsPipelines(_logicalDevice, VK_NULL_HANDLE, 1,
-                                      &createInfo, nullptr, &_graphicsPipeline);
+        auto res = vkCreateGraphicsPipelines(_logicalDevice, VK_NULL_HANDLE, 1,
+                                             &createInfo, nullptr,
+                                             &pipeline.graphicsPipeline);
 
         vkDestroyShaderModule(_logicalDevice, fragShaderModule, nullptr);
         vkDestroyShaderModule(_logicalDevice, vertShaderModule, nullptr);

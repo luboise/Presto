@@ -159,7 +159,7 @@ namespace Presto {
             });
     }
 
-    void UnixWindow::OnUpdate() {
+    void UnixWindow::RenderFrame() {
         auto new_time = glfwGetTime();
         double delta = new_time - _glfwTime;
 

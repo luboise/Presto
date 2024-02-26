@@ -13,7 +13,7 @@ namespace Presto {
         uint32_t getId() const;
 
         template <typename ComponentClass>
-        void addComponent(ComponentClass* component) {
+        void setComponent(ComponentClass* component) {
             component_class_t name = component->getClassID();
             _components.emplace(component.getClassID,
                                 std::make_shared(component));

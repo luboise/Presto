@@ -2,6 +2,8 @@
 
 #include <glm/gtc/constants.hpp>
 
+#define HEART_POINTS 300
+
 namespace Pr = Presto;
 
 std::vector<Pr::VulkanVertex> makeHeart(uint32_t points) {
@@ -41,8 +43,9 @@ class DualityApp : public Presto::Application {
         Pr::VertexList vertices = makeHeart(200);
         Pr::Polygon2D* shape = new Pr::Polygon2D(vertices);
 
-        this->_heart->addComponent(shape);
-    }
+        // This will set the heart's Polygon2D object to the shape
+        this->_heart->setComponent(shape);
+        }
 
     ~DualityApp() {}
 

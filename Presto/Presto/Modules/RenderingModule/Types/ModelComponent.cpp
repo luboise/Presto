@@ -2,31 +2,6 @@
 
 namespace Presto {
 
-    glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll) const {
-        return getProjected(yawPitchRoll, glm::vec3(0, 0, 10.0f));
-    }
-
-    glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll,
-                                           glm::vec3 cameraPos) const {
-        return getProjected(yawPitchRoll, cameraPos, 1.0);
-    }
-
-    glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll,
-                                           glm::vec3 cameraPos,
-                                           glm::float32 scale) const {
-        auto fovYDeg = 90;
-        VkExtent2D viewport{1280, 720};
-
-        auto mvm = getModelViewMatrix(cameraPos, yawPitchRoll, scale);
-        auto pm = getProjectionMatrix(fovYDeg, viewport);
-
-        auto projected = pm * mvm * glm::vec4(this->pos, 1);
-
-        // Normalise to -1, 1
-        auto normalised = glm::vec3(projected) / projected.w;
-        return normalised;
-    }
-
     glm::mat4 ModelComponent::getModelViewMatrix(glm::vec3 offset,
                                                  glm::float32 scale) {
         return getModelViewMatrix(offset, glm::vec3(0.0f), scale);
@@ -56,13 +31,38 @@ namespace Presto {
         return view * model;
     }
 
-    glm::mat4 ModelComponent::getProjectionMatrix(glm::float32 fovDeg,
-                                                  VkExtent2D extents) {
-        float fovRad = glm::radians(fovDeg);
-        glm::mat4 projection =
-            glm::perspectiveFov(fovRad, (glm::float32)extents.width,
-                                (glm::float32)extents.height, 0.01f, 100.0f);
+    // glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll) const {
+    //     return getProjected(yawPitchRoll, glm::vec3(0, 0, 10.0f));
+    // }
 
-        return projection;
-    }
+    // glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll,
+    //                                        glm::vec3 cameraPos) const {
+    //     return getProjected(yawPitchRoll, cameraPos, 1.0);
+    // }
+
+    // glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll,
+    //                                        glm::vec3 cameraPos,
+    //                                        glm::float32 scale) const {
+    //     auto fovYDeg = 90;
+    //     VkExtent2D viewport{1280, 720};
+
+    //     auto mvm = getModelViewMatrix(cameraPos, yawPitchRoll, scale);
+    //     auto pm = getProjectionMatrix(fovYDeg, viewport);
+
+    //     auto projected = pm * mvm * glm::vec4(this->pos, 1);
+
+    //     // Normalise to -1, 1
+    //     auto normalised = glm::vec3(projected) / projected.w;
+    //     return normalised;
+    // }
+
+    // glm::mat4 ModelComponent::getProjectionMatrix(glm::float32 fovDeg,
+    //                                               VkExtent2D extents) {
+    //     float fovRad = glm::radians(fovDeg);
+    //     glm::mat4 projection =
+    //         glm::perspectiveFov(fovRad, (glm::float32)extents.width,
+    //                             (glm::float32)extents.height, 0.01f, 100.0f);
+
+    //     return projection;
+    // }
 }  // namespace Presto
