@@ -1,10 +1,12 @@
 target_sources(Presto
 PUBLIC	Module.h
+		InputModule/InputManager.h
+		ResourcesModule/ResourceManager.h
+		_ModulesHeader.h
 
-PUBLIC	ResourcesModule/ResourceManager.h
 PRIVATE	ResourcesModule/ResourceManager.cpp
 
-PUBLIC 	InputModule/InputManager.h
+
 )
 
 target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -57,10 +57,13 @@ namespace Presto {
             vkFreeMemory(_logicalDevice, _uniformBuffersMemory[i], nullptr);
         }
 
-        vkDestroyDescriptorPool(_logicalDevice, _descriptorPool, nullptr);
+        for (auto& pipeline : _graphicsPipelines) {
+            vkDestroyDescriptorPool(_logicalDevice, pipeline.descriptorPool,
+                                    nullptr);
 
-        vkDestroyDescriptorSetLayout(_logicalDevice, _descriptorSetLayout,
-                                     nullptr);
+            vkDestroyDescriptorSetLayout(_logicalDevice,
+                                         pipeline.descriptorSetLayout, nullptr);
+        }
 
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
@@ -71,10 +74,14 @@ namespace Presto {
         vkDestroyBuffer(_logicalDevice, _stagingBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _stagingBufferMemory, nullptr);
 
-        vkDestroyPipeline(_logicalDevice, _graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(_logicalDevice, _pipelineLayout, nullptr);
+        for (auto& pipeline : _graphicsPipelines) {
+            vkDestroyPipeline(_logicalDevice, pipeline.graphicsPipeline,
+                              nullptr);
+            vkDestroyPipelineLayout(_logicalDevice, pipeline.pipelineLayout,
+                                    nullptr);
 
-        vkDestroyRenderPass(_logicalDevice, _renderPass, nullptr);
+            vkDestroyRenderPass(_logicalDevice, pipeline.renderPass, nullptr);
+        }
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(_logicalDevice, _renderFinishedSemaphores[i],
@@ -271,7 +278,7 @@ namespace Presto {
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = _renderPass;
+        renderPassInfo.renderPass = pipeline.renderPass;
         renderPassInfo.framebuffer = _swapchainFramebuffers[imageIndex];
 
         renderPassInfo.renderArea.offset = {0, 0};
@@ -287,7 +294,7 @@ namespace Presto {
 
         // Bind the command buffer to the pipeline
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          _graphicsPipeline);
+                          pipeline.graphicsPipeline);
 
         // Set viewport
         VkViewport viewport{};
@@ -314,14 +321,16 @@ namespace Presto {
                              VK_INDEX_TYPE_UINT16);
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                _pipelineLayout, 0, 1,
+                                pipeline.pipelineLayout, 0, 1,
                                 &(_descriptorSets[_currentFrame]), 0, nullptr);
 
+        // Draw commands
         uint32_t vertexOffset = 0;
         uint16_t indexOffset = 0;
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()),
                          1, vertexOffset, indexOffset, 0);
 
+        // Submission
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
@@ -442,7 +451,7 @@ namespace Presto {
         return indices;
     }
 
-    void VulkanRenderer::createDescriptorSetLayout() {
+    void VulkanRenderer::createDescriptorSetLayout(VulkanPipeline& pipeline) {
         // Create binding
         VkDescriptorSetLayoutBinding layoutBinding{};
         layoutBinding.binding = 0;
@@ -458,7 +467,8 @@ namespace Presto {
         createInfo.pBindings = &layoutBinding;
 
         if (vkCreateDescriptorSetLayout(_logicalDevice, &createInfo, nullptr,
-                                        &_descriptorSetLayout) != VK_SUCCESS) {
+                                        &pipeline.descriptorSetLayout) !=
+            VK_SUCCESS) {
             throw std::runtime_error("Unable to create descriptor set layout.");
         };
     }

@@ -2,7 +2,6 @@
 #include "VulkanRenderer.h"
 
 #include <GLFW/glfw3.h>
-#include <glm/gtc/constants.hpp>
 
 namespace Presto {
     glm::vec3 getRandomRed(const double maxNonRed) {
@@ -24,7 +23,7 @@ namespace Presto {
     };
 
     PR_RESULT
-    VulkanRenderer::render() {
+    VulkanRenderer::drawFrame() {
         VkResult res;
         // Wait for previous frame (1 fence, wait all fences) then reset fence
         // to unsignaled
@@ -59,25 +58,26 @@ namespace Presto {
         // Reset, then record command buffer which draws our scene into the
         // image
         vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
-        this->recordCommandBuffer(, _commandBuffers[_currentFrame], imageIndex);
 
-        ShaderMatrices mats{};
+        // Record each pipeline into the fresh command buffer
+        for (auto& pipeline : _graphicsPipelines) {
+            this->recordCommandBuffer(pipeline, _commandBuffers[_currentFrame],
+                                      imageIndex);
+        }
 
         // Update uniform buffers
         auto time = glfwGetTime();
         auto angle = glm::vec3(0, 0, 0);
 
-        // auto cameraPos = glm::vec3(0, -2, 2);
-        auto cameraPos = glm::vec3(0, 0, 0.75);
+        // Update uniform buffers
+        ShaderMatrices mats{};
+
+        glm::mat4 model(1.0);
+        glm::mat4 view = _renderCamera.getViewMatrix();
+        mats.modelView = view * model;
 
         auto fovYDeg = 90;
-        double scale =
-            (glm::sin(time * glm::two_pi<double>() / 3) * 0.15) + 0.85;
-
-        mats.modelView =
-            vertices[0].getModelViewMatrix(cameraPos, angle, scale);
-        mats.projection =
-            vertices[0].getProjectionMatrix(fovYDeg, this->_swapchainExtent);
+        mats.projection = getProjectionMatrix(fovYDeg);
 
         memcpy(_uniformBuffersMapped[_currentFrame], &mats, sizeof(mats));
         // END PUTTING STUFF IN GPU BUFFER
@@ -217,6 +217,15 @@ namespace Presto {
         }
 
         vkDestroySwapchainKHR(_logicalDevice, _swapchain, nullptr);
+    }
+
+    glm::mat4 VulkanRenderer::getProjectionMatrix(glm::float32 fovDeg) {
+        float fovRad = glm::radians(fovDeg);
+        glm::mat4 projection = glm::perspectiveFov(
+            fovRad, (glm::float32)_swapchainExtent.width,
+            (glm::float32)_swapchainExtent.height, 0.01f, 100.0f);
+
+        return projection;
     }
 
 }  // namespace Presto

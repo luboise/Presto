@@ -45,6 +45,11 @@ namespace Presto {
         VkRenderPass renderPass;
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
+
+        VkDescriptorPool descriptorPool;
+        VkDescriptorSetLayout descriptorSetLayout;
+
+        std::vector<entity_t> _renderPool;
     };
 
     struct VulkanPipelineOptions {};
@@ -61,12 +66,13 @@ namespace Presto {
 
         PR_RESULT drawFrame();
 
-        PR_RESULT render();
+        glm::mat4 getProjectionMatrix(glm::float32 fovRad);
 
        private:
         GLFWwindow* _glfwWindow;
 
-        PR_RESULT nextFrame();
+        // PR_RESULT nextFrame();
+        PR_RESULT drawFrame();
 
         // User members
         void AddToRenderPool(entity_t entity_ptr) override;
@@ -88,8 +94,6 @@ namespace Presto {
         std::vector<VkImageView> _swapchainImageViews;
         std::vector<VkFramebuffer> _swapchainFramebuffers;
 
-        VkDescriptorSetLayout _descriptorSetLayout;
-
         VkQueue _graphicsQueue;
         VkQueue _presentQueue;
         VkSurfaceKHR _surface;
@@ -110,7 +114,6 @@ namespace Presto {
         std::vector<VkDeviceMemory> _uniformBuffersMemory;
         std::vector<void*> _uniformBuffersMapped;
 
-        VkDescriptorPool _descriptorPool;
         std::vector<VkDescriptorSet> _descriptorSets;
 
         std::vector<VkSemaphore> _imageAvailableSemaphores;

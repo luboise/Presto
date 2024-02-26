@@ -1,7 +1,5 @@
 #include <Presto/Presto.h>
 
-#include <glm/gtc/constants.hpp>
-
 #define HEART_POINTS 300
 
 namespace Pr = Presto;
@@ -45,7 +43,7 @@ class DualityApp : public Presto::Application {
 
         // This will set the heart's Polygon2D object to the shape
         this->_heart->setComponent(shape);
-        }
+    }
 
     ~DualityApp() {}
 

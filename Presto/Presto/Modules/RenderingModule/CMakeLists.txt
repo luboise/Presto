@@ -7,6 +7,7 @@ PUBLIC	_Renderer.h
 		Vulkan/VulkanVertex.h
 
 		Types/ModelComponent.h
+		Types/Camera.h
 
 PRIVATE Vulkan/VulkanRenderer.cpp
 		Vulkan/VulkanRenderer_draw.cpp
@@ -20,6 +21,8 @@ PRIVATE Vulkan/VulkanRenderer.cpp
 		Types/ModelComponent.cpp
 		Types/RenderLayer.h
 		Types/RenderLayer.cpp
+
+		Types/Camera.cpp
 
 		RenderingManager.cpp
 )

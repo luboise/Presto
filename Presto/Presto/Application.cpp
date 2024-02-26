@@ -1,6 +1,6 @@
 
 #include "Application.h"
-#include "Modules/ObjectsModule/EntityManager.h"
+#include "Modules/_ModulesHeader.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
@@ -16,6 +16,9 @@ namespace Presto {
     };
 
     void Application::Run() {
+        // Set up modules
+        _modules.push_back(RenderingManager(this->getGLFWWindow()));
+
         while (app_running) {
             // Create new entities
 

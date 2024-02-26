@@ -3,11 +3,15 @@
 
 #include <set>
 
+#include "GLFW/glfw3.h"
+
 namespace Presto {
     typedef uint32_t layer_id_t;
 
     class PRESTO_API RenderingManager : public Module {
        public:
+        RenderingManager(GLFWwindow* window);
+
         void Init() override;
         void Shutdown() override;
 
@@ -23,6 +27,8 @@ namespace Presto {
         Renderer* _renderer;
         std::vector<RenderLayer> _renderLayers;
         std::set<Entity*> _boundEntities;
+
+        GLFWwindow* _window;
 
         bool hasLayer(layer_id_t index) const;
         RenderLayer& getLayer(layer_id_t id);

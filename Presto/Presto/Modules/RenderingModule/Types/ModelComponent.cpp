@@ -2,14 +2,14 @@
 
 namespace Presto {
 
-    glm::mat4 ModelComponent::getModelViewMatrix(glm::vec3 offset,
-                                                 glm::float32 scale) {
-        return getModelViewMatrix(offset, glm::vec3(0.0f), scale);
+    glm::mat4 ModelComponent::getModelMatrix(glm::vec3 offset,
+                                             glm::float32 scale) {
+        return getModelMatrix(offset, glm::vec3(0.0f), scale);
     }
 
-    glm::mat4 ModelComponent::getModelViewMatrix(glm::vec3 offset,
-                                                 glm::vec3 yawPitchRoll,
-                                                 glm::float32 scale) {
+    glm::mat4 ModelComponent::getModelMatrix(glm::vec3 offset,
+                                             glm::vec3 yawPitchRoll,
+                                             glm::float32 scale) {
         glm::mat4 model(1.0f);
 
         model = glm::rotate(model, yawPitchRoll.y, glm::vec3(1, 0, 0));
@@ -24,11 +24,7 @@ namespace Presto {
         };
         model = scaleMatrix * model;
 
-        // Calculate offset pointing at origin with the y axis up
-        glm::mat4 view =
-            glm::lookAt(offset, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-
-        return view * model;
+        return model;
     }
 
     // glm::vec3 ModelComponent::getProjected(glm::vec3 yawPitchRoll) const {
@@ -46,7 +42,7 @@ namespace Presto {
     //     auto fovYDeg = 90;
     //     VkExtent2D viewport{1280, 720};
 
-    //     auto mvm = getModelViewMatrix(cameraPos, yawPitchRoll, scale);
+    //     auto mvm = getModelMatrix(cameraPos, yawPitchRoll, scale);
     //     auto pm = getProjectionMatrix(fovYDeg, viewport);
 
     //     auto projected = pm * mvm * glm::vec4(this->pos, 1);
@@ -56,13 +52,4 @@ namespace Presto {
     //     return normalised;
     // }
 
-    // glm::mat4 ModelComponent::getProjectionMatrix(glm::float32 fovDeg,
-    //                                               VkExtent2D extents) {
-    //     float fovRad = glm::radians(fovDeg);
-    //     glm::mat4 projection =
-    //         glm::perspectiveFov(fovRad, (glm::float32)extents.width,
-    //                             (glm::float32)extents.height, 0.01f, 100.0f);
-
-    //     return projection;
-    // }
 }  // namespace Presto

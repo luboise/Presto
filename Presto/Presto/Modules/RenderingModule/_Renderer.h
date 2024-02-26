@@ -2,6 +2,10 @@
 
 #include "Presto/Modules/Module.h"
 
+#include "Presto/Modules/ObjectsModule/_EntityHeader.h"
+
+#include "Types/Camera.h"
+
 namespace Presto {
     class PRESTO_API Renderer : public Module {
        public:
@@ -14,6 +18,6 @@ namespace Presto {
 
        protected:
         bool _framebufferResized = false;
-        std::vector<RenderLayer> _layers;
+        Camera _renderCamera;
     };
 }  // namespace Presto
