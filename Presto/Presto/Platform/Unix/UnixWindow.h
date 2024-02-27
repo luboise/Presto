@@ -30,8 +30,6 @@ namespace Presto {
         virtual void SetCallbacks();
         virtual void Shutdown();
 
-        GLFWwindow* glfw_window;
-
         struct WindowData {
             std::string title;
             unsigned width;

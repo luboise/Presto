@@ -17,7 +17,10 @@ namespace Presto {
 
     void Application::Run() {
         // Set up modules
-        _modules.push_back(RenderingManager(this->getGLFWWindow()));
+
+        auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
+
+        _modules.push_back(new RenderingManager(ptr));
 
         while (app_running) {
             // Create new entities
@@ -31,7 +34,7 @@ namespace Presto {
             // Run systems
 
             for (auto& system : _systems) {
-                system.Update();
+                system->Update();
             }
 
             app_window->RenderFrame();
@@ -54,7 +57,7 @@ namespace Presto {
 
     void Application::RunModules() {
         for (auto& module : _modules) {
-            module.Update();
+            module->Update();
         }
     }
 }  // namespace Presto

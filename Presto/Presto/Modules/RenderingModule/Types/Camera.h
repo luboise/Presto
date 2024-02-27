@@ -1,3 +1,5 @@
+#include <glm/glm.hpp>
+
 namespace Presto {
     class PRESTO_API Camera {
        public:

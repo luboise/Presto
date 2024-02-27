@@ -41,13 +41,15 @@ namespace Presto {
         virtual void SetVSync(bool vsync) = 0;
         virtual bool IsVSyncEnabled() = 0;
 
-        virtual GLFWwindow* GetWindowPtr();
+        virtual void* getWindowPtr() { return _windowPtr; };
 
         // Window create function that must be implemented per platform
         // Uses default props if unspecified
         static Window* Create(
             const WindowProperties& props = WindowProperties());
 
+       protected:
+        void* _windowPtr;
         Renderer* _renderer;
     };
 

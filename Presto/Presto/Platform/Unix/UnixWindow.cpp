@@ -16,10 +16,10 @@ namespace Presto {
     }
 
     void UnixWindow::Shutdown() {
-        if (this->glfw_window != nullptr) {
+        if (this->_windowPtr != nullptr) {
             this->_renderer->Shutdown();
-            glfwDestroyWindow(this->glfw_window);
-            this->glfw_window = nullptr;
+            glfwDestroyWindow(this->_windowPtr);
+            this->_windowPtr = nullptr;
         }
     }
 
@@ -50,16 +50,15 @@ namespace Presto {
 
         // The 2 nulls are fullscreen monitor choice and graphics library object
         // linking
-        this->glfw_window =
-            glfwCreateWindow((int)props.width, (int)props.height,
-                             props.title.c_str(), NULL, NULL);
+        this->_windowPtr = glfwCreateWindow((int)props.width, (int)props.height,
+                                            props.title.c_str(), NULL, NULL);
 
         // Set the window as the current context
-        glfwMakeContextCurrent(this->glfw_window);
+        glfwMakeContextCurrent(this->_windowPtr);
 
         switch (props.render_library) {
             case VULKAN: {
-                this->_renderer = new VulkanRenderer(this->glfw_window);
+                this->_renderer = new VulkanRenderer(this->_windowPtr);
                 PR_CORE_ASSERT(this->_renderer->IsInitialised(),
                                "The renderer was not initialised.");
                 break;
@@ -69,16 +68,16 @@ namespace Presto {
         w_data.pRenderer = this->_renderer;
 
         // Link props and glfw window
-        glfwSetWindowUserPointer(this->glfw_window, &w_data);
+        glfwSetWindowUserPointer(this->_windowPtr, &w_data);
         this->SetCallbacks();
         this->SetVSync(true);
     }
 
     void UnixWindow::SetCallbacks() {
         // Set platform specific callbacks
-        glfwSetWindowSizeCallback(this->glfw_window, [](GLFWwindow* window,
-                                                        int new_width,
-                                                        int new_height) {
+        glfwSetWindowSizeCallback(this->_windowPtr, [](GLFWwindow* window,
+                                                       int new_width,
+                                                       int new_height) {
             WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
 
             WindowResizeEvent e(new_width, new_height);
@@ -87,15 +86,15 @@ namespace Presto {
             data.event_callback(e);
         });
 
-        glfwSetWindowCloseCallback(this->glfw_window, [](GLFWwindow* window) {
+        glfwSetWindowCloseCallback(this->_windowPtr, [](GLFWwindow* window) {
             WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
             WindowCloseEvent e = WindowCloseEvent();
             data.event_callback(e);
         });
 
-        glfwSetKeyCallback(this->glfw_window, [](GLFWwindow* window,
-                                                 int keycode, int scancode,
-                                                 int action, int mods) {
+        glfwSetKeyCallback(this->_windowPtr, [](GLFWwindow* window, int keycode,
+                                                int scancode, int action,
+                                                int mods) {
             WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
             switch (action) {
                 case GLFW_PRESS: {
@@ -116,9 +115,9 @@ namespace Presto {
             }
         });
 
-        glfwSetMouseButtonCallback(this->glfw_window, [](GLFWwindow* window,
-                                                         int button, int action,
-                                                         int mods) {
+        glfwSetMouseButtonCallback(this->_windowPtr, [](GLFWwindow* window,
+                                                        int button, int action,
+                                                        int mods) {
             WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
             switch (action) {
                 case GLFW_PRESS: {
@@ -134,24 +133,24 @@ namespace Presto {
             }
         });
 
-        glfwSetCursorPosCallback(this->glfw_window, [](GLFWwindow* window,
-                                                       double xpos,
-                                                       double ypos) {
-            WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
-            MouseMovedEvent e((float)xpos, (float)ypos);
-            data.event_callback(e);
-        });
+        glfwSetCursorPosCallback(
+            this->_windowPtr, [](GLFWwindow* window, double xpos, double ypos) {
+                WindowData& data =
+                    *(WindowData*)(glfwGetWindowUserPointer(window));
+                MouseMovedEvent e((float)xpos, (float)ypos);
+                data.event_callback(e);
+            });
 
-        glfwSetScrollCallback(this->glfw_window, [](GLFWwindow* window,
-                                                    double xoffset,
-                                                    double yoffset) {
+        glfwSetScrollCallback(this->_windowPtr, [](GLFWwindow* window,
+                                                   double xoffset,
+                                                   double yoffset) {
             WindowData& data = *(WindowData*)(glfwGetWindowUserPointer(window));
             MouseScrolledEvent e((float)xoffset, (float)yoffset);
             data.event_callback(e);
         });
 
         glfwSetFramebufferSizeCallback(
-            this->glfw_window, [](GLFWwindow* window, int width, int height) {
+            this->_windowPtr, [](GLFWwindow* window, int width, int height) {
                 WindowData& data =
                     *(WindowData*)(glfwGetWindowUserPointer(window));
 

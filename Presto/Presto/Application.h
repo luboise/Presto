@@ -29,8 +29,8 @@ namespace Presto {
         std::unique_ptr<Window> app_window;
         bool app_running = true;
 
-        std::vector<Module> _modules;
-        std::vector<System> _systems;
+        std::vector<Module*> _modules;
+        std::vector<System*> _systems;
     };
 
     // Defined by client (eg. Duality)
