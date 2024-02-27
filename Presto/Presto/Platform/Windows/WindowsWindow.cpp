@@ -62,7 +62,8 @@ namespace Presto {
         switch (props.render_library) {
             case VULKAN: {
                 this->_renderer = new VulkanRenderer(this->glfw_window);
-                PR_ASSERT(this->_renderer->IsInitialised());
+                PR_CORE_ASSERT(this->_renderer->IsInitialised(),
+                               "The renderer was not initialised.");
                 break;
             }
         }
@@ -170,7 +171,7 @@ namespace Presto {
         _glfwTime = new_time;
 
         glfwPollEvents();
-        _renderer->drawFrame();
+        _renderer->Update();
     }
 
     void WindowsWindow::SetVSync(bool vsync) {

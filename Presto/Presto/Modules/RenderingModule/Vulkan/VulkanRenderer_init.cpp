@@ -2,6 +2,9 @@
 
 #include "RenderingModule/RenderTypes.h"
 
+#define ALLOCATED_VERTICES 512
+#define ALLOCATED_INDICES 2048
+
 namespace Presto {
     void VulkanRenderer::createSurface() {
         if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
@@ -126,7 +129,7 @@ namespace Presto {
         };
     }
 
-    void VulkanRenderer::createRenderPass(VulkanPipeline& pipeline) {
+    void VulkanRenderer::createRenderPass() {
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = _swapchainImageFormat;
 
@@ -187,7 +190,7 @@ namespace Presto {
         renderPassInfo.pDependencies = &subpassDependency;
 
         if (vkCreateRenderPass(_logicalDevice, &renderPassInfo, nullptr,
-                               &(pipeline.renderPass)) != VK_SUCCESS) {
+                               &_renderPass) != VK_SUCCESS) {
             throw std::runtime_error("Unable to create render pass.");
         }
     }
@@ -331,7 +334,7 @@ namespace Presto {
 
         createInfo.layout = pipeline.pipelineLayout;
 
-        createInfo.renderPass = pipeline.renderPass;
+        createInfo.renderPass = _renderPass;
         createInfo.subpass = 0;
 
         // Use when deriving from another pipeline
@@ -392,7 +395,7 @@ namespace Presto {
         VkDeviceSize bufferSize;
 
         // Vertex buffers
-        bufferSize = sizeof(vertices[0]) * vertices.size();
+        bufferSize = sizeof(VulkanVertex) * ALLOCATED_VERTICES;
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
                          VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
@@ -405,7 +408,7 @@ namespace Presto {
                      _vertexBufferMemory);
 
         // Index buffer
-        bufferSize = sizeof(indices[0]) * indices.size();
+        bufferSize = sizeof(uint32_t) * ALLOCATED_INDICES;
         createBuffer(
             bufferSize,
             VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
@@ -489,28 +492,28 @@ namespace Presto {
         }
     }
 
-    void VulkanRenderer::initialiseBuffers() {
-        VkDeviceSize bufferSize;
-        void* data;
+    // void VulkanRenderer::initialiseBuffers() {
+    //     VkDeviceSize bufferSize;
+    //     void* data;
 
-        // Copy vertices into staging buffer
-        bufferSize = sizeof(vertices[0]) * vertices.size();
-        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
-                    &data);
-        memcpy(data, vertices.data(), (size_t)bufferSize);
-        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+    //     // Copy vertices into staging buffer
+    //     bufferSize = sizeof(VulkanVertex) * ALLOCATED_VERTICES;
+    //     vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+    //                 &data);
+    //     memcpy(data, vertices.data(), (size_t)bufferSize);
+    //     vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-        copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
+    //     copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
 
-        // Copy indices into index buffer
-        bufferSize = sizeof(indices[0]) * indices.size();
-        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
-                    &data);
-        memcpy(data, indices.data(), (size_t)bufferSize);
-        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+    //     // Copy indices into index buffer
+    //     bufferSize = sizeof(indices[0]) * indices.size();
+    //     vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+    //                 &data);
+    //     memcpy(data, indices.data(), (size_t)bufferSize);
+    //     vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-        copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
-    }
+    //     copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
+    // }
 
     void VulkanRenderer::createCommandBuffers() {
         _commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);

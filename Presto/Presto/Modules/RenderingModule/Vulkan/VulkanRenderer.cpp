@@ -30,7 +30,7 @@ namespace Presto {
 
             // Buffers
             this->createBuffers();
-            this->initialiseBuffers();
+            // this->initialiseBuffers();
             this->createDescriptorPool();
             this->createDescriptorSets();
 
@@ -58,11 +58,10 @@ namespace Presto {
         }
 
         for (auto& pipeline : _graphicsPipelines) {
-            vkDestroyDescriptorPool(_logicalDevice, pipeline.descriptorPool,
-                                    nullptr);
+            vkDestroyDescriptorPool(_logicalDevice, _descriptorPool, nullptr);
 
-            vkDestroyDescriptorSetLayout(_logicalDevice,
-                                         pipeline.descriptorSetLayout, nullptr);
+            vkDestroyDescriptorSetLayout(_logicalDevice, _descriptorSetLayout,
+                                         nullptr);
         }
 
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
@@ -79,9 +78,9 @@ namespace Presto {
                               nullptr);
             vkDestroyPipelineLayout(_logicalDevice, pipeline.pipelineLayout,
                                     nullptr);
-
-            vkDestroyRenderPass(_logicalDevice, pipeline.renderPass, nullptr);
         }
+
+        vkDestroyRenderPass(_logicalDevice, _renderPass, nullptr);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(_logicalDevice, _renderFinishedSemaphores[i],
@@ -258,87 +257,11 @@ namespace Presto {
     void VulkanRenderer::createDefaultPipeline() {
         VulkanPipeline pipeline;
 
-        createRenderPass(pipeline);
-        createRenderPass(pipeline);
+        createDescriptorSetLayout(pipeline);
+        buildGraphicsPipeline(pipeline);
+        // createGraphicsPipeline(options);
 
         _graphicsPipelines.push_back(pipeline);
-    }
-
-    PR_RESULT VulkanRenderer::recordCommandBuffer(
-        const VulkanPipeline& pipeline, VkCommandBuffer commandBuffer,
-        uint32_t imageIndex) {
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.pInheritanceInfo = nullptr;
-
-        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
-            return PR_FAILURE;
-        }
-
-        VkRenderPassBeginInfo renderPassInfo{};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = pipeline.renderPass;
-        renderPassInfo.framebuffer = _swapchainFramebuffers[imageIndex];
-
-        renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = _swapchainExtent;
-
-        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-        renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearColor;
-
-        // INLINE -> execute from primary buffers
-        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
-                             VK_SUBPASS_CONTENTS_INLINE);
-
-        // Bind the command buffer to the pipeline
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pipeline.graphicsPipeline);
-
-        // Set viewport
-        VkViewport viewport{};
-        viewport.x = 0.0f;
-        viewport.y = 0.0f;
-        viewport.width = static_cast<float>(_swapchainExtent.width);
-        viewport.height = static_cast<float>(_swapchainExtent.height);
-        viewport.minDepth = 0.0f;
-        viewport.maxDepth = 1.0f;
-        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-        // Set scissor (cuts viewport)
-        VkRect2D scissor{};
-        scissor.offset = {0, 0};
-        scissor.extent = _swapchainExtent;
-        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-        // Bind the vertex buffer for the operation
-        VkBuffer vertexBuffers[] = {_vertexBuffer};
-        VkDeviceSize offsets[] = {0};
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0,
-                             VK_INDEX_TYPE_UINT16);
-
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipeline.pipelineLayout, 0, 1,
-                                &(_descriptorSets[_currentFrame]), 0, nullptr);
-
-        // Draw commands
-        uint32_t vertexOffset = 0;
-        uint16_t indexOffset = 0;
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()),
-                         1, vertexOffset, indexOffset, 0);
-
-        // Submission
-        vkCmdEndRenderPass(commandBuffer);
-
-        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-            PR_CORE_CRITICAL("Failed to record command buffer!");
-            return PR_FAILURE;
-        }
-
-        return PR_SUCCESS;
     }
 
     void VulkanRenderer::createBuffer(VkDeviceSize size,
@@ -467,8 +390,7 @@ namespace Presto {
         createInfo.pBindings = &layoutBinding;
 
         if (vkCreateDescriptorSetLayout(_logicalDevice, &createInfo, nullptr,
-                                        &pipeline.descriptorSetLayout) !=
-            VK_SUCCESS) {
+                                        &_descriptorSetLayout) != VK_SUCCESS) {
             throw std::runtime_error("Unable to create descriptor set layout.");
         };
     }
@@ -651,4 +573,7 @@ namespace Presto {
 
         return extensions;
     }
+
+    void VulkanRenderer::AddToRenderPool(entity_t entity_ptr) {}
+
 }  // namespace Presto

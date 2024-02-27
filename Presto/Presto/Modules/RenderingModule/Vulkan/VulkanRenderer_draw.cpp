@@ -18,9 +18,7 @@ namespace Presto {
         return indices;
     };
 
-    void VulkanRenderer::Update(){
-
-    };
+    void VulkanRenderer::Update() { this->drawFrame(); };
 
     PR_RESULT
     VulkanRenderer::drawFrame() {
@@ -55,15 +53,22 @@ namespace Presto {
         // Only reset fence if image is acquired
         vkResetFences(_logicalDevice, 1, &_inFlightFences[_currentFrame]);
 
+        VkCommandBuffer& crntCommandBuffer = _commandBuffers[_currentFrame];
+        VkFramebuffer& crntFrameBuffer = _swapchainFramebuffers[imageIndex];
+
         // Reset, then record command buffer which draws our scene into the
         // image
-        vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
+        vkResetCommandBuffer(crntCommandBuffer, 0);
+
+        // Clear and enable writing on the command buffer
+        startRecording(crntCommandBuffer, crntFrameBuffer);
 
         // Record each pipeline into the fresh command buffer
         for (auto& pipeline : _graphicsPipelines) {
-            this->recordCommandBuffer(pipeline, _commandBuffers[_currentFrame],
-                                      imageIndex);
+            this->drawPipelineToBuffer(crntCommandBuffer, pipeline);
         }
+
+        stopRecording(crntCommandBuffer);
 
         // Update uniform buffers
         auto time = glfwGetTime();
@@ -147,6 +152,50 @@ namespace Presto {
         return PR_SUCCESS;
     }
 
+    void VulkanRenderer::startRecording(VkCommandBuffer commandBuffer,
+                                        VkFramebuffer framebuffer) {
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.pInheritanceInfo = nullptr;
+
+        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
+            throw std::runtime_error("Unable to write to command buffer.");
+        }
+
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = _renderPass;
+        renderPassInfo.framebuffer = framebuffer;
+
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = _swapchainExtent;
+
+        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        // INLINE -> execute from primary buffers
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo,
+                             VK_SUBPASS_CONTENTS_INLINE);
+
+        // Set viewport
+        VkViewport viewport{};
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = static_cast<float>(_swapchainExtent.width);
+        viewport.height = static_cast<float>(_swapchainExtent.height);
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+        // Set scissor (cuts viewport)
+        VkRect2D scissor{};
+        scissor.offset = {0, 0};
+        scissor.extent = _swapchainExtent;
+        vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+    }
+
     void VulkanRenderer::recreateSwapChain() {
         int width, height = 0;
 
@@ -226,6 +275,43 @@ namespace Presto {
             (glm::float32)_swapchainExtent.height, 0.01f, 100.0f);
 
         return projection;
+    }
+
+    void VulkanRenderer::stopRecording(VkCommandBuffer& commandBuffer) {
+        // Submission
+        vkCmdEndRenderPass(commandBuffer);
+
+        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+            PR_CORE_CRITICAL("Failed to record command buffer!");
+            throw std::runtime_error("Failed to record command buffer!");
+        }
+    }
+
+    void VulkanRenderer::drawPipelineToBuffer(VkCommandBuffer commandBuffer,
+                                              const VulkanPipeline pipeline) {
+        // uint32_t imageIndex;
+
+        // Bind the command buffer to the pipeline
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          pipeline.graphicsPipeline);
+
+        // Bind the vertex buffer for the operation
+        VkBuffer vertexBuffers[] = {_vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0,
+                             VK_INDEX_TYPE_UINT16);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                pipeline.pipelineLayout, 0, 1,
+                                &(_descriptorSets[_currentFrame]), 0, nullptr);
+
+        for (const DrawInfo& info : pipeline.renderPool) {
+            vkCmdDrawIndexed(commandBuffer,
+                             static_cast<uint32_t>(info.indices.size()), 1,
+                             info.vbOffset, info.ibOffset, 0);
+        }
     }
 
 }  // namespace Presto

@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Presto/Modules/ObjectsModule/Entity/Entity.h"
+#include "Presto/Modules/RenderingModule/Types/DrawInfo.h"
 
 // KEEP THESE SEPARATE
 #include <GLFW/glfw3.h>
@@ -42,14 +43,10 @@ namespace Presto {
     };
 
     struct VulkanPipeline {
-        VkRenderPass renderPass;
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
 
-        VkDescriptorPool descriptorPool;
-        VkDescriptorSetLayout descriptorSetLayout;
-
-        std::vector<entity_t> _renderPool;
+        std::vector<DrawInfo> renderPool;
     };
 
     struct VulkanPipelineOptions {};
@@ -71,12 +68,15 @@ namespace Presto {
        private:
         GLFWwindow* _glfwWindow;
 
-        // PR_RESULT nextFrame();
-        PR_RESULT drawFrame();
-
         // User members
         void AddToRenderPool(entity_t entity_ptr) override;
-        void DrawEntity(entity_t entity_ptr) override;
+
+        void startRecording(VkCommandBuffer commandBuffer,
+                            VkFramebuffer framebuffer);
+        void stopRecording(VkCommandBuffer& commandBuffer);
+
+        void drawPipelineToBuffer(VkCommandBuffer commandBuffer,
+                                  const VulkanPipeline pipeline);
 
         std::vector<VulkanPipeline> _graphicsPipelines;
 
@@ -89,6 +89,11 @@ namespace Presto {
         VkSwapchainKHR _swapchain = VK_NULL_HANDLE;
         VkFormat _swapchainImageFormat;
         VkExtent2D _swapchainExtent;
+
+        VkRenderPass _renderPass;
+
+        VkDescriptorPool _descriptorPool;
+        VkDescriptorSetLayout _descriptorSetLayout;
 
         std::vector<VkImage> _swapchainImages;
         std::vector<VkImageView> _swapchainImageViews;
@@ -137,26 +142,21 @@ namespace Presto {
         void createSwapChain();
         void createImageViews();
 
+        void createRenderPass();
         void createFrameBuffers();
         void createCommandPool();
         void createBuffers();
         void createDescriptorPool();
         void createDescriptorSets();
-        void initialiseBuffers();
+        // void initialiseBuffers();
         void createCommandBuffers();
         void createSyncObjects();
 
-        void createRenderPass(VulkanPipeline& pipeline);
         void createDescriptorSetLayout(VulkanPipeline& pipeline);
         void buildGraphicsPipeline(VulkanPipeline& pipeline);
-
         size_t createGraphicsPipeline(VulkanPipelineOptions& options);
 
         void createDefaultPipeline();
-
-        PR_RESULT recordCommandBuffer(const VulkanPipeline& pipeline,
-                                      VkCommandBuffer commandBuffer,
-                                      uint32_t imageIndex);
 
         void cleanupSwapChain();
         void recreateSwapChain();

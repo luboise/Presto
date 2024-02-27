@@ -92,9 +92,9 @@ if (WIN32)
 	add_compile_definitions(PR_PLATFORM_WINDOWS)
 	add_compile_definitions(NOMINMAX)
 	
-	set(CMAKE_GENERATOR_PLATFORM "x64"
-		CACHE STRING "Platform (x64)" FORCE
-	)
+	# set(CMAKE_GENERATOR_PLATFORM "x64"
+	# 	CACHE STRING "Platform (x64)" FORCE
+	# )
 elseif(UNIX)
 	set(PLATFORM Unix)
 	add_compile_definitions(PR_PLATFORM_UNIX)
