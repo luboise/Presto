@@ -5,17 +5,16 @@
 #include <set>
 
 namespace Presto {
-    RenderingManager::RenderingManager(GLFWwindow* window) {
-        _window = window;
+    RenderingManager::RenderingManager(GLFWwindow* windowPtr,
+                                       Renderer* renderer) {
+        _window = windowPtr;
+        _renderer = renderer;
         this->Init();
     }
 
-    void RenderingManager::Init() { _renderer = new VulkanRenderer(_window); }
+    void RenderingManager::Init() {}
 
-    void RenderingManager::Shutdown() {
-        delete _renderer;
-        _renderer = nullptr;
-    }
+    void RenderingManager::Shutdown() {}
 
     void RenderingManager::Update() {
         for (RenderLayer& layer : _renderLayers) {

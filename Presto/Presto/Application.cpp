@@ -20,7 +20,7 @@ namespace Presto {
 
         auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
 
-        _modules.push_back(new RenderingManager(ptr));
+        _modules.push_back(new RenderingManager(ptr, app_window->_renderer));
 
         while (app_running) {
             // Create new entities

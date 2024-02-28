@@ -26,6 +26,8 @@ namespace Presto {
 
     // Abstracted window interface to be implemented per platform
     class PRESTO_API Window {
+        friend class Application;
+
        public:
         using EventCallbackFn = std::function<void(Event&)>;
 

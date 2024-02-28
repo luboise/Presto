@@ -1,4 +1,5 @@
 #include "Presto/Modules/RenderingModule/RenderTypes.h"
+#include "Presto/Window.h"
 #include "_Renderer.h"
 
 #include <set>
@@ -10,7 +11,7 @@ namespace Presto {
 
     class PRESTO_API RenderingManager : public Module {
        public:
-        RenderingManager(GLFWwindow* window);
+        RenderingManager(GLFWwindow* windowPtr, Renderer* renderer);
 
         void Init() override;
         void Shutdown() override;
@@ -25,10 +26,10 @@ namespace Presto {
 
        private:
         Renderer* _renderer;
+        GLFWwindow* _window;
+
         std::vector<RenderLayer> _renderLayers;
         std::set<Entity*> _boundEntities;
-
-        GLFWwindow* _window;
 
         bool hasLayer(layer_id_t index) const;
         RenderLayer& getLayer(layer_id_t id);
