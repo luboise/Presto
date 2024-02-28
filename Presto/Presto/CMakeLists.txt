@@ -28,6 +28,7 @@ PRIVATE	Application.cpp
 		Events/Event.h
 		Events/KeyEvents.h
 		Events/MouseEvents.h
+		Events/ObjectEvents.h
 )
 
 add_subdirectory(Components)
