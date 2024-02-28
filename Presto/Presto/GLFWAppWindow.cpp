@@ -1,21 +1,23 @@
 
+#include "Presto/pch.h"
+
 #include "Presto/Core.h"
 #include "Presto/Events/ApplicationEvents.h"
 #include "Presto/Events/KeyEvents.h"
 #include "Presto/Events/MouseEvents.h"
 
-#include "WindowsWindow.h"
+#include "GLFWAppWindow.h"
 
-#include "RenderingModule/Vulkan/VulkanRenderer.h"
+#include "Presto/Modules/RenderingModule/Vulkan/VulkanRenderer.h"
 
 namespace Presto {
     static bool s_GLFWInitialised = false;
 
-    // Window* Window::Create(const WindowProperties& props) {
-    //     return new WindowsWindow(props);
-    // }
+    Window* Window::Create(const WindowProperties& props) {
+        return new GLFWAppWindow(props);
+    }
 
-    void WindowsWindow::Shutdown() {
+    void GLFWAppWindow::Shutdown() {
         if (this->_windowPtr != nullptr) {
             this->_renderer->Shutdown();
             glfwDestroyWindow((GLFWwindow*)this->_windowPtr);
@@ -23,13 +25,13 @@ namespace Presto {
         }
     }
 
-    WindowsWindow::WindowsWindow(const WindowProperties& props) {
+    GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) {
         this->Init(props);
     }
 
-    WindowsWindow::~WindowsWindow() { this->Shutdown(); }
+    GLFWAppWindow::~GLFWAppWindow() { this->Shutdown(); }
 
-    void WindowsWindow::Init(const WindowProperties& props) {
+    void GLFWAppWindow::Init(const WindowProperties& props) {
         this->w_data.title = props.title;
         this->w_data.width = props.width;
         this->w_data.height = props.height;
@@ -77,7 +79,7 @@ namespace Presto {
         this->SetVSync(true);
     }
 
-    void WindowsWindow::SetCallbacks() {
+    void GLFWAppWindow::SetCallbacks() {
         // Set platform specific callbacks
         glfwSetWindowSizeCallback(
             (GLFWwindow*)this->_windowPtr,
@@ -171,7 +173,7 @@ namespace Presto {
             });
     }
 
-    void WindowsWindow::RenderFrame() {
+    void GLFWAppWindow::RenderFrame() {
         auto new_time = glfwGetTime();
         double delta = new_time - _glfwTime;
 
@@ -184,7 +186,7 @@ namespace Presto {
         _renderer->Update();
     }
 
-    void WindowsWindow::SetVSync(bool vsync) {
+    void GLFWAppWindow::SetVSync(bool vsync) {
         if (vsync) {
             glfwSwapInterval(1);
         } else {
@@ -193,6 +195,6 @@ namespace Presto {
         this->w_data.VSync = vsync;
     }
 
-    bool WindowsWindow::IsVSyncEnabled() { return w_data.VSync; }
+    bool GLFWAppWindow::IsVSyncEnabled() { return w_data.VSync; }
 
 }  // namespace Presto

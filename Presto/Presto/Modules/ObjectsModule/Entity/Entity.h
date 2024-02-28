@@ -13,10 +13,9 @@ namespace Presto {
         uint32_t getId() const;
 
         template <typename ComponentClass>
-        void setComponent(ComponentClass* component) {
-            component_class_t name = component->getClassID();
-            _components.emplace(component.getClassID,
-                                std::make_shared(component));
+        void setComponent(ComponentClass* component_ptr) {
+            component_class_t classID = typeid(ComponentClass).hash_code();
+            _components.emplace(classID, component_ptr);
         }
 
        private:

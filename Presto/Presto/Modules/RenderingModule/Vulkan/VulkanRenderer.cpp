@@ -25,12 +25,15 @@ namespace Presto {
             this->createSwapChain();
             this->createImageViews();
 
+            this->createRenderPass();
+
             this->createFrameBuffers();
             this->createCommandPool();
 
             // Buffers
             this->createBuffers();
             // this->initialiseBuffers();
+            createDescriptorSetLayout();
             this->createDescriptorPool();
             this->createDescriptorSets();
 
@@ -57,12 +60,10 @@ namespace Presto {
             vkFreeMemory(_logicalDevice, _uniformBuffersMemory[i], nullptr);
         }
 
-        for (auto& pipeline : _graphicsPipelines) {
-            vkDestroyDescriptorPool(_logicalDevice, _descriptorPool, nullptr);
+        vkDestroyDescriptorPool(_logicalDevice, _descriptorPool, nullptr);
 
-            vkDestroyDescriptorSetLayout(_logicalDevice, _descriptorSetLayout,
-                                         nullptr);
-        }
+        vkDestroyDescriptorSetLayout(_logicalDevice, _descriptorSetLayout,
+                                     nullptr);
 
         vkDestroyBuffer(_logicalDevice, _vertexBuffer, nullptr);
         vkFreeMemory(_logicalDevice, _vertexBufferMemory, nullptr);
@@ -257,7 +258,6 @@ namespace Presto {
     void VulkanRenderer::createDefaultPipeline() {
         VulkanPipeline pipeline;
 
-        createDescriptorSetLayout(pipeline);
         buildGraphicsPipeline(pipeline);
         // createGraphicsPipeline(options);
 
@@ -374,7 +374,7 @@ namespace Presto {
         return indices;
     }
 
-    void VulkanRenderer::createDescriptorSetLayout(VulkanPipeline& pipeline) {
+    void VulkanRenderer::createDescriptorSetLayout() {
         // Create binding
         VkDescriptorSetLayoutBinding layoutBinding{};
         layoutBinding.binding = 0;

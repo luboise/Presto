@@ -11,9 +11,9 @@
 namespace Presto {
     static bool s_GLFWInitialised = false;
 
-    Window* Window::Create(const WindowProperties& props) {
-        return new UnixWindow(props);
-    }
+    // Window* Window::Create(const WindowProperties& props) {
+    //     return new UnixWindow(props);
+    // }
 
     void UnixWindow::Shutdown() {
         if (this->_windowPtr != nullptr) {

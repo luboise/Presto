@@ -152,7 +152,7 @@ namespace Presto {
         void createCommandBuffers();
         void createSyncObjects();
 
-        void createDescriptorSetLayout(VulkanPipeline& pipeline);
+        void createDescriptorSetLayout();
         void buildGraphicsPipeline(VulkanPipeline& pipeline);
         size_t createGraphicsPipeline(VulkanPipelineOptions& options);
 

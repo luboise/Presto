@@ -55,6 +55,9 @@ namespace Presto {
         layer.addEntity(ptr_entity);
     }
 
+    // TODO: Implement remove entity
+    void RenderingManager::removeEntity(Entity* ptr_entity) {}
+
     bool RenderingManager::hasLayer(layer_id_t index) const {
         return (index < _renderLayers.size());
     }
