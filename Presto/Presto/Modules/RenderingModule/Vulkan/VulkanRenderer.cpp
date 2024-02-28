@@ -51,8 +51,12 @@ namespace Presto {
 
     void VulkanRenderer::Shutdown() {
         if (!_initialised) return;
-        // Cleanup swapchian has vkDeviceWaitIdle call inside
-        this->cleanupSwapChain();
+
+        vkDeviceWaitIdle(_logicalDevice);
+        vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
+
+        // Cleanup swapchain has vkDeviceWaitIdle call inside
+        cleanupSwapChain();
 
         // Cleanup uniform buffers
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -90,8 +94,6 @@ namespace Presto {
                                nullptr);
             vkDestroyFence(_logicalDevice, _inFlightFences[i], nullptr);
         }
-
-        vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
 
         vkDestroyDevice(_logicalDevice, nullptr);
 
