@@ -12,28 +12,25 @@ namespace Presto {
         this->Init();
     }
 
-    void RenderingManager::Init() {}
+    void RenderingManager::Init() {
+        addLayer();
+        this->_initialised = true;
+    }
 
     void RenderingManager::Shutdown() {}
 
-    void RenderingManager::Update() {
-        for (RenderLayer& layer : _renderLayers) {
-            for (auto& entity_ptr : layer._entities) {
-                _renderer->AddToRenderPool(entity_ptr);
-            }
-        }
-    }
+    void RenderingManager::Update() { _renderer->Update(); }
 
     layer_id_t RenderingManager::addLayer(size_t pos) {
         if (pos == (size_t)-1) {
-            pos = _renderLayers.size() - 1;
+            pos = _renderLayers.size();
         } else {
             PR_ASSERT(pos < _renderLayers.size(),
                       "Invalid position given for new layer \"{}\".", pos);
         }
 
         _renderLayers.insert(_renderLayers.begin() + pos, RenderLayer());
-        return pos + 1;
+        return pos;
     }
 
     void RenderingManager::removeLayer(layer_id_t id) {

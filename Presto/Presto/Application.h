@@ -15,6 +15,8 @@ namespace Presto {
         Application();
         virtual ~Application();
 
+        virtual void Setup(){};
+
         virtual void Run();
 
         // Intended to be replaced by user logic
@@ -24,7 +26,9 @@ namespace Presto {
 
        private:
         bool OnWindowClose(WindowCloseEvent& e);
+
         void RunModules();
+        void RunSystems();
 
         std::unique_ptr<Window> app_window;
         bool app_running = true;

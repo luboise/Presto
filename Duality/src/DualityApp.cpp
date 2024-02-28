@@ -37,7 +37,9 @@ std::vector<Pr::VulkanVertex> makeHeart(uint32_t points) {
 
 class DualityApp : public Presto::Application {
    public:
-    DualityApp() {
+    DualityApp() {}
+
+    void Setup() override {
         this->_heart = Pr::EntityManager::newEntity();
 
         Pr::VertexList vertices = makeHeart(200);
@@ -45,7 +47,7 @@ class DualityApp : public Presto::Application {
 
         // This will set the heart's Polygon2D object to the shape
         this->_heart->setComponent(shape);
-    }
+    };
 
     ~DualityApp() {}
 

@@ -8,6 +8,10 @@ namespace Presto {
     Application::Application() {
         app_window = std::unique_ptr<Window>(Window::Create());
         app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
+
+        // Set up modules
+        auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
+        _modules.push_back(new RenderingManager(ptr, app_window->_renderer));
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -16,26 +20,14 @@ namespace Presto {
     };
 
     void Application::Run() {
-        // Set up modules
-
-        auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
-
-        _modules.push_back(new RenderingManager(ptr, app_window->_renderer));
-
         while (app_running) {
-            // Create new entities
+            // TODO: Create new entities
 
             // Run user logic
             GameLoop();
 
-            // Run modules
             RunModules();
-
-            // Run systems
-
-            for (auto& system : _systems) {
-                system->Update();
-            }
+            RunSystems();
 
             app_window->RenderFrame();
         }
@@ -58,6 +50,11 @@ namespace Presto {
     void Application::RunModules() {
         for (auto& module : _modules) {
             module->Update();
+        }
+    }
+    void Application::RunSystems() {
+        for (auto& system : _systems) {
+            system->Update();
         }
     }
 }  // namespace Presto
