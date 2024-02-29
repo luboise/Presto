@@ -6,13 +6,11 @@
 #include "Modules/RenderingModule/_Renderer.h"
 
 namespace Presto {
-    enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
-
     struct WindowProperties {
         std::string title;
         unsigned height;
         unsigned width;
-        RENDER_LIBRARY render_library;
+        Renderer::RENDER_LIBRARY render_library;
 
         // Default constructor
         WindowProperties(
@@ -21,7 +19,7 @@ namespace Presto {
             : title(d_title),
               width(d_width),
               height(d_height),
-              render_library(VULKAN) {}
+              render_library(Renderer::VULKAN) {}
     };
 
     // Abstracted window interface to be implemented per platform
@@ -52,7 +50,6 @@ namespace Presto {
 
        protected:
         void* _windowPtr;
-        Renderer* _renderer;
     };
 
 }  // namespace Presto

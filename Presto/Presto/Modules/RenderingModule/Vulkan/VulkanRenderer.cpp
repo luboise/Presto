@@ -1,4 +1,5 @@
 #include "VulkanRenderer.h"
+#include "Presto/Components/_ComponentHeader.h"
 
 #include <algorithm>
 #include <limits>
@@ -7,15 +8,6 @@
 namespace Presto {
 
     VulkanRenderer::VulkanRenderer(GLFWwindow* window) : _glfwWindow(window) {
-        this->Init();
-    }
-
-    VulkanRenderer::~VulkanRenderer() {
-        if (this->IsInitialised()) this->Shutdown();
-    }
-
-    void VulkanRenderer::Init() {
-        this->_initialised = true;
         try {
             this->createInstance();
             this->setupDebugMessenger();
@@ -45,13 +37,12 @@ namespace Presto {
             PR_CORE_ERROR(
                 "Unable to initialise Vulkan renderer. Runtime error: {}",
                 e.what());
-            this->_initialised = false;
         }
     }
 
-    void VulkanRenderer::Shutdown() {
-        if (!_initialised) return;
+    VulkanRenderer::~VulkanRenderer() { this->Shutdown(); }
 
+    void VulkanRenderer::Shutdown() {
         vkDeviceWaitIdle(_logicalDevice);
         vkDestroyCommandPool(_logicalDevice, _commandPool, nullptr);
 
@@ -107,8 +98,6 @@ namespace Presto {
 
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkDestroyInstance(_instance, nullptr);
-
-        this->_initialised = false;
     }
 
     void VulkanRenderer::initialiseVulkanExtensions() {
@@ -576,6 +565,24 @@ namespace Presto {
         return extensions;
     }
 
-    void VulkanRenderer::AddToRenderPool(entity_t entity_ptr) {}
+    void VulkanRenderer::AddToRenderPool(entity_t entity_ptr) {
+        if (_entityMap.contains(entity_ptr)) {
+            PR_CORE_ERROR(
+                "Entity has already been added to render pool. Can't add it "
+                "again.");
+            return;
+        }
 
+        VulkanPipeline& pipeline = _graphicsPipelines[0];
+
+        for (auto& pair : entity_ptr->getComponents()) {
+            if (Polygon2D* r = dynamic_cast<Polygon2D*>(pair.second)) {
+            }
+        }
+
+        auto info = DrawInfo{};
+        info.indices;
+
+        _entityMap.try_emplace(entity_ptr, info);
+    }
 }  // namespace Presto

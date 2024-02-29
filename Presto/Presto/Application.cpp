@@ -11,7 +11,6 @@ namespace Presto {
 
         // Set up modules
         auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
-        _modules.push_back(new RenderingManager(ptr, app_window->_renderer));
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -24,9 +23,7 @@ namespace Presto {
             // TODO: Create new entities
 
             // Run user logic
-            GameLoop();
-
-            RunModules();
+            GameLoop();            
             RunSystems();
 
             app_window->RenderFrame();
@@ -47,11 +44,6 @@ namespace Presto {
         return true;
     }
 
-    void Application::RunModules() {
-        for (auto& module : _modules) {
-            module->Update();
-        }
-    }
     void Application::RunSystems() {
         for (auto& system : _systems) {
             system->Update();

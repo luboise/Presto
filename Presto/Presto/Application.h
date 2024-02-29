@@ -27,7 +27,6 @@ namespace Presto {
        private:
         bool OnWindowClose(WindowCloseEvent& e);
 
-        void RunModules();
         void RunSystems();
 
         std::unique_ptr<Window> app_window;

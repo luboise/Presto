@@ -37,12 +37,7 @@ namespace Presto {
         return buffer;
     }
 
-    void ResourceManager::Init() {
-        this->_initialised = true;
-        return;
-    }
-    void ResourceManager::Shutdown() {
-        this->_initialised = false;
-        return;
-    }
+    void ResourceManager::F_INIT() {}
+    void ResourceManager::F_UPDATE() {}
+    void ResourceManager::F_SHUTDOWN() {}
 }  // namespace Presto

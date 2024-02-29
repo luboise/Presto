@@ -51,25 +51,29 @@ namespace Presto {
 
     struct VulkanPipelineOptions {};
 
+    struct VulkanBuffer {
+        VkBuffer buffer;
+    };
+
     class PRESTO_API VulkanRenderer : public Renderer {
        public:
         VulkanRenderer(GLFWwindow* window);
         virtual ~VulkanRenderer();
 
-        virtual void Update() override;
-
-        virtual void Init();
-        virtual void Shutdown();
-
-        PR_RESULT drawFrame();
-
-        glm::mat4 getProjectionMatrix(glm::float32 fovRad);
+        virtual void AddToRenderPool(entity_t entity_ptr) override;
+        virtual void draw(entity_t entity_ptr) override;
+        virtual void nextFrame() override;
 
        private:
+        std::map<entity_t, DrawInfo&> _entityMap;
+        uint32_t _imageIndex = 0;
+        bool _startedDrawing = false;
         GLFWwindow* _glfwWindow;
+        std::vector<VulkanPipeline> _graphicsPipelines;
 
-        // User members
-        void AddToRenderPool(entity_t entity_ptr) override;
+        virtual void Shutdown();
+
+        void drawFromInfo(DrawInfo& info);
 
         void startRecording(VkCommandBuffer commandBuffer,
                             VkFramebuffer framebuffer);
@@ -78,9 +82,9 @@ namespace Presto {
         void drawPipelineToBuffer(VkCommandBuffer commandBuffer,
                                   const VulkanPipeline pipeline);
 
-        std::vector<VulkanPipeline> _graphicsPipelines;
-
         // Background members
+        glm::mat4 getProjectionMatrix(glm::float32 fovRad);
+
         VkInstance _instance;
         VkDebugUtilsMessengerEXT _debugMessenger;
         VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;

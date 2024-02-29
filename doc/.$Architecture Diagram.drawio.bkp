@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-02-24T10:27:30.984Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="kHIcXRmFQqOzQ1KTciqv" version="23.1.5" type="device">
+<mxfile host="Electron" modified="2024-02-24T10:29:05.686Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="FIRxi8DyukVBvPEG3EvU" version="23.1.5" type="device">
   <diagram name="Page-1" id="dj7IsfFV3n2ScgPopdDK">
     <mxGraphModel dx="2359" dy="879" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -207,7 +207,7 @@
         <mxCell id="_7l_q1OyXeY1dd840jko-18" value="Game Loop" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-16">
           <mxGeometry y="60" width="140" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="_7l_q1OyXeY1dd840jko-21" value="2" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="_7l_q1OyXeY1dd840jko-21" value="Example Scene" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1790" y="85" width="800" height="625" as="geometry" />
         </mxCell>
         <mxCell id="_7l_q1OyXeY1dd840jko-22" value="Heart" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-21">
@@ -218,6 +218,18 @@
         </mxCell>
         <mxCell id="_7l_q1OyXeY1dd840jko-28" value="ModelComponent (scale)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-22">
           <mxGeometry y="60" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_7l_q1OyXeY1dd840jko-29" value="&lt;span style=&quot;font-weight: normal;&quot;&gt;Loop&lt;/span&gt;" style="swimlane;fontStyle=1;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-21">
+          <mxGeometry x="580.0000000000005" y="65" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="_7l_q1OyXeY1dd840jko-30" value="Update scale" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-29">
+          <mxGeometry y="30" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_7l_q1OyXeY1dd840jko-31" value="Render" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-29">
+          <mxGeometry y="60" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="_7l_q1OyXeY1dd840jko-32" value="Vertical Container" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="_7l_q1OyXeY1dd840jko-21">
+          <mxGeometry x="300" y="235" width="200" height="200" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

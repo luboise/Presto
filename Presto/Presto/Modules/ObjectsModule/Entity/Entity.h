@@ -18,6 +18,8 @@ namespace Presto {
             _components.emplace(classID, component_ptr);
         }
 
+        ComponentMap getComponents() { return _components; }
+
        private:
         uint32_t _id;
 

@@ -8,7 +8,7 @@
 
 #include "GLFWAppWindow.h"
 
-#include "Presto/Modules/RenderingModule/Vulkan/VulkanRenderer.h"
+#include "Presto/Modules/RenderingModule/RenderingManager.h"
 
 namespace Presto {
     static bool s_GLFWInitialised = false;
@@ -19,7 +19,6 @@ namespace Presto {
 
     void GLFWAppWindow::Shutdown() {
         if (this->_windowPtr != nullptr) {
-            this->_renderer->Shutdown();
             glfwDestroyWindow((GLFWwindow*)this->_windowPtr);
             this->_windowPtr = nullptr;
         }
@@ -61,17 +60,8 @@ namespace Presto {
         // Set the window as the current context
         glfwMakeContextCurrent((GLFWwindow*)this->_windowPtr);
 
-        switch (props.render_library) {
-            case VULKAN: {
-                this->_renderer =
-                    new VulkanRenderer((GLFWwindow*)this->_windowPtr);
-                PR_CORE_ASSERT(this->_renderer->IsInitialised(),
-                               "The renderer was not initialised.");
-                break;
-            }
-        }
-
-        w_data.pRenderer = this->_renderer;
+        RenderingManager::F_INIT(props.render_library,
+                                 (GLFWwindow*)(this->_windowPtr));
 
         // Link props and glfw window
         glfwSetWindowUserPointer((GLFWwindow*)this->_windowPtr, &w_data);
@@ -183,7 +173,7 @@ namespace Presto {
         _glfwTime = new_time;
 
         glfwPollEvents();
-        _renderer->Update();
+        RenderingManager::Update();
     }
 
     void GLFWAppWindow::SetVSync(bool vsync) {

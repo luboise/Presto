@@ -5,21 +5,32 @@
 #include <set>
 
 namespace Presto {
-    RenderingManager::RenderingManager(GLFWwindow* windowPtr,
-                                       Renderer* renderer) {
+
+    void RenderingManager::F_INIT(Renderer::RENDER_LIBRARY library,
+                                  GLFWwindow* windowPtr) {
         _window = windowPtr;
-        _renderer = renderer;
-        this->Init();
-    }
 
-    void RenderingManager::Init() {
+        if (_renderer != nullptr) {
+            delete _renderer;
+            _renderer = nullptr;
+        }
+
+        // TODO: Add logic to choose renderer
+        _renderer = new VulkanRenderer(windowPtr);
+
         addLayer();
-        this->_initialised = true;
+        _initialised = true;
     }
 
-    void RenderingManager::Shutdown() {}
-
-    void RenderingManager::Update() { _renderer->Update(); }
+    void RenderingManager::F_UPDATE() {
+        for (auto& layer : _renderLayers) {
+            for (auto& entity : layer._entities) {
+                _renderer->draw(entity);
+            }
+        }
+        _renderer->nextFrame();
+    }
+    void RenderingManager::F_SHUTDOWN() {}
 
     layer_id_t RenderingManager::addLayer(size_t pos) {
         if (pos == (size_t)-1) {
@@ -54,7 +65,7 @@ namespace Presto {
     // TODO: Implement remove entity
     void RenderingManager::removeEntity(Entity* ptr_entity) {}
 
-    bool RenderingManager::hasLayer(layer_id_t index) const {
+    bool RenderingManager::hasLayer(layer_id_t index) {
         return (index < _renderLayers.size());
     }
 

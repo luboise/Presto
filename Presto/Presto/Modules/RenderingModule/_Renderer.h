@@ -7,11 +7,13 @@
 #include "Types/Camera.h"
 
 namespace Presto {
-    class PRESTO_API Renderer : public Module {
+    class PRESTO_API Renderer {
        public:
-        virtual void Update() = 0;
+        enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
 
         virtual void AddToRenderPool(entity_t entity_ptr) = 0;
+        virtual void draw(entity_t entity_ptr) = 0;
+        virtual void nextFrame() = 0;
 
         void framebufferResized() { this->_framebufferResized = true; }
 
