@@ -1,3 +1,5 @@
+#pragma once
+
 namespace Presto {
     typedef std::vector<uint32_t> IndexList;
 

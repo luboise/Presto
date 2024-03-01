@@ -12,64 +12,79 @@ namespace Presto {
 
     glm::vec3 getRandomRed() { return getRandomRed(0.05); }
 
-    const std::vector<uint16_t> makeIndices(uint16_t vertexCount) {
-        std::vector<uint16_t> indices(vertexCount);
-        for (auto i = 0; i < vertexCount; i++) indices[i] = i;
-        return indices;
-    };
-
     void VulkanRenderer::draw(entity_t entityPtr) {
-        VkResult res;
-
         // Wait for previous frame (1 fence, wait all fences) then reset
         // fence to unsignaled
-        if (!_startedDrawing) {
-            vkWaitForFences(_logicalDevice, 1, &_inFlightFences[_currentFrame],
-                            VK_TRUE, UINT64_MAX);
-            // Check for framebuffer resize
-            // if (_framebufferResized) {
-            //     _framebufferResized = false;
-            //     this->recreateSwapChain();
-            //     return PR_SUCCESS;
-            // }
-
-            // Acquire image from swap chain to draw into
-            res =
-                vkAcquireNextImageKHR(_logicalDevice, _swapchain, UINT64_MAX,
-                                      _imageAvailableSemaphores[_currentFrame],
-                                      VK_NULL_HANDLE, &_imageIndex);
-
-            if (res == VK_ERROR_OUT_OF_DATE_KHR) {
-                _framebufferResized = false;
-                this->recreateSwapChain();
-                return;
-            } else if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR) {
-                PR_CORE_ERROR("Failed to acquire swap chain image.");
-                return;
-            }
-            // Only reset fence if image is acquired
-            vkResetFences(_logicalDevice, 1, &_inFlightFences[_currentFrame]);
-
-            // Reset, then record command buffer which draws our scene into the
-            // image
-            vkResetCommandBuffer(_commandBuffers[_currentFrame], 0);
-
-            // Clear and enable writing on the command buffer
-            startRecording(_commandBuffers[_currentFrame],
-                           _swapchainFramebuffers[_imageIndex]);
-        }
-
-        // Record each pipeline into the fresh command buffer
-        for (auto& pipeline : _graphicsPipelines) {
-            this->drawPipelineToBuffer(_commandBuffers[_currentFrame],
-                                       pipeline);
-        }
+        VkCommandBuffer& commandBuffer = _commandBuffers[_currentFrame];
 
         // Put logic for drawing entity here
+        DrawInfo& info = _entityMap[entityPtr];
+
+        if (!_startedDrawing) {
+            // Clear and enable writing on the command buffer
+            startRecording(commandBuffer, _swapchainFramebuffers[_imageIndex]);
+
+
+            //
+            // Bind the command buffer to the pipeline
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                              _graphicsPipelines[0].graphicsPipeline);
+
+            // Bind the vertex buffer for the operation
+            VkBuffer vertexBuffers[] = {_vertexBuffer};
+            VkDeviceSize offsets[] = {info.vbOffset};
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+            vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, info.ibOffset,
+                                 VK_INDEX_TYPE_UINT16);
+
+            vkCmdBindDescriptorSets(
+                commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                _graphicsPipelines[0].pipelineLayout, 0, 1,
+                &(_descriptorSets[_currentFrame]), 0, nullptr);
+            //
+            //
+            _startedDrawing = true;
+        }
+
+        // Draw the vertices
+        vkCmdDrawIndexed(commandBuffer,
+                         static_cast<uint32_t>(info.indices.size()), 1,
+                         info.vbOffset, info.ibOffset, 0);
     }
 
     void VulkanRenderer::startRecording(VkCommandBuffer commandBuffer,
                                         VkFramebuffer framebuffer) {
+        vkWaitForFences(_logicalDevice, 1, &_inFlightFences[_currentFrame],
+                        VK_TRUE, UINT64_MAX);
+        // Check for framebuffer resize
+        // if (_framebufferResized) {
+        //     _framebufferResized = false;
+        //     this->recreateSwapChain();
+        //     return PR_SUCCESS;
+        // }
+
+        // Acquire image from swap chain to draw into
+        VkResult res =
+            vkAcquireNextImageKHR(_logicalDevice, _swapchain, UINT64_MAX,
+                                  _imageAvailableSemaphores[_currentFrame],
+                                  VK_NULL_HANDLE, &_imageIndex);
+
+        if (res == VK_ERROR_OUT_OF_DATE_KHR) {
+            _framebufferResized = false;
+            this->recreateSwapChain();
+            return;
+        } else if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR) {
+            PR_CORE_ERROR("Failed to acquire swap chain image.");
+            return;
+        }
+        // Only reset fence if image is acquired
+        vkResetFences(_logicalDevice, 1, &_inFlightFences[_currentFrame]);
+
+        // Reset, then record command buffer which draws our scene into the
+        // image
+        vkResetCommandBuffer(commandBuffer, 0);
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.pInheritanceInfo = nullptr;
@@ -203,34 +218,19 @@ namespace Presto {
         }
     }
 
-    void VulkanRenderer::drawPipelineToBuffer(VkCommandBuffer commandBuffer,
-                                              const VulkanPipeline pipeline) {
-        // uint32_t _imageIndex;
+    // void VulkanRenderer::drawPipelineToBuffer(VkCommandBuffer commandBuffer,
+    //                                           const VulkanPipeline pipeline)
+    //                                           {
+    //     // uint32_t _imageIndex;
 
-        // Bind the command buffer to the pipeline
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                          pipeline.graphicsPipeline);
-
-        // Bind the vertex buffer for the operation
-        VkBuffer vertexBuffers[] = {_vertexBuffer};
-        VkDeviceSize offsets[] = {0};
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, 0,
-                             VK_INDEX_TYPE_UINT16);
-
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                pipeline.pipelineLayout, 0, 1,
-                                &(_descriptorSets[_currentFrame]), 0, nullptr);
-
-        for (const DrawInfo& info : pipeline.renderPool) {
-            vkCmdDrawIndexed(commandBuffer,
-                             static_cast<uint32_t>(info.indices.size()), 1,
-                             info.vbOffset, info.ibOffset, 0);
-        }
-    }
+    //}
 
     void VulkanRenderer::nextFrame() {
+        if (!_startedDrawing) {
+            _currentFrame = (_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+            return;
+        }
+
         stopRecording(_commandBuffers[_currentFrame]);
 
         // Update uniform buffers
@@ -285,6 +285,7 @@ namespace Presto {
         // Which swapchains to draw to, and which image for each chain
         presentInfo.swapchainCount = 1;
         VkSwapchainKHR swapchains[] = {_swapchain};
+        uint32_t imageIndices[] = {_imageIndex};
 
         // presentInfo.pSwapchains = &_swapchain;
         presentInfo.pSwapchains = swapchains;
@@ -308,6 +309,7 @@ namespace Presto {
         }
 
         _currentFrame = (_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+        _startedDrawing = false;
 
         return;
     }

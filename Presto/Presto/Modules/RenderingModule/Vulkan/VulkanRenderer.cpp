@@ -576,13 +576,40 @@ namespace Presto {
         VulkanPipeline& pipeline = _graphicsPipelines[0];
 
         for (auto& pair : entity_ptr->getComponents()) {
-            if (Polygon2D* r = dynamic_cast<Polygon2D*>(pair.second)) {
+            Polygon2D* polygon = dynamic_cast<Polygon2D*>(pair.second);
+            if (polygon != nullptr) {
+                const VertexList& vertices = polygon->getVertices();
+                const IndexList& indices = polygon->getIndices();
+
+                VkDeviceSize bufferSize;
+                void* data;
+
+                // Copy vertices into staging buffer
+                bufferSize = sizeof(VulkanVertex) * ALLOCATED_VERTICES;
+                vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize,
+                            0, &data);
+                memcpy(data, vertices.data(),
+                       sizeof(VulkanVertex) * vertices.size());
+                vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+
+                copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
+
+                // Copy indices into index buffer
+                bufferSize = sizeof(uint32_t) * ALLOCATED_INDICES;
+                vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize,
+                            0, &data);
+                memcpy(data, indices.data(), sizeof(uint32_t) * indices.size());
+                vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+
+                copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
+
+                auto info = DrawInfo{};
+
+                info.indices = indices;
+
+                _entityMap.try_emplace(entity_ptr, info);
+                break;
             }
         }
-
-        auto info = DrawInfo{};
-        info.indices;
-
-        _entityMap.try_emplace(entity_ptr, info);
     }
 }  // namespace Presto

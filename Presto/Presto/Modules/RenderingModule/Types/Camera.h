@@ -16,7 +16,7 @@ namespace Presto {
         glm::vec3 getPos() const;
 
        private:
-        glm::vec3 _cameraPos;
+        glm::vec3 _cameraPos = glm::vec3(0, 0, 0.75);
 
         void recalculate();
 

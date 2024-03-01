@@ -46,7 +46,7 @@ namespace Presto {
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
 
-        std::vector<DrawInfo> renderPool;
+        // std::vector<DrawInfo> renderPool;
     };
 
     struct VulkanPipelineOptions {};
@@ -54,6 +54,9 @@ namespace Presto {
     struct VulkanBuffer {
         VkBuffer buffer;
     };
+
+#define ALLOCATED_VERTICES 512
+#define ALLOCATED_INDICES 2048
 
     class PRESTO_API VulkanRenderer : public Renderer {
        public:
@@ -65,7 +68,7 @@ namespace Presto {
         virtual void nextFrame() override;
 
        private:
-        std::map<entity_t, DrawInfo&> _entityMap;
+        std::map<entity_t, DrawInfo> _entityMap;
         uint32_t _imageIndex = 0;
         bool _startedDrawing = false;
         GLFWwindow* _glfwWindow;
@@ -79,8 +82,8 @@ namespace Presto {
                             VkFramebuffer framebuffer);
         void stopRecording(VkCommandBuffer& commandBuffer);
 
-        void drawPipelineToBuffer(VkCommandBuffer commandBuffer,
-                                  const VulkanPipeline pipeline);
+        /*void drawPipelineToBuffer(VkCommandBuffer commandBuffer,
+                                  const VulkanPipeline pipeline);*/
 
         // Background members
         glm::mat4 getProjectionMatrix(glm::float32 fovRad);

@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
     PR_INFO("Initialised client logger.");
 
     auto app = Presto::CreateApplication();
+    app->Setup();
     app->Run();
     delete app;
 }

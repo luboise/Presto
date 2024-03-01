@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Presto/Modules/ObjectsModule/Component/Component.h"
 
 #include "Presto/Modules/RenderingModule/Types/ModelComponent.h"
@@ -6,15 +8,15 @@
 namespace Presto {
     class PRESTO_API Polygon2D : public Component {
        public:
-        Polygon2D(VertexList vertices);
-
-        std::vector<VulkanVertex> vertices;
+        Polygon2D(const VertexList& vertices, const IndexList& indices);
 
         VertexList getVertices() const;
+        IndexList getIndices() const;
         uint32_t getVertexCount() const;
 
        private:
         VertexList _vertices;
+        IndexList _indices;
         ModelComponent* _model;
     };
 }  // namespace Presto

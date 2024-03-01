@@ -7,6 +7,7 @@
 
 // Object includes
 #include "Presto/Modules/ObjectsModule/_EntityHeader.h"
+#include "Presto/Modules/RenderingModule/RenderingManager.h"
 
 // Available components
 #include "Presto/Components/_ComponentHeader.h"

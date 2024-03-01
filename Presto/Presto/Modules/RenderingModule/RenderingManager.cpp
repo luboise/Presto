@@ -59,6 +59,7 @@ namespace Presto {
         }
 
         RenderLayer& layer = getLayer(layer_index);
+        _renderer->AddToRenderPool(ptr_entity);
         layer.addEntity(ptr_entity);
     }
 

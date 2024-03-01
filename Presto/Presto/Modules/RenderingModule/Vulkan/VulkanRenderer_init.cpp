@@ -2,9 +2,6 @@
 
 #include "RenderingModule/RenderTypes.h"
 
-#define ALLOCATED_VERTICES 512
-#define ALLOCATED_INDICES 2048
-
 namespace Presto {
     void VulkanRenderer::createSurface() {
         if (glfwCreateWindowSurface(_instance, this->_glfwWindow, nullptr,
