@@ -1,6 +1,8 @@
 #include "Camera.h"
 
 namespace Presto {
+    Camera::Camera() { this->recalculate(); }
+
     glm::mat4 Camera::getViewMatrix()
         const {  // Calculate offset pointing at origin
         return _viewMatrix;

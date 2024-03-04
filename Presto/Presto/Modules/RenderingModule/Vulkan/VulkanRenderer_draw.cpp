@@ -22,39 +22,32 @@ namespace Presto {
 
         if (!_startedDrawing) {
             // Clear and enable writing on the command buffer
-            startRecording(commandBuffer, _swapchainFramebuffers[_imageIndex]);
-
-
-            //
-            // Bind the command buffer to the pipeline
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                              _graphicsPipelines[0].graphicsPipeline);
-
-            // Bind the vertex buffer for the operation
-            VkBuffer vertexBuffers[] = {_vertexBuffer};
-            VkDeviceSize offsets[] = {info.vbOffset};
-            vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-            vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, info.ibOffset,
-                                 VK_INDEX_TYPE_UINT16);
-
-            vkCmdBindDescriptorSets(
-                commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                _graphicsPipelines[0].pipelineLayout, 0, 1,
-                &(_descriptorSets[_currentFrame]), 0, nullptr);
-            //
-            //
+            startRecording(commandBuffer);
             _startedDrawing = true;
         }
 
+        // Bind the command buffer to the pipeline
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                          _graphicsPipelines[0].graphicsPipeline);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                _graphicsPipelines[0].pipelineLayout, 0, 1,
+                                &(_descriptorSets[_currentFrame]), 0, nullptr);
+
+        // Bind the vertex buffer for the operation
+        VkBuffer vertexBuffers[] = {_vertexBuffer};
+        VkDeviceSize offsets[] = {info.vbOffset};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(commandBuffer, _indexBuffer, info.ibOffset,
+                             VK_INDEX_TYPE_UINT32);
+
         // Draw the vertices
-        vkCmdDrawIndexed(commandBuffer,
-                         static_cast<uint32_t>(info.indices.size()), 1,
-                         info.vbOffset, info.ibOffset, 0);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(info.indexCount),
+                         1, info.ibOffset, info.vbOffset, 0);
     }
 
-    void VulkanRenderer::startRecording(VkCommandBuffer commandBuffer,
-                                        VkFramebuffer framebuffer) {
+    PR_RESULT VulkanRenderer::startRecording(VkCommandBuffer commandBuffer) {
         vkWaitForFences(_logicalDevice, 1, &_inFlightFences[_currentFrame],
                         VK_TRUE, UINT64_MAX);
         // Check for framebuffer resize
@@ -73,10 +66,10 @@ namespace Presto {
         if (res == VK_ERROR_OUT_OF_DATE_KHR) {
             _framebufferResized = false;
             this->recreateSwapChain();
-            return;
+            return PR_FAILURE;
         } else if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR) {
             PR_CORE_ERROR("Failed to acquire swap chain image.");
-            return;
+            return PR_FAILURE;
         }
         // Only reset fence if image is acquired
         vkResetFences(_logicalDevice, 1, &_inFlightFences[_currentFrame]);
@@ -97,7 +90,7 @@ namespace Presto {
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         renderPassInfo.renderPass = _renderPass;
-        renderPassInfo.framebuffer = framebuffer;
+        renderPassInfo.framebuffer = _swapchainFramebuffers[_imageIndex];
 
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = _swapchainExtent;
@@ -125,6 +118,8 @@ namespace Presto {
         scissor.offset = {0, 0};
         scissor.extent = _swapchainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+        return PR_SUCCESS;
     }
 
     void VulkanRenderer::recreateSwapChain() {
@@ -234,8 +229,8 @@ namespace Presto {
         stopRecording(_commandBuffers[_currentFrame]);
 
         // Update uniform buffers
-        auto time = glfwGetTime();
-        auto angle = glm::vec3(0, 0, 0);
+        // auto time = glfwGetTime();
+        // auto angle = glm::vec3(0, 0, 0);
 
         // Update uniform buffers
         ShaderMatrices mats{};
@@ -244,7 +239,7 @@ namespace Presto {
         glm::mat4 view = _renderCamera.getViewMatrix();
         mats.modelView = view * model;
 
-        auto fovYDeg = 90;
+        glm::float32 fovYDeg = 90;
         mats.projection = getProjectionMatrix(fovYDeg);
 
         memcpy(_uniformBuffersMapped[_currentFrame], &mats, sizeof(mats));
@@ -289,7 +284,7 @@ namespace Presto {
 
         // presentInfo.pSwapchains = &_swapchain;
         presentInfo.pSwapchains = swapchains;
-        presentInfo.pImageIndices = &_imageIndex;
+        presentInfo.pImageIndices = imageIndices;
 
         if (vkQueueSubmit(_graphicsQueue, 1, &submitInfo,
                           _inFlightFences[_currentFrame]) != VK_SUCCESS) {

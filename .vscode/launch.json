@@ -8,7 +8,6 @@
 			"name": "(gdb) Launch",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/bin/Debug/Duality.exe",
 			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}/bin/Debug",
@@ -16,7 +15,15 @@
 			"externalConsole": false,
 
 			"preLaunchTask": "CMake: build",
-				
+			
+			"windows:":
+			{
+				"program": "${workspaceFolder}/bin/Debug/Duality.exe",
+			},
+			"linux": {
+				"program": "${workspaceFolder}/bin/Duality"
+			},
+
 			"MIMode": "gdb",
 			"miDebuggerPath": "gdb",
 			"setupCommands": [

@@ -3,6 +3,8 @@
 namespace Presto {
     class PRESTO_API Camera {
        public:
+        Camera();
+
         glm::mat4 getViewMatrix() const;
 
         void setYaw(double newYaw);
@@ -17,12 +19,11 @@ namespace Presto {
 
        private:
         glm::vec3 _cameraPos = glm::vec3(0, 0, 0.75);
+        double _yaw = 0.0;
+        double _pitch = 0.0;
+        double _roll = 0.0;
 
         void recalculate();
-
-        double _yaw;
-        double _pitch;
-        double _roll;
 
         glm::highp_mat4 _viewMatrix;
     };

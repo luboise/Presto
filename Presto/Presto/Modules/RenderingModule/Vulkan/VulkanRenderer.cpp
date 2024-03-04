@@ -605,7 +605,11 @@ namespace Presto {
 
                 auto info = DrawInfo{};
 
-                info.indices = indices;
+                info.indexCount = indices.size();
+                info.ibOffset = 0;
+
+                info.vertexCount = vertices.size();
+                info.vbOffset = 0;
 
                 _entityMap.try_emplace(entity_ptr, info);
                 break;

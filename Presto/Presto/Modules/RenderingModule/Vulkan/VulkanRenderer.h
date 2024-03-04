@@ -78,8 +78,7 @@ namespace Presto {
 
         void drawFromInfo(DrawInfo& info);
 
-        void startRecording(VkCommandBuffer commandBuffer,
-                            VkFramebuffer framebuffer);
+        PR_RESULT startRecording(VkCommandBuffer commandBuffer);
         void stopRecording(VkCommandBuffer& commandBuffer);
 
         /*void drawPipelineToBuffer(VkCommandBuffer commandBuffer,

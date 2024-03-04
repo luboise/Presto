@@ -35,7 +35,7 @@ std::vector<Pr::VulkanVertex> makeHeart(uint32_t points) {
     return heart;
 };
 
-const std::vector<uint32_t> makeIndices(uint16_t vertexCount) {
+const std::vector<uint32_t> makeIndices(uint32_t vertexCount) {
     std::vector<uint32_t> indices(vertexCount);
     for (auto i = 0; i < vertexCount; i++) indices[i] = i;
     return indices;
@@ -50,6 +50,7 @@ class DualityApp : public Presto::Application {
 
         Pr::VertexList vertices = makeHeart(200);
         Pr::IndexList indices = makeIndices(200);
+
         auto* shape = new Pr::Polygon2D(vertices, indices);
 
         // This will set the heart's Polygon2D object to the shape
