@@ -66,6 +66,10 @@ namespace Presto {
     // TODO: Implement remove entity
     void RenderingManager::removeEntity(Entity* ptr_entity) {}
 
+    void RenderingManager::setCamera(Camera& newCam) {
+        _renderer->setCamera(newCam);
+    }
+
     bool RenderingManager::hasLayer(layer_id_t index) {
         return (index < _renderLayers.size());
     }

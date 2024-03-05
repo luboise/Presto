@@ -11,6 +11,8 @@ namespace Presto {
 
         // Set up modules
         auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
+        RenderingManager::F_INIT(Renderer::VULKAN, ptr);
+        RenderingManager::setCamera(_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -20,15 +22,26 @@ namespace Presto {
 
     void Application::Run() {
         while (app_running) {
+            // Calculate delta
+
+            double newTime = glfwGetTime();
+            _delta = newTime - _currentTime;
+            _currentTime = newTime;
+
+            // PRINT FPS
+            // PR_CORE_TRACE("{:.2f} FPS", 1 / delta);
+
             // TODO: Create new entities
 
             // Run user logic
-            GameLoop();            
+            GameLoop();
             RunSystems();
 
             app_window->RenderFrame();
         }
     }
+
+    Camera& Application::GetMainCamera() { return _mainCamera; }
 
     void Application::OnEvent(Event& e) {
         EventDispatcher dispatcher(e);

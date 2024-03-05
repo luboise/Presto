@@ -60,9 +60,6 @@ namespace Presto {
         // Set the window as the current context
         glfwMakeContextCurrent((GLFWwindow*)this->_windowPtr);
 
-        RenderingManager::F_INIT(props.render_library,
-                                 (GLFWwindow*)(this->_windowPtr));
-
         // Link props and glfw window
         glfwSetWindowUserPointer((GLFWwindow*)this->_windowPtr, &w_data);
         this->SetCallbacks();
@@ -164,14 +161,6 @@ namespace Presto {
     }
 
     void GLFWAppWindow::RenderFrame() {
-        auto new_time = glfwGetTime();
-        double delta = new_time - _glfwTime;
-
-        // PRINT FPS
-        // PR_CORE_TRACE("{:.2f} FPS", 1 / delta);
-
-        _glfwTime = new_time;
-
         glfwPollEvents();
         RenderingManager::Update();
     }

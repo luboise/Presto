@@ -4,7 +4,7 @@
 
 #include "Presto/Modules/ObjectsModule/_EntityHeader.h"
 
-#include "Types/Camera.h"
+#include "Presto/Common/Camera.h"
 
 namespace Presto {
     class PRESTO_API Renderer {
@@ -15,10 +15,12 @@ namespace Presto {
         virtual void draw(entity_t entity_ptr) = 0;
         virtual void nextFrame() = 0;
 
+        void setCamera(Camera& newCam) { _renderCamera = &newCam; }
+
         void framebufferResized() { this->_framebufferResized = true; }
 
        protected:
         bool _framebufferResized = false;
-        Camera _renderCamera;
+        Camera* _renderCamera;
     };
 }  // namespace Presto

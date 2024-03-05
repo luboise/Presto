@@ -25,14 +25,19 @@ namespace Presto {
         recalculate();
     }
 
+    void Camera::setFocus(glm::vec3 newPos) {
+        _focusPoint = newPos;
+        recalculate();
+    }
+
     double Camera::getYaw() const { return _yaw; }
     double Camera::getPitch() const { return _pitch; }
     double Camera::getRoll() const { return _roll; }
     glm::vec3 Camera::getPos() const { return _cameraPos; }
+    glm::vec3 Camera::getFocus() const { return _focusPoint; }
 
     void Camera::recalculate() {
         // Calculate offset pointing at origin with the y axis up
-        _viewMatrix =
-            glm::lookAt(_cameraPos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        _viewMatrix = glm::lookAt(_cameraPos, _focusPoint, glm::vec3(0, 1, 0));
     }
 }  // namespace Presto

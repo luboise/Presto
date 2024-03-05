@@ -22,6 +22,8 @@ namespace Presto {
         static void addEntity(layer_id_t layer_index, Entity* ptr_entity);
         static void removeEntity(Entity* ptr_entity);
 
+        static void setCamera(Camera& newCam);
+
        private:
         RenderingManager();
 

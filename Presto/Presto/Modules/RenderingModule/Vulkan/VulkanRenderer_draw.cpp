@@ -236,7 +236,9 @@ namespace Presto {
         ShaderMatrices mats{};
 
         glm::mat4 model(1.0);
-        glm::mat4 view = _renderCamera.getViewMatrix();
+        PR_ASSERT(_renderCamera != nullptr,
+                  "Attempted to render without a camera set.");
+        glm::mat4 view = _renderCamera->getViewMatrix();
         mats.modelView = view * model;
 
         glm::float32 fovYDeg = 90;

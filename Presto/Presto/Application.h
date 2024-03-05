@@ -21,6 +21,7 @@ namespace Presto {
 
         // Intended to be replaced by user logic
         virtual void GameLoop(){};
+        Camera& GetMainCamera();
 
         void OnEvent(Event& e);
 
@@ -34,6 +35,11 @@ namespace Presto {
 
         std::vector<Module*> _modules;
         std::vector<System*> _systems;
+
+       protected:
+        Camera _mainCamera;
+        double _delta = 0;
+        double _currentTime = 0;
     };
 
     // Defined by client (eg. Duality)
