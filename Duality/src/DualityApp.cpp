@@ -61,7 +61,7 @@ class DualityApp : public Presto::Application {
 
     void GameLoop() override {
         double diff = glm::sin(_currentTime) * 0.3;
-        _mainCamera.setPos(glm::vec3(0, 0, 0.75) + glm::vec3(0, 0, diff));
+        _mainCamera.setPos(glm::vec3(1, 0, 0.75) + glm::vec3(0, 0, diff));
     }
 
     ~DualityApp() {}

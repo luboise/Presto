@@ -1,16 +1,20 @@
 #pragma once
 
+#include "Presto/Events/ObjectEvents.h"
 #include "Presto/Modules/ObjectsModule/Component/Component.h"
 
 namespace Presto {
+    // Forward declaration
+    class EntityManager;
+
     typedef std::map<component_class_t, Component*> ComponentMap;
+    typedef uint32_t entity_id_t;
 
     class PRESTO_API Entity {
-       public:
-        Entity();
-        virtual ~Entity();
+        friend class EntityManager;
 
-        uint32_t getId() const;
+       public:
+        entity_id_t getId() const;
 
         template <typename ComponentClass>
         void setComponent(ComponentClass* component_ptr) {
@@ -21,12 +25,11 @@ namespace Presto {
         ComponentMap getComponents() { return _components; }
 
        private:
-        uint32_t _id;
+        Entity(entity_id_t id);
+        virtual ~Entity();
 
+        entity_id_t _id;
         ComponentMap _components;
-
-        static uint32_t getNextAvailableId(void);
-        static uint32_t _currentId;
     };
 
     typedef Entity* entity_t;
