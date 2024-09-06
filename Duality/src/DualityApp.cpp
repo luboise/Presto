@@ -16,9 +16,9 @@ std::vector<Pr::VulkanVertex> makeHeart(uint32_t points) {
     const float height = width;
 
     const double denom = glm::two_pi<double>() / (points);
-    double t = 0;
+
     for (auto i = 0; i < points; i++) {
-        t = i * denom;
+        double t = i * denom;
 
         float x = (width / 2.0f) * glm::pow(glm::sin(t), 3);
         // Normalised height
@@ -61,7 +61,7 @@ class DualityApp : public Presto::Application {
 
     void GameLoop() override {
         double diff = glm::sin(_currentTime) * 0.3;
-        _mainCamera.setPos(glm::vec3(0, 0, 0.75) + glm::vec3(0, 0, diff));
+        _mainCamera.setPos(glm::vec3(1, 0, 0.75) + glm::vec3(0, 0, diff));
     }
 
     ~DualityApp() {}
