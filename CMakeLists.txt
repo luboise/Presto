@@ -3,121 +3,150 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED On)
 set(CMAKE_CXX_EXTENSIONS Off)
 
-find_program(GLSLC_PATH NAMES glslc HINTS Vulkan::glslc)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/ext")
+
+find_program(
+		GLSLC_PATH
+		NAMES glslc
+		HINTS Vulkan::glslc)
 
 project(Presto)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release;Dist" CACHE STRING "Build Configurations" FORCE)
+set(CMAKE_CONFIGURATION_TYPES
+				"Debug;Release;Dist"
+				CACHE STRING "Build Configurations" FORCE)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Install path" FORCE)
+	set(CMAKE_INSTALL_PREFIX
+						"${CMAKE_BINARY_DIR}/install"
+						CACHE PATH "Install path" FORCE)
 endif()
 
-add_subdirectory(ext/spdlog)
+if(NOT TARGET spdlog)
+	# find_package(spdlog REQUIRED)
+	add_subdirectory(ext/spdlog)
+endif()
+
 set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# set(glm_DIR ./ext/glm) find_package(glm REQUIRED)
+
+# set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/ext/GLFW" ${CMAKE_PREFIX_PATH})
 add_subdirectory(ext/GLFW)
+# find_package(GLFW REQUIRED PATHS ./ext/GLFW) find_package(glfw
+# glfw3Config.cmake REQUIRED)
 link_libraries(glfw)
 
 add_subdirectory(ext/glm)
+# find_package(glm REQUIRED PATHS ./ext/glm)
 
 find_package(Vulkan REQUIRED)
-include_directories(${Vulkan_INCLUDE_DIRS})
+# include_directories(${Vulkan_INCLUDE_DIR})
 
-macro(CompileShadersForTarget TARGET_NAME SHADER_SOURCE_DIR)
-	# set(CUSTOM_TARGET_NAME ${TARGET_NAME}Shaders)
-	# add_dependencies(${TARGET_NAME} ${CUSTOM_TARGET_NAME})
-	# add_custom_target(${CUSTOM_TARGET_NAME})
+# Macro which compiles shaders in the src/shaders directory to vulkan shader
+# units
+macro(CompileShadersForTarget target_name shader_source_dir)
+	# set(CUSTOM_target_name ${target_name}Shaders)
+	# add_dependencies(${target_name} ${CUSTOM_target_name})
+	# add_custom_target(${CUSTOM_target_name})
 
-	# message("Added custom shader target: " ${CUSTOM_TARGET_NAME})
+	# message("Added custom shader target: " ${CUSTOM_target_name})
 
-	message("Beginning shader compilation for target \"" ${TARGET_NAME} "\"")
+	message("Beginning shader compilation for target \"" ${target_name} "\"")
 
-	# set(WORKING_DIRECTORY ${SHADER_SOURCE_DIR})
+	# set(WORKING_DIRECTORY ${shader_source_dir})
 	set(SHADER_BUILD_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/Shaders/)
-	file(GLOB_RECURSE SHADER_FILES ${SHADER_SOURCE_DIR}/*)
+	file(GLOB_RECURSE SHADER_FILES ${shader_source_dir}/*)
 
 	# Create a custom target for shader compilation
-	foreach(SHADER_FILE ${SHADER_FILES})
+	foreach(shader_file ${shader_files})
 		# Get input structure
-		string(REPLACE ${SHADER_SOURCE_DIR}/ "" IN_STRUCTURE_FULL ${SHADER_FILE})
+		string(REPLACE ${shader_source_dir}/ "" IN_STRUCTURE_FULL ${shader_file})
 		get_filename_component(IN_STRUCTURE ${IN_STRUCTURE_FULL} DIRECTORY)
-		
+
 		# Add a slash if the name is not empty
 		if(NOT IN_STRUCTURE STREQUAL "")
 			set(IN_STRUCTURE ${IN_STRUCTURE}/)
 		endif()
 
 		# Get replaced filename
-		get_filename_component(FILE_EXTENSION ${SHADER_FILE} EXT)
+		get_filename_component(FILE_EXTENSION ${shader_file} EXT)
 		string(REPLACE "." "" FILE_EXTENSION ${FILE_EXTENSION})
-		get_filename_component(BASE_FILENAME ${SHADER_FILE} NAME_WE)
+		get_filename_component(BASE_FILENAME ${shader_file} NAME_WE)
 		set(OUT_FILENAME ${BASE_FILENAME}_${FILE_EXTENSION}.spv)
 
 		# Skip shaders which have already been compiled
 		if(FILE_EXTENSION STREQUAL "spv")
-			get_filename_component(InputFolderName ${SHADER_SOURCE_DIR} NAME_WE)
-			message("-- Skipping \"" ${SHADER_FILE} "\"")
+			get_filename_component(InputFolderName ${shader_source_dir} NAME_WE)
+			message("-- Skipping \"" ${shader_file} "\"")
 			continue()
 		endif()
 
-		message("-- Adding shader \"/" ${IN_STRUCTURE_FULL} "\" -> \"" shaders/${IN_STRUCTURE_DIR}${OUT_FILENAME} "\"")
+		message("-- Adding shader \"/" ${IN_STRUCTURE_FULL} "\" -> \""
+												shaders/${IN_STRUCTURE_DIR}${OUT_FILENAME} "\"")
 
 		set(OUTDIR ${SHADER_BUILD_DIR}${IN_STRUCTURE})
 		set(OUTPATH ${OUTDIR}${OUT_FILENAME})
 
-		# Debug messages
-		# message("BUILD DIR: " ${SHADER_BUILD_DIR})
-		# message("IN STRUCTURE: " ${IN_STRUCTURE})
-		# message("OUTDIR: " ${OUTDIR})
+		# Debug messages message("BUILD DIR: " ${SHADER_BUILD_DIR}) message("IN
+		# STRUCTURE: " ${IN_STRUCTURE}) message("OUTDIR: " ${OUTDIR})
 		# message("OUTPATH: " ${OUTPATH})
 
 		add_custom_command(
-			TARGET ${TARGET_NAME}
-
-			# COMMENT "Compiling  ${SHADER_FILE}  to  ${OUTPATH}"
-			COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTDIR}
-			COMMAND ${GLSLC_PATH} ${SHADER_FILE} -o ${OUTPATH}
-
-			# COMMENT Built ${OUTPATH}
-		)
+						TARGET ${target_name}
+						COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTDIR}
+						COMMAND ${GLSLC_PATH} ${shader_file} -o ${OUTPATH}
+						COMMENT "Compiling  ${shader_file}  to  ${OUTPATH}")
 	endforeach()
 endmacro()
 
-if (WIN32)
+if(WIN32)
 	set(PLATFORM Windows)
 
 	add_compile_definitions(PR_PLATFORM_WINDOWS)
 	add_compile_definitions(NOMINMAX)
-	
-	set(CMAKE_GENERATOR_PLATFORM "x64"
-		CACHE STRING "Platform (x64)" FORCE
-	)
+
+	set(CMAKE_GENERATOR_PLATFORM
+						"x64"
+						CACHE STRING "Platform (x64)" FORCE)
 elseif(UNIX)
 	set(PLATFORM Unix)
 	add_compile_definitions(PR_PLATFORM_UNIX)
 else()
-	message(FATAL_ERROR "Platform not selected. Expected Windows or Unix platform for compilation.")
+	message(FATAL_ERROR "Platform not selected."
+																						"Expected Windows or Unix platform for compilation.")
 endif()
 
-add_subdirectory(Presto)
-target_link_libraries(Presto
-	PRIVATE glfw ${Vulkan_LIBRARIES}
-	PUBLIC spdlog glm
-)
-target_include_directories(Presto
-	PRIVATE ext/spdlog/include ext/glm/include
-)
+add_library(Presto STATIC)
+
+target_include_directories(Presto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(Presto PUBLIC ext/spdlog/include ext/glm/include)
+
+add_subdirectory(src)
+
 # target_link_libraries(Presto PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
 	target_link_libraries(Presto PRIVATE dwmapi.lib XInput9_1_0.lib)
 endif()
 
+target_link_libraries(Presto PUBLIC glfw ${Vulkan_LIBRARIES} spdlog glm::glm)
 
-add_subdirectory(Duality)
-target_include_directories(Duality PRIVATE ${PRESTO_INCLUDE_DIRS})
+# Needed for shared library
+set_property(TARGET Presto PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# add_subdirectory(PrestoTest)
+# if (WIN32) target_compile_definitions(Presto PRIVATE PR_BUILD_LIB ) endif()
 
+target_compile_definitions(Presto PRIVATE PR_BUILD_LIB)
+
+target_precompile_headers(Presto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+
+# include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
+
+# Set the source and build directories
+compileshadersfortarget(Presto ${CMAKE_CURRENT_SOURCE_DIR}/Presto/Shaders)
