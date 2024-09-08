@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <set>
-#include "Presto/Rendering/Polygon2D.h"
+#include "Presto/Components/Polygon2D.h"
 
 namespace Presto {
 

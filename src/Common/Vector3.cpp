@@ -1,10 +1,10 @@
+#include "Presto/Rendering/Vector3.h"
 
-#include "Vector3.h"
 #include <cmath>
 
 Vector3::Vector3() : Vector3(0, 0, 0) {}
 
-Vector3::Vector3(const float x, const float y) : Vector3(x, y, 0){};
+Vector3::Vector3(const float x, const float y) : Vector3(x, y, 0) {};
 
 Vector3::Vector3(const float x, const float y, const float z) {
     this->x = x;

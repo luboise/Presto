@@ -3,7 +3,10 @@
 #include "Presto/Events/ApplicationEvents.h"
 #include "Presto/Events/KeyEvents.h"
 #include "Presto/Events/MouseEvents.h"
+#include "Presto/Rendering/Renderer.h"
+#include "Rendering/Vulkan/VulkanRenderer.h"
 
+#include <stdexcept>
 #include "UnixWindow.h"
 
 namespace Presto {
@@ -55,12 +58,15 @@ namespace Presto {
         glfwMakeContextCurrent(this->_windowPtr);
 
         switch (props.render_library) {
-            case VULKAN: {
+            case Renderer::RENDER_LIBRARY::VULKAN: {
                 this->_renderer = new VulkanRenderer(this->_windowPtr);
                 PR_CORE_ASSERT(this->_renderer->IsInitialised(),
                                "The renderer was not initialised.");
                 break;
             }
+            default:
+                throw new std::invalid_argument(
+                    "Renderer not implemented yet.");
         }
 
         w_data.pRenderer = this->_renderer;

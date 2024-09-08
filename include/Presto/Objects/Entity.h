@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Component.h"
+#include "Presto/Component.h"
+#include "glm/fwd.hpp"
 
 namespace Presto {
     // Forward declaration
@@ -21,7 +22,13 @@ namespace Presto {
             _components.emplace(classID, component_ptr);
         }
 
-        ComponentMap getComponents() { return _components; }
+        template <typename ComponentClass>
+        ComponentClass& getComponent() {
+            component_class_t classID = typeid(ComponentClass).hash_code();
+            return _components[classID];
+        }
+
+        ComponentMap getComponents();
 
        private:
         Entity(entity_id_t id);
@@ -29,6 +36,8 @@ namespace Presto {
 
         entity_id_t _id;
         ComponentMap _components;
+        glm::vec3 _position;
+        glm::vec3 _rotation;
     };
 
     typedef Entity* entity_t;

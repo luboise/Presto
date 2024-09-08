@@ -10,5 +10,7 @@ namespace Presto {
 
     Entity::~Entity() {}
 
+    ComponentMap Entity::getComponents() { return _components; }
+
     uint32_t Entity::getId() const { return this->_id; }
 }  // namespace Presto

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "../Objects/Component.h"
-
-#include "Rendering/Types/DrawInfo.h"
-#include "Rendering/Types/ModelComponent.h"
-#include "Rendering/Vulkan/VulkanVertex.h"
+#include "Presto/Component.h"
+#include "Presto/Components/ModelComponent.h"
+#include "Presto/Rendering/Vertex.h"
 
 namespace Presto {
     class PRESTO_API Polygon2D : public Component {

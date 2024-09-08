@@ -1,4 +1,4 @@
-#include "Presto/Rendering/Polygon2D.h"
+#include "Presto/Components/Polygon2D.h"
 
 namespace Presto {
     Polygon2D::Polygon2D(const VertexList& vertices, const IndexList& indices) {
