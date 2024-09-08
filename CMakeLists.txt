@@ -57,11 +57,20 @@ macro(CompileShadersForTarget target_name shader_source_dir)
 
 	# message("Added custom shader target: " ${CUSTOM_target_name})
 
-	message("Beginning shader compilation for target \"" ${target_name} "\"")
+	message("Beginning shader compilation for target \"" ${target_name}
+										"\". Reading shaders from " ${shader_source_dir})
 
 	# set(WORKING_DIRECTORY ${shader_source_dir})
-	set(SHADER_BUILD_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>/Shaders/)
-	file(GLOB_RECURSE SHADER_FILES ${shader_source_dir}/*)
+	set(SHADER_BUILD_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Shaders/)
+	file(GLOB_RECURSE shader_files "${shader_source_dir}/*")
+
+	if("${shader_files}" STREQUAL "")
+		message(
+						FATAL_ERROR
+								"Base shaders not found. Aborting build."
+								"\nShader search location: ${shader_source_dir}"
+								"\nTarget: ${target_name}")
+	endif()
 
 	# Create a custom target for shader compilation
 	foreach(shader_file ${shader_files})
@@ -149,4 +158,4 @@ target_precompile_headers(Presto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 # include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
 
 # Set the source and build directories
-compileshadersfortarget(Presto ${CMAKE_CURRENT_SOURCE_DIR}/Presto/Shaders)
+compileshadersfortarget(Presto ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)

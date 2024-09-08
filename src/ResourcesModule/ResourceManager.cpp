@@ -9,6 +9,8 @@ namespace Presto {
     // const fs::path executableDirectory =
     // fs::absolute(fs::path(argv[0])).parent_path();
 
+    // TODO: Fix this to be based on the executable path rather than the
+    // directory which the program was called from
     const fs::path executableDirectory = std::filesystem::current_path();
 
     ResourceManager::ResourceManager() { this->Init(); }
