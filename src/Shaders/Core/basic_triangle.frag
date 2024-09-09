@@ -7,5 +7,6 @@ layout(location = 0) in vec3 fragColor;
 
 void main() {
     // Use the fragColor to define the outColor
+
     outColor = vec4(fragColor, 1.0);
 }
