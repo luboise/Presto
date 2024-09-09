@@ -31,7 +31,7 @@ namespace Presto {
             _currentTime = newTime;
 
             // PRINT FPS
-            // PR_CORE_TRACE("{:.2f} FPS", 1 / delta);
+            // PR_CORE_TRACE("{:.2f} FPS", 1 / _delta);
 
             // TODO: Create new entities
 

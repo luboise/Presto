@@ -1,5 +1,6 @@
 #include "VulkanRenderer.h"
 #include "Presto/Rendering/Renderer.h"
+#include "spdlog/fmt/bundled/format.h"
 
 #include <algorithm>
 #include <limits>
@@ -609,6 +610,13 @@ namespace Presto {
         info.vertexCount = vertices.size();
         info.vbOffset = 0;
 
-        _drawInfoMap.try_emplace(renderable, info);
+        auto insertion = _drawInfoMap.try_emplace(renderable, info);
+
+        PR_CORE_ASSERT(
+            insertion.second,
+            "Presto failed to insert renderable {} to the render list.",
+            fmt::ptr(renderable));
+
+        PR_CORE_TRACE("Added {} to the render list.", fmt::ptr(renderable));
     }
 }  // namespace Presto

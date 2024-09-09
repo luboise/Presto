@@ -22,6 +22,7 @@ namespace Presto {
 
         return new_entity;
     }
+
     void EntityManager::destroyEntity(entity_t entity) {
         // Remove from map
         _entitymap.erase(entity->_id);
