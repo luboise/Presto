@@ -1,4 +1,5 @@
-#include "Rendering/RenderTypes.h"
+#include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Rendering/Renderer.h"
 #include "VulkanRenderer.h"
 
 #include <GLFW/glfw3.h>
@@ -12,13 +13,13 @@ namespace Presto {
 
     glm::vec3 getRandomRed() { return getRandomRed(0.05); }
 
-    void VulkanRenderer::draw(entity_t entityPtr) {
+    void VulkanRenderer::draw(draw_info_key props) {
         // Wait for previous frame (1 fence, wait all fences) then reset
         // fence to unsignaled
         VkCommandBuffer& commandBuffer = _commandBuffers[_currentFrame];
 
         // Put logic for drawing entity here
-        DrawInfo& info = _entityMap[entityPtr];
+        DrawInfo& info = _drawInfoMap[props];
 
         if (!_startedDrawing) {
             // Clear and enable writing on the command buffer

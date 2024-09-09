@@ -60,7 +60,7 @@ namespace Presto {
         glfwMakeContextCurrent((GLFWwindow*)this->_windowPtr);
 
         switch (props.render_library) {
-            case VULKAN: {
+            case Renderer::VULKAN: {
                 this->_renderer =
                     new VulkanRenderer((GLFWwindow*)this->_windowPtr);
                 PR_CORE_ASSERT(this->_renderer->IsInitialised(),

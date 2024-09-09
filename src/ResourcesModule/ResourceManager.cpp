@@ -15,7 +15,7 @@ namespace Presto {
 
     ResourceManager::ResourceManager() { this->Init(); }
 
-    ResourceManager::~ResourceManager() {}
+    ResourceManager::~ResourceManager() { this->Shutdown(); }
 
     std::vector<char> ResourceManager::readFile(const std::string& filename) {
         // ate <-> start at end of file

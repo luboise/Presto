@@ -1,9 +1,9 @@
 #include "VulkanRenderer.h"
+#include "Presto/Rendering/Renderer.h"
 
 #include <algorithm>
 #include <limits>
 #include <set>
-#include "Presto/Components/Polygon2D.h"
 
 namespace Presto {
 
@@ -565,55 +565,50 @@ namespace Presto {
         return extensions;
     }
 
-    void VulkanRenderer::AddToRenderPool(entity_t entity_ptr) {
-        if (_entityMap.contains(entity_ptr)) {
+    void VulkanRenderer::AddToRenderPool(draw_info_key renderable) {
+        if (_drawInfoMap.contains(renderable)) {
             PR_CORE_ERROR(
                 "Entity has already been added to render pool. Can't add it "
                 "again.");
             return;
         }
 
-        VulkanPipeline& pipeline = _graphicsPipelines[0];
+        // ?? Unsure why this is here
+        // VulkanPipeline& pipeline = _graphicsPipelines[0];
 
-        for (auto& pair : entity_ptr->getComponents()) {
-            Polygon2D* polygon = dynamic_cast<Polygon2D*>(pair.second);
-            if (polygon != nullptr) {
-                const VertexList& vertices = polygon->getVertices();
-                const IndexList& indices = polygon->getIndices();
+        auto mesh = renderable->getMesh();
+        const VertexList& vertices = mesh.getVertices();
+        const IndexList& indices = mesh.getIndices();
 
-                VkDeviceSize bufferSize;
-                void* data;
+        VkDeviceSize bufferSize;
+        void* data;
 
-                // Copy vertices into staging buffer
-                bufferSize = sizeof(VulkanVertex) * ALLOCATED_VERTICES;
-                vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize,
-                            0, &data);
-                memcpy(data, vertices.data(),
-                       sizeof(VulkanVertex) * vertices.size());
-                vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+        // Copy vertices into staging buffer
+        bufferSize = sizeof(VulkanVertex) * ALLOCATED_VERTICES;
+        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, vertices.data(), sizeof(VulkanVertex) * vertices.size());
+        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-                copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
+        copyBuffer(_stagingBuffer, _vertexBuffer, bufferSize);
 
-                // Copy indices into index buffer
-                bufferSize = sizeof(uint32_t) * ALLOCATED_INDICES;
-                vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize,
-                            0, &data);
-                memcpy(data, indices.data(), sizeof(uint32_t) * indices.size());
-                vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
+        // Copy indices into index buffer
+        bufferSize = sizeof(uint32_t) * ALLOCATED_INDICES;
+        vkMapMemory(_logicalDevice, _stagingBufferMemory, 0, bufferSize, 0,
+                    &data);
+        memcpy(data, indices.data(), sizeof(uint32_t) * indices.size());
+        vkUnmapMemory(_logicalDevice, _stagingBufferMemory);
 
-                copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
+        copyBuffer(_stagingBuffer, _indexBuffer, bufferSize);
 
-                auto info = DrawInfo{};
+        auto info = DrawInfo{};
 
-                info.indexCount = indices.size();
-                info.ibOffset = 0;
+        info.indexCount = indices.size();
+        info.ibOffset = 0;
 
-                info.vertexCount = vertices.size();
-                info.vbOffset = 0;
+        info.vertexCount = vertices.size();
+        info.vbOffset = 0;
 
-                _entityMap.try_emplace(entity_ptr, info);
-                break;
-            }
-        }
+        _drawInfoMap.try_emplace(renderable, info);
     }
 }  // namespace Presto

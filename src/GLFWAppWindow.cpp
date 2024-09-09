@@ -6,7 +6,7 @@
 
 #include "GLFWAppWindow.h"
 
-#include "Rendering/RenderingManager.h"
+#include "Presto/Rendering/RenderingManager.h"
 
 namespace Presto {
     static bool s_GLFWInitialised = false;

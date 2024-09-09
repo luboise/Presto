@@ -1,7 +1,8 @@
 
 #include "Presto/Application.h"
 
-#include "Rendering/RenderingManager.h"
+#include "GLFW/glfw3.h"
+#include "Presto/Rendering/RenderingManager.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
@@ -13,7 +14,7 @@ namespace Presto {
         // Set up modules
         auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
         RenderingManager::F_INIT(Renderer::VULKAN, ptr);
-        RenderingManager::setCamera(_mainCamera);
+        RenderingManager::SetCamera(_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/

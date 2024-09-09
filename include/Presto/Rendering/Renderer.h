@@ -1,15 +1,22 @@
 #pragma once
 
-#include "Presto/Objects/Entity.h"
+#include <map>
+#include "Presto/Components/Renderable.h"
+
 #include "Presto/Rendering/Camera.h"
+#include "Presto/Rendering/RenderTypes.h"
 
 namespace Presto {
+
+    typedef Renderable* draw_info_key;
+    typedef std::map<draw_info_key, DrawInfo> DrawInfoMap;
+
     class PRESTO_API Renderer {
        public:
         enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
 
-        virtual void AddToRenderPool(entity_t entity_ptr) = 0;
-        virtual void draw(entity_t entity_ptr) = 0;
+        virtual void AddToRenderPool(draw_info_key) = 0;
+        virtual void draw(draw_info_key) = 0;
         virtual void nextFrame() = 0;
 
         void setCamera(Camera& newCam) { _renderCamera = &newCam; }
@@ -19,6 +26,8 @@ namespace Presto {
         virtual ~Renderer() {};
 
        protected:
+        DrawInfoMap _drawInfoMap;
+
         bool _framebufferResized = false;
         Camera* _renderCamera;
     };

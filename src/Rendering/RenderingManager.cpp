@@ -1,8 +1,10 @@
-#include "RenderingManager.h"
+#include "Presto/Rendering/RenderingManager.h"
 
-#include "Vulkan/VulkanRenderer.h"
-
-#include <set>
+#include "Presto/Components/Renderable.h"
+#include "Presto/Components/RenderableProps.h"
+#include "Presto/Rendering/Mesh.h"
+#include "Presto/Rendering/Vertex.h"
+#include "Rendering/Vulkan/VulkanRenderer.h"
 
 namespace Presto {
 
@@ -18,21 +20,27 @@ namespace Presto {
         // TODO: Add logic to choose renderer
         _renderer = new VulkanRenderer(windowPtr);
 
-        addLayer();
+        /**
+_meshes = Allocator<Mesh>();
+_renderProps = std::map<id_t, RenderableProps*>();
+_renderables = std::map<id_t, Renderable*>();
+        **/
+
+        AddLayer();
         _initialised = true;
     }
 
     void RenderingManager::F_UPDATE() {
         for (auto& layer : _renderLayers) {
-            for (auto& entity : layer._entities) {
-                _renderer->draw(entity);
+            for (auto& ptr_renderable : layer._renderables) {
+                _renderer->draw(ptr_renderable);
             }
         }
         _renderer->nextFrame();
     }
     void RenderingManager::F_SHUTDOWN() {}
 
-    layer_id_t RenderingManager::addLayer(size_t pos) {
+    layer_id_t RenderingManager::AddLayer(size_t pos) {
         if (pos == (size_t)-1) {
             pos = _renderLayers.size();
         } else {
@@ -44,7 +52,7 @@ namespace Presto {
         return pos;
     }
 
-    void RenderingManager::removeLayer(layer_id_t id) {
+    void RenderingManager::RemoveLayer(layer_id_t id) {
         PR_CORE_ASSERT(hasLayer(id),
                        "Attempted to remove layer with invalid index {}."
                        "\tMax allowed index: {}",
@@ -52,21 +60,22 @@ namespace Presto {
         _renderLayers.erase(_renderLayers.begin() + id);
     }
 
-    void RenderingManager::addEntity(layer_id_t layer_index,
-                                     Entity* ptr_entity) {
-        if (_boundEntities.find(ptr_entity) != _boundEntities.end()) {
-            removeEntity(ptr_entity);
-        }
+    void RenderingManager::AddRenderable(layer_id_t layer_index,
+                                         Renderable* ptr_renderable) {
+        if (_renderables.IsAllocated(ptr_renderable))
+            RenderingManager::RemoveRenderable(ptr_renderable);
 
         RenderLayer& layer = getLayer(layer_index);
-        _renderer->AddToRenderPool(ptr_entity);
-        layer.addEntity(ptr_entity);
+        _renderer->AddToRenderPool(ptr_renderable);
+        layer.addRenderable(ptr_renderable);
     }
 
     // TODO: Implement remove entity
-    void RenderingManager::removeEntity(Entity* ptr_entity) {}
+    void RenderingManager::RemoveRenderable(Renderable* ptr_renderable) {
+        _renderables.Release(ptr_renderable);
+    }
 
-    void RenderingManager::setCamera(Camera& newCam) {
+    void RenderingManager::SetCamera(Camera& newCam) {
         _renderer->setCamera(newCam);
     }
 
@@ -85,5 +94,27 @@ namespace Presto {
             _renderLayers.size() - 1);
 
         return _renderLayers[id];
+    }
+
+    Mesh* RenderingManager::NewMesh(const VertexList& vertices,
+                                    const IndexList& indices) {
+        auto* mesh = new Mesh(_meshes.GetNextId(), vertices, indices);
+        _meshes.Add(mesh);
+
+        return mesh;
+    }
+
+    RenderableProps* RenderingManager::NewRenderableProps() {
+        auto* props = new RenderableProps();
+        _renderProps.Add(props);
+
+        return props;
+    }
+
+    Renderable* RenderingManager::NewRenderable(
+        PrestoRenderableConstructorArgs) {
+        auto renderable = new Renderable(mesh, props);
+        // _renderables[];
+        return renderable;
     }
 }  // namespace Presto

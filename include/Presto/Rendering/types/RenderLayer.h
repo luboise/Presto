@@ -1,19 +1,17 @@
 #pragma once
 
 #include <list>
-#include "Presto/Objects/Entity.h"
+#include "Presto/Components/Renderable.h"
 
 namespace Presto {
-    typedef std::list<Entity*> LayerList;
+    typedef std::list<Renderable*> LayerList;
 
     class PRESTO_API RenderLayer {
        public:
         RenderLayer();
         virtual ~RenderLayer();
 
-        void addEntity(Entity* entity);
-        LayerList _entities;
-
-        //    private:
+        void addRenderable(Renderable* renderable);
+        LayerList _renderables;
     };
 }  // namespace Presto

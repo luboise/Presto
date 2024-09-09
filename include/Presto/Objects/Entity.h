@@ -3,6 +3,8 @@
 #include "Presto/Component.h"
 #include "glm/fwd.hpp"
 
+#include <map>
+
 namespace Presto {
     // Forward declaration
     class EntityManager;

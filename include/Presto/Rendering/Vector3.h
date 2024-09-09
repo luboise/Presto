@@ -16,5 +16,5 @@ class Vector3 {
     float getLength() const;
 
     bool operator==(const Vector3& other) const;
-    bool Vector3::operator==(const float val) const;
+    bool operator==(const float val) const;
 };

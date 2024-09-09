@@ -2,9 +2,7 @@
 
 #include <vulkan/vulkan.h>
 
-#include "Presto/Objects/Entity.h"
 #include "Presto/Rendering/Renderer.h"
-#include "Rendering/Types/DrawInfo.h"
 
 #include "VulkanVertex.h"  // IWYU pragma: export
 
@@ -63,14 +61,14 @@ namespace Presto {
         VulkanRenderer(GLFWwindow* window);
         virtual ~VulkanRenderer();
 
-        virtual void AddToRenderPool(entity_t entity_ptr) override;
-        virtual void draw(entity_t entity_ptr) override;
+        virtual void AddToRenderPool(draw_info_key) override;
+        virtual void draw(draw_info_key) override;
         virtual void nextFrame() override;
 
        private:
-        std::map<entity_t, DrawInfo> _entityMap;
         uint32_t _imageIndex = 0;
         bool _startedDrawing = false;
+
         GLFWwindow* _glfwWindow;
         std::vector<VulkanPipeline> _graphicsPipelines;
 
