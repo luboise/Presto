@@ -9,7 +9,7 @@
 namespace Presto {
 
     void RenderingManager::F_INIT(Renderer::RENDER_LIBRARY library,
-                                  GLFWwindow* windowPtr) {
+                                  GLFWAppWindow* windowPtr) {
         _window = windowPtr;
 
         if (_renderer != nullptr) {
@@ -32,7 +32,7 @@ _renderables = std::map<id_t, Renderable*>();
 
     void RenderingManager::F_UPDATE() {
         for (auto& layer : _renderLayers) {
-            for (auto& ptr_renderable : layer._renderables) {
+            for (const auto& ptr_renderable : layer._renderables) {
                 _renderer->draw(ptr_renderable);
             }
         }
@@ -62,21 +62,12 @@ _renderables = std::map<id_t, Renderable*>();
 
     void RenderingManager::AddRenderable(layer_id_t layer_index,
                                          Renderable* ptr_renderable) {
-        if (_renderables.IsAllocated(ptr_renderable))
+        if (_renderables.isAllocated(ptr_renderable))
             RenderingManager::RemoveRenderable(ptr_renderable);
 
         RenderLayer& layer = getLayer(layer_index);
-        _renderer->AddToRenderPool(ptr_renderable);
+        _renderer->addToRenderPool(ptr_renderable);
         layer.addRenderable(ptr_renderable);
-    }
-
-    // TODO: Implement remove entity
-    void RenderingManager::RemoveRenderable(Renderable* ptr_renderable) {
-        _renderables.Release(ptr_renderable);
-    }
-
-    void RenderingManager::SetCamera(Camera& newCam) {
-        _renderer->setCamera(newCam);
     }
 
     bool RenderingManager::hasLayer(layer_id_t index) {
@@ -98,15 +89,15 @@ _renderables = std::map<id_t, Renderable*>();
 
     Mesh* RenderingManager::NewMesh(const VertexList& vertices,
                                     const IndexList& indices) {
-        auto* mesh = new Mesh(_meshes.GetNextId(), vertices, indices);
-        _meshes.Add(mesh);
+        auto* mesh = new Mesh(_meshes.getNextId(), vertices, indices);
+        _meshes.add(mesh);
 
         return mesh;
     }
 
     RenderableProps* RenderingManager::NewRenderableProps() {
         auto* props = new RenderableProps();
-        _renderProps.Add(props);
+        _renderProps.add(props);
 
         return props;
     }

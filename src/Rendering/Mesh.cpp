@@ -1,7 +1,7 @@
 #include "Presto/Rendering/Mesh.h"
 
 namespace Presto {
-    Mesh::Mesh(mesh_id_t mesh_id, const VertexList& vertices,
+    Mesh::Mesh(const mesh_id_t mesh_id, const VertexList& vertices,
                const IndexList& indices) {
         this->_meshID = mesh_id;
         this->_vertices = vertices;

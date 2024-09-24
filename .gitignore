@@ -5,6 +5,8 @@
 /lib/
 *.spv
 
+docs/doxygen/
+
 
 
 ## Ignore Visual Studio temporary files, build results, and

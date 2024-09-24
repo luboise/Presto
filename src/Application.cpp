@@ -2,24 +2,29 @@
 #include "Presto/Application.h"
 
 #include "GLFW/glfw3.h"
+#include "GLFWAppWindow.h"
 #include "Presto/Rendering/RenderingManager.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace Presto {
     Application::Application() {
-        app_window = std::unique_ptr<Window>(Window::Create());
-        app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
+        // TODO: Fix this to be injected
+
+        auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::Create()));
+
+        this->_app_window = std::unique_ptr<GLFWAppWindow>(app_window);
+        // this->_app_window = new GLFWAppWindow();
+        _app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
 
         // Set up modules
-        auto ptr = static_cast<GLFWwindow*>(this->app_window->getWindowPtr());
-        RenderingManager::F_INIT(Renderer::VULKAN, ptr);
-        RenderingManager::SetCamera(_mainCamera);
+        RenderingManager::F_INIT(Renderer::VULKAN, app_window);
+        RenderingManager::setCamera(_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
-        this->app_window->Shutdown();
-        this->app_window.release();
+        this->_app_window->Shutdown();
+        this->_app_window.release();
     };
 
     void Application::Run() {
@@ -39,7 +44,7 @@ namespace Presto {
             GameLoop();
             RunSystems();
 
-            app_window->RenderFrame();
+            _app_window->RenderFrame();
         }
     }
 

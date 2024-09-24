@@ -34,8 +34,8 @@ namespace Presto {
 
         virtual void RenderFrame() = 0;
 
-        virtual unsigned GetWidth() const = 0;
-        virtual unsigned GetHeight() const = 0;
+        [[nodiscard]] virtual unsigned GetWidth() const = 0;
+        [[nodiscard]] virtual unsigned GetHeight() const = 0;
 
         virtual void SetCallbackFunction(const EventCallbackFn& callback) = 0;
         virtual void SetVSync(bool vsync) = 0;

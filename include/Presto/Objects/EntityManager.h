@@ -16,7 +16,7 @@ namespace Presto {
         static entity_id_t reserveId();
 
         static std::vector<entity_t> _entities;
-        static std::map<entity_id_t, entity_t> _entitymap;
+        static std::map<entity_id_t, entity_t> _entityMap;
         static entity_id_t _currentId;
     };
 }  // namespace Presto

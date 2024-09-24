@@ -3,12 +3,12 @@
 #include <map>
 
 namespace Presto {
-    typedef uint32_t id_t;
+    using id_t = uint32_t;
 
     template <typename T> /*, typename... AcquireArgs> >*/
     class Allocator {
         // typedef std::function<T(AcquireArgs...)> InstantiationFunction;
-        typedef T* ValueType;
+        using ValueType = T*;
 
        public:
         Allocator(/**bool nestedID = false**/)
@@ -25,8 +25,8 @@ T* Acquire(AcquireArgs... args) {
 }
         **/
 
-        void Add(ValueType new_value) {
-            PR_CORE_ASSERT(!IsAllocated(new_value),
+        void add(ValueType new_value) {
+            PR_CORE_ASSERT(!isAllocated(new_value),
                            "Attempted to add a value that already exists in "
                            "the allocator: {}",
                            (fmt::ptr(new_value)))
@@ -34,7 +34,7 @@ T* Acquire(AcquireArgs... args) {
             _entries[_currentId++] = new_value;
         }
 
-        void Release(id_t id) {
+        void release(id_t id) {
             PR_CORE_ASSERT(_entries.contains(id),
                            "Attempted to release memory that has already been "
                            "released. ID: {}",
@@ -47,18 +47,18 @@ T* Acquire(AcquireArgs... args) {
             _entries.erase(id);
         }
 
-        void Release(ValueType value) {
+        void release(ValueType value) {
             PR_CORE_ASSERT(value != nullptr,
                            "Attempted to release memory from a nullptr.");
 
-            auto key = GetKeyFromValue(value);
+            auto key = getKeyFromValue(value);
             PR_CORE_ASSERT(key != -1, "A valid key was not found for value {}",
                            fmt::ptr(value));
 
-            this->Release(key);
+            this->release(key);
         }
 
-        bool IsAllocated(ValueType search_value) {
+        bool isAllocated(ValueType search_value) {
             for (auto const& [key, value] : _entries) {
                 if (value == search_value) return true;
             }
@@ -66,12 +66,12 @@ T* Acquire(AcquireArgs... args) {
             return false;
         }
 
-        id_t GetNextId() const { return this->_currentId; }
+        [[nodiscard]] id_t getNextId() const { return this->_currentId; }
 
        private:
         // const bool _useNestedID;
 
-        id_t GetKeyFromValue(ValueType search_value) {
+        id_t getKeyFromValue(ValueType search_value) {
             for (auto const& [key, value] : _entries) {
                 if (value == search_value) return key;
             }

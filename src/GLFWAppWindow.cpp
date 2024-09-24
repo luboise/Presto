@@ -1,4 +1,5 @@
 
+#include "GLFW/glfw3.h"
 #include "Presto/Core.h"
 #include "Presto/Events/ApplicationEvents.h"
 #include "Presto/Events/KeyEvents.h"
@@ -9,7 +10,7 @@
 #include "Presto/Rendering/RenderingManager.h"
 
 namespace Presto {
-    static bool s_GLFWInitialised = false;
+    bool GLFWAppWindow::s_GLFWInitialised = false;
 
     Window* Window::Create(const WindowProperties& props) {
         return new GLFWAppWindow(props);
@@ -17,16 +18,16 @@ namespace Presto {
 
     void GLFWAppWindow::Shutdown() {
         if (this->_windowPtr != nullptr) {
-            glfwDestroyWindow((GLFWwindow*)this->_windowPtr);
+            glfwDestroyWindow(static_cast<GLFWwindow*>(this->_windowPtr));
             this->_windowPtr = nullptr;
         }
     }
 
     GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) {
-        this->Init(props);
+        this->GLFWAppWindow::Init(props);
     }
 
-    GLFWAppWindow::~GLFWAppWindow() { this->Shutdown(); }
+    GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::Shutdown(); }
 
     void GLFWAppWindow::Init(const WindowProperties& props) {
         this->w_data.title = props.title;
@@ -53,10 +54,10 @@ namespace Presto {
         // linking
         this->_windowPtr =
             (void*)glfwCreateWindow((int)props.width, (int)props.height,
-                                    props.title.c_str(), NULL, NULL);
+                                    props.title.c_str(), nullptr, nullptr);
 
         // Set the window as the current context
-        glfwMakeContextCurrent((GLFWwindow*)this->_windowPtr);
+        glfwMakeContextCurrent(static_cast<GLFWwindow*>(this->_windowPtr));
 
         // Link props and glfw window
         glfwSetWindowUserPointer((GLFWwindow*)this->_windowPtr, &w_data);

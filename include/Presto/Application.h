@@ -29,7 +29,7 @@ namespace Presto {
 
         void RunSystems();
 
-        std::unique_ptr<Window> app_window;
+        std::unique_ptr<Window> _app_window;
         bool app_running = true;
 
         std::vector<Module*> _modules;
