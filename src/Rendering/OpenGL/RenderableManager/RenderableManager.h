@@ -9,7 +9,7 @@ namespace Presto {
         GLuint vertex_buffer;
         GLuint index_buffer;
         GLint first_index;
-        GLsizei count;
+        GLsizei vert_count;
         GLuint shader_programme;
         GLuint vertex_array_object;
     };
