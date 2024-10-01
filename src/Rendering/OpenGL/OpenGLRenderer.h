@@ -24,7 +24,6 @@ namespace Presto {
         void draw(const OpenGlRenderable&);
         void onFrameBufferResized() override {}
         RenderableManager _renderableManager;
-        OpenGlRenderable _renderable;
     };
 
 }  // namespace Presto

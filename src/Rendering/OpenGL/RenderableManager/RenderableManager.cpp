@@ -18,7 +18,7 @@ namespace Presto {
         }
 
         return &(x->second);
-    };
+    }
 
     PR_RESULT RenderableManager::loadRenderable(draw_info_key key) {
         constexpr auto VEC_3 = 3;
@@ -44,10 +44,8 @@ namespace Presto {
 
         r.first_index = 0;
 
-        // Vertex buffers
+        // Create vertex buffer and write into it
         glGenBuffers(1, &r.vertex_buf);
-
-        // Bind the buffer and then write into it
         glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);
         glBufferData(GL_ARRAY_BUFFER, r.vert_count * sizeof(Vertex),
                      vertices.data(), GL_STATIC_DRAW);
@@ -69,21 +67,24 @@ namespace Presto {
         // Set up attribute 0 (pos) from vbo
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)nullptr);
+                              (void*)(offsetof(Vertex, pos)));
 
         // Set up attribute 1 (colour) from vbo
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)3);
-
+                              (void*)offsetof(Vertex, colour));
         r.shader_program = glCreateProgram();
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
         const char* vertex_shader =
             "#version 400\n"
             "in vec3 vp;"
+            "in vec3 colour;"
+            "out vec4 to_frag;"
             "void main() {"
             "  gl_Position = vec4(vp, 1.0);"
+            "  to_frag = vec4(colour, 1.0);"
+            //"  frag_colour = vec4(colour, 1.0);"
             "}";
 
         glShaderSource(vs, 1, &vertex_shader, nullptr);
@@ -96,9 +97,11 @@ namespace Presto {
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
         const char* fragment_shader =
             "#version 400\n"
+            "in vec4 to_frag;"
             "out vec4 frag_colour;"
             "void main() {"
-            "  frag_colour = vec4(1, 1, 1, 1);"
+            //"  frag_colour = vec4(1, 1, 1, 1);"
+            "  frag_colour = to_frag;"
             "}";
         glShaderSource(fs, 1, &fragment_shader, nullptr);
         glCompileShader(fs);
