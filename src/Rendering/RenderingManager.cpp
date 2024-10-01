@@ -45,7 +45,7 @@ _renderables = std::map<id_t, Renderable*>();
     void RenderingManager::F_UPDATE() {
         for (auto& layer : _renderLayers) {
             for (const auto& ptr_renderable : layer._renderables) {
-                _renderer->draw(ptr_renderable);
+                _renderer->render(ptr_renderable);
             }
         }
         _renderer->nextFrame();

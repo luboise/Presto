@@ -1,6 +1,9 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
+#include <map>
+#include "Presto/Components/Renderable.h"
+
 namespace Presto {
     struct ShaderMatrices {
         glm::mat4 modelView;
@@ -17,4 +20,8 @@ namespace Presto {
         uint32_t index_offset = 0;
     };
 
+    using draw_info_key = Renderable*;
+
+    template <typename T>
+    using DrawInfoMap = std::map<draw_info_key, T>;
 }  // namespace Presto

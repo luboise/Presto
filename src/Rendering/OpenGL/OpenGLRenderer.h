@@ -16,11 +16,12 @@ namespace Presto {
         explicit OpenGLRenderer(GLFWAppWindow* window);
         ~OpenGLRenderer() override;
 
-        void addToRenderPool(draw_info_key) override;
-        void draw(draw_info_key) override;
+        void addToRenderPool(draw_info_key renderable) override;
+        void render(draw_info_key key) override;
         void nextFrame() override;
 
        private:
+        void draw(const OpenGlRenderable&);
         void onFrameBufferResized() override {}
         RenderableManager _renderableManager;
         OpenGlRenderable _renderable;

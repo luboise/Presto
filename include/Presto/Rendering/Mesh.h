@@ -6,15 +6,15 @@
 namespace Presto {
 #define PrestoMeshConstructorArgs mesh_id_t, const VertexList&, const IndexList&
 
-    typedef id_t mesh_id_t;
+    using mesh_id_t = id_t;
     class PRESTO_API Mesh : public Component {
         friend class RenderingManager;
 
        public:
-        mesh_id_t getID() const;
-        VertexList getVertices() const;
-        IndexList getIndices() const;
-        uint32_t getVertexCount() const;
+        [[nodiscard]] mesh_id_t getID() const;
+        [[nodiscard]] VertexList getVertices() const;
+        [[nodiscard]] IndexList getIndices() const;
+        [[nodiscard]] uint32_t getVertexCount() const;
 
        private:
         Mesh(PrestoMeshConstructorArgs);

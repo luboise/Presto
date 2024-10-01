@@ -31,7 +31,7 @@ namespace Presto {
         _bufferManager->loadRenderable(renderable, pipeline);
     }
 
-    void VulkanRenderer::draw(Renderable* const r) {
+    void VulkanRenderer::render(Renderable* const r) {
         // Wait for previous frame (1 fence, wait all fences) then reset
         // fence to unsignaled
 

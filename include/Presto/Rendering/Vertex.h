@@ -7,6 +7,8 @@ namespace Presto {
         glm::vec3 color;
     };
 
+    using Index = uint32_t;
+
     using VertexList = std::vector<Vertex>;
-    using IndexList = std::vector<uint32_t>;
+    using IndexList = std::vector<Index>;
 }  // namespace Presto

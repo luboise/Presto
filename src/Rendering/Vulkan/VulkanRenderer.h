@@ -26,7 +26,7 @@ namespace Presto {
         ~VulkanRenderer() override;
 
         void addToRenderPool(draw_info_key) override;
-        void draw(draw_info_key) override;
+        void render(draw_info_key) override;
         void nextFrame() override;
 
        private:
