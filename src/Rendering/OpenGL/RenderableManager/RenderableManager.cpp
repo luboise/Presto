@@ -1,6 +1,8 @@
 #include "RenderableManager.h"
 #include <stdexcept>
 
+#include "ResourcesModule/ResourceManager.h"
+
 #include "Presto/Core.h"
 #include "Presto/Rendering/Vertex.h"
 #include "Rendering/OpenGL/utils.h"
@@ -76,18 +78,12 @@ namespace Presto {
         r.shader_program = glCreateProgram();
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-        const char* vertex_shader =
-            "#version 400\n"
-            "in vec3 vp;"
-            "in vec3 colour;"
-            "out vec4 to_frag;"
-            "void main() {"
-            "  gl_Position = vec4(vp, 1.0);"
-            "  to_frag = vec4(colour, 1.0);"
-            //"  frag_colour = vec4(colour, 1.0);"
-            "}";
 
-        glShaderSource(vs, 1, &vertex_shader, nullptr);
+        auto vertex_code = std::string(
+            ResourceManager::readFile("Shaders/Core/vert.glsl").data());
+        const char* sourceCStr = vertex_code.c_str();
+
+        glShaderSource(vs, 1, &sourceCStr, nullptr);
         glCompileShader(vs);
 
         PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
@@ -95,21 +91,19 @@ namespace Presto {
         glAttachShader(r.shader_program, vs);
 
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-        const char* fragment_shader =
-            "#version 400\n"
-            "in vec4 to_frag;"
-            "out vec4 frag_colour;"
-            "void main() {"
-            //"  frag_colour = vec4(1, 1, 1, 1);"
-            "  frag_colour = to_frag;"
-            "}";
-        glShaderSource(fs, 1, &fragment_shader, nullptr);
+
+        auto fragment_code = std::string(
+            ResourceManager::readFile("Shaders/Core/frag.glsl").data());
+        const char* sourceCStr2 = fragment_code.c_str();
+
+        glShaderSource(fs, 1, &sourceCStr2, nullptr);
         glCompileShader(fs);
 
         PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
                        "Shader failed to compile.");
 
-        // PR_CORE_ASSERT(true == OpenGLUtils::ShaderCompiledCorrectly(fs),
+        // PR_CORE_ASSERT(true ==
+        // OpenGLUtils::ShaderCompiledCorrectly(fs),
         //"Unable to compile shader.");
         glAttachShader(r.shader_program, fs);
 
@@ -122,10 +116,10 @@ namespace Presto {
 
         auto insertion = _renderableMap.try_emplace(key, r);
 
-        PR_CORE_ASSERT(
-            insertion.second,
-            "Presto failed to insert renderable {} to the render list.",
-            fmt::ptr(key));
+        PR_CORE_ASSERT(insertion.second,
+                       "Presto failed to insert renderable {} to "
+                       "the render list.",
+                       fmt::ptr(key));
 
         PR_CORE_TRACE("Added {} to the render list.", fmt::ptr(key));
 

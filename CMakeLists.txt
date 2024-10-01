@@ -84,10 +84,26 @@ macro(CompileShadersForTarget target_name shader_source_dir)
         string(REPLACE ${shader_source_dir}/ "" IN_STRUCTURE_FULL
                        ${shader_file})
         get_filename_component(IN_STRUCTURE ${IN_STRUCTURE_FULL} DIRECTORY)
-
         # Add a slash if the name is not empty
         if(NOT IN_STRUCTURE STREQUAL "")
           set(IN_STRUCTURE ${IN_STRUCTURE}/)
+        endif()
+
+        if(${IN_STRUCTURE} MATCHES "^OpenGL*")
+          string(REPLACE "OpenGL/" "" OUT_FOLDER ${IN_STRUCTURE})
+
+          set(OUTDIR ${SHADER_BUILD_DIR}${OUT_FOLDER})
+
+          set(OUT_FILENAME ${BASE_FILENAME}_${FILE_EXTENSION}.spv)
+
+          get_filename_component(BASE_FILENAME ${shader_file} NAME)
+          # set(OUTPATH ${OUTDIR}${BASE_FILENAME})
+
+          message(
+            "Copying OpenGL shader ${shader_file} to ${OUTDIR}${BASE_FILENAME}")
+          file(COPY ${shader_file} DESTINATION ${OUTDIR})
+          continue()
+
         endif()
 
         # Get replaced filename
