@@ -44,8 +44,11 @@ namespace Presto {
                 success, "Unable to initialise GLFW. Program cannot continue.");
 
             // Disable OpenGL
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+            // glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
             glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
             s_GLFWInitialised = true;
         }

@@ -1,9 +1,13 @@
 #include "Presto/Rendering/RenderingManager.h"
+#include <stdexcept>
 
 #include "Presto/Components/Renderable.h"
 #include "Presto/Components/RenderableProps.h"
 #include "Presto/Rendering/Mesh.h"
+#include "Presto/Rendering/Renderer.h"
 #include "Presto/Rendering/Vertex.h"
+
+#include "Rendering/OpenGL/OpenGLRenderer.h"
 #include "Rendering/Vulkan/VulkanRenderer.h"
 
 namespace Presto {
@@ -18,8 +22,16 @@ namespace Presto {
         }
 
         // TODO: Add logic to choose renderer
-        _renderer = new VulkanRenderer(windowPtr);
-
+        switch (library) {
+            case Renderer::OPENGL:
+                _renderer = new OpenGLRenderer(windowPtr);
+                break;
+            case Renderer::VULKAN:
+                _renderer = new VulkanRenderer(windowPtr);
+                break;
+            default:
+                throw std::runtime_error("Invalid render library specified.");
+        }
         /**
 _meshes = Allocator<Mesh>();
 _renderProps = std::map<id_t, RenderableProps*>();

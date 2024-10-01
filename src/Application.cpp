@@ -18,7 +18,7 @@ namespace Presto {
         _app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
 
         // Set up modules
-        RenderingManager::F_INIT(Renderer::VULKAN, app_window);
+        RenderingManager::F_INIT(Renderer::OPENGL, app_window);
         RenderingManager::setCamera(_mainCamera);
     }
 
