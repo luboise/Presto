@@ -76,8 +76,6 @@ namespace Presto {
         mats.projection = RenderingUtils::getProjectionMatrix(
             FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
 
-        glm::mat4 matsss[2] = {mats.view, mats.projection};
-
         glUniformMatrix4fv(view, 1, false, glm::value_ptr(mats.view));
         glUniformMatrix4fv(projection, 1, false,
                            glm::value_ptr(mats.projection));

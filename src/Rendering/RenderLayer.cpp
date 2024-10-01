@@ -1,4 +1,4 @@
-#include "Presto/Rendering/types/RenderLayer.h"
+#include "Presto/Rendering/Types/RenderLayer.h"
 
 namespace Presto {
     RenderLayer::RenderLayer() {}

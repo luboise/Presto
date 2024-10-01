@@ -2,13 +2,13 @@
 
 #include <cstdint>
 
-typedef uint32_t component_class_t;
+using component_class_t = uint32_t;
 
 namespace Presto {
     class PRESTO_API Component {
        public:
         Component() {}
-        virtual ~Component() {};
-        component_class_t getClassID() const;
+        virtual ~Component() = default;
+        [[nodiscard]] component_class_t getClassID() const;
     };
 }  // namespace Presto

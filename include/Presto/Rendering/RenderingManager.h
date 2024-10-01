@@ -5,7 +5,7 @@
 #include "Presto/Rendering/Mesh.h"
 #include "Presto/Rendering/Renderer.h"
 
-#include "Presto/Rendering/types/RenderLayer.h"
+#include "Presto/Rendering/Types/RenderLayer.h"
 
 #include "Presto/Tools/Allocator.h"
 

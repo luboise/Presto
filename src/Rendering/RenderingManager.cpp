@@ -7,6 +7,7 @@
 #include "Presto/Rendering/Renderer.h"
 #include "Presto/Rendering/Vertex.h"
 
+#include "Presto/Rendering/Types/RenderLayer.h"
 #include "Rendering/OpenGL/OpenGLRenderer.h"
 #include "Rendering/Vulkan/VulkanRenderer.h"
 
