@@ -59,7 +59,7 @@ namespace Presto {
         constexpr glm::float32 FOV_Y = 90;
         auto extent = _swapchain->getExtent();
 
-        mats.modelView = _renderCamera->getViewMatrix() * model;
+        mats.view = _renderCamera->getViewMatrix() * model;
         mats.projection = RenderingUtils::getProjectionMatrix(
             FOV_Y, extent.width, extent.height);
 

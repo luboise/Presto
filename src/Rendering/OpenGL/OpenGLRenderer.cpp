@@ -1,7 +1,11 @@
 #include "Rendering/OpenGL/OpenGLRenderer.h"
 
+#include "Rendering/Utils/RenderingUtils.h"
+
 #include <GL/glew.h>
 #include <GL/glext.h>
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include <stdexcept>
 
@@ -56,10 +60,30 @@ namespace Presto {
     }
 
     void OpenGLRenderer::draw(const OpenGlRenderable& renderable) {
+        GLint view = glGetUniformLocation(renderable.shader_program, "view");
+        GLint projection =
+            glGetUniformLocation(renderable.shader_program, "projection");
+
         glUseProgram(renderable.shader_program);
+
+        ShaderMatrices mats{};
+
+        glm::mat4 model(1.0);
+        constexpr glm::float32 FOV_Y = 90;
+
+        mats.view = _renderCamera->getViewMatrix() * model;
+
+        mats.projection = RenderingUtils::getProjectionMatrix(
+            FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
+
+        glm::mat4 matsss[2] = {mats.view, mats.projection};
+
+        glUniformMatrix4fv(view, 1, false, glm::value_ptr(mats.view));
+        glUniformMatrix4fv(projection, 1, false,
+                           glm::value_ptr(mats.projection));
+
+        // Commence drawing
         glBindVertexArray(renderable.vao);
-        // glDrawArrays(GL_TRIANGLES, renderable.first_index,
-        // renderable.vert_count);
         glDrawElements(GL_TRIANGLES, renderable.index_count, GL_UNSIGNED_INT,
                        nullptr);
     }
