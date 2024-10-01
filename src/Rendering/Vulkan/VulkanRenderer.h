@@ -11,8 +11,10 @@
 // KEEP THESE SEPARATE
 #include "Managers/BufferManager/BufferManager.h"
 #include "Managers/DescriptorManager/DescriptorManager.h"
+#include "VkBootstrap.h"
 
 #include <GLFW/glfw3.h>
+#include <vulkan/vulkan_core.h>
 
 namespace Presto {
     class GLFWAppWindow;
@@ -30,7 +32,7 @@ namespace Presto {
         void nextFrame() override;
 
        private:
-        VulkanDevice* _device = nullptr;
+        vkb::Device _device;
 
         DrawManager* _drawManager = nullptr;
         PipelineManager* _pipelineManager = nullptr;
@@ -51,10 +53,11 @@ namespace Presto {
 
         VkSurfaceKHR _surface{};
 
-        VkInstance _instance = VK_NULL_HANDLE;
+        vkb::Instance _instance;
 
         // Available graphics cards
-        std::vector<VkPhysicalDevice> _physicalDevices;
+
+        vkb::PhysicalDevice _phys_device;
 
         // The current physical device in use by the renderer
         // (assumed to always be only 1)

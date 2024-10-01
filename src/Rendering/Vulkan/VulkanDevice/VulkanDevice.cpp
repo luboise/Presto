@@ -4,6 +4,7 @@
 
 #include "Rendering/Vulkan/Abstractions/CommandPool.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanConstants.h"
+#include "Rendering/Vulkan/VulkanUtils/VulkanUtils.h"
 #include "VulkanDevice.h"
 
 #include <Rendering/Vulkan/Abstractions/Buffer.h>
@@ -180,4 +181,30 @@ namespace Presto {
         vkQueueSubmit(_graphicsQueue, 1, &submit_info, VK_NULL_HANDLE);
         vkQueueWaitIdle(_graphicsQueue);
     }
-};  // namespace Presto
+
+    VkDeviceMemory VulkanDevice::allocate(Image* image) {
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(_handle, image->handle(),
+                                     &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = VulkanUtils::findMemoryType(
+            _physicalDevice, memRequirements.memoryTypeBits,
+            image.getMemoryFlags());
+
+        VkDeviceMemory memory = VK_NULL_HANDLE;
+
+        if (vkAllocateMemory(_handle, &allocInfo, nullptr, &memory) !=
+            VK_SUCCESS) {
+            throw std::runtime_error(
+                "Unable to allocate image memory, possibly due to an "
+                "overflow.");
+        }
+
+        return memory;
+    }
+}
+}
+;  // namespace Presto

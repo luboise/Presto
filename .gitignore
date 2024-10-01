@@ -4,6 +4,7 @@
 /bin-int/
 /lib/
 *.spv
+**/Vulkan2/
 
 docs/doxygen/
 

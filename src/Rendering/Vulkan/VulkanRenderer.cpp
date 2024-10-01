@@ -1,7 +1,11 @@
 #include <vulkan/vulkan_core.h>
 #include <algorithm>
+#include <stdexcept>
 
+#include "Presto/Core.h"
 #include "Presto/Rendering/Renderer.h"
+
+#include <VkBootstrap.h>
 
 #include "Abstractions/Buffer.h"
 #include "Abstractions/Pipeline.h"
@@ -31,7 +35,7 @@ namespace Presto {
         _bufferManager->loadRenderable(renderable, pipeline);
     }
 
-    void VulkanRenderer::draw(Renderable* const r) {
+    void VulkanRenderer::draw(draw_info_key const r) {
         // Wait for previous frame (1 fence, wait all fences) then reset
         // fence to unsignaled
 
@@ -130,18 +134,54 @@ namespace Presto {
     }
 
     void VulkanRenderer::initialiseSystems() {
-        _instance = getNewVulkanInstance();
+        vkb::InstanceBuilder ib;
+
+        ib.set_app_name("Vulkan App")
+            .set_app_version(1, 0, 0)
+            .set_engine_name("Presto")
+            .set_engine_version(1, 0, 0)
+            .set_debug_callback(VulkanUtils::debugCallback)
+            .request_validation_layers();
+
+        auto builder_value = ib.build();
+
+        if (!builder_value) {
+            throw std::runtime_error(
+                "Failed to create Vulkan instance. Error: ");
+        }
+
+        _instance = builder_value.value();
+
         _surface = createSurface();
 
-        setupDebugMessenger(_instance, &_debugMessenger);
+        vkb::PhysicalDeviceSelector pds(_instance);
 
-        _physicalDevices = getPhysicalDevices(_instance, _surface);
-        if (_physicalDevices.empty() || _physicalDevices[0] == VK_NULL_HANDLE) {
-            throw std::runtime_error("No compatible Vulkan device was found.");
+        auto phys_device_ret =
+            pds.set_surface(_surface)
+                .add_required_extension(VK_KHR_SWAPCHAIN_EXTENSION_NAME)
+                .select();
+        if (!phys_device_ret) {
+            throw std::runtime_error(
+                "No compatible Vulkan graphics device was found.");
         }
-        _physicalDevice = _physicalDevices[0];
 
-        this->_device = new VulkanDevice(_physicalDevice, _surface);
+        _phys_device = phys_device_ret.value();
+
+        vkb::DeviceBuilder device_builder{_phys_device};
+        auto dev_ret = device_builder.build();
+        if (!dev_ret) {
+            throw std::runtime_error("Unable to create Vulkan logical device.");
+        }
+
+        _device = dev_ret.value();
+
+        auto queue_ret = _device.get_queue(vkb::QueueType::graphics);
+        if (!queue_ret) {
+            throw std::runtime_error("Unable to get the graphics queue.");
+        }
+        auto _graphics_queue = queue_ret.value();
+
+        // this->_device = new VulkanDevice(_physicalDevice, _surface);
         this->_swapchain = new Swapchain(_device, &_surface, _glfwWindow);
 
         // Initialises all things to do with vertex/index buffers
@@ -166,15 +206,11 @@ namespace Presto {
         delete _descriptorManager;
 
         delete _swapchain;
-        delete _device;
 
-        if (enableValidationLayers) {
-            DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
-            this->_debugMessenger = nullptr;
-        }
+        vkb::destroy_device(_device);
 
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
-        vkDestroyInstance(_instance, nullptr);
+        vkb::destroy_instance(_vkb_instance);
     }
 
     bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device,
@@ -223,8 +259,9 @@ namespace Presto {
     VkSurfaceKHR VulkanRenderer::createSurface() const {
         VkSurfaceKHR surface = nullptr;
 
-        if (glfwCreateWindowSurface(_instance, _glfwWindow->getWindowHandle(),
-                                    nullptr, &surface) != VK_SUCCESS) {
+        if (glfwCreateWindowSurface(_vkb_instance.instance,
+                                    _glfwWindow->getWindowHandle(), nullptr,
+                                    &surface) != VK_SUCCESS) {
             throw std::runtime_error("Unable to create window surface.");
         }
         return surface;

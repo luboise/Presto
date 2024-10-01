@@ -6,11 +6,12 @@
 
 #include "Rendering/Vulkan/QueueFamilyIndices/QueueFamilyIndices.h"
 
-#include <Rendering/Vulkan/Abstractions/Buffer.h>
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
+#include "Rendering/Vulkan/Abstractions/Buffer.h"
 #include "Rendering/Vulkan/Abstractions/CommandPool.h"
 #include "Rendering/Vulkan/Abstractions/DescriptorPool.h"
 #include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
+#include "Rendering/Vulkan/Abstractions/Image.h"
 
 namespace Presto {
     struct SwapchainSupportDetails {
@@ -53,6 +54,9 @@ namespace Presto {
         }
 
         [[nodiscard]] VkQueue getPresentQueue() const { return _presentQueue; }
+
+        [[nodiscard]] VkDeviceMemory allocate(Image*);
+        // [[nodiscard]] VkDeviceMemory allocate() const;
 
        private:
         QueueFamilyIndices _indices;
