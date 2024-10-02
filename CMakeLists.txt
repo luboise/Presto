@@ -33,6 +33,8 @@ if(NOT TARGET spdlog)
   add_subdirectory(ext/spdlog)
 endif()
 
+add_subdirectory(ext/tinyobjloader)
+
 set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # set(glm_DIR ./ext/glm) find_package(glm REQUIRED)
@@ -172,7 +174,8 @@ if(PLATFORM STREQUAL "Windows")
 endif()
 
 target_link_libraries(Presto PUBLIC glfw ${Vulkan_LIBRARIES} spdlog glm::glm)
-target_link_libraries(Presto PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+target_link_libraries(Presto PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW
+                                     tinyobjloader)
 
 # Needed for shared library
 set_property(TARGET Presto PROPERTY POSITION_INDEPENDENT_CODE ON)

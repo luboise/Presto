@@ -3,7 +3,11 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include "Presto/Rendering/Mesh.h"
 namespace fs = std::filesystem;
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 namespace Presto {
     // const fs::path executableDirectory =
@@ -13,9 +17,9 @@ namespace Presto {
     // directory which the program was called from
     const fs::path executableDirectory = std::filesystem::current_path();
 
-    ResourceManager::ResourceManager() { this->Init(); }
+    ResourceManager::ResourceManager() { Presto::ResourceManager::Init(); }
 
-    ResourceManager::~ResourceManager() { this->Shutdown(); }
+    ResourceManager::~ResourceManager() { Presto::ResourceManager::Shutdown(); }
 
     std::vector<char> ResourceManager::readFile(const std::string& filename) {
         // ate <-> start at end of file
@@ -37,6 +41,32 @@ namespace Presto {
 
         file.close();
         return buffer;
+    }
+
+    Mesh* ResourceManager::LoadMesh(const std::string& filepath) {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn;
+        std::string err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
+                              filepath.c_str())) {
+            throw std::runtime_error(warn + err);
+        }
+
+        if (shapes.size() == 0) {
+            return nullptr;
+        }
+
+        for (const auto& shape : shapes) {
+            for (const auto& index : shape.mesh.indices) {
+                Vertex vertex{};
+
+                vertices.push_back(vertex);
+                indices.push_back(indices.size());
+            }
+        }
     }
 
     void ResourceManager::F_INIT() {}

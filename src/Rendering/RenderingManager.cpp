@@ -11,6 +11,9 @@
 #include "Rendering/OpenGL/OpenGLRenderer.h"
 #include "Rendering/Vulkan/VulkanRenderer.h"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 namespace Presto {
 
     void RenderingManager::F_INIT(Renderer::RENDER_LIBRARY library,
@@ -120,5 +123,17 @@ _renderables = std::map<id_t, Renderable*>();
         auto renderable = new Renderable(mesh, props);
         // _renderables[];
         return renderable;
+    }
+
+    Mesh* RenderingManager::LoadMesh(std::string filepath) {
+        tinyobj::attrib_t attrib;
+        std::vector<tinyobj::shape_t> shapes;
+        std::vector<tinyobj::material_t> materials;
+        std::string warn, err;
+
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
+                              filepath.c_str())) {
+            throw std::runtime_error(warn + err);
+        }
     }
 }  // namespace Presto

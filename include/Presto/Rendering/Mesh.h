@@ -6,6 +6,11 @@
 namespace Presto {
 #define PrestoMeshConstructorArgs mesh_id_t, const VertexList&, const IndexList&
 
+    struct MeshCreationInfo {
+        VertexList vertices;
+        IndexList indices;
+    };
+
     using mesh_id_t = id_t;
     class PRESTO_API Mesh : public Component {
         friend class RenderingManager;
