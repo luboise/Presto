@@ -6,9 +6,6 @@
 #include "Presto/Rendering/Mesh.h"
 namespace fs = std::filesystem;
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
-
 namespace Presto {
     // const fs::path executableDirectory =
     // fs::absolute(fs::path(argv[0])).parent_path();
@@ -42,32 +39,33 @@ namespace Presto {
         file.close();
         return buffer;
     }
+    /*
+        Mesh* ResourceManager::LoadMesh(const std::string& filepath) {
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shapes;
+            std::vector<tinyobj::material_t> materials;
+            std::string warn;
+            std::string err;
 
-    Mesh* ResourceManager::LoadMesh(const std::string& filepath) {
-        tinyobj::attrib_t attrib;
-        std::vector<tinyobj::shape_t> shapes;
-        std::vector<tinyobj::material_t> materials;
-        std::string warn;
-        std::string err;
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
+                                  filepath.c_str())) {
+                throw std::runtime_error(warn + err);
+            }
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
-                              filepath.c_str())) {
-            throw std::runtime_error(warn + err);
-        }
+            if (shapes.size() == 0) {
+                return nullptr;
+            }
 
-        if (shapes.size() == 0) {
-            return nullptr;
-        }
+            for (const auto& shape : shapes) {
+                for (const auto& index : shape.mesh.indices) {
+                    Vertex vertex{};
 
-        for (const auto& shape : shapes) {
-            for (const auto& index : shape.mesh.indices) {
-                Vertex vertex{};
-
-                vertices.push_back(vertex);
-                indices.push_back(indices.size());
+                    vertices.push_back(vertex);
+                    indices.push_back(indices.size());
+                }
             }
         }
-    }
+            */
 
     void ResourceManager::F_INIT() {}
     void ResourceManager::F_UPDATE() {}
