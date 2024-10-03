@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include "Presto/Constants.h"
 
 // #include "Presto/Rendering/Mesh.h"
 
@@ -16,17 +17,7 @@ namespace Presto {
     // directory which the program was called from
     const fs::path executableDirectory = std::filesystem::current_path();
 
-    ResourceManager::ResourceManager() { Presto::ResourceManager::Init(); }
-
-    ResourceManager::~ResourceManager() { Presto::ResourceManager::Shutdown(); }
-
-    void ResourceManager::F_INIT() {}
-    void ResourceManager::F_UPDATE() {}
-    void ResourceManager::F_SHUTDOWN() {}
-
-    template <>
-    auto ResourceManager::ReadFile<ResourceType::RAW>(
-        const std::string& filename) {
+    std::string ResourceManager::ReadFile(const std::string& filename) {
         // ate <-> start at end of file
         auto filepath = executableDirectory / fs::path(filename);
         PR_CORE_TRACE(filepath.generic_string());
@@ -34,26 +25,23 @@ namespace Presto {
 
         if (!file.is_open()) {
             PR_CORE_ERROR("Unable to load file \"{}\"", filepath.string());
-            return std::vector<char>(0);
+            return "";
         }
 
         // Get tellg position(EOF = filesize)
-        size_t fileSize = (size_t)file.tellg();
+        size_t size = (size_t)file.tellg();
         file.seekg(0);
 
-        std::vector<char> buffer(fileSize);
-        file.read(buffer.data(), fileSize);
-
+        std::string buffer(size, ' ');
+        file.read(buffer.data(), size);
         file.close();
 
         return buffer;
     }
 
-    template <>
-    auto ResourceManager::ReadFile<ResourceType::JSON>(
-        const std::string& filename) {
+    json ResourceManager::GetJSON(const std::string& text) {
         // TODO: Implement this
-        return json();
+        return {};
     }
 
     /*

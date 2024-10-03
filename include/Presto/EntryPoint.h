@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
     PR_CORE_WARN("Initialised core logger.");
     PR_INFO("Initialised client logger.");
 
-    auto app = Presto::CreateApplication();
+    auto* app = Presto::CreateApplication();
     app->Setup();
     app->Run();
     delete app;

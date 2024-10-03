@@ -61,4 +61,4 @@ enum PR_RESULT {
     PR_FAILURE = 1,
 };
 
-typedef uint32_t id_t;
+using id_t = uint32_t;

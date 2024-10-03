@@ -17,14 +17,18 @@ namespace Presto {
         // this->_app_window = new GLFWAppWindow();
         _app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
 
-        // Set up modules
-        RenderingManager::F_INIT(Renderer::OPENGL, app_window);
+        RenderingManager::setRenderLibrary(OPENGL);
+        RenderingManager::setWindow(app_window);
+        RenderingManager::setWindow(app_window);
+
+        RenderingManager::Init();
+
         RenderingManager::setCamera(_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
         this->_app_window->Shutdown();
-        this->_app_window.release();
+        // this->_app_window.release();
     };
 
     void Application::Run() {

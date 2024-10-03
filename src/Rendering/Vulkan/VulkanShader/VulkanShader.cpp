@@ -24,11 +24,9 @@ namespace Presto {
 
     VulkanShader::VulkanShader(VkDevice device, SHADER_MODULE_TYPE type,
                                const std::string& filepath)
-        : VulkanShader(device, type, ResourceManager::ReadFile(filepath)) {}
-
-    VulkanShader::VulkanShader(VkDevice device, SHADER_MODULE_TYPE type,
-                               const std::vector<char>& code)
         : _device(device) {
+        auto code = ResourceManager::ReadFile(filepath);
+
         PR_ASSERT(code.size() > 0,
                   "Attempted to create a shader from an empty code vector.");
 

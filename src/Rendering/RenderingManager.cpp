@@ -11,42 +11,44 @@
 #include "Rendering/OpenGL/OpenGLRenderer.h"
 #include "Rendering/Vulkan/VulkanRenderer.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+#include "GLFWAppWindow.h"
 
 namespace Presto {
 
-    void RenderingManager::F_INIT(Renderer::RENDER_LIBRARY library,
-                                  GLFWAppWindow* windowPtr) {
-        _window = windowPtr;
+    RENDER_LIBRARY RenderingManager::_library = UNSET;
+    GLFWAppWindow* RenderingManager::_window = nullptr;
 
-        if (_renderer != nullptr) {
-            delete _renderer;
-            _renderer = nullptr;
-        }
-
-        // TODO: Add logic to choose renderer
+    RenderingManager::RenderingManager(RENDER_LIBRARY library,
+                                       GLFWAppWindow* window) {
         switch (library) {
-            case Renderer::OPENGL:
-                _renderer = new OpenGLRenderer(windowPtr);
+            case OPENGL:
+                _renderer = new OpenGLRenderer(window);
                 break;
-            case Renderer::VULKAN:
-                _renderer = new VulkanRenderer(windowPtr);
+            case VULKAN:
+                _renderer = new VulkanRenderer(window);
                 break;
             default:
                 throw std::runtime_error("Invalid render library specified.");
         }
-        /**
-_meshes = Allocator<Mesh>();
-_renderProps = std::map<id_t, RenderableProps*>();
-_renderables = std::map<id_t, Renderable*>();
-        **/
 
-        AddLayer();
-        _initialised = true;
+        // Add default layer
+        this->AddLayer();
+    };
+
+    void RenderingManager::Init() {
+        PR_CORE_ASSERT(_library != UNSET,
+                       "Unable to initialise the RenderingManager with an "
+                       "unset graphics library.");
+        PR_CORE_ASSERT(_window != nullptr,
+                       "Unable to initialise the RenderingManager with a null "
+                       "Window handle.");
+
+        RenderingManager* mgr = new RenderingManager(RenderingManager::_library,
+                                                     RenderingManager::_window);
+        _instance = mgr;
     }
 
-    void RenderingManager::F_UPDATE() {
+    void RenderingManager::Update() {
         for (auto& layer : _renderLayers) {
             for (const auto& ptr_renderable : layer._renderables) {
                 _renderer->render(ptr_renderable);
@@ -54,7 +56,8 @@ _renderables = std::map<id_t, Renderable*>();
         }
         _renderer->nextFrame();
     }
-    void RenderingManager::F_SHUTDOWN() {}
+
+    void RenderingManager::Shutdown() {}
 
     layer_id_t RenderingManager::AddLayer(size_t pos) {
         if (pos == (size_t)-1) {

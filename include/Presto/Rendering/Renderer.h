@@ -14,7 +14,6 @@ namespace Presto {
        public:
         Renderer() = default;
 
-        enum RENDER_LIBRARY { VULKAN, OPENGL, DIRECTX };
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
         virtual void addToRenderPool(draw_info_key) = 0;

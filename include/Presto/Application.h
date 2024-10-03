@@ -2,20 +2,20 @@
 
 #include "Core.h"
 #include "Presto/Events/ApplicationEvents.h"
-#include "Presto/Window.h"
+// #include "Presto/Window.h"
 
-#include "Presto/Module.h"
 #include "Presto/Objects/System.h"
 #include "Rendering/Camera.h"
 
 namespace Presto {
+    class Window;
+
     class PRESTO_API Application {
        public:
         Application();
         virtual ~Application();
 
         virtual void Setup() {};
-
         virtual void Run();
 
         // Intended to be replaced by user logic
@@ -32,7 +32,7 @@ namespace Presto {
         std::unique_ptr<Window> _app_window;
         bool app_running = true;
 
-        std::vector<Module*> _modules;
+        // std::vector<Module*> _modules;
         std::vector<System*> _systems;
 
        protected:

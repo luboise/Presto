@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Constants.h"
+
 #include "Presto/Components/Renderable.h"
 #include "Presto/Module.h"
 #include "Presto/Rendering/Mesh.h"
@@ -14,45 +16,69 @@ class RenderableProps;
 namespace Presto {
     using layer_id_t = uint32_t;
 
-    class PRESTO_API RenderingManager : public Module {
-        MODULE_FUNCTIONS();
-
+    class PRESTO_API RenderingManager : public Module<RenderingManager> {
        public:
-        static void F_INIT(Renderer::RENDER_LIBRARY library,
-                           GLFWAppWindow* windowPtr);
+        static void Init();
+        void Update() override;
+        static void Shutdown();
 
-        static layer_id_t AddLayer(size_t pos = -1);
-        static void RemoveLayer(layer_id_t id);
+        static void setRenderLibrary(RENDER_LIBRARY library) {
+            PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+                           "Unable to set render library while the renderer is "
+                           "already initialised.");
 
-        static void AddRenderable(layer_id_t layer_index, Renderable*);
+            RenderingManager::_library = library;
+        }
 
-        static void RemoveRenderable(Renderable* ptr_renderable) {
+        static void setWindow(GLFWAppWindow* window) {
+            PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+                           "Unable to set window surface while the renderer is "
+                           "already initialised.");
+
+            RenderingManager::_window = window;
+        }
+
+        static void setCamera(Camera& newCam) {
+            PR_CORE_ASSERT(RenderingManager::IsInitialised(),
+                           "Unable to set camera when the RenderingManager is "
+                           "uninitialised.")
+            RenderingManager::Get()._renderer->setCamera(newCam);
+        }
+
+        layer_id_t AddLayer(size_t pos = -1);
+        void RemoveLayer(layer_id_t id);
+
+        void AddRenderable(layer_id_t layer_index, Renderable*);
+
+        void RemoveRenderable(Renderable* ptr_renderable) {
             _renderables.release(ptr_renderable);
         };
 
-        static void setCamera(Camera& newCam) { _renderer->setCamera(newCam); }
+        Mesh* NewMesh(const VertexList&, const IndexList&);
+        RenderableProps* NewRenderableProps();
+        Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
-        static Mesh* NewMesh(const VertexList&, const IndexList&);
-        static RenderableProps* NewRenderableProps();
-        static Renderable* NewRenderable(PrestoRenderableConstructorArgs);
+        RenderingManager(const RenderingManager&) = delete;
+        RenderingManager(RenderingManager&&) = delete;
+        RenderingManager& operator=(const RenderingManager&) = delete;
+        RenderingManager& operator=(RenderingManager&&) = delete;
 
        private:
-        RenderingManager();
+        static RENDER_LIBRARY _library;
+        static GLFWAppWindow* _window;
 
-        inline static Renderer* _renderer;
-        inline static GLFWAppWindow* _window;
+        explicit RenderingManager(RENDER_LIBRARY library,
+                                  GLFWAppWindow* window);
 
-        inline static std::vector<RenderLayer> _renderLayers;
+        Renderer* _renderer;
 
-        inline static Allocator<Mesh> _meshes;
-        inline static Allocator<RenderableProps> _renderProps;
-        inline static Allocator<Renderable> _renderables;
+        std::vector<RenderLayer> _renderLayers;
 
-        // inline static std::map<id_t, Mesh*> _meshes;
-        // inline static std::map<id_t, RenderableProps*> _renderProps;
-        // inline static std::map<id_t, Renderable*> _renderables;
+        Allocator<Mesh> _meshes;
+        Allocator<RenderableProps> _renderProps;
+        Allocator<Renderable> _renderables;
 
-        inline static bool hasLayer(layer_id_t index);
-        inline static RenderLayer& getLayer(layer_id_t id);
+        bool hasLayer(layer_id_t index);
+        RenderLayer& getLayer(layer_id_t id);
     };
 }  // namespace Presto

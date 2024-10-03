@@ -1,4 +1,4 @@
-namespace Presto::Scene {
+namespace Presto::Scenes {
     std::string Load(const std::string& filepath);
-    void SwitchTo(id_t);
-}  // namespace Presto::Scene
+    void SwitchTo(const std::string& name);
+}  // namespace Presto::Scenes

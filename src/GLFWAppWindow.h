@@ -1,12 +1,13 @@
 #pragma once
 
-
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include "Presto/Window.h"
 
 namespace Presto {
+    class Renderer;
+
     class PRESTO_API GLFWAppWindow : public Window {
        public:
         explicit GLFWAppWindow(const WindowProperties& props);

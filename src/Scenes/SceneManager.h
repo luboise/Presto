@@ -7,14 +7,25 @@
 using nlohmann::json;
 
 namespace Presto {
-    class SceneManager : public Module {
-        MODULE_FUNCTIONS();
-
+    class SceneManager : public Module<SceneManager> {
        public:
-        id_t loadScene(const json& file);
-        id_t switchScene(Scene);
+        static void Init();
+
+        static scene_id_t LoadScene(const json& j);
+        static void SwitchScene(const scene_id_t&);
+
+        SceneManager(const SceneManager&) = delete;
+        SceneManager(SceneManager&&) = delete;
+        SceneManager& operator=(const SceneManager&) = delete;
+        SceneManager& operator=(SceneManager&&) = delete;
+
+        virtual ~SceneManager() = delete;
 
        private:
-        Scene* _currentScene;
+        SceneManager();
+
+        static Scene* _currentScene;
+        static std::map<scene_id_t, Scene*> _sceneMap;
     };
+
 }  // namespace Presto

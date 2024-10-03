@@ -4,12 +4,19 @@
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
-    typedef Entity* entity_t;
+    using entity_t = Entity *;
 
-    class PRESTO_API EntityManager : public Module {
+    class PRESTO_API EntityManager : public Module<EntityManager> {
        public:
         static entity_t newEntity();
         static entity_t getEntityByID(id_t id);
+
+        EntityManager(const EntityManager &) = delete;
+        EntityManager(EntityManager &&) = delete;
+        EntityManager &operator=(const EntityManager &) = delete;
+        EntityManager &operator=(EntityManager &&) = delete;
+
+        virtual ~EntityManager() = delete;
 
        private:
         static void destroyEntity(entity_t entity);

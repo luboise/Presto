@@ -2,6 +2,7 @@
 
 // For use by Presto apps
 #include "Presto/Application.h"  // IWYU pragma: export
+#include "Presto/Constants.h"    // IWYU pragma: export
 #include "Presto/Core.h"         // IWYU pragma: export
 #include "Presto/Log.h"          // IWYU pragma: export
 #include "Presto/Scenes.h"       // IWYU pragma: export

@@ -28,11 +28,11 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       CACHE PATH "Install path" FORCE)
 endif()
 
-set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 if(NOT TARGET spdlog)
   # find_package(spdlog REQUIRED)
   add_subdirectory(ext/spdlog)
 endif()
+set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(ext/tinyobjloader)
 

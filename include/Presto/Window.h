@@ -1,25 +1,30 @@
 #pragma once
 
+#include <utility>
+
 #include "Core.h"
 #include "Presto/Event.h"
-#include "Rendering/Renderer.h"
+
+#include "Presto/Constants.h"
 // #include "Presto/Event.h"
+
+constexpr auto DEFAULT_WIDTH = 1280;
+constexpr auto DEFAULT_HEIGHT = 720;
 
 namespace Presto {
     struct WindowProperties {
         std::string title;
-        unsigned height;
         unsigned width;
-        Renderer::RENDER_LIBRARY render_library;
+        unsigned height;
+
+        RENDER_LIBRARY render_library = UNSET;
 
         // Default constructor
-        WindowProperties(
-            const std::string& d_title = "Untitled Presto application",
-            unsigned d_width = 1280, unsigned d_height = 720)
-            : title(d_title),
-              width(d_width),
-              height(d_height),
-              render_library(Renderer::VULKAN) {}
+        explicit WindowProperties(
+            std::string d_title = "Untitled Presto application",
+            unsigned d_width = DEFAULT_WIDTH,
+            unsigned d_height = DEFAULT_HEIGHT)
+            : title(std::move(d_title)), width(d_width), height(d_height) {}
     };
 
     // Abstracted window interface to be implemented per platform
@@ -29,7 +34,7 @@ namespace Presto {
        public:
         using EventCallbackFn = std::function<void(Event&)>;
 
-        virtual ~Window() {};
+        virtual ~Window() = default;
         virtual void Shutdown() = 0;
 
         virtual void RenderFrame() = 0;

@@ -1,4 +1,3 @@
-
 #include "GLFW/glfw3.h"
 #include "Presto/Core.h"
 #include "Presto/Events/ApplicationEvents.h"
@@ -6,6 +5,8 @@
 #include "Presto/Events/MouseEvents.h"
 
 #include "GLFWAppWindow.h"
+
+#include "Presto/Rendering/Renderer.h"
 
 #include "Presto/Rendering/RenderingManager.h"
 
@@ -164,7 +165,7 @@ namespace Presto {
 
     void GLFWAppWindow::RenderFrame() {
         glfwPollEvents();
-        RenderingManager::Update();
+        RenderingManager::Get().Update();
     }
 
     void GLFWAppWindow::SetVSync(bool vsync) {
