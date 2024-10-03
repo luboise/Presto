@@ -80,7 +80,7 @@ namespace Presto {
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 
         auto vertex_code = std::string(
-            ResourceManager::readFile("Shaders/Core/vert.glsl").data());
+            ResourceManager::ReadFile("Shaders/Core/vert.glsl").data());
         const char* sourceCStr = vertex_code.c_str();
 
         glShaderSource(vs, 1, &sourceCStr, nullptr);
@@ -93,7 +93,7 @@ namespace Presto {
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
         auto fragment_code = std::string(
-            ResourceManager::readFile("Shaders/Core/frag.glsl").data());
+            ResourceManager::ReadFile("Shaders/Core/frag.glsl").data());
         const char* sourceCStr2 = fragment_code.c_str();
 
         glShaderSource(fs, 1, &sourceCStr2, nullptr);

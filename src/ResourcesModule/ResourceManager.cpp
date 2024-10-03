@@ -3,7 +3,9 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
-#include "Presto/Rendering/Mesh.h"
+
+// #include "Presto/Rendering/Mesh.h"
+
 namespace fs = std::filesystem;
 
 namespace Presto {
@@ -18,7 +20,13 @@ namespace Presto {
 
     ResourceManager::~ResourceManager() { Presto::ResourceManager::Shutdown(); }
 
-    std::vector<char> ResourceManager::readFile(const std::string& filename) {
+    void ResourceManager::F_INIT() {}
+    void ResourceManager::F_UPDATE() {}
+    void ResourceManager::F_SHUTDOWN() {}
+
+    template <>
+    auto ResourceManager::ReadFile<ResourceType::RAW>(
+        const std::string& filename) {
         // ate <-> start at end of file
         auto filepath = executableDirectory / fs::path(filename);
         PR_CORE_TRACE(filepath.generic_string());
@@ -37,8 +45,17 @@ namespace Presto {
         file.read(buffer.data(), fileSize);
 
         file.close();
+
         return buffer;
     }
+
+    template <>
+    auto ResourceManager::ReadFile<ResourceType::JSON>(
+        const std::string& filename) {
+        // TODO: Implement this
+        return json();
+    }
+
     /*
         Mesh* ResourceManager::LoadMesh(const std::string& filepath) {
             tinyobj::attrib_t attrib;
@@ -67,7 +84,4 @@ namespace Presto {
         }
             */
 
-    void ResourceManager::F_INIT() {}
-    void ResourceManager::F_UPDATE() {}
-    void ResourceManager::F_SHUTDOWN() {}
 }  // namespace Presto

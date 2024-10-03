@@ -4,6 +4,7 @@
 #include "Presto/Application.h"  // IWYU pragma: export
 #include "Presto/Core.h"         // IWYU pragma: export
 #include "Presto/Log.h"          // IWYU pragma: export
+#include "Presto/Scenes.h"       // IWYU pragma: export
 
 // Object includes
 // #include "Rendering/RenderingManager.h"  // IWYU pragma: export

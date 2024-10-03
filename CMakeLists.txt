@@ -28,6 +28,7 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       CACHE PATH "Install path" FORCE)
 endif()
 
+set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 if(NOT TARGET spdlog)
   # find_package(spdlog REQUIRED)
   add_subdirectory(ext/spdlog)
@@ -35,7 +36,10 @@ endif()
 
 add_subdirectory(ext/tinyobjloader)
 
-set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
+set(JSON_BuildTests
+    OFF
+    CACHE INTERNAL "")
+add_subdirectory(ext/json)
 
 # set(glm_DIR ./ext/glm) find_package(glm REQUIRED)
 
@@ -165,6 +169,8 @@ target_include_directories(Presto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(Presto PUBLIC ext/spdlog/include ext/glm/include)
 target_include_directories(Presto PRIVATE ${OPENGL_INCLUDE_DIR}
                                           ${GLEW_INCLUDE_DIRS})
+
+target_link_libraries(Presto PRIVATE nlohmann_json::nlohmann_json)
 
 add_subdirectory(src)
 
