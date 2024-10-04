@@ -15,7 +15,7 @@ namespace Presto {
         friend class RenderingManager;
 
        public:
-        const Mesh& getMesh() const;
+        [[nodiscard]] const Mesh& getMesh() const;
         const RenderableProps& getProps();
 
        private:

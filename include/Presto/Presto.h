@@ -12,6 +12,3 @@
 
 // Type includes
 // #include "Rendering/Vulkan/VulkanVertex.h"  // IWYU pragma: export
-
-// ENTRY POINT - NEED TO ENTER THIS YOURSELF
-#include "Presto/EntryPoint.h"  // IWYU pragma: export
