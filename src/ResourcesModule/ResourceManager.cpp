@@ -41,7 +41,13 @@ namespace Presto {
 
     json ResourceManager::GetJSON(const std::string& text) {
         // TODO: Implement this
-        return {};
+        try {
+            auto parsed = json::parse(text.begin(), text.end());
+            return parsed;
+        } catch (nlohmann::json::parse_error& error) {
+            PR_CORE_ERROR("Unable to parse json file. Error: {}", error.what());
+            return {};
+        }
     }
 
     /*

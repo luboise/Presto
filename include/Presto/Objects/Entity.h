@@ -9,14 +9,14 @@ namespace Presto {
     // Forward declaration
     class EntityManager;
 
-    typedef std::map<component_class_t, Component*> ComponentMap;
-    typedef uint32_t entity_id_t;
+    using ComponentMap = std::map<component_class_t, Component*>;
+    using entity_id_t = uint32_t;
 
     class PRESTO_API Entity {
         friend class EntityManager;
 
        public:
-        entity_id_t getId() const;
+        [[nodiscard]] entity_id_t getId() const;
 
         template <typename ComponentClass>
         void setComponent(ComponentClass* component_ptr) {
@@ -42,5 +42,5 @@ namespace Presto {
         glm::vec3 _rotation;
     };
 
-    typedef Entity* entity_t;
+    using entity_t = Entity*;
 }  // namespace Presto
