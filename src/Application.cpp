@@ -1,6 +1,8 @@
 
 #include "Presto/Application.h"
 
+#include "Editor/EditorOverlay.h"
+
 #include "GLFW/glfw3.h"
 #include "GLFWAppWindow.h"
 #include "Presto/Rendering/RenderingManager.h"
@@ -19,11 +21,10 @@ namespace Presto {
 
         RenderingManager::setRenderLibrary(OPENGL);
         RenderingManager::setWindow(app_window);
-        RenderingManager::setWindow(app_window);
-
         RenderingManager::Init();
-
         RenderingManager::setCamera(_mainCamera);
+
+        EditorOverlay::Init(app_window);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -33,6 +34,8 @@ namespace Presto {
 
     void Application::Run() {
         while (app_running) {
+            EditorOverlay::OnLoopStart();
+
             // Calculate delta
 
             double newTime = glfwGetTime();
@@ -41,8 +44,6 @@ namespace Presto {
 
             // PRINT FPS
             // PR_CORE_TRACE("{:.2f} FPS", 1 / _delta);
-
-            // TODO: Create new entities
 
             // Run user logic
             GameLoop();

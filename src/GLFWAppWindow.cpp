@@ -10,6 +10,8 @@
 
 #include "Presto/Rendering/RenderingManager.h"
 
+#include "Editor/EditorOverlay.h"
+
 namespace Presto {
     bool GLFWAppWindow::s_GLFWInitialised = false;
 
@@ -165,7 +167,13 @@ namespace Presto {
 
     void GLFWAppWindow::RenderFrame() {
         glfwPollEvents();
-        RenderingManager::Get().Update();
+        auto& rm = RenderingManager::Get();
+
+        EditorOverlay::OnLoopStart();
+        rm.Update();
+        EditorOverlay::OnLoopEnd();
+
+        rm.Flush();
     }
 
     void GLFWAppWindow::SetVSync(bool vsync) {

@@ -1,4 +1,5 @@
 #include "Presto/Rendering/RenderingManager.h"
+
 #include <stdexcept>
 
 #include "Presto/Components/Renderable.h"
@@ -48,14 +49,16 @@ namespace Presto {
         _instance = mgr;
     }
 
+    // Draws all entities
     void RenderingManager::Update() {
         for (auto& layer : _renderLayers) {
             for (const auto& ptr_renderable : layer._renderables) {
                 _renderer->render(ptr_renderable);
             }
         }
-        _renderer->nextFrame();
     }
+
+    void RenderingManager::Flush() { _renderer->nextFrame(); }
 
     void RenderingManager::Shutdown() {}
 

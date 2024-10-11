@@ -6,7 +6,6 @@ set(CMAKE_CXX_EXTENSIONS Off)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/ext")
-
 find_program(
   GLSLC_PATH
   NAMES glslc
@@ -191,6 +190,15 @@ set_property(TARGET Presto PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(Presto PRIVATE PR_BUILD_LIB)
 
 target_precompile_headers(Presto PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
+file(GLOB IMGUI_SOURCES ${IMGUI_DIR}/*.cpp ${IMGUI_DIR}/*.h)
+
+target_sources(
+  Presto PRIVATE ${IMGUI_SOURCES} ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+                 ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp)
+
+target_include_directories(Presto PRIVATE ${IMGUI_DIR})
 
 # include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
 
