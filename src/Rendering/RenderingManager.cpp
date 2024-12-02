@@ -3,7 +3,8 @@
 #include <stdexcept>
 
 #include "Presto/Components/Renderable.h"
-#include "Presto/Components/RenderableProps.h"
+#include "Presto/Components/Transform.h"
+
 #include "Presto/Rendering/Mesh.h"
 #include "Presto/Rendering/Renderer.h"
 #include "Presto/Rendering/Vertex.h"
@@ -115,13 +116,6 @@ namespace Presto {
         _meshes.add(mesh);
 
         return mesh;
-    }
-
-    RenderableProps* RenderingManager::NewRenderableProps() {
-        auto* props = new RenderableProps();
-        _renderProps.add(props);
-
-        return props;
     }
 
     Renderable* RenderingManager::NewRenderable(

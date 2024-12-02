@@ -3,12 +3,9 @@
 #include "Presto/Events/ObjectEvents.h"
 
 namespace Presto {
-    Entity::Entity(entity_id_t id) {
-        this->_id = id;
-        ObjectCreatedEvent(this);
-    }
+    Entity::Entity() { ObjectCreatedEvent(this); }
 
-    Entity::~Entity() {}
+    Entity::~Entity() = default;
 
     ComponentMap Entity::getComponents() { return _components; }
 

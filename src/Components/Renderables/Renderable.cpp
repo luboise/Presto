@@ -1,5 +1,4 @@
 #include "Presto/Components/Renderable.h"
-#include "Presto/Components/RenderableProps.h"
 
 namespace Presto {
 
@@ -16,5 +15,5 @@ Renderable::Renderable(const Renderable& other) {
 
     const Mesh& Renderable::getMesh() const { return this->_mesh; }
 
-    const RenderableProps& Renderable::getProps() { return this->_props; }
+    const Transform& Renderable::getProps() { return this->_props; }
 }  // namespace Presto

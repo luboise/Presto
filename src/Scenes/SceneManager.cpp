@@ -46,8 +46,9 @@ namespace Presto {
                 auto& mgr = RenderingManager::Get();
 
                 auto* mesh = mgr.NewMesh(thingos.vertices, thingos.indices);
-                auto* props = mgr.NewRenderableProps();
-                auto* renderable = mgr.NewRenderable(*mesh, *props);
+
+                auto props = Transform();
+                auto* renderable = mgr.NewRenderable(*mesh, props);
 
                 cube_entity->setComponent(renderable);
                 mgr.AddRenderable(0, renderable);

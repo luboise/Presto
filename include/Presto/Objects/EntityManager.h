@@ -8,7 +8,11 @@ namespace Presto {
 
     class PRESTO_API EntityManager : public Module<EntityManager> {
        public:
-        static entity_t newEntity();
+        // Intellisense for constructor call
+        template <typename T, typename... ArgT>
+        static std::enable_if_t<std::is_constructible_v<T, ArgT...>, entity_t>
+        newEntity(ArgT... args);
+
         static entity_t getEntityByID(id_t id);
 
         EntityManager(const EntityManager &) = delete;

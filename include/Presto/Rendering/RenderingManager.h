@@ -58,7 +58,6 @@ namespace Presto {
         };
 
         Mesh* NewMesh(const VertexList&, const IndexList&);
-        RenderableProps* NewRenderableProps();
         Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
         RenderingManager(const RenderingManager&) = delete;
@@ -78,7 +77,6 @@ namespace Presto {
         std::vector<RenderLayer> _renderLayers;
 
         Allocator<Mesh> _meshes;
-        Allocator<RenderableProps> _renderProps;
         Allocator<Renderable> _renderables;
 
         bool hasLayer(layer_id_t index);

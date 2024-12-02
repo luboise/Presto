@@ -7,17 +7,40 @@ namespace Presto {
     entity_id_t EntityManager::_currentId = 0;
     std::map<entity_id_t, entity_t> EntityManager::_entityMap;
 
-    // Methods
-    entity_t EntityManager::newEntity() {
-        entity_id_t new_id = EntityManager::reserveId();
+    /*
+// Methods
+entity_t EntityManager::newEntity() {
+    entity_id_t new_id = EntityManager::reserveId();
 
+    PR_CORE_ASSERT(!_entityMap.contains(new_id),
+                   "Attempted to create entity using existing id: {}",
+                   new_id);
+
+    auto new_entity = new Entity(new_id);
+    _entities.push_back(new_entity);
+
+    _entityMap.emplace(new_id, new_entity);
+
+    return new_entity;
+}
+    */
+
+    template <typename T, typename... ArgT>
+    std::enable_if_t<std::is_constructible_v<T, ArgT...>, entity_t>
+    EntityManager::newEntity(ArgT... args) {
+        static_assert(std::is_constructible_v<T, ArgT...>,
+                      "Cannot construct entity with provided arguments");
+
+        auto new_entity = new T(std::forward(args)...);
+
+        entity_id_t new_id = EntityManager::reserveId();
         PR_CORE_ASSERT(!_entityMap.contains(new_id),
                        "Attempted to create entity using existing id: {}",
                        new_id);
 
-        auto new_entity = new Entity(new_id);
-        _entities.push_back(new_entity);
+        new_entity.setId(new_id);
 
+        _entities.push_back(new_entity);
         _entityMap.emplace(new_id, new_entity);
 
         return new_entity;

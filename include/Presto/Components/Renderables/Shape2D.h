@@ -1,7 +1,5 @@
-#include "Components/Renderables/Renderable.h";
+#include "Components/Renderables/Renderable.h"
 
 namespace Presto {
-        class Shape2D : public Renderable{
-
-		};
-}
+    class Shape2D : public Renderable {};
+}  // namespace Presto

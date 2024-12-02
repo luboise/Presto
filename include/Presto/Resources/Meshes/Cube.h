@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Presto/Rendering/Mesh.h"
 #include "Presto/Rendering/Vertex.h"
 

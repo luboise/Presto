@@ -1,19 +1,17 @@
-#include "Presto/Components/RenderableProps.h"
+#include "Presto/Components/Transform.h"
 
 namespace Presto {
-    RenderableProps::RenderableProps()
-        : _translation(0), _yawPitchRoll(0), _scale(1) {}
+    Transform::Transform() : _translation(0), _yawPitchRoll(0), _scale(1) {}
 
-    RenderableProps::RenderableProps(vec3 translation, vec3 rotation,
-                                     vec3 scale)
+    Transform::Transform(vec3 translation, vec3 rotation, vec3 scale)
         : _translation(translation), _yawPitchRoll(rotation), _scale(scale) {}
 
-    mat4 RenderableProps::getModelMatrix(vec3 offset, glm::float32 scale) {
+    mat4 Transform::getModelMatrix(vec3 offset, glm::float32 scale) {
         return getModelMatrix(offset, vec3(0.0f), scale);
     }
 
-    mat4 RenderableProps::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
-                                         glm::float32 scale) {
+    mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
+                                   glm::float32 scale) {
         mat4 model(1.0f);
 
         model = glm::rotate(model, yawPitchRoll.y, vec3(1, 0, 0));

@@ -32,11 +32,14 @@ namespace Presto {
 
         ComponentMap getComponents();
 
-       private:
-        Entity(entity_id_t id);
+       protected:
+        Entity();
         virtual ~Entity();
 
-        entity_id_t _id;
+       private:
+        void setId(entity_id_t);
+
+        entity_id_t _id = -1;
         ComponentMap _components;
         glm::vec3 _position;
         glm::vec3 _rotation;
