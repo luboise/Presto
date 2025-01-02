@@ -1,7 +1,8 @@
 #include "PrestoCore/Scenes.h"
 
-#include "ResourcesModule/ResourceManager.h"
 #include "Scenes/SceneManager.h"
+
+#include "PrestoCore/Modules/ResourceManager.h"
 
 namespace Presto {
 

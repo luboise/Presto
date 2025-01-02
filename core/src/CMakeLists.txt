@@ -7,5 +7,7 @@ add_subdirectory(Scenes)
 
 # add_subdirectory(Platform)
 
-target_sources(PrestoCore PRIVATE Application.cpp Log.cpp pch.cpp GLFWAppWindow.cpp)
-target_sources(PrestoCore PRIVATE ResourcesModule/ResourceManager.cpp)
+target_sources(PrestoCore PRIVATE Application.cpp Log.cpp pch.cpp
+                                  GLFWAppWindow.cpp)
+
+add_subdirectory(Modules)

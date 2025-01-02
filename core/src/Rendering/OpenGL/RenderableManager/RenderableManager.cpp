@@ -1,7 +1,6 @@
 #include "RenderableManager.h"
-#include <stdexcept>
 
-#include "ResourcesModule/ResourceManager.h"
+#include "PrestoCore/Modules/ResourceManager.h"
 
 #include "PrestoCore/Core.h"
 #include "PrestoCore/Rendering/Vertex.h"

@@ -1,9 +1,7 @@
-#include "ResourceManager.h"
+#include "PrestoCore/Modules/ResourceManager.h"
 
 #include <filesystem>
 #include <fstream>
-#include <vector>
-#include "PrestoCore/Constants.h"
 
 // #include "PrestoCore/Rendering/Mesh.h"
 
