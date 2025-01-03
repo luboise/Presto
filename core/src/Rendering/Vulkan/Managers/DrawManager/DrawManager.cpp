@@ -5,7 +5,7 @@
 #include <exception>
 
 #include "PrestoCore/Core.h"
-#include "PrestoCore/Log.h"
+#include "PrestoCore/Logging.h"
 
 #include "Rendering/Vulkan/VulkanUtils/VulkanConstants.h"
 

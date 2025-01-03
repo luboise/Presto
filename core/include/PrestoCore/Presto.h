@@ -1,11 +1,15 @@
 #pragma once
 
 // For use by Presto apps
-#include "PrestoCore/Application.h"  // IWYU pragma: export
-#include "PrestoCore/Constants.h"    // IWYU pragma: export
-#include "PrestoCore/Core.h"         // IWYU pragma: export
-#include "PrestoCore/Log.h"          // IWYU pragma: export
-#include "PrestoCore/Scenes.h"       // IWYU pragma: export
+#include "Core.h"
+
+// #include "PrestoCore/Application.h"  // IWYU pragma: export
+
+#include "PrestoCore/Logging.h"  // IWYU pragma: export
+
+// TODO: Move to engine
+
+// #include "PrestoCore/Scenes.h"     // IWYU pragma: export
 
 // Object includes
 // #include "Rendering/RenderingManager.h"  // IWYU pragma: export
@@ -14,4 +18,4 @@
 // #include "Rendering/Vulkan/VulkanVertex.h"  // IWYU pragma: export
 
 // ENTRY POINT - NEED TO ENTER THIS YOURSELF
-#include "PrestoCore/EntryPoint.h"  // IWYU pragma: export
+// #include "PrestoCore/EntryPoint.h"  // IWYU pragma: export

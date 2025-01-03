@@ -1,5 +1,5 @@
 
-#include "PrestoCore/Log.h"
+#include "PrestoCore/Logging.h"
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 

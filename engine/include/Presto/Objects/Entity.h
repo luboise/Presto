@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PrestoCore/Component.h"
+#include "PrestoCore/Objects/Component.h"
 #include "glm/fwd.hpp"
 
 #include <map>

@@ -1,8 +1,7 @@
 #pragma once
 
 // Presto Includes
-#include "PrestoCore/Core.h"  // IWYU pragma: export
-#include "PrestoCore/Log.h"   // IWYU pragma: export
+#include "PrestoCore/Presto.h"  // IWYU pragma: export
 
 // Utility stuff
 #include <iostream>  // IWYU pragma: export

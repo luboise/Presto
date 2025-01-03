@@ -1,10 +1,29 @@
+if(WIN32)
+  set(PLATFORM Windows)
+
+  add_compile_definitions(PR_PLATFORM_WINDOWS)
+  add_compile_definitions(NOMINMAX)
+
+  set(CMAKE_GENERATOR_PLATFORM
+      "x64"
+      CACHE STRING "Platform (x64)" FORCE)
+elseif(UNIX)
+  set(PLATFORM Unix)
+  add_compile_definitions(PR_PLATFORM_UNIX)
+else()
+  message(FATAL_ERROR "Platform not selected."
+                      "Expected Windows or Unix platform for compilation.")
+endif()
+
 add_library(PrestoCore STATIC)
 
-target_include_directories(PrestoCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(PrestoCore
+                           PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(PrestoCore PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_include_directories(PrestoCore PUBLIC ../ext/spdlog/include ../ext/glm/include)
+target_include_directories(PrestoCore PUBLIC ../ext/spdlog/include
+                                             ../ext/glm/include)
 target_include_directories(PrestoCore PRIVATE ${OPENGL_INCLUDE_DIR}
-                                          ${GLEW_INCLUDE_DIRS})
+                                              ${GLEW_INCLUDE_DIRS})
 
 target_link_libraries(PrestoCore PRIVATE nlohmann_json::nlohmann_json)
 
@@ -15,25 +34,27 @@ if(PLATFORM STREQUAL "Windows")
   target_link_libraries(PrestoCore PRIVATE dwmapi.lib XInput9_1_0.lib)
 endif()
 
-target_link_libraries(PrestoCore PUBLIC glfw ${Vulkan_LIBRARIES} spdlog glm::glm)
+target_link_libraries(PrestoCore PUBLIC glfw ${Vulkan_LIBRARIES} spdlog
+                                        glm::glm)
 target_link_libraries(PrestoCore PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW
-                                     tinyobjloader)
+                                         tinyobjloader)
 
 # Needed for shared library
 set_property(TARGET PrestoCore PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# if (WIN32) target_compile_definitions(PrestoCore PRIVATE PR_BUILD_LIB ) endif()
+# if (WIN32) target_compile_definitions(PrestoCore PRIVATE PR_BUILD_LIB )
+# endif()
 
 target_compile_definitions(PrestoCore PRIVATE PR_BUILD_LIB)
 
-target_precompile_headers(PrestoCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+target_precompile_headers(PrestoCore PUBLIC
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 
 # include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
 
 set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
 
 # Shader compilation details below
-
 
 # Macro which compiles shaders in the src/shaders directory to vulkan shader
 # units

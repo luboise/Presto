@@ -54,23 +54,4 @@ add_subdirectory(ext/glm)
 find_package(Vulkan REQUIRED)
 # include_directories(${Vulkan_INCLUDE_DIR})
 
-if(WIN32)
-  set(PLATFORM Windows)
-
-  add_compile_definitions(PR_PLATFORM_WINDOWS)
-  add_compile_definitions(NOMINMAX)
-
-  set(CMAKE_GENERATOR_PLATFORM
-      "x64"
-      CACHE STRING "Platform (x64)" FORCE)
-elseif(UNIX)
-  set(PLATFORM Unix)
-  add_compile_definitions(PR_PLATFORM_UNIX)
-else()
-  message(FATAL_ERROR "Platform not selected."
-                      "Expected Windows or Unix platform for compilation.")
-endif()
-
-
-
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)

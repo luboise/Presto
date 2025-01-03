@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
-#include "PrestoCore/Component.h"
+#include "PrestoCore/Objects/Component.h"
 #include "PrestoCore/Rendering/Mesh.h"
 
 #include "RenderableProps.h"

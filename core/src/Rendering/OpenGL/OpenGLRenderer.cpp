@@ -10,7 +10,6 @@
 #include <stdexcept>
 
 #include "GLFWAppWindow.h"
-#include "PrestoCore/Log.h"
 
 #include "Rendering/OpenGL/RenderableManager/RenderableManager.h"
 #include "utils.h"

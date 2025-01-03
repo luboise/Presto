@@ -1,6 +1,6 @@
 #include "VulkanUtils.h"
 
-#include "PrestoCore/Log.h"
+#include "PrestoCore/Logging.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanConstants.h"
 
 #include <vulkan/vulkan_core.h>

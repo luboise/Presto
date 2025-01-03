@@ -5,7 +5,7 @@
 
 #include "Rendering/Vulkan/Managers/DescriptorManager/DescriptorGroup/DescriptorGroup.h"
 
-// #include "PrestoCore/Log.h"
+// #include "PrestoCore/Logging.h"
 
 namespace Presto {
 

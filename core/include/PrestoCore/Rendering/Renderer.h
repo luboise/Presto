@@ -3,12 +3,14 @@
 #include <map>
 
 #include "PrestoCore/Rendering/Camera.h"
-#include "PrestoCore/Rendering/RenderTypes.h"
+#include "PrestoCore/Rendering/RenderData.h"
 
 namespace Presto {
     class GLFWAppWindow;
 
     enum SHADER_MODULE_TYPE { VERTEX, FRAGMENT };
+
+    using render_data_id_t = id_t;
 
     class PRESTO_API Renderer {
        public:
@@ -16,8 +18,9 @@ namespace Presto {
 
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
-        virtual void addToRenderPool(draw_info_key) = 0;
-        virtual void render(draw_info_key) = 0;
+        virtual render_data_id_t registerMesh(RenderData&&) = 0;
+        virtual void unregisterMesh(render_data_id_t id) = 0;
+        virtual void render(render_data_id_t id, glm::vec4 transform) = 0;
         virtual void nextFrame() = 0;
 
         void setCamera(Camera& newCam) { _renderCamera = &newCam; }

@@ -1,5 +1,5 @@
 #include "SceneManager.h"
-#include "PrestoCore/Log.h"
+#include "PrestoCore/Logging.h"
 
 namespace Presto {
     Scene* SceneManager::_currentScene = nullptr;

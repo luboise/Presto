@@ -1,10 +1,6 @@
 #pragma once
 
-#include "PrestoCore/Constants.h"
-
-#include "PrestoCore/Components/Renderable.h"
 #include "PrestoCore/Module.h"
-#include "PrestoCore/Rendering/Mesh.h"
 #include "PrestoCore/Rendering/Renderer.h"
 
 #include "PrestoCore/Rendering/Types/RenderLayer.h"
