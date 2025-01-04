@@ -1,19 +1,18 @@
-#include "RenderableManager.h"
+#include "OpenGLDrawManager.h"
 
 #include "PrestoCore/Modules/ResourceManager.h"
 
 #include "PrestoCore/Core.h"
-#include "PrestoCore/Rendering/Vertex.h"
 #include "Rendering/OpenGL/utils.h"
 
 namespace Presto {
-    OpenGlRenderable* RenderableManager::getRenderable(draw_info_key key) {
-        auto x = _renderableMap.find(key);
-        if (x == _renderableMap.end()) {
+    OpenGLDrawInfo* OpenGLDrawManager::getDrawInfo(draw_key key) {
+        auto x = drawInfoMap_.find(key);
+        if (x == drawInfoMap_.end()) {
             PR_CORE_ERROR(
                 "Unable to find renderable {} in renderable map. Make sure it "
                 "is loaded before rendering it. Returning nullptr.",
-                fmt::ptr(key));
+                key);
 
             return nullptr;
         }
@@ -21,24 +20,24 @@ namespace Presto {
         return &(x->second);
     }
 
-    PR_RESULT RenderableManager::loadRenderable(draw_info_key key) {
+    draw_key OpenGLDrawManager::createDrawInfo(RenderData&& data) {
         constexpr auto VEC_3 = 3;
 
-        if (_renderableMap.contains(key)) {
-            PR_CORE_ERROR(
-                "Entity has already been added to render pool. Can't add it "
-                "again.");
-            return PR_FAILURE;
-        }
+        // TODO: Potentially reimplement this later if it has a measurable
+        // benefit to performance
+        /*
+if (renderableMap_.contains(data)) {
+    PR_CORE_ERROR(
+        "Entity has already been added to render pool. Can't add it "
+        "again.");
+    return PR_FAILURE;
+}
+        */
 
-        // ?? Unsure why this is here
-        // Pipeline& pipeline = _graphicsPipelines[0];
+        const VertexList& vertices = data.vertices;
+        const IndexList& indices = data.indices;
 
-        const auto& mesh = key->getMesh();
-        const VertexList& vertices = mesh.getVertices();
-        const IndexList& indices = mesh.getIndices();
-
-        OpenGlRenderable r{};
+        OpenGLDrawInfo r{};
 
         r.vert_count = vertices.size();
         r.index_count = indices.size();
@@ -113,16 +112,16 @@ namespace Presto {
         glDeleteShader(vs);
         glDeleteShader(fs);
 
-        auto insertion = _renderableMap.try_emplace(key, r);
+        auto new_draw_key = ++currentDrawKey_;
+        auto insertion = drawInfoMap_.try_emplace(new_draw_key, r);
 
-        PR_CORE_ASSERT(insertion.second,
-                       "Presto failed to insert renderable {} to "
-                       "the render list.",
-                       fmt::ptr(key));
+        PR_CORE_ASSERT(
+            insertion.second,
+            "Presto failed to insert RenderData into the render list.");
 
-        PR_CORE_TRACE("Added {} to the render list.", fmt::ptr(key));
+        PR_CORE_TRACE("Added new RenderData to the render list.");
 
-        return PR_RESULT::PR_SUCCESS;
+        return new_draw_key;
     };
 
 }  // namespace Presto

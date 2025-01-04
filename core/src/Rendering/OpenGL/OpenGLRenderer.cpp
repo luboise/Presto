@@ -1,5 +1,6 @@
 #include "Rendering/OpenGL/OpenGLRenderer.h"
 
+#include "PrestoCore/Rendering/Renderer.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
 #include <GL/glew.h>
@@ -10,9 +11,6 @@
 #include <stdexcept>
 
 #include "GLFWAppWindow.h"
-
-#include "Rendering/OpenGL/RenderableManager/RenderableManager.h"
-#include "utils.h"
 
 namespace Presto {
     using PointType = float;
@@ -40,25 +38,34 @@ namespace Presto {
                                                                         */
     }
 
-    void OpenGLRenderer::addToRenderPool(draw_info_key renderable) {
-        _renderableManager.loadRenderable(renderable);
+    render_data_id_t OpenGLRenderer::registerMesh(const RenderData& data) {
+        auto copy = data;
+        return drawManager_.createDrawInfo(std::move(copy));
     }
 
-    void OpenGLRenderer::render(draw_info_key key) {
-        auto* ptr = _renderableManager.getRenderable(key);
+    render_data_id_t OpenGLRenderer::registerMesh(RenderData&& data) {
+        return drawManager_.createDrawInfo(std::move(data));
+    }
+
+    void OpenGLRenderer::render(render_data_id_t id, glm::vec4 transform) {
+        auto* ptr = drawManager_.getDrawInfo(id);
 
         if (ptr == nullptr) {
             PR_CORE_ERROR(
                 "getRenderable() returned a nullptr for renderable {}. "
                 "Skipping drawing.",
-                fmt::ptr(key));
+                id);
             return;
         }
 
         this->draw(*ptr);
     }
 
-    void OpenGLRenderer::draw(const OpenGlRenderable& renderable) {
+    void OpenGLRenderer::unregisterMesh(render_data_id_t id) {
+        // TODO: Implement unregister
+    }
+
+    void OpenGLRenderer::draw(const OpenGLDrawInfo& renderable) {
         GLint view = glGetUniformLocation(renderable.shader_program, "view");
         GLint projection =
             glGetUniformLocation(renderable.shader_program, "projection");
@@ -75,8 +82,8 @@ namespace Presto {
         mats.projection = RenderingUtils::getProjectionMatrix(
             FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
 
-        glUniformMatrix4fv(view, 1, false, glm::value_ptr(mats.view));
-        glUniformMatrix4fv(projection, 1, false,
+        glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
+        glUniformMatrix4fv(projection, 1, GL_FALSE,
                            glm::value_ptr(mats.projection));
 
         // Commence drawing

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <map>
-
-#include "PrestoCore/Rendering/Camera.h"
-#include "PrestoCore/Rendering/RenderData.h"
+#include "Camera.h"
+#include "RenderData.h"
+#include "RenderTypes.h"
 
 namespace Presto {
     class GLFWAppWindow;
@@ -19,6 +18,8 @@ namespace Presto {
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
         virtual render_data_id_t registerMesh(RenderData&&) = 0;
+        virtual render_data_id_t registerMesh(const RenderData&) = 0;
+
         virtual void unregisterMesh(render_data_id_t id) = 0;
         virtual void render(render_data_id_t id, glm::vec4 transform) = 0;
         virtual void nextFrame() = 0;

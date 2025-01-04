@@ -36,7 +36,8 @@ namespace Presto {
         virtual ~Window() = default;
         virtual void Shutdown() = 0;
 
-        virtual void RenderFrame() = 0;
+        // TODO: Move this into the engine
+        // virtual void RenderFrame() = 0;
 
         [[nodiscard]] virtual unsigned GetWidth() const = 0;
         [[nodiscard]] virtual unsigned GetHeight() const = 0;

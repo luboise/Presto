@@ -25,7 +25,7 @@ namespace Presto {
 
         void loadRenderable(Renderable*, Pipeline*);
 
-        const VulkanDrawInfo& getDrawInfo(const draw_info_key key) const {
+        const VulkanDrawInfo& getDrawInfo(const draw_key key) const {
             PR_CORE_ASSERT(
                 _drawInfoMap.contains(key),
                 "Unable to get draw info for renderable {} because it has not "
@@ -36,7 +36,7 @@ namespace Presto {
         };
 
        private:
-        std::map<draw_info_key, VulkanDrawInfo> _drawInfoMap;
+        std::map<draw_key, VulkanDrawInfo> _drawInfoMap;
 
         VulkanDevice* _device;
 

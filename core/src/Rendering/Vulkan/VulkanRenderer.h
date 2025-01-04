@@ -25,8 +25,8 @@ namespace Presto {
         explicit VulkanRenderer(GLFWAppWindow* window);
         ~VulkanRenderer() override;
 
-        void addToRenderPool(draw_info_key) override;
-        void render(draw_info_key) override;
+        void addToRenderPool(draw_key) override;
+        void render(draw_key) override;
         void nextFrame() override;
 
        private:

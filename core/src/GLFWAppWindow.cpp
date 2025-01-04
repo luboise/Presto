@@ -8,8 +8,6 @@
 
 #include "PrestoCore/Rendering/Renderer.h"
 
-#include "PrestoCore/Rendering/RenderingManager.h"
-
 namespace Presto {
     bool GLFWAppWindow::s_GLFWInitialised = false;
 
@@ -163,10 +161,13 @@ namespace Presto {
             });
     }
 
-    void GLFWAppWindow::RenderFrame() {
-        glfwPollEvents();
-        RenderingManager::Get().Update();
-    }
+    // TODO: Move this into the engine
+    /*
+void GLFWAppWindow::RenderFrame() {
+    glfwPollEvents();
+    RenderingManager::Get().Update();
+}
+    */
 
     void GLFWAppWindow::SetVSync(bool vsync) {
         if (vsync) {

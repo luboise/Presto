@@ -20,13 +20,8 @@ namespace Presto {
     };
 }  // namespace Presto
 
-template <typename Args>
-void PR_CORE_TRACE(Args args...) {
-    ::Presto::Log::GetCoreLogger()->trace(std::forward<Args>(args));
-}
-
 // Core log macros
-// #define PR_CORE_TRACE(...) ::Presto::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define PR_CORE_TRACE(...) ::Presto::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define PR_CORE_INFO(...) ::Presto::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define PR_CORE_WARN(...) ::Presto::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define PR_CORE_ERROR(...) ::Presto::Log::GetCoreLogger()->error(__VA_ARGS__)

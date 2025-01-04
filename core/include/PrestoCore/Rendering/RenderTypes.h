@@ -2,7 +2,6 @@
 
 #include <vulkan/vulkan_core.h>
 #include <map>
-#include "PrestoCore/Components/Renderable.h"
 
 namespace Presto {
     struct ShaderMatrices {
@@ -19,9 +18,4 @@ namespace Presto {
         size_t index_count = 0;
         uint32_t index_offset = 0;
     };
-
-    using draw_info_key = Renderable*;
-
-    template <typename T>
-    using DrawInfoMap = std::map<draw_info_key, T>;
 }  // namespace Presto

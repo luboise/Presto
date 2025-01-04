@@ -13,7 +13,7 @@ namespace Presto {
         explicit GLFWAppWindow(const WindowProperties& props);
         ~GLFWAppWindow() override;
 
-        void RenderFrame() override;
+        // void RenderFrame() override;
 
         [[nodiscard]] inline unsigned GetWidth() const override {
             return w_data.width;
