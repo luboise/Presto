@@ -1,8 +1,9 @@
-#include "PrestoCore/GLFWAppWindow.h"
-
-#include "PrestoCore/Rendering/OpenGLRenderer.h"
 #include "PrestoCore/Rendering/RendererFactory.h"
+#include "Rendering/OpenGL/OpenGLRenderer.h"
 
+// DO NOT MOVE! Need to import gl.h before glew.h
+
+#include "PrestoCore/GLFWAppWindow.h"
 using Presto::Renderer;
 
 Renderer* Presto::CreateRenderer(RENDER_LIBRARY lib, GLFWAppWindow* window) {
