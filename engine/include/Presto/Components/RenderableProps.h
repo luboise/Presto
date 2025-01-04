@@ -18,17 +18,16 @@ namespace Presto {
         void setRotation(vec3 yawPitchRoll);
         void setScale(vec3 scale);
 
-        vec3 getModelView() const;
-
-        vec3 getScale() const;
-        vec3 getTranslation() const;
+        [[nodiscard]] vec3 getModelView() const;
+        [[nodiscard]] vec3 getScale() const;
+        [[nodiscard]] vec3 getTranslation() const;
 
         // Returns vec3(yaw,pitch,roll)
-        vec3 getRotation() const;
+        [[nodiscard]] vec3 getRotation() const;
 
-        vec3 getYaw() const;
-        vec3 getPitch() const;
-        vec3 getRoll() const;
+        [[nodiscard]] vec3 getYaw() const;
+        [[nodiscard]] vec3 getPitch() const;
+        [[nodiscard]] vec3 getRoll() const;
 
        private:
         RenderableProps();

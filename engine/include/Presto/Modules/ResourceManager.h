@@ -1,4 +1,4 @@
-#include "PrestoCore/Module.h"
+#include "Presto/Modules/Module.h"
 
 #include <nlohmann/json.hpp>
 
@@ -20,11 +20,5 @@ namespace Presto {
         ResourceManager(ResourceManager&&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
         ResourceManager& operator=(ResourceManager&&) = delete;
-
-        static Mesh* LoadMesh(const std::string&);
-
-        static std::string ReadFile(const std::string& filename);
-
-        static json GetJSON(const std::string& text);
     };
 }  // namespace Presto

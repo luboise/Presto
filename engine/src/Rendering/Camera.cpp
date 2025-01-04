@@ -1,4 +1,4 @@
-#include "PrestoCore/Rendering/Camera.h"
+#include "Presto/Rendering/Camera.h"
 
 namespace Presto {
     Camera::Camera() { this->recalculate(); }

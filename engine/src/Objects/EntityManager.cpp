@@ -1,4 +1,4 @@
-#include "PrestoCore/Objects/EntityManager.h"
+#include "Presto/Objects/EntityManager.h"
 #include "PrestoCore/Events/ObjectEvents.h"
 
 namespace Presto {
@@ -15,7 +15,7 @@ namespace Presto {
                        "Attempted to create entity using existing id: {}",
                        new_id);
 
-        auto new_entity = new Entity(new_id);
+        auto *new_entity{new Entity(new_id)};
         _entities.push_back(new_entity);
 
         _entityMap.emplace(new_id, new_entity);
@@ -41,7 +41,7 @@ namespace Presto {
         delete entity;
 
         // Send event
-        ObjectDestroyedEvent(static_cast<void*>(entity));
+        ObjectDestroyedEvent(static_cast<void *>(entity));
     }
     entity_id_t EntityManager::reserveId() { return _currentId++; }
 }  // namespace Presto

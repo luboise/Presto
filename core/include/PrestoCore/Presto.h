@@ -2,6 +2,7 @@
 
 // For use by Presto apps
 #include "Core.h"
+#include "Utils/File.h"
 
 // #include "PrestoCore/Application.h"  // IWYU pragma: export
 

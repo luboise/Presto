@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Core.h"
+#include "Presto/Rendering/Camera.h"
+#include "PrestoCore/Core.h"
 #include "PrestoCore/Events/ApplicationEvents.h"
 // #include "PrestoCore/Window.h"
 
-#include "PrestoCore/Objects/System.h"
-#include "Rendering/Camera.h"
+#include "Presto/Objects/System.h"
 
 namespace Presto {
     class Window;

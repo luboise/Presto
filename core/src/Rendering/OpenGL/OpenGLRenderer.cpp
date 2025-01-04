@@ -1,5 +1,7 @@
-#include "Rendering/OpenGL/OpenGLRenderer.h"
+#include "OpenGLRenderer.h"
+#include "OpenGLDrawManager/OpenGLDrawManager.h"
 
+#include "PrestoCore/Rendering/RenderTypes.h"
 #include "PrestoCore/Rendering/Renderer.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
@@ -10,7 +12,7 @@
 
 #include <stdexcept>
 
-#include "GLFWAppWindow.h"
+#include "PrestoCore/GLFWAppWindow.h"
 
 namespace Presto {
     using PointType = float;
@@ -39,16 +41,16 @@ namespace Presto {
     }
 
     render_data_id_t OpenGLRenderer::registerMesh(const RenderData& data) {
-        auto copy = data;
-        return drawManager_.createDrawInfo(std::move(copy));
+        RenderData copy{data};
+        return drawManager_->createDrawInfo(std::move(copy));
     }
 
     render_data_id_t OpenGLRenderer::registerMesh(RenderData&& data) {
-        return drawManager_.createDrawInfo(std::move(data));
+        return drawManager_->createDrawInfo(std::move(data));
     }
 
     void OpenGLRenderer::render(render_data_id_t id, glm::vec4 transform) {
-        auto* ptr = drawManager_.getDrawInfo(id);
+        auto* ptr = drawManager_->getDrawInfo(id);
 
         if (ptr == nullptr) {
             PR_CORE_ERROR(
@@ -77,7 +79,7 @@ namespace Presto {
         glm::mat4 model(1.0);
         constexpr glm::float32 FOV_Y = 90;
 
-        mats.view = _renderCamera->getViewMatrix() * model;
+        mats.view = renderViewMatrix_ * model;
 
         mats.projection = RenderingUtils::getProjectionMatrix(
             FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());

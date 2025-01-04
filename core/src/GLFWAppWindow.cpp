@@ -4,7 +4,7 @@
 #include "PrestoCore/Events/KeyEvents.h"
 #include "PrestoCore/Events/MouseEvents.h"
 
-#include "GLFWAppWindow.h"
+#include "PrestoCore/GLFWAppWindow.h"
 
 #include "PrestoCore/Rendering/Renderer.h"
 
@@ -161,13 +161,7 @@ namespace Presto {
             });
     }
 
-    // TODO: Move this into the engine
-    /*
-void GLFWAppWindow::RenderFrame() {
-    glfwPollEvents();
-    RenderingManager::Get().Update();
-}
-    */
+    void GLFWAppWindow::Update() { glfwPollEvents(); }
 
     void GLFWAppWindow::SetVSync(bool vsync) {
         if (vsync) {

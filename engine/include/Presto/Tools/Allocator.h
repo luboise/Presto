@@ -12,7 +12,7 @@ namespace Presto {
 
        public:
         Allocator(/**bool nestedID = false**/)
-            : _currentId(0) /**, _useNestedID(nestedID)**/ {}
+            : /**, _useNestedID(nestedID)**/ {}
 
         /**
 T* Acquire(AcquireArgs... args) {
@@ -81,6 +81,6 @@ T* Acquire(AcquireArgs... args) {
 
         std::map<id_t, ValueType> _entries;
         // InstantiationFunction _instantiator;
-        id_t _currentId;
+        id_t _currentId{};
     };
 }  // namespace Presto

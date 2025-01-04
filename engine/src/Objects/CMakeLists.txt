@@ -1,1 +1,1 @@
-target_sources(PrestoCore PRIVATE EntityManager.cpp Entity.cpp)
+target_sources(PrestoEngine PRIVATE EntityManager.cpp Entity.cpp)

@@ -1,7 +1,5 @@
 #include "OpenGLDrawManager.h"
 
-#include "PrestoCore/Modules/ResourceManager.h"
-
 #include "PrestoCore/Core.h"
 #include "Rendering/OpenGL/utils.h"
 
@@ -77,7 +75,7 @@ if (renderableMap_.contains(data)) {
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 
-        auto vertex_code = ResourceManager::ReadFile("Shaders/Core/vert.glsl");
+        auto vertex_code = Utils::File::ReadFile("Shaders/Core/vert.glsl");
 
         const char* sourceCStr = vertex_code.c_str();
 
@@ -90,8 +88,7 @@ if (renderableMap_.contains(data)) {
 
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-        auto fragment_code =
-            ResourceManager::ReadFile("Shaders/Core/frag.glsl");
+        auto fragment_code = Utils::File::ReadFile("Shaders/Core/frag.glsl");
         const char* sourceCStr2 = fragment_code.c_str();
 
         glShaderSource(fs, 1, &sourceCStr2, nullptr);

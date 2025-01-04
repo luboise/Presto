@@ -1,11 +1,9 @@
 #pragma once
 
-#include "PrestoCore/Module.h"
-#include "PrestoCore/Objects/Entity.h"
+#include "Entity.h"
+#include "Presto/Modules/Module.h"
 
 namespace Presto {
-    using entity_t = Entity *;
-
     class PRESTO_API EntityManager : public Module<EntityManager> {
        public:
         static entity_t newEntity();

@@ -1,14 +1,11 @@
-#include "PrestoCore/Objects/Entity.h"
+#include "Presto/Objects/Entity.h"
 
 #include "PrestoCore/Events/ObjectEvents.h"
 
 namespace Presto {
-    Entity::Entity(entity_id_t id) {
-        this->_id = id;
-        ObjectCreatedEvent(this);
-    }
+    Entity::Entity(entity_id_t id) : _id(id) { ObjectCreatedEvent(this); }
 
-    Entity::~Entity() {}
+    Entity::~Entity() = default;
 
     ComponentMap Entity::getComponents() { return _components; }
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <list>
-#include "PrestoCore/Components/Renderable.h"
+#include "Presto/Components/Renderable.h"
 
 namespace Presto {
-    typedef std::list<Renderable*> LayerList;
+    using LayerList = std::list<Renderable*>;
 
     class PRESTO_API RenderLayer {
        public:

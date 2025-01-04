@@ -1,15 +1,14 @@
-#include "PrestoCore/Rendering/RenderingManager.h"
-#include <stdexcept>
+#include "Presto/Rendering/RenderingManager.h"
 
-#include "PrestoCore/Components/Renderable.h"
-#include "PrestoCore/Components/RenderableProps.h"
-#include "PrestoCore/Rendering/Mesh.h"
+#include "Presto/Components/Renderable.h"
+#include "Presto/Components/RenderableProps.h"
+#include "PrestoCore/Rendering/OpenGLRenderer.h"
 #include "PrestoCore/Rendering/Renderer.h"
-#include "PrestoCore/Rendering/Vertex.h"
 
-#include "PrestoCore/Rendering/Types/RenderLayer.h"
-#include "Rendering/OpenGL/OpenGLRenderer.h"
-#include "Rendering/Vulkan/VulkanRenderer.h"
+#include "Presto/Rendering/Types/RenderLayer.h"
+// #include "Rendering/Vulkan/VulkanRenderer.h"
+
+#include <stdexcept>
 
 #include "GLFWAppWindow.h"
 
@@ -20,16 +19,8 @@ namespace Presto {
 
     RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                        GLFWAppWindow* window) {
-        switch (library) {
-            case OPENGL:
-                _renderer = new OpenGLRenderer(window);
-                break;
-            case VULKAN:
-                _renderer = new VulkanRenderer(window);
-                break;
-            default:
-                throw std::runtime_error("Invalid render library specified.");
-        }
+        auto* new_renderer = Presto::CreateRenderer(library, window);
+        _renderer = new_renderer;
 
         // Add default layer
         this->AddLayer();
@@ -43,15 +34,16 @@ namespace Presto {
                        "Unable to initialise the RenderingManager with a null "
                        "Window handle.");
 
-        RenderingManager* mgr = new RenderingManager(RenderingManager::_library,
-                                                     RenderingManager::_window);
+        RenderingManager* mgr{new RenderingManager(RenderingManager::_library,
+                                                   RenderingManager::_window)};
         _instance = mgr;
     }
 
     void RenderingManager::Update() {
         for (auto& layer : _renderLayers) {
             for (const auto& ptr_renderable : layer._renderables) {
-                _renderer->render(ptr_renderable);
+                _renderer->render(ptr_renderable,
+                                  currentCamera_->getViewMatrix());
             }
         }
         _renderer->nextFrame();
@@ -81,8 +73,9 @@ namespace Presto {
 
     void RenderingManager::AddRenderable(layer_id_t layer_index,
                                          Renderable* ptr_renderable) {
-        if (_renderables.isAllocated(ptr_renderable))
+        if (_renderables.isAllocated(ptr_renderable)) {
             RenderingManager::RemoveRenderable(ptr_renderable);
+        }
 
         RenderLayer& layer = getLayer(layer_index);
         _renderer->addToRenderPool(ptr_renderable);
@@ -108,14 +101,14 @@ namespace Presto {
 
     Mesh* RenderingManager::NewMesh(const VertexList& vertices,
                                     const IndexList& indices) {
-        auto* mesh = new Mesh(_meshes.getNextId(), vertices, indices);
+        auto* mesh{new Mesh(_meshes.getNextId(), vertices, indices)};
         _meshes.add(mesh);
 
         return mesh;
     }
 
     RenderableProps* RenderingManager::NewRenderableProps() {
-        auto* props = new RenderableProps();
+        auto* props{new RenderableProps()};
         _renderProps.add(props);
 
         return props;
@@ -123,7 +116,7 @@ namespace Presto {
 
     Renderable* RenderingManager::NewRenderable(
         PrestoRenderableConstructorArgs) {
-        auto renderable = new Renderable(mesh, props);
+        auto* renderable{new Renderable(mesh, props)};
         // _renderables[];
         return renderable;
     }

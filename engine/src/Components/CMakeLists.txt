@@ -1,1 +1,1 @@
-target_sources(PrestoCore PRIVATE RenderableProps.cpp)
+target_sources(PrestoEngine PRIVATE RenderableProps.cpp Renderable/Mesh.cpp)

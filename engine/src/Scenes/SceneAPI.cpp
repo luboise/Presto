@@ -1,14 +1,12 @@
-#include "PrestoCore/Scenes.h"
-
-#include "Scenes/SceneManager.h"
-
-#include "PrestoCore/Modules/ResourceManager.h"
+#include "Presto/Scenes/Scenes.h"
+#include "SceneManager.h"
 
 namespace Presto {
 
+    using namespace Presto::Utils;
+
     std::string Scenes::Load(const std::string& filepath) {
-        json json_data =
-            ResourceManager::GetJSON(ResourceManager::ReadFile(filepath));
+        json json_data = File::GetJSON(File::ReadFile(filepath));
 
         auto id = SceneManager::LoadScene(json_data);
         if (id == Scene::INVALID) {

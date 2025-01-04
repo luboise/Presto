@@ -1,11 +1,10 @@
 #pragma once
 
-#include "PrestoCore/Module.h"
+#include "Presto/Modules/Module.h"
+#include "Presto/Rendering/Camera.h"
 #include "PrestoCore/Rendering/Renderer.h"
 
-#include "PrestoCore/Rendering/Types/RenderLayer.h"
-
-#include "PrestoCore/Tools/Allocator.h"
+#include "Presto/Tools/Allocator.h"
 
 class RenderableProps;
 
@@ -34,15 +33,17 @@ namespace Presto {
             RenderingManager::_window = window;
         }
 
-        static void setCamera(Camera& newCam) {
+        void setCamera(Camera& newCam) {
             PR_CORE_ASSERT(RenderingManager::IsInitialised(),
                            "Unable to set camera when the RenderingManager is "
                            "uninitialised.")
-            RenderingManager::Get()._renderer->setCamera(newCam);
+            currentCamera_ = &newCam;
         }
 
         layer_id_t AddLayer(size_t pos = -1);
         void RemoveLayer(layer_id_t id);
+
+        void renderFrame();
 
         void AddRenderable(layer_id_t layer_index, Renderable*);
 
@@ -60,8 +61,12 @@ namespace Presto {
         RenderingManager& operator=(RenderingManager&&) = delete;
 
        private:
+        // Static vars
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
+
+        // Member vars
+        Camera* currentCamera_ = nullptr;
 
         explicit RenderingManager(RENDER_LIBRARY library,
                                   GLFWAppWindow* window);

@@ -7,7 +7,7 @@ namespace Presto {
        public:
         Camera();
 
-        glm::mat4 getViewMatrix() const;
+        [[nodiscard]] glm::mat4 getViewMatrix() const;
 
         void setYaw(double newYaw);
         void setPitch(double newPitch);
@@ -15,11 +15,11 @@ namespace Presto {
         void setPos(glm::vec3 newPos);
         void setFocus(glm::vec3 newPos);
 
-        double getYaw() const;
-        double getPitch() const;
-        double getRoll() const;
-        glm::vec3 getPos() const;
-        glm::vec3 getFocus() const;
+        [[nodiscard]] double getYaw() const;
+        [[nodiscard]] double getPitch() const;
+        [[nodiscard]] double getRoll() const;
+        [[nodiscard]] glm::vec3 getPos() const;
+        [[nodiscard]] glm::vec3 getFocus() const;
 
        private:
         glm::vec3 _cameraPos = glm::vec3(0, 0, 0.75);
@@ -30,6 +30,6 @@ namespace Presto {
 
         void recalculate();
 
-        glm::highp_mat4 _viewMatrix;
+        glm::highp_mat4 _viewMatrix{1};
     };
 }  // namespace Presto

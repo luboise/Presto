@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Camera.h"
+#include "PrestoCore/Core/Constants.h"
 #include "RenderData.h"
-#include "RenderTypes.h"
+#include "RenderTypes.h"  // IWYU pragma: export
 
 namespace Presto {
     class GLFWAppWindow;
@@ -24,7 +24,13 @@ namespace Presto {
         virtual void render(render_data_id_t id, glm::vec4 transform) = 0;
         virtual void nextFrame() = 0;
 
-        void setCamera(Camera& newCam) { _renderCamera = &newCam; }
+        void setViewMatrix(const glm::mat4& newViewMatrix) {
+            renderViewMatrix_ = newViewMatrix;
+        }
+
+        void setViewMatrix(glm::mat4&& newViewMatrix) {
+            renderViewMatrix_ = newViewMatrix;
+        }
 
         void framebufferResized() { this->_framebufferResized = true; }
         virtual void onFrameBufferResized() {}
@@ -33,8 +39,7 @@ namespace Presto {
 
        protected:
         GLFWAppWindow* _glfwWindow = nullptr;
-
+        glm::mat4 renderViewMatrix_{};
         bool _framebufferResized = false;
-        Camera* _renderCamera = nullptr;
     };
 }  // namespace Presto

@@ -1,9 +1,9 @@
 
-#include "PrestoCore/Application.h"
+#include "Presto/Application.h"
 
 #include "GLFW/glfw3.h"
-#include "GLFWAppWindow.h"
-#include "PrestoCore/Rendering/RenderingManager.h"
+#include "Presto/Rendering/RenderingManager.h"
+#include "PrestoCore/GLFWAppWindow.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
@@ -23,7 +23,7 @@ namespace Presto {
 
         RenderingManager::Init();
 
-        RenderingManager::setCamera(_mainCamera);
+        RenderingManager::Get().setCamera(_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -48,7 +48,8 @@ namespace Presto {
             GameLoop();
             RunSystems();
 
-            _app_window->RenderFrame();
+            _app_window->Update();
+            RenderingManager::Get().Update();
         }
     }
 

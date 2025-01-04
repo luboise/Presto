@@ -2,8 +2,8 @@
 
 #include <GL/glew.h>
 
-#include "OpenGLDrawManager/OpenGLDrawManager.h"
 #include "PrestoCore/Rendering/Renderer.h"
+#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
 namespace Presto {
     class GLFWAppWindow;
@@ -14,6 +14,14 @@ namespace Presto {
     class PRESTO_API OpenGLRenderer final : public Renderer {
        public:
         explicit OpenGLRenderer(GLFWAppWindow* window);
+
+        // Deleted functions
+        OpenGLRenderer(const OpenGLRenderer&) = delete;
+        OpenGLRenderer(OpenGLRenderer&&) = delete;
+        OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
+        OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
+
+        // Destructor
         ~OpenGLRenderer() override;
 
         render_data_id_t registerMesh(const RenderData& data) override;
@@ -26,7 +34,7 @@ namespace Presto {
        private:
         void draw(const OpenGLDrawInfo&);
         void onFrameBufferResized() override {}
-        OpenGLDrawManager drawManager_;
+        OpenGLDrawManager* drawManager_;
     };
 
 }  // namespace Presto

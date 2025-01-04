@@ -1,20 +1,3 @@
-if(WIN32)
-  set(PLATFORM Windows)
-
-  add_compile_definitions(PR_PLATFORM_WINDOWS)
-  add_compile_definitions(NOMINMAX)
-
-  set(CMAKE_GENERATOR_PLATFORM
-      "x64"
-      CACHE STRING "Platform (x64)" FORCE)
-elseif(UNIX)
-  set(PLATFORM Unix)
-  add_compile_definitions(PR_PLATFORM_UNIX)
-else()
-  message(FATAL_ERROR "Platform not selected."
-                      "Expected Windows or Unix platform for compilation.")
-endif()
-
 add_library(PrestoCore STATIC)
 
 target_include_directories(PrestoCore
@@ -25,7 +8,7 @@ target_include_directories(PrestoCore PUBLIC ../ext/spdlog/include
 target_include_directories(PrestoCore PRIVATE ${OPENGL_INCLUDE_DIR}
                                               ${GLEW_INCLUDE_DIRS})
 
-target_link_libraries(PrestoCore PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(PrestoCore PUBLIC nlohmann_json::nlohmann_json)
 
 add_subdirectory(src)
 
