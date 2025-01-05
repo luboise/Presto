@@ -11,8 +11,11 @@ namespace Presto {
        public:
         static void Init();
 
-        static scene_id_t LoadScene(const json& j);
-        static void SwitchScene(const scene_id_t&);
+        static Scene* LoadScene(const json& j);
+        static void SwitchScene(scene_id_t&);
+        static void SwitchScene(Scene&);
+
+        static Scene* GetScene(scene_id_t);
 
         SceneManager(const SceneManager&) = delete;
         SceneManager(SceneManager&&) = delete;

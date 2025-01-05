@@ -7,9 +7,8 @@ namespace Presto {
 
     void SceneManager::Init() {};
 
-    scene_id_t SceneManager::LoadScene(const json& j) {
+    Scene* SceneManager::LoadScene(const json& j) {
         if (!j.contains("name") || !j.contains("objects")) {
-            return "";
             return Scene::INVALID;
         }
 
@@ -25,5 +24,24 @@ namespace Presto {
         return Scene::INVALID;
     };
 
-    void SceneManager::SwitchScene(const scene_id_t& scene) { return; }
+    void SceneManager::SwitchScene(scene_id_t& id) {
+        Scene* scene_ptr = GetScene(id);
+        if (scene_ptr != nullptr) {
+            SwitchScene(*scene_ptr);
+        }
+    }
+
+    // TODO: Make this actually switch out the scene
+    void SceneManager::SwitchScene(Scene& scene) { _currentScene = &scene; }
+
+    Scene* SceneManager::GetScene(scene_id_t id) {
+        auto scene_iterator = _sceneMap.find(id);
+
+        if (scene_iterator == _sceneMap.end()) {
+            PR_CORE_WARN("Unable to get scene: {}", id);
+            return nullptr;
+        }
+
+        return scene_iterator->second;
+    };
 }  // namespace Presto

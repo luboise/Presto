@@ -11,8 +11,8 @@ namespace Presto {
         using ValueType = T*;
 
        public:
-        Allocator(/**bool nestedID = false**/)
-            : /**, _useNestedID(nestedID)**/ {}
+        Allocator(/**bool nestedID = false**/) = default;
+        // : /**, _useNestedID(nestedID)**/
 
         /**
 T* Acquire(AcquireArgs... args) {

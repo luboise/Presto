@@ -14,25 +14,25 @@ namespace Presto {
 
     using mesh_id_t = id_t;
     class PRESTO_API Mesh : public Renderable {
-        friend class RenderingManager;
+        // friend class RenderingManager;
 
        public:
+        Mesh(VertexList, IndexList);
+
         // [[nodiscard]] mesh_id_t getID() const;
         void setVertices(const VertexList& new_vertices) {
-            _vertices = new_vertices;
+            vertices_ = new_vertices;
         };
 
         void setVertices(VertexList&& new_vertices) {
-            _vertices = new_vertices;
+            vertices_ = new_vertices;
         };
 
        private:
-        // Mesh(PrestoMeshConstructorArgs);
-
         [[nodiscard]] RenderData getRenderData() const override;
 
         // mesh_id_t _meshID;
-        VertexList _vertices;
-        IndexList _indices;
+        VertexList vertices_;
+        IndexList indices_;
     };
 }  // namespace Presto

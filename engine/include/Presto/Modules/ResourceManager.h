@@ -1,5 +1,6 @@
 #include "Presto/Modules/Module.h"
 
+#include <filesystem>
 #include <nlohmann/json.hpp>
 
 using nlohmann::json;
@@ -13,9 +14,11 @@ namespace Presto {
        public:
         static void Init();
 
+        static MeshResource LoadMesh(fs::path);
+
+        // Deleted functions
         ResourceManager() = delete;
         virtual ~ResourceManager() = delete;
-
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager(ResourceManager&&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;

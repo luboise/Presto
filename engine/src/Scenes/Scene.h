@@ -5,7 +5,7 @@ namespace Presto {
 
     class Scene {
        public:
-        static constexpr scene_id_t INVALID = "INVALID_SCENE";
+        static constexpr Scene* INVALID = nullptr;
 
         inline void addEntity(entity_t entity) { _entities.push_back(entity); };
 

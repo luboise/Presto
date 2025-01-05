@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Components/Renderable.h"
+#include "Presto/Components/Renderable/Mesh.h"
 #include "Presto/Modules/Module.h"
 #include "Presto/Rendering/Camera.h"
 #include "PrestoCore/Rendering/Renderer.h"
