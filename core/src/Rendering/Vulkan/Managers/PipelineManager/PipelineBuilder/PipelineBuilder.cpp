@@ -9,7 +9,7 @@
 #include "PrestoCore/Core.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     Pipeline* PipelineBuilder::createPipeline() {
         /**
@@ -190,4 +190,4 @@ namespace Presto {
           _pipelineList(&pipeline_list) {
         this->reset();
     }
-}  // namespace Presto
+}  // namespace PrestoCore

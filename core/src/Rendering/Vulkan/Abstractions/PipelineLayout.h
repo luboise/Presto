@@ -7,7 +7,7 @@
 
 using std::vector;
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
 
     class PipelineLayout : public Abstraction<VkPipelineLayout> {
@@ -25,4 +25,4 @@ namespace Presto {
         VulkanDevice* _device = nullptr;
         SetLayoutList _descriptorSetLayouts;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

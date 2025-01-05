@@ -11,7 +11,7 @@
 
 #include "RenderContext/RenderContext.h"
 
-namespace Presto {
+namespace PrestoCore {
     class DescriptorPool;
     class Swapchain;
     class CommandBuffer;
@@ -108,4 +108,4 @@ void nextFrame();
         // Global descriptor set and model descriptor set for each frame in
         // flight
     };
-}  // namespace Presto
+}  // namespace PrestoCore

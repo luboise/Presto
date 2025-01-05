@@ -5,13 +5,13 @@
 #include "PrestoCore/Rendering/Renderer.h"
 #include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
-namespace Presto {
+namespace PrestoCore {
     class GLFWAppWindow;
     /*
        The renderer.
        */
 
-    class PRESTO_API OpenGLRenderer final : public Renderer {
+    class OpenGLRenderer final : public Renderer {
        public:
         explicit OpenGLRenderer(GLFWAppWindow* window);
 
@@ -37,4 +37,4 @@ namespace Presto {
         OpenGLDrawManager* drawManager_;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

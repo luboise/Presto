@@ -2,10 +2,9 @@
 
 #include <GL/glew.h>
 #include <map>
-#include "PrestoCore/Core/Constants.h"
 #include "PrestoCore/Rendering/RenderData.h"
 
-namespace Presto {
+namespace PrestoCore {
     struct OpenGLDrawInfo {
         GLuint vertex_buf;
         GLsizei vert_count;
@@ -36,4 +35,4 @@ namespace Presto {
 
         GLuint createShaderProgram(const char*);
     };
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -8,7 +8,7 @@
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanUtils.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     DescriptorGroup::DescriptorGroup(
         DescriptorPool& pool, BufferManager& buffer_manager,
@@ -78,4 +78,4 @@ namespace Presto {
         return _frameSets[index];
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -1,7 +1,7 @@
 #pragma once
 
-namespace Presto {
-    struct PRESTO_API RenderData {
+namespace PrestoCore {
+    struct RenderData {
         VertexList vertices;
         IndexList indices;
 
@@ -9,4 +9,4 @@ namespace Presto {
             return this->vertices.size();
         };
     };
-}  // namespace Presto
+}  // namespace PrestoCore

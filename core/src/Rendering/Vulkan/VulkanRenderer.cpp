@@ -21,7 +21,7 @@
 #include "VulkanUtils/VulkanUtils.h"
 #include "VulkanUtils/VulkanVertex.h"
 
-namespace Presto {
+namespace PrestoCore {
     using namespace VulkanUtils;
 
     void VulkanRenderer::addToRenderPool(draw_info_key renderable) {
@@ -230,4 +230,4 @@ namespace Presto {
         return surface;
     }
 
-}  // namespace Presto
+}  // namespace PrestoCore

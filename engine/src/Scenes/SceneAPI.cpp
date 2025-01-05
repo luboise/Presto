@@ -5,7 +5,7 @@
 
 namespace Presto {
 
-    using namespace Presto::Utils;
+    using namespace PrestoCore::Utils;
 
     Scene* Scenes::Load(const scene_id_t& filepath) {
         json json_data = File::GetJSON(File::ReadFile(filepath));

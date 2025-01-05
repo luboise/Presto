@@ -2,6 +2,8 @@
 
 #include "PrestoCore/Events/ObjectEvents.h"
 
+using PrestoCore::ObjectCreatedEvent;
+
 namespace Presto {
     Entity::Entity(entity_id_t id) : _id(id) { ObjectCreatedEvent(this); }
 

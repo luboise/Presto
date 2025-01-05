@@ -14,7 +14,7 @@
 
 #include "PrestoCore/GLFWAppWindow.h"
 
-namespace Presto {
+namespace PrestoCore {
     using PointType = float;
 
     OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
@@ -101,4 +101,4 @@ namespace Presto {
     }
 
     OpenGLRenderer::~OpenGLRenderer() = default;
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -3,7 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include <map>
 
-namespace Presto {
+namespace PrestoCore {
     struct ShaderMatrices {
         glm::mat4 view;
         glm::mat4 projection;
@@ -18,4 +18,4 @@ namespace Presto {
         size_t index_count = 0;
         uint32_t index_offset = 0;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

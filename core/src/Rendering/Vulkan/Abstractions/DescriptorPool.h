@@ -5,7 +5,7 @@
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
 #include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
     class DescriptorGroup;
 
@@ -27,4 +27,4 @@ namespace Presto {
         const VulkanDevice& _device;
         std::vector<VkDescriptorSet> _allocations;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

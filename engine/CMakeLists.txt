@@ -2,9 +2,11 @@ add_library(PrestoEngine STATIC)
 
 target_include_directories(PrestoEngine
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 target_include_directories(PrestoEngine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(PrestoEngine PRIVATE PrestoCore)
+target_link_libraries(PrestoEngine PUBLIC glm::glm)
 
 # target_link_libraries(PrestoEngine PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
@@ -16,7 +18,7 @@ endif()
 
 target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
 
-target_precompile_headers(PrestoEngine PUBLIC
+target_precompile_headers(PrestoEngine PRIVATE
                           ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
 
 add_subdirectory(src)

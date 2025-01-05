@@ -8,7 +8,7 @@
 
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 
-namespace Presto {
+namespace PrestoCore {
     class CommandPool;
     class RenderPass;
 
@@ -44,4 +44,4 @@ namespace Presto {
 
         bool _recording = false;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

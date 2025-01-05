@@ -8,7 +8,7 @@
 
 #include "PrestoCore/Rendering/Renderer.h"
 
-namespace Presto {
+namespace PrestoCore {
     bool GLFWAppWindow::s_GLFWInitialised = false;
 
     Window* Window::Create(const WindowProperties& props) {
@@ -174,4 +174,4 @@ namespace Presto {
 
     bool GLFWAppWindow::IsVSyncEnabled() { return w_data.VSync; }
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -3,7 +3,7 @@
 
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     DescriptorPool::DescriptorPool(const VulkanDevice& device)
         : Abstraction(), _device(device) {
@@ -71,4 +71,4 @@ poolSizes[1].descriptorCount =
 
         return allocated;
     }
-}  // namespace Presto
+}  // namespace PrestoCore

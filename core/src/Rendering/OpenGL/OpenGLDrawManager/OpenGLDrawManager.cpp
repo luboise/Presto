@@ -3,7 +3,7 @@
 #include "PrestoCore/Core.h"
 #include "Rendering/OpenGL/utils.h"
 
-namespace Presto {
+namespace PrestoCore {
     OpenGLDrawInfo* OpenGLDrawManager::getDrawInfo(draw_key key) {
         auto x = drawInfoMap_.find(key);
         if (x == drawInfoMap_.end()) {
@@ -121,4 +121,4 @@ if (renderableMap_.contains(data)) {
         return new_draw_key;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

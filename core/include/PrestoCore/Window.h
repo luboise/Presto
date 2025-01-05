@@ -10,7 +10,7 @@
 constexpr auto DEFAULT_WIDTH = 1280;
 constexpr auto DEFAULT_HEIGHT = 720;
 
-namespace Presto {
+namespace PrestoCore {
     struct WindowProperties {
         std::string title;
         unsigned width;
@@ -27,7 +27,7 @@ namespace Presto {
     };
 
     // Abstracted window interface to be implemented per platform
-    class PRESTO_API Window {
+    class Window {
         friend class Application;
 
        public:
@@ -57,4 +57,4 @@ namespace Presto {
         void* _windowPtr;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -3,7 +3,7 @@
 #include "PrestoCore/Rendering/RenderTypes.h"
 #include "Rendering/Vulkan/Abstractions/Buffer.h"
 
-namespace Presto {
+namespace PrestoCore {
     class Pipeline;
 
     struct VulkanDrawInfo : public DrawInfo {
@@ -19,4 +19,4 @@ namespace Presto {
     };
 
     using SetLayoutList = std::vector<VkDescriptorSetLayout>;
-}  // namespace Presto
+}  // namespace PrestoCore

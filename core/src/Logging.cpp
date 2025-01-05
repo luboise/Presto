@@ -3,7 +3,7 @@
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-namespace Presto {
+namespace PrestoCore {
     std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
     std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
 
@@ -16,4 +16,4 @@ namespace Presto {
         s_ClientLogger->set_level(spdlog::level::trace);
     }
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -7,7 +7,7 @@
 #include <set>
 #include "GLFW/glfw3.h"
 
-namespace Presto {
+namespace PrestoCore {
     std::vector<const char*> VulkanUtils::getRequiredExtensions() {
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions =
@@ -257,6 +257,6 @@ namespace Presto {
 
         // Error value
         return -1;
-    }  // namespace Presto
+    }  // namespace PrestoCore
 
-}  // namespace Presto
+}  // namespace PrestoCore

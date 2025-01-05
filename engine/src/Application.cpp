@@ -1,13 +1,17 @@
 
 #include "Presto/Application.h"
+#include "Presto/Rendering/Camera.h"
+#include "PrestoCore/Events/ApplicationEvents.h"
 
 #include "GLFW/glfw3.h"
+
 #include "Presto/Rendering/RenderingManager.h"
 #include "PrestoCore/GLFWAppWindow.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace Presto {
+
     Application::Application() {
         // TODO: Fix this to be injected
 
@@ -23,7 +27,9 @@ namespace Presto {
 
         RenderingManager::Init();
 
-        RenderingManager::Get().setCamera(_mainCamera);
+        // TODO: Make this use an actual component
+        _mainCamera = new Camera();
+        RenderingManager::Get().setCamera(*_mainCamera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -53,7 +59,7 @@ namespace Presto {
         }
     }
 
-    Camera& Application::GetMainCamera() { return _mainCamera; }
+    Camera& Application::GetMainCamera() { return *_mainCamera; }
 
     void Application::OnEvent(Event& e) {
         EventDispatcher dispatcher(e);

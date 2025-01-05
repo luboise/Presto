@@ -2,8 +2,8 @@
 
 #include "PrestoCore/Event.h"
 
-namespace Presto {
-    class PRESTO_API MouseMovedEvent : public Event {
+namespace PrestoCore {
+    class MouseMovedEvent : public Event {
        public:
         MouseMovedEvent(float x, float y) {
             this->mouseX = x;
@@ -28,7 +28,7 @@ namespace Presto {
         float mouseY;
     };
 
-    class PRESTO_API MouseScrolledEvent : public Event {
+    class MouseScrolledEvent : public Event {
        public:
         MouseScrolledEvent(float xOffset, float yOffset) {
             this->scrollXOffset = xOffset;
@@ -53,7 +53,7 @@ namespace Presto {
         float scrollYOffset;
     };
 
-    class PRESTO_API MouseButtonEvent : public Event {
+    class MouseButtonEvent : public Event {
        public:
         inline int GetMouseButton() const { return mouse_button; }
 
@@ -64,7 +64,7 @@ namespace Presto {
         int mouse_button;
     };
 
-    class PRESTO_API MouseButtonPressedEvent : public MouseButtonEvent {
+    class MouseButtonPressedEvent : public MouseButtonEvent {
        public:
         MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
@@ -77,7 +77,7 @@ namespace Presto {
         EVENT_CLASS_TYPE(MouseBtnPressed)
     };
 
-    class PRESTO_API MouseButtonReleasedEvent : public MouseButtonEvent {
+    class MouseButtonReleasedEvent : public MouseButtonEvent {
        public:
         MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
@@ -89,4 +89,4 @@ namespace Presto {
 
         EVENT_CLASS_TYPE(MouseBtnReleased)
     };
-}  // namespace Presto
+}  // namespace PrestoCore

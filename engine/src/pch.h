@@ -2,6 +2,10 @@
 
 #include <glm/glm.hpp>
 
+#include "Presto/Platform.h"
+
+#include "Presto/Constants.h"
+
 #include "Presto/Objects.h"
 #include "Presto/Scenes/Scene.h"  // IWYU pragma: export
 #include "Presto/Types.h"

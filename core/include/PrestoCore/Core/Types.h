@@ -3,7 +3,7 @@
 #include <vector>
 #include "PrestoCore/Math.h"
 
-namespace Presto {
+namespace PrestoCore {
     struct Vertex {
         glm::vec3 pos;
         glm::vec3 colour;
@@ -13,4 +13,4 @@ namespace Presto {
 
     using VertexList = std::vector<Vertex>;
     using IndexList = std::vector<Index>;
-}  // namespace Presto
+}  // namespace PrestoCore

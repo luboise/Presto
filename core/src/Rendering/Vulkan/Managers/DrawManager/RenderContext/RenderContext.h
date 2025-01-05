@@ -4,7 +4,7 @@
 
 #include "Rendering/Vulkan/Abstractions/RenderPass.h"
 
-namespace Presto {
+namespace PrestoCore {
     class Pipeline;
 
     class RenderContext {
@@ -31,4 +31,4 @@ namespace Presto {
         RenderPass* _renderPass;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

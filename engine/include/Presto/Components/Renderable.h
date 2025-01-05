@@ -2,11 +2,9 @@
 
 #include "Presto/Objects/Component.h"
 
-#include "PrestoCore/Rendering/RenderData.h"
 #include "RenderableProps.h"
 
 namespace Presto {
-
     /*
 #define PrestoRenderableConstructorArgs \
 const Mesh &mesh, const RenderableProps &props

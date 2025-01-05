@@ -7,8 +7,8 @@
 #define MAX_XINPUT_PORTS 4
 #define POLLING_RATE 250
 
-namespace Presto {
-    class PRESTO_API InputManager {
+namespace PrestoCore {
+    class InputManager {
        public:
         static void Init();
         static void SetPort(DWORD port);
@@ -25,4 +25,4 @@ namespace Presto {
         static void LogGamepad();
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -3,7 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include "Abstraction.h"
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
     class CommandPool;
 
@@ -69,4 +69,4 @@ namespace Presto {
         // Pointer to the mapping
         void* _memoryMapping = nullptr;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

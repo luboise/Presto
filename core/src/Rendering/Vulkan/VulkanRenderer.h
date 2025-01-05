@@ -14,13 +14,13 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Presto {
+namespace PrestoCore {
     class GLFWAppWindow;
     /*
        The renderer.
        */
 
-    class PRESTO_API VulkanRenderer final : public Renderer {
+    class VulkanRenderer final : public Renderer {
        public:
         explicit VulkanRenderer(GLFWAppWindow* window);
         ~VulkanRenderer() override;
@@ -76,4 +76,4 @@ namespace Presto {
                           VkMemoryPropertyFlags propFlags, VkBuffer& buffer,
                           VkDeviceMemory& bufferMemory);
     };
-}  // namespace Presto
+}  // namespace PrestoCore

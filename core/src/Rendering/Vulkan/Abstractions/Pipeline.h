@@ -6,7 +6,7 @@
 #include "PipelineLayout.h"
 #include "Rendering/Vulkan/Managers/DescriptorManager/DescriptorGroup/DescriptorGroup.h"
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
 
     class Pipeline : public Abstraction<VkPipeline> {
@@ -28,4 +28,4 @@ namespace Presto {
         PipelineLayout* _layout = VK_NULL_HANDLE;
         DescriptorGroup* _descriptorGroup;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

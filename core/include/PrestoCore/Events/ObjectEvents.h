@@ -2,8 +2,8 @@
 
 #include "PrestoCore/Event.h"
 
-namespace Presto {
-    class PRESTO_API ObjectEvent : public Event {
+namespace PrestoCore {
+    class ObjectEvent : public Event {
        public:
         inline void* getPtr() const { return this->_objectPtr; }
 
@@ -18,7 +18,7 @@ namespace Presto {
         void* _objectPtr;
     };
 
-    class PRESTO_API ObjectCreatedEvent : public ObjectEvent {
+    class ObjectCreatedEvent : public ObjectEvent {
        public:
         EVENT_CLASS_TYPE(ObjectCreated)
 
@@ -32,7 +32,7 @@ namespace Presto {
         }
     };
 
-    class PRESTO_API ObjectDestroyedEvent : public ObjectEvent {
+    class ObjectDestroyedEvent : public ObjectEvent {
        public:
         EVENT_CLASS_TYPE(ObjectDestroyed)
 
@@ -45,4 +45,4 @@ namespace Presto {
             return ss.str();
         }
     };
-}  // namespace Presto
+}  // namespace PrestoCore

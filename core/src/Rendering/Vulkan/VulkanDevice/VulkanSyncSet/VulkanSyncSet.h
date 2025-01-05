@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace PrestoCore {
     struct VulkanSyncSet {
        public:
         VkSemaphore image_is_available = nullptr;
@@ -15,4 +15,4 @@ namespace Presto {
        private:
         VkDevice _device;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

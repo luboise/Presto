@@ -1,14 +1,16 @@
 #pragma once
 
-#include "Presto/Rendering/Camera.h"
-#include "PrestoCore/Core.h"
-#include "PrestoCore/Events/ApplicationEvents.h"
+// #include "PrestoCore/Events/ApplicationEvents.h"
 // #include "PrestoCore/Window.h"
 
 #include "Presto/Objects/System.h"
 
+namespace PrestoCore {
+    class WindowCloseEvent;
+};
+
 namespace Presto {
-    class Window;
+    class Camera;
 
     class PRESTO_API Application {
        public:
@@ -36,7 +38,7 @@ namespace Presto {
         std::vector<System*> _systems;
 
        protected:
-        Camera _mainCamera;
+        Camera* _mainCamera;
         double _delta = 0;
         double _currentTime = 0;
     };

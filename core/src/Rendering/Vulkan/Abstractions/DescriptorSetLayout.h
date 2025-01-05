@@ -4,7 +4,7 @@
 
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
 
     using Binding = VkDescriptorSetLayoutBinding;
@@ -25,4 +25,4 @@ namespace Presto {
        private:
         const VulkanDevice& _device;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

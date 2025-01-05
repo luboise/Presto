@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Component.h"
-#include "PrestoCore/Core/Constants.h"
-#include "glm/fwd.hpp"
+// #include "PrestoCore/Core/Constants.h"
 
 #include <map>
 

@@ -12,7 +12,7 @@
 #include "Rendering/Vulkan/Abstractions/DescriptorPool.h"
 #include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
 
-namespace Presto {
+namespace PrestoCore {
     struct SwapchainSupportDetails {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkSurfaceFormatKHR> formats;
@@ -79,4 +79,4 @@ namespace Presto {
         static const VkDescriptorSetLayout allocateDescriptorSetLayout(
             const VulkanDevice&);
     };
-}  // namespace Presto
+}  // namespace PrestoCore

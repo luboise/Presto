@@ -1,9 +1,9 @@
 #pragma once
 
 #include <list>
-#include "Presto/Components/Renderable.h"
 
 namespace Presto {
+    class Renderable;
     using LayerList = std::list<Renderable*>;
 
     class PRESTO_API RenderLayer {

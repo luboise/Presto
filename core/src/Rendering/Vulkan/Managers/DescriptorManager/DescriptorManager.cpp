@@ -1,6 +1,6 @@
 #include "DescriptorManager.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     DescriptorSetLayout* DescriptorManager::createDescriptorSetLayout(
         const BindingList& bindings) {
@@ -22,4 +22,4 @@ namespace Presto {
     // Overload which creates a vector out of the single binding passed and
     // sends that to the regular function
 
-}  // namespace Presto
+}  // namespace PrestoCore

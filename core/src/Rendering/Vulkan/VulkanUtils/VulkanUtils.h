@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto::VulkanUtils {
+namespace PrestoCore::VulkanUtils {
 
     //////////////////////////////
     // Initialisation Functions //
@@ -70,4 +70,4 @@ namespace Presto::VulkanUtils {
         return std::move(out);
     }
 
-}  // namespace Presto::VulkanUtils
+}  // namespace PrestoCore::VulkanUtils

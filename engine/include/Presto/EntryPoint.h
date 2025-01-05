@@ -2,8 +2,7 @@
 
 // #ifdef PR_PLATFORM_WINDOWS
 
-#include <PrestoCore/Application.h>
-#include <PrestoCore/Log.h>
+#include "Application.h"  // IWYU pragma: export
 
 // Pulled from somewhere else
 extern Presto::Application* Presto::CreateApplication();

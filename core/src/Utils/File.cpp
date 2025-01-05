@@ -1,6 +1,6 @@
 #include "PrestoCore/Utils/File.h"
 
-namespace Presto::Utils {
+namespace PrestoCore::Utils {
     std::string File::ReadFile(const std::string& filename) {
         // ate <-> start at end of file
         auto filepath = executableDirectory / fs::path(filename);
@@ -28,4 +28,4 @@ namespace Presto::Utils {
         return {};
     }
 
-}  // namespace Presto::Utils
+}  // namespace PrestoCore::Utils

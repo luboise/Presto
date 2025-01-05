@@ -7,7 +7,7 @@
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanUtils.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     Buffer::Buffer(const VulkanDevice& device, const BUFFER_TYPE type,
                    const VkDeviceSize size, const bool create_mapping)
@@ -196,4 +196,4 @@ allocInfo.commandBufferCount = 1;
 
         command_pool.destroyCommandBuffer(temp_buffer);
     }
-}  // namespace Presto
+}  // namespace PrestoCore

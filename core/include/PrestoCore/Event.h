@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-namespace Presto {
+namespace PrestoCore {
     enum class EventType {
         None = 0,
         WindowClose,
@@ -59,16 +59,18 @@ namespace Presto {
 #define EVENT_CLASS_CATEGORY(category) \
     virtual int GetCategoryFlags() const override { return category; }
 
-    class PRESTO_API Event {
+    class Event {
         // EventDispatcher can view private members, needed to dispatch the
         // events
         friend class EventDispatcher;
 
        public:
-        virtual EventType GetEventType() const = 0;
-        virtual const char* GetName() const = 0;
-        virtual int GetCategoryFlags() const = 0;
-        virtual std::string ToString() const { return GetName(); };
+        [[nodiscard]] virtual EventType GetEventType() const = 0;
+        [[nodiscard]] virtual const char* GetName() const = 0;
+        [[nodiscard]] virtual int GetCategoryFlags() const = 0;
+        [[nodiscard]] virtual std::string ToString() const {
+            return GetName();
+        };
 
         inline bool IsInCategory(EventCategory category) {
             return (GetCategoryFlags() & category);
@@ -78,7 +80,6 @@ namespace Presto {
         bool event_handled = false;
     };
 
-    // No PRESTO_API here as we don't want outsiders to have this
     class EventDispatcher {
         template <typename T>
         // Reserved function pointer for a function that returns a bool and
@@ -107,4 +108,4 @@ namespace Presto {
     inline std::ostream& operator<<(std::ostream& os, const Event& event) {
         return os << event.ToString();
     }
-}  // namespace Presto
+}  // namespace PrestoCore

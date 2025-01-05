@@ -10,7 +10,7 @@
 
 #include <set>
 
-namespace Presto {
+namespace PrestoCore {
 
     VulkanDevice::VulkanDevice(const VkPhysicalDevice& phys,
                                const VkSurfaceKHR& surface)
@@ -180,4 +180,4 @@ namespace Presto {
         vkQueueSubmit(_graphicsQueue, 1, &submit_info, VK_NULL_HANDLE);
         vkQueueWaitIdle(_graphicsQueue);
     }
-};  // namespace Presto
+};  // namespace PrestoCore

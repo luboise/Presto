@@ -2,9 +2,9 @@
 
 #include "PrestoCore/Event.h"
 
-namespace Presto {
+namespace PrestoCore {
     // Intended to be abstract
-    class PRESTO_API KeyEvent : public Event {
+    class KeyEvent : public Event {
        public:
         inline int GetKeyCode() const { return this->keyCode; }
 
@@ -16,7 +16,7 @@ namespace Presto {
         int keyCode;
     };
 
-    class PRESTO_API KeyPressedEvent : public KeyEvent {
+    class KeyPressedEvent : public KeyEvent {
        public:
         KeyPressedEvent(int keycode, int repeatcount) : KeyEvent(keycode) {
             this->repeatCount = repeatcount;
@@ -37,7 +37,7 @@ namespace Presto {
         int repeatCount;
     };
 
-    class PRESTO_API KeyReleasedEvent : public KeyEvent {
+    class KeyReleasedEvent : public KeyEvent {
        public:
         // Call parent constructor
         KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
@@ -50,4 +50,4 @@ namespace Presto {
 
         EVENT_CLASS_TYPE(KeyReleased)
     };
-}  // namespace Presto
+}  // namespace PrestoCore

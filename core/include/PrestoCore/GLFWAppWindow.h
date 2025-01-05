@@ -5,10 +5,10 @@
 
 #include "PrestoCore/Window.h"
 
-namespace Presto {
+namespace PrestoCore {
     class Renderer;
 
-    class PRESTO_API GLFWAppWindow : public Window {
+    class GLFWAppWindow : public Window {
        public:
         explicit GLFWAppWindow(const WindowProperties& props);
         ~GLFWAppWindow() override;
@@ -61,4 +61,4 @@ namespace Presto {
         WindowData w_data;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

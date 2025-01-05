@@ -2,7 +2,7 @@
 
 #include "Rendering/Vulkan/Abstractions/Swapchain.h"
 
-namespace Presto {
+namespace PrestoCore {
     VkAttachmentDescription RenderPass::BasicColourAttachment = {
         // 1 Sample, no multisampling for color attachment
         .samples = VK_SAMPLE_COUNT_1_BIT,
@@ -95,4 +95,4 @@ namespace Presto {
     }
 
     const Swapchain& RenderPass::getSwapchain() const { return _swapchain; }
-}  // namespace Presto
+}  // namespace PrestoCore

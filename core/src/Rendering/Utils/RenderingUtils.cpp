@@ -1,6 +1,6 @@
 #include "RenderingUtils.h"
 
-namespace Presto {
+namespace PrestoCore {
 
     constexpr int COLOUR_RATIO = 101;
 
@@ -21,4 +21,4 @@ namespace Presto {
         return projection;
     }
 
-}  // namespace Presto
+}  // namespace PrestoCore

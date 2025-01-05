@@ -1,6 +1,6 @@
 #include "utils.h"
 
-namespace Presto {
+namespace PrestoCore {
     constexpr auto INFO_LOG_LENGTH = 512;
 
     bool OpenGLUtils::ShaderCompiledCorrectly(GLuint shader) {
@@ -18,4 +18,4 @@ namespace Presto {
 
         return success == GL_TRUE;
     }
-}  // namespace Presto
+}  // namespace PrestoCore

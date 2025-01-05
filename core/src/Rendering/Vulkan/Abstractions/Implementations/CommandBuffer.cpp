@@ -12,7 +12,7 @@
 #include "Rendering/Vulkan/Abstractions/CommandPool.h"
 #include "Rendering/Vulkan/Abstractions/RenderPass.h"
 
-namespace Presto {
+namespace PrestoCore {
     CommandBuffer::CommandBuffer(CommandPool& pool)
         : Abstraction(), _pool(pool) {
         VkCommandBufferAllocateInfo allocInfo{};
@@ -133,4 +133,4 @@ namespace Presto {
         scissor.extent = extent;
         vkCmdSetScissor(_handle, 0, 1, &scissor);
     };
-}  // namespace Presto
+}  // namespace PrestoCore

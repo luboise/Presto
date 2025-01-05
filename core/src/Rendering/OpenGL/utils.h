@@ -2,6 +2,6 @@
 
 #include <GL/glew.h>
 
-namespace Presto::OpenGLUtils {
+namespace PrestoCore::OpenGLUtils {
     bool ShaderCompiledCorrectly(GLuint shader);
 }

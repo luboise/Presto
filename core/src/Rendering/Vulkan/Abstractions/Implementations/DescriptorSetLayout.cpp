@@ -5,7 +5,7 @@
 
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace PrestoCore {
     DescriptorSetLayout::DescriptorSetLayout(const VulkanDevice& device,
                                              const BindingList& bindings)
         : _device(device) {
@@ -25,4 +25,4 @@ namespace Presto {
     DescriptorSetLayout::~DescriptorSetLayout() {
         vkDestroyDescriptorSetLayout(_device.handle(), _handle, nullptr);
     }
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -4,7 +4,7 @@
 #include "RenderData.h"
 #include "RenderTypes.h"  // IWYU pragma: export
 
-namespace Presto {
+namespace PrestoCore {
     class GLFWAppWindow;
 
     enum SHADER_MODULE_TYPE { VERTEX, FRAGMENT };
@@ -12,7 +12,7 @@ namespace Presto {
     using render_data_id_t = PR_NUMERIC_ID;
     constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
 
-    class PRESTO_API Renderer {
+    class Renderer {
        public:
         Renderer() = default;
 
@@ -43,4 +43,4 @@ namespace Presto {
         glm::mat4 renderViewMatrix_{};
         bool _framebufferResized = false;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

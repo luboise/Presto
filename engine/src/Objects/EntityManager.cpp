@@ -41,7 +41,7 @@ namespace Presto {
         delete entity;
 
         // Send event
-        ObjectDestroyedEvent(static_cast<void *>(entity));
+        PrestoCore::ObjectDestroyedEvent(static_cast<void *>(entity));
     }
     entity_id_t EntityManager::reserveId() { return _currentId++; }
 }  // namespace Presto

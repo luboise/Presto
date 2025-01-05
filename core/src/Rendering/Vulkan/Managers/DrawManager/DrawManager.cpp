@@ -14,7 +14,7 @@
 #include "Rendering/Vulkan/Abstractions/Pipeline.h"
 #include "Rendering/Vulkan/Abstractions/Swapchain.h"
 
-namespace Presto {
+namespace PrestoCore {
     using VulkanDrawContext = DrawManager::VulkanDrawContext;
 
     DrawManager::DrawManager(Swapchain& swapchain, const uint32_t count)
@@ -276,4 +276,4 @@ namespace Presto {
             }
         }
     }
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -3,7 +3,7 @@
 
 #include "GLFWAppWindow.h"
 
-namespace Presto {
+namespace PrestoCore {
     // Public
     Swapchain::Swapchain(VulkanDevice* device, const VkSurfaceKHR* surface,
 
@@ -227,4 +227,4 @@ namespace Presto {
         };
     }
 
-}  // namespace Presto
+}  // namespace PrestoCore

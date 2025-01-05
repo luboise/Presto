@@ -1,7 +1,7 @@
 
 #include "RenderContext.h"
 
-namespace Presto {
+namespace PrestoCore {
     RenderContext::RenderContext(const Swapchain& swapchain) {
         std::vector<VkAttachmentDescription> attachments = {
             RenderPass::BasicColourAttachment};
@@ -9,4 +9,4 @@ namespace Presto {
         auto* render_pass = new RenderPass(swapchain, attachments);
         this->_renderPass = render_pass;
     }
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -6,7 +6,7 @@
 
 #include "Abstraction.h"
 
-namespace Presto {
+namespace PrestoCore {
     class VulkanDevice;
     /*
        A wrapper for a Vulkan swapchain.
@@ -78,4 +78,4 @@ VkSurfaceKHR - The surface that the swapchain belongs to.
         VkImage _depthImage;
         VkImageView _depthImageView;
     };
-}  // namespace Presto
+}  // namespace PrestoCore

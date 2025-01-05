@@ -5,8 +5,8 @@
 #include "Presto/Module.h"
 #include "Presto/Rendering/Camera.h"
 #include "Presto/Rendering/RenderLayer.h"
-#include "PrestoCore/Core/Constants.h"
-#include "PrestoCore/Rendering/Renderer.h"
+// #include "PrestoCore/Core/Constants.h"
+// #include "PrestoCore/Rendering/Renderer.h"
 
 #include "Presto/Tools/Allocator.h"
 

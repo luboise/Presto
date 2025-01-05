@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Presto {
+namespace PrestoCore {
     template <typename HandleType>
     struct Abstraction {
         explicit operator HandleType() const { return this->_handle; };
@@ -19,4 +19,4 @@ namespace Presto {
         HandleType _handle;
     };
 
-}  // namespace Presto
+}  // namespace PrestoCore

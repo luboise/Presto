@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PrestoCore/Core.h"
+// #include "PrestoCore/Core.h"
 #define F_INIT Init
 #define F_UPDATE Update
 #define F_SHUTDOWN Shutdown

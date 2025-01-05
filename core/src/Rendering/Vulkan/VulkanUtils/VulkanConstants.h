@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace PrestoCore {
 
 #ifdef NDEBUG
     constexpr bool enableValidationLayers = false;
@@ -21,4 +21,4 @@ namespace Presto {
 
     constexpr auto MAIN_LAYER_NAME = "Main";
 
-}  // namespace Presto
+}  // namespace PrestoCore

@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Presto/Platform.h"
+
 using component_class_t = uint32_t;
 
 namespace Presto {
