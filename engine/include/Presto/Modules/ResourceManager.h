@@ -1,7 +1,6 @@
-#include "Presto/Modules/Module.h"
+#include "Presto/Module.h"
 
-#include <filesystem>
-#include <nlohmann/json.hpp>
+#include "Presto/Resources/MeshResource.h"
 
 using nlohmann::json;
 
@@ -14,7 +13,7 @@ namespace Presto {
        public:
         static void Init();
 
-        static MeshResource LoadMesh(fs::path);
+        MeshResource& LoadMeshFromDisk(const AssetPath&);
 
         // Deleted functions
         ResourceManager() = delete;
@@ -23,5 +22,9 @@ namespace Presto {
         ResourceManager(ResourceManager&&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
         ResourceManager& operator=(ResourceManager&&) = delete;
+
+       private:
+        // Gets the type of name from the MeshResource struct
+        std::map<decltype(MeshResource::name), MeshResource*> meshResources_;
     };
 }  // namespace Presto

@@ -49,9 +49,10 @@ namespace Presto {
         return drawManager_->createDrawInfo(std::move(data));
     }
 
-    void OpenGLRenderer::render(render_data_id_t id, glm::vec4 transform) {
+    void OpenGLRenderer::render(render_data_id_t id, glm::mat4 transform) {
         auto* ptr = drawManager_->getDrawInfo(id);
 
+        // TODO: Implement drawing using the transform
         if (ptr == nullptr) {
             PR_CORE_ERROR(
                 "getRenderable() returned a nullptr for renderable {}. "

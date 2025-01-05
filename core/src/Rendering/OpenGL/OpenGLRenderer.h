@@ -28,7 +28,7 @@ namespace Presto {
         render_data_id_t registerMesh(RenderData&& data) override;
 
         void unregisterMesh(render_data_id_t id) override;
-        void render(render_data_id_t id, glm::vec4 transform) override;
+        void render(render_data_id_t id, glm::mat4 transform) override;
         void nextFrame() override;
 
        private:

@@ -1,16 +1,19 @@
 #include "Presto/Rendering/RenderingManager.h"
 
 #include "Presto/Components/Renderable.h"
+#include "Presto/Components/Renderable/Mesh.h"
 #include "Presto/Components/RenderableProps.h"
-#include "PrestoCore/Rendering/OpenGLRenderer.h"
+#include "Presto/Components/Transform.h"
+#include "Presto/Objects/EntityManager.h"
 #include "PrestoCore/Rendering/Renderer.h"
 
-#include "Presto/Rendering/Types/RenderLayer.h"
 // #include "Rendering/Vulkan/VulkanRenderer.h"
 
+#include <algorithm>
 #include <stdexcept>
 
-#include "GLFWAppWindow.h"
+#include "PrestoCore/GLFWAppWindow.h"
+#include "PrestoCore/Rendering/RendererFactory.h"
 
 namespace Presto {
 
@@ -19,11 +22,21 @@ namespace Presto {
 
     RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                        GLFWAppWindow* window) {
-        auto* new_renderer = Presto::CreateRenderer(library, window);
-        _renderer = new_renderer;
+        auto* newrenderer_ = Presto::CreateRenderer(library, window);
+        renderer_ = newrenderer_;
 
         // Add default layer
-        this->AddLayer();
+        this->addLayer();
+    };
+
+    void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
+        RenderData data{};
+        data.indices = mesh.indices;
+        data.vertices = mesh.vertices;
+
+        render_data_id_t r_id = renderer_->registerMesh(data);
+
+        mesh.renderId_ = r_id;
     };
 
     void RenderingManager::Init() {
@@ -40,18 +53,41 @@ namespace Presto {
     }
 
     void RenderingManager::Update() {
-        for (auto& layer : _renderLayers) {
-            for (const auto& ptr_renderable : layer._renderables) {
-                _renderer->render(ptr_renderable,
-                                  currentCamera_->getViewMatrix());
-            }
-        }
-        _renderer->nextFrame();
+        /*
+for (auto& layer : _renderLayers) {
+    for (const auto& ptr_renderable : layer._renderables) {
+        renderer_->render(ptr_renderable,
+                          currentCamera_->getViewMatrix());
+    }
+}
+renderer_->nextFrame();
+        */
+        auto& em = EntityManager::Get();
+
+        auto mesh_draws =
+            em.findAll() | std::views::values |
+            std::views::transform([](entity_ptr entity) {
+                return std::make_tuple(entity->getComponent<Mesh>(),
+                                       entity->getComponent<Transform>());
+            }) |
+            std::views::filter([](auto tuple) {
+                return std::get<0>(tuple) != nullptr &&
+                       std::get<1>(tuple) != nullptr;
+            });
+
+        std::ranges::for_each(
+            mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {
+                renderer_->render(std::get<0>(tuple)->getResource().renderId_,
+                                  std::get<1>(tuple)->getModelView());
+            });
+
+        // TODO: Refactor this to cache in the RenderingManager if the
+        // performance impact is too much
     }
 
     void RenderingManager::Shutdown() {}
 
-    layer_id_t RenderingManager::AddLayer(size_t pos) {
+    layer_id_t RenderingManager::addLayer(size_t pos) {
         if (pos == (size_t)-1) {
             pos = _renderLayers.size();
         } else {
@@ -63,25 +99,13 @@ namespace Presto {
         return pos;
     }
 
-    void RenderingManager::RemoveLayer(layer_id_t id) {
+    void RenderingManager::removeLayer(layer_id_t id) {
         PR_CORE_ASSERT(hasLayer(id),
                        "Attempted to remove layer with invalid index {}."
                        "\tMax allowed index: {}",
                        id, _renderLayers.size() - 1);
         _renderLayers.erase(_renderLayers.begin() + id);
     }
-
-    void RenderingManager::AddRenderable(layer_id_t layer_index,
-                                         Renderable* ptr_renderable) {
-        if (_renderables.isAllocated(ptr_renderable)) {
-            RenderingManager::RemoveRenderable(ptr_renderable);
-        }
-
-        RenderLayer& layer = getLayer(layer_index);
-        _renderer->addToRenderPool(ptr_renderable);
-        layer.addRenderable(ptr_renderable);
-    }
-
     bool RenderingManager::hasLayer(layer_id_t index) {
         return (index < _renderLayers.size());
     }
@@ -99,25 +123,40 @@ namespace Presto {
         return _renderLayers[id];
     }
 
-    Mesh* RenderingManager::NewMesh(const VertexList& vertices,
-                                    const IndexList& indices) {
-        auto* mesh{new Mesh(_meshes.getNextId(), vertices, indices)};
-        _meshes.add(mesh);
+    /*
+        Mesh* RenderingManager::NewMesh(const VertexList& vertices,
+                                        const IndexList& indices) {
+            auto* mesh{new Mesh(_meshes.getNextId(), vertices, indices)};
+            _meshes.add(mesh);
 
-        return mesh;
-    }
+            return mesh;
+        }
+    */
 
-    RenderableProps* RenderingManager::NewRenderableProps() {
-        auto* props{new RenderableProps()};
-        _renderProps.add(props);
+    /*
+        void RenderingManager::AddRenderable(layer_id_t layer_index,
+                                             Renderable* ptr_renderable) {
+            if (_renderables.isAllocated(ptr_renderable)) {
+                RenderingManager::RemoveRenderable(ptr_renderable);
+            }
 
-        return props;
-    }
+            RenderLayer& layer = getLayer(layer_index);
+            renderer_->addToRenderPool(ptr_renderable);
+            layer.addRenderable(ptr_renderable);
+        }
 
-    Renderable* RenderingManager::NewRenderable(
-        PrestoRenderableConstructorArgs) {
-        auto* renderable{new Renderable(mesh, props)};
-        // _renderables[];
-        return renderable;
-    }
+        RenderableProps* RenderingManager::NewRenderableProps() {
+            auto* props{new RenderableProps()};
+            _renderProps.add(props);
+
+            return props;
+        }
+
+        Renderable* RenderingManager::NewRenderable(
+            PrestoRenderableConstructorArgs) {
+            auto* renderable{new Renderable(mesh, props)};
+            // _renderables[];
+            return renderable;
+        }
+            */
 }  // namespace Presto

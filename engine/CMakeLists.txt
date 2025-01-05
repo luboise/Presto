@@ -2,6 +2,7 @@ add_library(PrestoEngine STATIC)
 
 target_include_directories(PrestoEngine
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(PrestoEngine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(PrestoEngine PRIVATE PrestoCore)
 

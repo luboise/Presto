@@ -11,4 +11,4 @@ enum PR_RESULT {
     PR_FAILURE = 1,
 };
 
-using id_t = uint32_t;
+using PR_NUMERIC_ID = uint32_t;

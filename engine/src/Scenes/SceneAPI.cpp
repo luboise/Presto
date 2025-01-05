@@ -1,22 +1,24 @@
-#include "Presto/Scenes/Scenes.h"
+#include "Presto/SceneAPI.h"
+
+#include "Presto/Scenes/Scene.h"
 #include "SceneManager.h"
 
 namespace Presto {
 
     using namespace Presto::Utils;
 
-    std::string Scenes::Load(const std::string& filepath) {
+    Scene* Scenes::Load(const scene_id_t& filepath) {
         json json_data = File::GetJSON(File::ReadFile(filepath));
 
-        auto id = SceneManager::LoadScene(json_data);
-        if (id == Scene::INVALID) {
+        Scene* new_scene = SceneManager::LoadScene(json_data);
+        if (new_scene == Scene::INVALID) {
             PR_CORE_ERROR("Could not load scene from {}.", filepath);
         }
 
-        return id;
+        return new_scene;
     };
 
-    void Scenes::SwitchTo(const std::string& name) {
+    void Scenes::SwitchTo(const scene_id_t& name) {
         SceneManager::SwitchScene(name);
     }
 }  // namespace Presto

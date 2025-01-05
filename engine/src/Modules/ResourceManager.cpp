@@ -1,4 +1,5 @@
 #include "Presto/Modules/ResourceManager.h"
+#include "Rendering/Meshes/Cube.h"
 
 // #include "PrestoCore/Rendering/Mesh.h"
 
@@ -9,32 +10,20 @@ namespace Presto {
     // TODO: Fix this to be based on the executable path rather than the
     // directory which the program was called from
 
-    /*
-        Mesh* ResourceManager::LoadMesh(const std::string& filepath) {
-            tinyobj::attrib_t attrib;
-            std::vector<tinyobj::shape_t> shapes;
-            std::vector<tinyobj::material_t> materials;
-            std::string warn;
-            std::string err;
+    MeshResource& ResourceManager::LoadMeshFromDisk(const AssetPath& filepath) {
+        // TODO: Implement the actual asset reading of GITF files. For now, this
+        // is just stubbed with a unit cube at 0,0,0.
 
-            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
-                                  filepath.c_str())) {
-                throw std::runtime_error(warn + err);
-            }
+        auto filename{filepath.stem()};
 
-            if (shapes.size() == 0) {
-                return nullptr;
-            }
+        auto* new_mr{new MeshResource()};
 
-            for (const auto& shape : shapes) {
-                for (const auto& index : shape.mesh.indices) {
-                    Vertex vertex{};
+        auto default_cube = Meshes::Cube({0, 0, 0}, 1, {1, 1, 1});
 
-                    vertices.push_back(vertex);
-                    indices.push_back(indices.size());
-                }
-            }
-        }
-            */
+        new_mr->name = filename;
+
+        meshResources_[new_mr->name] = new_mr;
+        return *new_mr;
+    }
 
 }  // namespace Presto

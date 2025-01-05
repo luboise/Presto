@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Presto/Modules/Module.h"
-#include "Scene.h"
+#include "Presto/Scenes/Scene.h"
+
+#include "Presto/Module.h"
 
 #include <nlohmann/json.hpp>
 using nlohmann::json;
@@ -12,10 +13,10 @@ namespace Presto {
         static void Init();
 
         static Scene* LoadScene(const json& j);
-        static void SwitchScene(scene_id_t&);
+        static void SwitchScene(const scene_id_t&);
         static void SwitchScene(Scene&);
 
-        static Scene* GetScene(scene_id_t);
+        static Scene* GetScene(const scene_id_t&);
 
         SceneManager(const SceneManager&) = delete;
         SceneManager(SceneManager&&) = delete;

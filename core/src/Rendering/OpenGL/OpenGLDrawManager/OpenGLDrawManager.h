@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <map>
+#include "PrestoCore/Core/Constants.h"
 #include "PrestoCore/Rendering/RenderData.h"
 
 namespace Presto {
@@ -20,7 +21,7 @@ namespace Presto {
 
     // using draw_key = OpenGLDrawInfo*;
 
-    using draw_key = id_t;
+    using draw_key = PR_NUMERIC_ID;
 
     class OpenGLDrawManager {
        public:

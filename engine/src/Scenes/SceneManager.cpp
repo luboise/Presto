@@ -24,7 +24,7 @@ namespace Presto {
         return Scene::INVALID;
     };
 
-    void SceneManager::SwitchScene(scene_id_t& id) {
+    void SceneManager::SwitchScene(const scene_id_t& id) {
         Scene* scene_ptr = GetScene(id);
         if (scene_ptr != nullptr) {
             SwitchScene(*scene_ptr);
@@ -34,7 +34,7 @@ namespace Presto {
     // TODO: Make this actually switch out the scene
     void SceneManager::SwitchScene(Scene& scene) { _currentScene = &scene; }
 
-    Scene* SceneManager::GetScene(scene_id_t id) {
+    Scene* SceneManager::GetScene(const scene_id_t& id) {
         auto scene_iterator = _sceneMap.find(id);
 
         if (scene_iterator == _sceneMap.end()) {

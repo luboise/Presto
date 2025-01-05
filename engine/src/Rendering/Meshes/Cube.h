@@ -1,12 +1,17 @@
-#include "PrestoCore/Rendering/Mesh.h"
-#include "PrestoCore/Rendering/Vertex.h"
-
 namespace Presto::Meshes {
+
+    // TODO: Move this somewhere else
 
     using Presto::Vertex;
 
-    constexpr MeshCreationInfo Cube(glm::vec3 position, glm::float32 size,
-                                    glm::vec3 colour) {
+    struct DefaultMeshCreationInfo {
+        VertexList vertices;
+        IndexList indices;
+    };
+
+    constexpr DefaultMeshCreationInfo Cube(glm::vec3 position,
+                                           glm::float32 size,
+                                           glm::vec3 colour) {
         glm::float32 a = (size / 2);
 
         Vertex FRONT_BL = {glm::vec3{-a, a, a} + position, colour};

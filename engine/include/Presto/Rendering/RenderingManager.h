@@ -1,17 +1,21 @@
 #pragma once
 
-#include "Presto/Components/Renderable.h"
-#include "Presto/Components/Renderable/Mesh.h"
-#include "Presto/Modules/Module.h"
+// #include "Presto/Components/Renderable.h"
+// #include "Presto/Components/Renderable/Mesh.h"
+#include "Presto/Module.h"
 #include "Presto/Rendering/Camera.h"
+#include "Presto/Rendering/RenderLayer.h"
+#include "PrestoCore/Core/Constants.h"
 #include "PrestoCore/Rendering/Renderer.h"
 
 #include "Presto/Tools/Allocator.h"
 
+#include "Presto/Resources/MeshResource.h"
+
 class RenderableProps;
 
 namespace Presto {
-    using layer_id_t = uint32_t;
+    using layer_id_t = PR_NUMERIC_ID;
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
        public:
@@ -42,25 +46,29 @@ namespace Presto {
             currentCamera_ = &newCam;
         }
 
-        layer_id_t AddLayer(size_t pos = -1);
-        void RemoveLayer(layer_id_t id);
-
         void renderFrame();
 
-        void AddRenderable(layer_id_t layer_index, Renderable*);
-
-        void RemoveRenderable(Renderable* ptr_renderable) {
-            _renderables.release(ptr_renderable);
-        };
-
-        Mesh* NewMesh(const VertexList&, const IndexList&);
-        RenderableProps* NewRenderableProps();
-        Renderable* NewRenderable(PrestoRenderableConstructorArgs);
+        void loadMeshOnGpu(MeshResource&);
 
         RenderingManager(const RenderingManager&) = delete;
         RenderingManager(RenderingManager&&) = delete;
         RenderingManager& operator=(const RenderingManager&) = delete;
         RenderingManager& operator=(RenderingManager&&) = delete;
+
+        layer_id_t addLayer(size_t pos = -1);
+        void removeLayer(layer_id_t id);
+
+        /*
+void AddRenderable(layer_id_t layer_index, Renderable*);
+
+void RemoveRenderable(Renderable* ptr_renderable) {
+    _renderables.release(ptr_renderable);
+};
+        */
+
+        // Mesh* NewMesh(const VertexList&, const IndexList&);
+        // RenderableProps* NewRenderableProps();
+        // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
        private:
         // Static vars
@@ -73,11 +81,11 @@ namespace Presto {
         explicit RenderingManager(RENDER_LIBRARY library,
                                   GLFWAppWindow* window);
 
-        Renderer* _renderer;
+        Renderer* renderer_;
 
         std::vector<RenderLayer> _renderLayers;
 
-        Allocator<Mesh> _meshes;
+        // Allocator<Mesh> _meshes;
         Allocator<RenderableProps> _renderProps;
         Allocator<Renderable> _renderables;
 

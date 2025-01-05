@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Presto/Components/Renderable.h"
+#include "Presto/Resources/MeshResource.h"
+#include "PrestoCore/Core/Constants.h"
 #include "PrestoCore/Rendering/RenderData.h"
 
 namespace Presto {
@@ -12,27 +14,18 @@ namespace Presto {
         IndexList indices;
     };
 
-    using mesh_id_t = id_t;
+    using mesh_id_t = PR_NUMERIC_ID;
+
     class PRESTO_API Mesh : public Renderable {
         // friend class RenderingManager;
 
        public:
-        Mesh(VertexList, IndexList);
+        explicit Mesh(MeshResource& resource) : resource_(&resource) {};
 
-        // [[nodiscard]] mesh_id_t getID() const;
-        void setVertices(const VertexList& new_vertices) {
-            vertices_ = new_vertices;
-        };
-
-        void setVertices(VertexList&& new_vertices) {
-            vertices_ = new_vertices;
-        };
+        inline const MeshResource& getResource() { return *resource_; }
 
        private:
         [[nodiscard]] RenderData getRenderData() const override;
-
-        // mesh_id_t _meshID;
-        VertexList vertices_;
-        IndexList indices_;
+        MeshResource* resource_;
     };
 }  // namespace Presto

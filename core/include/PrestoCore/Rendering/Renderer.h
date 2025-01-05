@@ -9,7 +9,8 @@ namespace Presto {
 
     enum SHADER_MODULE_TYPE { VERTEX, FRAGMENT };
 
-    using render_data_id_t = id_t;
+    using render_data_id_t = PR_NUMERIC_ID;
+    constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
 
     class PRESTO_API Renderer {
        public:
@@ -21,7 +22,7 @@ namespace Presto {
         virtual render_data_id_t registerMesh(const RenderData&) = 0;
 
         virtual void unregisterMesh(render_data_id_t id) = 0;
-        virtual void render(render_data_id_t id, glm::vec4 transform) = 0;
+        virtual void render(render_data_id_t id, glm::mat4 transform) = 0;
         virtual void nextFrame() = 0;
 
         void setViewMatrix(const glm::mat4& newViewMatrix) {

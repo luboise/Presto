@@ -1,4 +1,8 @@
+#include "Presto/Scenes/Scene.h"
+
+class Scene;
+
 namespace Presto::Scenes {
-    std::string Load(const std::string& filepath);
+    Scene* Load(const std::string& filepath);
     void SwitchTo(const std::string& name);
 }  // namespace Presto::Scenes

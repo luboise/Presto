@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "PrestoCore/Core/Constants.h"
 #include "glm/fwd.hpp"
 
 #include <map>
@@ -10,7 +11,7 @@ namespace Presto {
     class EntityManager;
 
     using ComponentMap = std::map<component_class_t, Component*>;
-    using entity_id_t = uint32_t;
+    using entity_id_t = PR_NUMERIC_ID;
 
     class PRESTO_API Entity {
         friend class EntityManager;
@@ -25,9 +26,9 @@ namespace Presto {
         }
 
         template <typename ComponentClass>
-        ComponentClass& getComponent() {
+        ComponentClass* getComponent() {
             component_class_t classID = typeid(ComponentClass).hash_code();
-            return _components[classID];
+            return dynamic_cast<ComponentClass*>(_components[classID]);
         }
 
         ComponentMap getComponents();
@@ -42,5 +43,5 @@ namespace Presto {
         glm::vec3 _rotation;
     };
 
-    using entity_t = Entity*;
+    using entity_ptr = Entity*;
 }  // namespace Presto

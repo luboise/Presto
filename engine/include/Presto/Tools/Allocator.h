@@ -3,7 +3,7 @@
 #include <map>
 
 namespace Presto {
-    using id_t = uint32_t;
+    using allocator_id_t = PR_NUMERIC_ID;
 
     template <typename T> /*, typename... AcquireArgs> >*/
     class Allocator {
@@ -34,7 +34,7 @@ T* Acquire(AcquireArgs... args) {
             _entries[_currentId++] = new_value;
         }
 
-        void release(id_t id) {
+        void release(allocator_id_t id) {
             PR_CORE_ASSERT(_entries.contains(id),
                            "Attempted to release memory that has already been "
                            "released. ID: {}",
@@ -66,12 +66,14 @@ T* Acquire(AcquireArgs... args) {
             return false;
         }
 
-        [[nodiscard]] id_t getNextId() const { return this->_currentId; }
+        [[nodiscard]] allocator_id_t getNextId() const {
+            return this->_currentId;
+        }
 
        private:
         // const bool _useNestedID;
 
-        id_t getKeyFromValue(ValueType search_value) {
+        allocator_id_t getKeyFromValue(ValueType search_value) {
             for (auto const& [key, value] : _entries) {
                 if (value == search_value) return key;
             }
@@ -79,8 +81,8 @@ T* Acquire(AcquireArgs... args) {
             return -1;
         }
 
-        std::map<id_t, ValueType> _entries;
+        std::map<allocator_id_t, ValueType> _entries;
         // InstantiationFunction _instantiator;
-        id_t _currentId{};
+        allocator_id_t _currentId{};
     };
 }  // namespace Presto
