@@ -71,5 +71,58 @@ else()
                       "Expected Windows or Unix platform for compilation.")
 endif()
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/core)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
+# Engine definitions
+
+add_library(PrestoEngine SHARED)
+
+target_include_directories(PrestoEngine
+                           PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_include_directories(PrestoEngine PUBLIC ../ext/spdlog/include
+                                               ../ext/glm/include)
+target_include_directories(
+  PrestoEngine PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
+                       ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_link_libraries(PrestoEngine PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(PrestoEngine PRIVATE glm::glm)
+
+# target_link_libraries(PrestoEngine PRIVATE glfw)
+if(PLATFORM STREQUAL "Windows")
+  target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
+endif()
+
+# Needed for shared library
+set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
+
+add_subdirectory(src)
+
+# include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
+
+# set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
+# compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")
+
+# target_link_libraries(PrestoEngine PRIVATE glfw)
+if(PLATFORM STREQUAL "Windows")
+  target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
+endif()
+
+target_link_libraries(PrestoEngine PUBLIC glfw ${Vulkan_LIBRARIES} spdlog
+                                          glm::glm)
+target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW
+                                           tinyobjloader)
+
+# Needed for shared library
+set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+# if (WIN32) target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB )
+# endif()
+
+target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
+
+# target_precompile_headers(PrestoEngine PUBLIC
+# ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+
+# include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
