@@ -44,6 +44,11 @@ namespace Presto {
         Presto::ObjectDestroyedEvent(static_cast<void *>(entity));
     }
 
+    void EntityManager::Init() {
+        PR_CORE_INFO("Initialising EntityManager.");
+        instance_ = std::unique_ptr<EntityManager>(new EntityManager());
+    }
+
     void EntityManager::Update() {}
 
     entity_id_t EntityManager::reserveId() { return _currentId++; }

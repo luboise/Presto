@@ -45,9 +45,8 @@ namespace Presto {
                        "Unable to initialise the RenderingManager with a null "
                        "Window handle.");
 
-        RenderingManager* mgr{new RenderingManager(RenderingManager::_library,
-                                                   RenderingManager::_window)};
-        _instance = mgr;
+        instance_ = std::unique_ptr<RenderingManager>(new RenderingManager(
+            RenderingManager::_library, RenderingManager::_window));
     }
 
     void RenderingManager::Update() {

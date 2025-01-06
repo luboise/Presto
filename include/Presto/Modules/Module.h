@@ -31,21 +31,23 @@ namespace Presto {
         virtual void OnInit() {};
 
         static T& Get() {
-            PR_CORE_ASSERT(_instance != nullptr,
-                           "Attempted to get uninitialised module: {}",
-                           typeid(T).name());
+            PR_CORE_ASSERT(
+                T::IsInitialised(),
+                std::string("Attempted to get uninitialised module: ") +
+                    typeid(T).name());
 
-            return *_instance;
+            return *instance_;
         }
 
-        static bool IsInitialised() { return _instance != nullptr; }
+        static bool IsInitialised() { return instance_ != nullptr; }
 
         ~Module() = default;
 
        protected:
-        static T* _instance;
+        static std::unique_ptr<T> instance_;
     };
 
     template <typename T>
-    T* Module<T>::_instance = nullptr;
+    std::unique_ptr<T> Module<T>::instance_ = nullptr;
+
 }  // namespace Presto

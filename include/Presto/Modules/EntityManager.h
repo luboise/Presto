@@ -25,6 +25,8 @@ namespace Presto {
             return components_ | std::views::filter(filter);
         }
 
+        static void Init();
+
         void Update() override;
 
         EntityManager(const EntityManager &) = delete;
@@ -35,6 +37,8 @@ namespace Presto {
         // ~EntityManager() = default;
 
        private:
+        EntityManager() = default;
+
         static void destroyEntity(entity_ptr entity);
         static entity_id_t reserveId();
 

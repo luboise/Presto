@@ -1,4 +1,5 @@
 #include "Presto/Runtime/Application.h"
+#include "Presto/Modules/EntityManager.h"
 #include "Presto/Rendering/Camera.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
 
@@ -28,6 +29,8 @@ namespace Presto {
         // TODO: Make this use an actual component
         _mainCamera = new Camera();
         RenderingManager::Get().setCamera(*_mainCamera);
+
+        EntityManager::Init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
