@@ -61,14 +61,15 @@ namespace Presto {
             return;
         }
 
-        this->draw(*ptr);
+        this->draw(*ptr, transform);
     }
 
     void OpenGLRenderer::unregisterMesh(render_data_id_t id) {
         // TODO: Implement unregister
     }
 
-    void OpenGLRenderer::draw(const OpenGLDrawInfo& renderable) {
+    void OpenGLRenderer::draw(const OpenGLDrawInfo& renderable,
+                              const glm::mat4& transform) {
         GLint view = glGetUniformLocation(renderable.shader_program, "view");
         GLint projection =
             glGetUniformLocation(renderable.shader_program, "projection");
@@ -77,10 +78,9 @@ namespace Presto {
 
         ShaderMatrices mats{};
 
-        glm::mat4 model(1.0);
         constexpr glm::float32 FOV_Y = 90;
 
-        mats.view = renderViewMatrix_ * model;
+        mats.view = renderViewMatrix_ * transform;
 
         mats.projection = RenderingUtils::getProjectionMatrix(
             FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());

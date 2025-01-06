@@ -6,6 +6,7 @@
 #include "Math.h"                // IWYU pragma: export
 #include "Objects.h"             // IWYU pragma: export
 #include "Rendering/Renderer.h"  // IWYU pragma: export
+#include "Runtime.h"             // IWYU pragma: export
 #include "Utils.h"               // IWYU pragma: export
 
 // General API
