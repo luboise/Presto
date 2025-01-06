@@ -56,8 +56,11 @@ for (auto& layer : _renderLayers) {
                           currentCamera_->getViewMatrix());
     }
 }
-renderer_->nextFrame();
         */
+
+        // Update the camera
+        renderer_->setViewMatrix(currentCamera_->getViewMatrix());
+
         auto& em = EntityManager::Get();
 
         auto mesh_draws = em.findAll() |
@@ -79,6 +82,8 @@ renderer_->nextFrame();
 
         // TODO: Refactor this to cache in the RenderingManager if the
         // performance impact is too much
+
+        renderer_->nextFrame();
     }
 
     void RenderingManager::Shutdown() {}

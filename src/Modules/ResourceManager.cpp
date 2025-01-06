@@ -21,6 +21,8 @@ namespace Presto {
         auto default_cube = Meshes::Cube({0, 0, 0}, 1, {1, 1, 1});
 
         new_mr->name = filename;
+        new_mr->vertices = default_cube.vertices;
+        new_mr->indices = default_cube.indices;
 
         meshResources_[new_mr->name] = new_mr;
         return *new_mr;

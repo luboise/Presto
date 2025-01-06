@@ -123,7 +123,7 @@ if (renderableMap_.contains(data)) {
         glDeleteShader(fs);
 
         auto new_draw_key = ++currentDrawKey_;
-        auto insertion = drawInfoMap_.try_emplace(new_draw_key, r);
+        auto insertion = drawInfoMap_.emplace(new_draw_key, r);
 
         PR_CORE_ASSERT(
             insertion.second,
