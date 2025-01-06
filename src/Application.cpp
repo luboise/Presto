@@ -1,4 +1,5 @@
 #include "Presto/Runtime/Application.h"
+#include "Presto/Runtime.h"
 
 #include "Presto/Managers.h"
 
@@ -32,8 +33,8 @@ namespace Presto {
         RenderingManager::Get().setCamera(*_mainCamera);
 
         EntityManager::Init();
-
         ResourceManager::Init();
+        Time::init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -60,8 +61,8 @@ namespace Presto {
 
             _app_window->Update();
             RenderingManager::Get().Update();
-
             EntityManager::Get().collectGarbage();
+            Time::update();
         }
     }
 

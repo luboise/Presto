@@ -32,7 +32,7 @@ namespace Presto {
         void nextFrame() override;
 
        private:
-        void draw(const OpenGLDrawInfo&);
+        void draw(const OpenGLDrawInfo&, const glm::mat4& transform);
         void onFrameBufferResized() override {}
         OpenGLDrawManager* drawManager_;
     };
