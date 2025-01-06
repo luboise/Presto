@@ -29,7 +29,7 @@ namespace Presto {
     }
 
     void ResourceManager::Init() {
-        PR_CORE_INFO("Initialising EntityManager.");
+        PR_CORE_INFO("Initialising ResourceManager.");
         instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
     }
 
