@@ -1,6 +1,7 @@
 #include "Presto/Components/Renderable/Mesh.h"
 
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Modules/RenderingManager.h"
 #include "Presto/Rendering/RenderData.h"
 
 namespace Presto {
@@ -17,4 +18,9 @@ namespace Presto {
         return m;
     }
 
+    Mesh::Mesh(MeshResource& resource) : resource_(&resource) {
+        if (!resource_->isRegistered()) {
+            RenderingManager::Get().loadMeshOnGpu(resource);
+        }
+    };
 }  // namespace Presto

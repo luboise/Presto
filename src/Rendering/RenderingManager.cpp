@@ -60,15 +60,16 @@ renderer_->nextFrame();
         */
         auto& em = EntityManager::Get();
 
-        auto mesh_draws =
-            em.findAll() | std::views::transform([](entity_ptr entity) {
-                return std::make_tuple(entity->getComponent<Mesh>(),
-                                       entity->getComponent<Transform>());
-            }) |
-            std::views::filter([](auto tuple) {
-                return std::get<0>(tuple) != nullptr &&
-                       std::get<1>(tuple) != nullptr;
-            });
+        auto mesh_draws = em.findAll() |
+                          std::views::transform([](entity_ptr entity) {
+                              auto* m_ptr = entity->getComponent<Mesh>();
+                              auto* t_ptr = entity->getComponent<Transform>();
+                              return std::make_tuple(m_ptr, t_ptr);
+                          }) |
+                          std::views::filter([](auto tuple) {
+                              return std::get<0>(tuple) != nullptr &&
+                                     std::get<1>(tuple) != nullptr;
+                          });
 
         std::ranges::for_each(
             mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {

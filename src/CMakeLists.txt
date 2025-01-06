@@ -4,6 +4,7 @@ add_subdirectory(Modules)
 add_subdirectory(Objects)
 add_subdirectory(Rendering)
 add_subdirectory(Scenes)
+add_subdirectory(Shaders)
 add_subdirectory(Utils)
 
 target_precompile_headers(PrestoEngine PRIVATE

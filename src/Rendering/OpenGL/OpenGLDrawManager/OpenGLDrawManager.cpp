@@ -75,7 +75,14 @@ if (renderableMap_.contains(data)) {
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 
-        auto vertex_code = Utils::File::ReadFile("Shaders/Core/vert.glsl");
+        constexpr auto DEFAULT_VERTEX_SHADER_PATH = "Shaders/Core/vert.glsl";
+        constexpr auto DEFAULT_FRAGMENT_SHADER_PATH = "Shaders/Core/frag.glsl";
+
+        auto vertex_code = Utils::File::ReadFile(DEFAULT_VERTEX_SHADER_PATH);
+        PR_ASSERT(vertex_code != "",
+                  "Vertex shader at  {}  could not be read, and returned an "
+                  "empty file.",
+                  DEFAULT_VERTEX_SHADER_PATH);
 
         const char* sourceCStr = vertex_code.c_str();
 
@@ -88,7 +95,13 @@ if (renderableMap_.contains(data)) {
 
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-        auto fragment_code = Utils::File::ReadFile("Shaders/Core/frag.glsl");
+        auto fragment_code =
+            Utils::File::ReadFile(DEFAULT_FRAGMENT_SHADER_PATH);
+        PR_ASSERT(fragment_code != "",
+                  "Fragment shader at  {}  could not be read, and returned an "
+                  "empty file.",
+                  DEFAULT_FRAGMENT_SHADER_PATH);
+
         const char* sourceCStr2 = fragment_code.c_str();
 
         glShaderSource(fs, 1, &sourceCStr2, nullptr);

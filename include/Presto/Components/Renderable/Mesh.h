@@ -27,7 +27,7 @@ namespace Presto {
         inline const MeshResource& getResource() { return *resource_; }
 
        private:
-        explicit Mesh(MeshResource& resource) : resource_(&resource) {};
+        explicit Mesh(MeshResource& resource);
 
         [[nodiscard]] RenderData getRenderData() const override;
         MeshResource* resource_;

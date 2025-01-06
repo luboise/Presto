@@ -1,10 +1,8 @@
-set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shaders)
-
 # Shader compilation details below
 
 # Macro which compiles shaders in the src/shaders directory to vulkan shader
 # units
-macro(CompileShadersForTarget target_name shader_source_dir)
+macro(compileshadersfortarget target_name shader_source_dir)
   # set(CUSTOM_target_name ${target_name}Shaders)
   # add_dependencies(${target_name} ${CUSTOM_target_name})
   # add_custom_target(${CUSTOM_target_name})
@@ -34,6 +32,13 @@ macro(CompileShadersForTarget target_name shader_source_dir)
 
       # Create a custom target for shader compilation
       foreach(shader_file ${shader_files})
+        get_filename_component(FILE_EXTENSION ${shader_file} EXT)
+
+        if("${FILE_EXTENSION}" STREQUAL ".txt")
+          message("-- Skipping text file \"" ${shader_file} "\"")
+          continue()
+        endif()
+
         # Get input structure
         string(REPLACE ${shader_source_dir}/ "" IN_STRUCTURE_FULL
                        ${shader_file})
@@ -92,5 +97,3 @@ macro(CompileShadersForTarget target_name shader_source_dir)
     endif()
   endif()
 endmacro()
-
-compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")

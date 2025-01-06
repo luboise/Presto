@@ -44,7 +44,7 @@ namespace Presto {
 
             components_.emplace(new_id, std::move(new_component));
 
-            return static_cast<T *>(new_component.get());
+            return static_cast<T *>(components_[new_id].get());
         };
 
        private:

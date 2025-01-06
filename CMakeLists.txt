@@ -15,8 +15,7 @@ find_program(
 project(Presto)
 
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
 set(CMAKE_CONFIGURATION_TYPES
     "Debug;Release;Dist"
@@ -99,11 +98,6 @@ target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
 
 add_subdirectory(src)
 
-# include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
-
-# set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
-# compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")
-
 # target_link_libraries(PrestoEngine PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
   target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
@@ -117,12 +111,5 @@ target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW
 # Needed for shared library
 set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-# if (WIN32) target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB )
-# endif()
-
-target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
-
-# target_precompile_headers(PrestoEngine PUBLIC
-# ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
-
-# include(${CMAKE_SOURCE_DIR}/cmake_build_shaders.cmake)
+set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
+compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")
