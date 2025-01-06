@@ -31,6 +31,8 @@ namespace Presto {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);  // Smaller = closer
 
+        drawManager_ = std::make_unique<OpenGLDrawManager>();
+
         /*
                 constexpr auto POS_VECTOR_SIZE = 3;
                 constexpr auto TRIANGLE_POINT_COUNT = POS_VECTOR_SIZE * 3;
