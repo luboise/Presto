@@ -1,11 +1,12 @@
 #include "Presto/Runtime/Application.h"
-#include "Presto/Modules/EntityManager.h"
+
+#include "Presto/Managers.h"
+
 #include "Presto/Rendering/Camera.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
 
 #include "GLFW/glfw3.h"
 
-#include "Presto/Modules/RenderingManager.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
@@ -31,6 +32,8 @@ namespace Presto {
         RenderingManager::Get().setCamera(*_mainCamera);
 
         EntityManager::Init();
+
+        ResourceManager::Init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -57,6 +60,8 @@ namespace Presto {
 
             _app_window->Update();
             RenderingManager::Get().Update();
+
+            EntityManager::Get().collectGarbage();
         }
     }
 

@@ -19,13 +19,16 @@ namespace Presto {
 
     class PRESTO_API Mesh : public Renderable {
         // friend class RenderingManager;
+        friend class EntityManager;
 
        public:
-        explicit Mesh(MeshResource& resource) : resource_(&resource) {};
+        static Mesh* New(MeshResource&);
 
         inline const MeshResource& getResource() { return *resource_; }
 
        private:
+        explicit Mesh(MeshResource& resource) : resource_(&resource) {};
+
         [[nodiscard]] RenderData getRenderData() const override;
         MeshResource* resource_;
     };

@@ -10,18 +10,19 @@ namespace Presto {
     class PRESTO_API ResourceManager : public Module<ResourceManager> {
        public:
         static void Init();
+        void Update() override {}
 
-        MeshResource& LoadMeshFromDisk(const AssetPath&);
+        [[nodiscard]] MeshResource& LoadMeshFromDisk(const AssetPath&);
 
         // Deleted functions
-        ResourceManager() = delete;
-        virtual ~ResourceManager() = delete;
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager(ResourceManager&&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
         ResourceManager& operator=(ResourceManager&&) = delete;
 
        private:
+        ResourceManager() = default;
+
         // Gets the type of name from the MeshResource struct
         std::map<decltype(MeshResource::name), MeshResource*> meshResources_;
     };

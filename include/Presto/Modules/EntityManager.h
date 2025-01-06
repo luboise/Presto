@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ranges>
-
 #include "Module.h"
 
 #include "Presto/Objects/Component.h"
@@ -9,23 +7,20 @@
 
 namespace Presto {
     class PRESTO_API EntityManager : public Module<EntityManager> {
+        friend class Application;
+
         using EntityMap = std::map<entity_id_t, entity_ptr>;
 
        public:
-        static entity_ptr newEntity();
-        static entity_ptr getEntityByID(entity_id_t id);
+        entity_ptr newEntity();
 
-        EntityMap &findAll() { return entityMap_; };
+        entity_ptr getEntityByID(entity_id_t id);
 
-        std::vector<entity_ptr> findWhere(auto filter) {
-            return entityMap_ | std::views::values | std::views::filter(filter);
-        }
+        std::vector<entity_ptr> findAll();
 
-        std::vector<component_ptr> findComponentsWhere(auto filter) {
-            return components_ | std::views::filter(filter);
-        }
+        std::vector<entity_ptr> findWhere(auto filter);
 
-        static void Init();
+        std::vector<component_ptr> findComponentsWhere(auto filter);
 
         void Update() override;
 
@@ -36,15 +31,39 @@ namespace Presto {
 
         // ~EntityManager() = default;
 
+        // TODO: Consider making this private. It's not a huge deal either way,
+        // and people can just choose which one they use.
+        template <typename T, typename... Args>
+        T *newComponent(Args &&...args) {
+            // std::unique_ptr<Component> new_component{new T};
+            auto new_component{
+                std::unique_ptr<Component>(new T(std::forward<Args>(args)...))};
+
+            component_id_t new_id{reserveId()};
+            new_component->id_ = new_id;
+
+            components_.emplace(new_id, std::move(new_component));
+
+            return static_cast<T *>(new_component.get());
+        };
+
        private:
         EntityManager() = default;
 
-        static void destroyEntity(entity_ptr entity);
-        static entity_id_t reserveId();
+        static void Init();
 
-        static std::vector<entity_ptr> entities_;
-        static std::vector<component_ptr> components_;
-        static EntityMap entityMap_;
-        static entity_id_t _currentId;
+        void collectGarbage();
+
+        void destroyEntity(entity_ptr entity);
+        entity_id_t reserveId();
+
+        using entity_unique_ptr =
+            std::unique_ptr<Entity, std::function<void(Entity *)>>;
+
+        std::vector<entity_ptr> entities_;
+        std::map<component_id_t, std::unique_ptr<Component>> components_;
+        // static std::vector<component_ptr> components_;
+        std::map<entity_id_t, entity_unique_ptr> entityMap_;
+        entity_id_t _currentId{1};
     };
 }  // namespace Presto

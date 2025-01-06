@@ -8,6 +8,7 @@ Diagnostics:
       - bugprone*
       - concurrency*
       - cppcoreguidelines*
+      - cppcoreguidelines-naming-*
       - modernize*
       - performance*
       - readability*

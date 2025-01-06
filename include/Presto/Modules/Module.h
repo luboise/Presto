@@ -19,17 +19,9 @@
 namespace Presto {
     template <typename T>
     class PRESTO_API Module {
+        friend class Application;
+
        public:
-        static void Init() {
-            static_assert(false, "All modules must override Init().");
-        };
-        virtual void Update() = 0;
-        static void Shutdown() {
-            static_assert(false, "All modules must override Shutdown().");
-        };
-
-        virtual void OnInit() {};
-
         static T& Get() {
             PR_CORE_ASSERT(
                 T::IsInitialised(),
@@ -45,6 +37,18 @@ namespace Presto {
 
        protected:
         static std::unique_ptr<T> instance_;
+
+       private:
+        static void Init() {
+            static_assert(false, "All modules must override Init().");
+        };
+
+        virtual void Update() = 0;
+        static void Shutdown() {
+            static_assert(false, "All modules must override Shutdown().");
+        };
+
+        virtual void OnInit() {};
     };
 
     template <typename T>

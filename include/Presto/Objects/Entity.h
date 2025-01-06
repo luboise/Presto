@@ -16,18 +16,27 @@ namespace Presto {
         friend class EntityManager;
 
        public:
-        [[nodiscard]] entity_id_t getId() const;
+        static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};
+
+        [[nodiscard]] entity_id_t getId() const { return this->id_; };
 
         template <typename ComponentClass>
         void setComponent(ComponentClass* component_ptr) {
-            component_class_t classID = typeid(ComponentClass).hash_code();
-            _components.emplace(classID, component_ptr);
+            component_class_t classID = CLASS_ID(ComponentClass);
+            components_.emplace(classID, component_ptr);
         }
 
         template <typename ComponentClass>
         ComponentClass* getComponent() {
-            component_class_t classID = typeid(ComponentClass).hash_code();
-            return dynamic_cast<ComponentClass*>(_components[classID]);
+            component_class_t classID = CLASS_ID(ComponentClass);
+
+            auto component_i = components_.find(classID);
+            if (component_i == components_.end()) {
+                return nullptr;
+            }
+
+            auto* x = component_i->second;
+            return dynamic_cast<ComponentClass*>(x);
         }
 
         ComponentMap getComponents();
@@ -36,10 +45,10 @@ namespace Presto {
         explicit Entity(entity_id_t id);
         virtual ~Entity();
 
-        entity_id_t _id;
-        ComponentMap _components;
-        glm::vec3 _position;
-        glm::vec3 _rotation;
+        entity_id_t id_{UNASSIGNED_ID};
+        ComponentMap components_;
+        glm::vec3 _position{0, 0, 0};
+        glm::vec3 _rotation{0, 0, 0};
     };
 
     using entity_ptr = Entity*;

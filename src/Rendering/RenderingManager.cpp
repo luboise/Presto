@@ -14,7 +14,6 @@
 #include <algorithm>
 
 namespace Presto {
-
     RENDER_LIBRARY RenderingManager::_library = UNSET;
     GLFWAppWindow* RenderingManager::_window = nullptr;
 
@@ -62,8 +61,7 @@ renderer_->nextFrame();
         auto& em = EntityManager::Get();
 
         auto mesh_draws =
-            em.findAll() | std::views::values |
-            std::views::transform([](entity_ptr entity) {
+            em.findAll() | std::views::transform([](entity_ptr entity) {
                 return std::make_tuple(entity->getComponent<Mesh>(),
                                        entity->getComponent<Transform>());
             }) |
