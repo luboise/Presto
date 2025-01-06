@@ -7,7 +7,7 @@ namespace Presto {
 
     class PRESTO_API Transform : public Component {
        public:
-        Transform();
+        Transform() = default;
         Transform(vec3 translation, vec3 rotation, vec3 scale);
 
         static mat4 getModelMatrix(vec3 offset, vec3 yawPitchRoll,
@@ -34,6 +34,8 @@ namespace Presto {
         [[nodiscard]] vec3 getYaw() const;
         [[nodiscard]] vec3 getPitch() const;
         [[nodiscard]] vec3 getRoll() const;
+
+        static Transform* New();
 
        private:
         vec3 translation_;

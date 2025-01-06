@@ -1,5 +1,6 @@
 #include "Presto/Modules/EntityManager.h"
 #include <algorithm>
+#include "Presto/Components/Transform.h"
 #include "Presto/Runtime/Events/ObjectEvents.h"
 
 namespace Presto {
@@ -20,6 +21,9 @@ namespace Presto {
         auto new_entity = entity_unique_ptr(
             new Entity(new_id),
             [this](Entity* entity) { this->destroyEntity(entity); });
+
+        Transform* new_transform = Transform::New();
+        new_entity->setComponent(new_transform);
 
         entityMap_.emplace(new_id, std::move(new_entity));
         return entityMap_[new_id].get();

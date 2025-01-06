@@ -1,4 +1,5 @@
 #include "Presto/Components/Transform.h"
+#include "Presto/Modules/EntityManager.h"
 
 namespace Presto {
     mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale) {
@@ -12,4 +13,8 @@ namespace Presto {
         return model;
     }
 
+    Transform* Transform::New() {
+        auto& em{EntityManager::Get()};
+        return em.newComponent<Transform>();
+    }
 }  // namespace Presto
