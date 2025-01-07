@@ -8,6 +8,8 @@ namespace Presto {
         static double deltaMilliseconds();
         static double deltaSeconds();
 
+        static double totalSecondsSinceStart();
+
        private:
         static void update();
         static void init();

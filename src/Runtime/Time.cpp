@@ -41,4 +41,10 @@ namespace Presto {
                    impl_->delta_time)
             .count();
     };
+
+    double Time::totalSecondsSinceStart() {
+        return std::chrono::duration_cast<std::chrono::seconds>(
+                   impl_->current_time - impl_->program_start)
+            .count();
+    }
 }  // namespace Presto
