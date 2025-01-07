@@ -18,9 +18,7 @@ namespace Presto {
                                  [new_id](auto& key) { return key == new_id; }),
             "Attempted to create entity using existing id: {}", new_id);
 
-        auto new_entity = entity_unique_ptr(
-            new Entity(new_id),
-            [this](Entity* entity) { this->destroyEntity(entity); });
+        auto new_entity = entity_unique_ptr(new Entity(new_id));
 
         Transform* new_transform = Transform::New();
         new_entity->setComponent(new_transform);
@@ -33,19 +31,6 @@ namespace Presto {
         // Remove from map
         entityMap_.erase(entity->id_);
 
-        // Remove from vector
-        auto it = entities_.begin();
-        while (it != entities_.end()) {
-            if (*it == entity) {
-                entities_.erase(it);
-                break;
-            }
-            it++;
-        }
-
-        // Delete the entity
-        delete entity;
-
         // Send event
         Presto::ObjectDestroyedEvent(static_cast<void*>(entity));
     }
@@ -57,10 +42,13 @@ namespace Presto {
 
     void EntityManager::Update() {}
 
+    void EntityManager::Shutdown() { instance_.reset(); }
+
     entity_id_t EntityManager::reserveId() { return _currentId++; }
 
     // TODO: Implement this to clean up dangling entities/components
     void EntityManager::collectGarbage() {};
+
     std::vector<entity_ptr> EntityManager::findAll() {
         std::vector<entity_ptr> entities(entityMap_.size());
         int i = 0;
@@ -80,5 +68,7 @@ namespace Presto {
     std::vector<component_ptr> EntityManager::findComponentsWhere(auto filter) {
         return components_ | std::views::filter(filter);
     }
+
+    EntityManager::~EntityManager() { entityMap_.clear(); };
 
 }  // namespace Presto

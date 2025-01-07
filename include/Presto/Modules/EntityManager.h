@@ -29,7 +29,7 @@ namespace Presto {
         EntityManager &operator=(const EntityManager &) = delete;
         EntityManager &operator=(EntityManager &&) = delete;
 
-        // ~EntityManager() = default;
+        ~EntityManager();
 
         // TODO: Consider making this private. It's not a huge deal either way,
         // and people can just choose which one they use.
@@ -51,14 +51,15 @@ namespace Presto {
         EntityManager() = default;
 
         static void Init();
+        static void Shutdown();
 
         void collectGarbage();
 
         void destroyEntity(entity_ptr entity);
+
         entity_id_t reserveId();
 
-        using entity_unique_ptr =
-            std::unique_ptr<Entity, std::function<void(Entity *)>>;
+        using entity_unique_ptr = std::unique_ptr<Entity>;
 
         std::vector<entity_ptr> entities_;
         std::map<component_id_t, std::unique_ptr<Component>> components_;

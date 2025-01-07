@@ -41,9 +41,11 @@ namespace Presto {
 
         ComponentMap getComponents();
 
+        virtual ~Entity();
+
        private:
         explicit Entity(entity_id_t id);
-        virtual ~Entity();
+        //        virtual ~Entity();
 
         entity_id_t id_{UNASSIGNED_ID};
         ComponentMap components_;

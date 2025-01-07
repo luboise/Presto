@@ -39,6 +39,7 @@ namespace Presto {
 
     Application::~Application() { /*this->app_window->Shutdown();*/
         this->_app_window->Shutdown();
+        EntityManager::Shutdown();
         // this->_app_window.release();
     };
 

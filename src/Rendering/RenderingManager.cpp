@@ -94,14 +94,10 @@ for (auto& layer : _renderLayers) {
                                      std::get<1>(tuple) != nullptr;
                           });
 
-        std::ranges::for_each(
-            mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {
-                renderer_->render(std::get<0>(tuple)->getResource().renderId_,
-                                  std::get<1>(tuple)->getModelView());
-            });
-
-        // TODO: Refactor this to cache in the RenderingManager if the
-        // performance impact is too much
+        for (const auto& tuple : mesh_draws) {
+            renderer_->render(std::get<0>(tuple)->getResource().renderId_,
+                              std::get<1>(tuple)->getModelView());
+        }
 
         renderer_->nextFrame();
     }
