@@ -59,9 +59,9 @@ namespace Presto {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
-        std::unique_ptr<MeshResource> resource;
+        auto resource = std::make_unique<MeshResource>();
 
-        if (file_extension == "gltf") {
+        if (file_extension == ".gltf") {
             auto data = Utils::File::ReadFile(filepath);
 
             TinyGLTF loader;
@@ -75,12 +75,13 @@ bool ret = loader.LoadASCIIFromString(
     Utils::File::getFullPath(filepath).parent_path());
                     */
 
-            bool ret = loader.LoadASCIIFromFile(
-                &model, &err, &warn,
-                Utils::File::getFullPath(filepath).parent_path());
+            fs::path full_asset_path = Utils::File::getFullPath(filepath);
 
-            PR_CORE_ASSERT(
-                ret, std::string("Failed to read asset ") + filepath.string());
+            bool ret =
+                loader.LoadASCIIFromFile(&model, &err, &warn, full_asset_path);
+
+            PR_CORE_ASSERT(ret, std::string("Failed to read asset ") +
+                                    full_asset_path.string());
 
             tinygltf::Mesh& mesh = model.meshes[0];
             tinygltf::Primitive& primitive = mesh.primitives[0];
