@@ -33,7 +33,7 @@ if(NOT TARGET spdlog)
 endif()
 set_property(TARGET spdlog PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_subdirectory(ext/tinyobjloader)
+# add_subdirectory(ext/tinyobjloader)
 
 set(JSON_BuildTests
     OFF
@@ -103,13 +103,25 @@ if(PLATFORM STREQUAL "Windows")
   target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
 endif()
 
-target_link_libraries(PrestoEngine PUBLIC glfw ${Vulkan_LIBRARIES} spdlog
-                                          glm::glm)
-target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW
-                                           tinyobjloader)
+target_link_libraries(PrestoEngine PUBLIC glfw ${Vulkan_LIBRARIES} spdlog)
+
+set(TINYGLTF_HEADER_ONLY
+    OFF
+    CACHE INTERNAL "" FORCE)
+set(TINYGLTF_INSTALL
+    OFF
+    CACHE INTERNAL "" FORCE)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
+
+# target_include_directories(PrestoEngine PUBLIC
+# ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
+
+target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
+target_link_libraries(PrestoEngine PRIVATE tinygltf)
 
 # Needed for shared library
 set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
 compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")

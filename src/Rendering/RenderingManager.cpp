@@ -29,7 +29,21 @@ namespace Presto {
     void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
         RenderData data{};
         data.indices = mesh.indices;
-        data.vertices = mesh.vertices;
+
+        data.vertices.resize(
+            std::min({mesh.positions.size(), mesh.normals.size(),
+                      mesh.tex_coords.size()}));
+
+        for (int i = 0; i < data.vertices.size(); i++) {
+            Vertex v = {.position = mesh.positions[i],
+                        // .colour = mesh.colour[i],
+                        .colour = {1, 1, 1},
+                        .normal = mesh.normals[i],
+                        .tex_coords = mesh.tex_coords[i]};
+            data.vertices[i] = v;
+        }
+
+        data.draw_mode = mesh.draw_mode;
 
         render_data_id_t r_id = renderer_->registerMesh(data);
 

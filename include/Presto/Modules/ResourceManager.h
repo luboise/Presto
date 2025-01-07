@@ -24,6 +24,7 @@ namespace Presto {
         ResourceManager() = default;
 
         // Gets the type of name from the MeshResource struct
-        std::map<decltype(MeshResource::name), MeshResource*> meshResources_;
+        std::map<decltype(MeshResource::name), std::unique_ptr<MeshResource>>
+            meshResources_;
     };
 }  // namespace Presto

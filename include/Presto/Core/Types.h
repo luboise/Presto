@@ -9,8 +9,10 @@ namespace fs = std::filesystem;
 
 namespace Presto {
     struct Vertex {
-        vec3 pos;
+        vec3 position;
         vec3 colour;
+        vec3 normal;
+        vec2 tex_coords;
     };
 
     using Index = uint32_t;

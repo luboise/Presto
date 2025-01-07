@@ -15,3 +15,6 @@
 [submodule "ext/json"]
 	path = ext/json
 	url = https://github.com/nlohmann/json
+[submodule "ext/TinyGLTF"]
+	path = ext/TinyGLTF
+	url = https://github.com/syoyo/tinygltf.git

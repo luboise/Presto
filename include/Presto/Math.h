@@ -10,6 +10,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 using glm::mat4;
+using glm::vec2;
 using glm::vec3;
 
 #define AS_BIT(x) (1 << x)

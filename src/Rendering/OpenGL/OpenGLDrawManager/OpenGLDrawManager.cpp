@@ -20,6 +20,7 @@ namespace Presto {
 
     draw_key OpenGLDrawManager::createDrawInfo(RenderData&& data) {
         constexpr auto VEC_3 = 3;
+        constexpr auto VEC_2 = 2;
 
         // TODO: Potentially reimplement this later if it has a measurable
         // benefit to performance
@@ -65,12 +66,21 @@ if (renderableMap_.contains(data)) {
         // Set up attribute 0 (pos) from vbo
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)(offsetof(Vertex, pos)));
+                              (void*)(offsetof(Vertex, position)));
 
         // Set up attribute 1 (colour) from vbo
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                               (void*)offsetof(Vertex, colour));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              (void*)offsetof(Vertex, normal));
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(1, VEC_2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                              (void*)offsetof(Vertex, tex_coords));
+
         r.shader_program = glCreateProgram();
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -133,5 +143,4 @@ if (renderableMap_.contains(data)) {
 
         return new_draw_key;
     };
-
 }  // namespace Presto

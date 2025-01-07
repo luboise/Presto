@@ -14,15 +14,23 @@ namespace Presto::Meshes {
                                            glm::vec3 colour) {
         glm::float32 a = (size / 2);
 
-        Vertex FRONT_BL = {glm::vec3{-a, a, a} + position, colour};
-        Vertex FRONT_BR = {glm::vec3{a, a, a} + position, colour};
-        Vertex BACK_BL = {glm::vec3{-a, a, -a} + position, colour};
-        Vertex BACK_BR = {glm::vec3{a, a, -a} + position, colour};
+        Vertex FRONT_BL = {.position = glm::vec3{-a, a, a} + position,
+                           .colour = colour};
+        Vertex FRONT_BR = {.position = glm::vec3{a, a, a} + position,
+                           .colour = colour};
+        Vertex BACK_BL = {.position = glm::vec3{-a, a, -a} + position,
+                          .colour = colour};
+        Vertex BACK_BR = {.position = glm::vec3{a, a, -a} + position,
+                          .colour = colour};
 
-        Vertex FRONT_TL = {glm::vec3{-a, -a, a} + position, colour};
-        Vertex FRONT_TR = {glm::vec3{a, -a, a} + position, colour};
-        Vertex BACK_TL = {glm::vec3{-a, -a, -a} + position, colour};
-        Vertex BACK_TR = {glm::vec3{a, -a, -a} + position, colour};
+        Vertex FRONT_TL = {.position = glm::vec3{-a, -a, a} + position,
+                           .colour = colour};
+        Vertex FRONT_TR = {.position = glm::vec3{a, -a, a} + position,
+                           .colour = colour};
+        Vertex BACK_TL = {.position = glm::vec3{-a, -a, -a} + position,
+                          .colour = colour};
+        Vertex BACK_TR = {.position = glm::vec3{a, -a, -a} + position,
+                          .colour = colour};
 
         auto vertices = VertexList{FRONT_BL, FRONT_BR, BACK_BL, BACK_BR,
 

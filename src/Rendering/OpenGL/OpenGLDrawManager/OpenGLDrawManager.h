@@ -5,6 +5,7 @@
 #include "Presto/Rendering/RenderData.h"
 
 namespace Presto {
+
     struct OpenGLDrawInfo {
         GLuint vertex_buf;
         GLsizei vert_count;
@@ -18,6 +19,13 @@ namespace Presto {
         GLuint vao;
     };
 
+    struct OpenGLTFDrawInfo {
+        GLuint buffer;
+        GLsizei index_count;
+        GLuint shader_program;
+        GLuint vao;
+    };
+
     // using draw_key = OpenGLDrawInfo*;
 
     using draw_key = PR_NUMERIC_ID;
@@ -25,6 +33,7 @@ namespace Presto {
     class OpenGLDrawManager {
        public:
         draw_key createDrawInfo(RenderData&& data);
+
         OpenGLDrawInfo* getDrawInfo(draw_key);
 
        private:
