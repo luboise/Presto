@@ -93,8 +93,8 @@ namespace Presto {
 
         // Commence drawing
         glBindVertexArray(renderable.vao);
-        glDrawElements(GL_TRIANGLES, renderable.index_count, GL_UNSIGNED_INT,
-                       nullptr);
+        glDrawElements(renderable.draw_mode, renderable.index_count,
+                       GL_UNSIGNED_INT, nullptr);
     }
 
     void OpenGLRenderer::nextFrame() {

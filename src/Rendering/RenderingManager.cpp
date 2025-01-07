@@ -1,4 +1,5 @@
 #include "Presto/Modules/RenderingManager.h"
+#include "Presto/Core/Types.h"
 #include "Presto/Modules/EntityManager.h"
 
 #include "Presto/Components/Renderable/Mesh.h"
@@ -28,7 +29,12 @@ namespace Presto {
 
     void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
         RenderData data{};
-        data.indices = mesh.indices;
+
+        data.indices.resize(mesh.indices.size());
+
+        std::ranges::transform(
+            mesh.indices.begin(), mesh.indices.end(), data.indices.begin(),
+            [](auto val) { return static_cast<Index>(val); });
 
         data.vertices.resize(
             std::min({mesh.positions.size(), mesh.normals.size(),

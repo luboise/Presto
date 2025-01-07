@@ -43,6 +43,8 @@ if (renderableMap_.contains(data)) {
 
         r.first_index = 0;
 
+        r.draw_mode = data.draw_mode;
+
         // Create vertex buffer and write into it
         glGenBuffers(1, &r.vertex_buf);
         glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);

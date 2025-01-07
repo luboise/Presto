@@ -17,13 +17,8 @@ namespace Presto {
 
         GLuint shader_program;
         GLuint vao;
-    };
 
-    struct OpenGLTFDrawInfo {
-        GLuint buffer;
-        GLsizei index_count;
-        GLuint shader_program;
-        GLuint vao;
+        int draw_mode;
     };
 
     // using draw_key = OpenGLDrawInfo*;
