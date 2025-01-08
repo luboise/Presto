@@ -5,10 +5,13 @@ namespace Presto {
         friend class Application;
 
        public:
-        static double deltaMilliseconds();
-        static double deltaSeconds();
+        using Seconds = double;
+        using Milliseconds = double;
 
-        static double totalSecondsSinceStart();
+        static Milliseconds deltaMilliseconds();
+        static Seconds deltaSeconds();
+
+        static Seconds totalSecondsSinceStart();
 
        private:
         static void update();

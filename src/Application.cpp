@@ -10,6 +10,8 @@
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 
+#include "Utils/DebugTimer.h"
+
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace Presto {
@@ -43,26 +45,45 @@ namespace Presto {
     };
 
     void Application::Run() {
+        DebugTimer game_loop_timer("User Game Loop");
+        DebugTimer window_timer("Updating GLFWWindow");
+        DebugTimer rendering_timer("Rendering All Entities");
+        DebugTimer time_update("Global Time Update");
+        DebugTimer garbage_collection_timer("Garbage Collection");
+
         while (app_running) {
             // Calculate delta
 
-            double newTime = glfwGetTime();
-            _delta = newTime - _currentTime;
-            _currentTime = newTime;
-
             // PRINT FPS
-            // PR_CORE_TRACE("{:.2f} FPS", 1 / _delta);
+            PR_CORE_TRACE("{:.2f} FPS", 1 / Time::deltaSeconds());
 
-            // TODO: Create new entities
+            // TODO: Create new entities at start of new frame
 
             // Run user logic
-            GameLoop();
-            RunSystems();
 
+            // game_loop_timer.reset();
+            GameLoop();
+            // game_loop_timer.printElapsed();
+
+            // rendering_timer.reset();
+            RunSystems();
+            // rendering_timer.printElapsed();
+
+            // window_timer.reset();
             _app_window->Update();
+            // window_timer.printElapsed();
+
+            // rendering_timer.reset();
             RenderingManager::Get().Update();
+            // rendering_timer.printElapsed();
+
+            // garbage_collection_timer.reset();
             EntityManager::Get().collectGarbage();
+            // garbage_collection_timer.printElapsed();
+
+            time_update.reset();
             Time::update();
+            time_update.printElapsed();
         }
     }
 

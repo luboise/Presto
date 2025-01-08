@@ -34,17 +34,24 @@ namespace Presto {
         impl_->current_time = current_time;
     }
 
-    double Time::deltaSeconds() { return Time::deltaMilliseconds() / 1000; }
+    Time::Seconds Time::deltaSeconds() {
+        return std::chrono::duration<double>(impl_->delta_time).count();
+    }
 
-    double Time::deltaMilliseconds() {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(
-                   impl_->delta_time)
+    Time::Milliseconds Time::deltaMilliseconds() {
+        return std::chrono::duration<double, std::milli>(impl_->delta_time)
             .count();
+
+        /*
+return std::chrono::duration_cast<std::chrono::milliseconds>(
+           impl_->delta_time)
+    .count();
+                */
     };
 
-    double Time::totalSecondsSinceStart() {
-        return std::chrono::duration_cast<std::chrono::seconds>(
-                   impl_->current_time - impl_->program_start)
+    Time::Seconds Time::totalSecondsSinceStart() {
+        return std::chrono::duration<double>(impl_->current_time -
+                                             impl_->program_start)
             .count();
     }
 }  // namespace Presto
