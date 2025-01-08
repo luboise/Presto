@@ -2,6 +2,7 @@
 // DO NOT REORDER
 
 #include "Core.h"                // IWYU pragma: export
+#include "EntryPoint.h"          // IWYU pragma: export
 #include "Managers.h"            // IWYU pragma: export
 #include "Math.h"                // IWYU pragma: export
 #include "Objects.h"             // IWYU pragma: export

@@ -12,8 +12,8 @@ add_library(PrestoEngine SHARED)
 target_include_directories(PrestoEngine
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_include_directories(PrestoEngine PUBLIC ../ext/spdlog/include
-                                               ../ext/glm/include)
+					   target_include_directories(PrestoEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
+	${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
 target_include_directories(
   PrestoEngine PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
                        ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -46,6 +46,9 @@ set(TINYGLTF_HEADER_ONLY
 set(TINYGLTF_INSTALL
     OFF
     CACHE INTERNAL "" FORCE)
+
+set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 
 # target_include_directories(PrestoEngine PUBLIC
 # ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)

@@ -62,5 +62,7 @@ else()
 endif()
 
 
-add_subdirectory(engine)
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
 
+add_subdirectory(engine)
+add_subdirectory(editor)

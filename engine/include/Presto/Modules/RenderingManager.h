@@ -14,7 +14,10 @@ namespace Presto {
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
        public:
         static void Init();
+
         void Update() override;
+        void Clear();
+
         static void Shutdown();
 
         static void setRenderLibrary(RENDER_LIBRARY library) {

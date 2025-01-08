@@ -17,8 +17,15 @@ namespace Presto {
         Application();
         virtual ~Application();
 
-        virtual void Setup() {};
-        virtual void Run();
+        virtual void run();
+
+        // These are overridden by user implementations
+        virtual void preLoop() {};
+        virtual void postLoop() {};
+        virtual void setup() {};
+        virtual void tearDown() {};
+
+        [[nodiscard]] Window* GetWindow() const { return _app_window.get(); };
 
         // Intended to be replaced by user logic
         virtual void GameLoop() {};

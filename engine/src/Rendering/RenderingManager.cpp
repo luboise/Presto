@@ -102,8 +102,6 @@ for (auto& layer : _renderLayers) {
 
         // TODO: Refactor this to cache in the RenderingManager if the
         // performance impact is too much
-
-        renderer_->nextFrame();
     }
 
     void RenderingManager::Shutdown() {}
@@ -143,6 +141,8 @@ for (auto& layer : _renderLayers) {
 
         return _renderLayers[id];
     }
+
+    void RenderingManager::Clear() { renderer_->nextFrame(); }
 
     /*
         Mesh* RenderingManager::NewMesh(const VertexList& vertices,
