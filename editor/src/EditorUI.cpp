@@ -56,8 +56,132 @@ void EditorUI::draw() {
                                            : viewport->Size);
 
     if (ImGui::Begin("Example: Fullscreen window", nullptr, flags)) {
-        if (ImGui::Button("Close this window")) {
-            EditorUI::exitCallback_();
+        /*
+if (ImGui::Button("Close this window")) {
+    EditorUI::exitCallback_();
+}
+        */
+
+        /*
+        if (ImGui::BeginTable("Main Table", 3)) {
+            ImGui::TableSetupColumn("Column 1",
+                                    ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Column 2",
+                                    ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Column 3",
+                                    ImGuiTableColumnFlags_WidthStretch);
+
+            ImGui::TableHeadersRow();
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+
+            ImVec2 fullSize = ImGui::GetContentRegionAvail();
+
+            ImGui::SetNextWindowSize(fullSize);
+
+            if (ImGui::Begin("Pog assets", nullptr, 0)) {
+                ImGui::Text("bruh");
+                ImGui::End();
+            };
+
+            ImGui::Text("heyy");
+            ImGui::TableNextColumn();
+            ImGui::Text("heyy2");
+
+            ImGui::EndTable();
+        }
+
+        */
+
+        ImVec2 region = ImGui::GetContentRegionAvail();
+
+        {
+            ImGui::BeginChild("Scene", ImVec2(region.x * 0.22, region.y * 0.5),
+                              ImGuiChildFlags_None);
+
+            ImGui::Text("Scene");
+
+            // ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_CollapsingHeader};
+            ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
+                                     ImGuiTreeNodeFlags_Leaf};
+
+            static std::string selected{};
+            PR_CORE_TRACE(selected);
+
+#define TREE_NODE(Label, ...)                                            \
+    {                                                                    \
+        char label[] = #Label;                                           \
+        if (ImGui::TreeNodeEx(                                           \
+                label,                                                   \
+                flags | (selected == label ? ImGuiTreeNodeFlags_Selected \
+                                           : ImGuiTreeNodeFlags_None),   \
+                label)) {                                                \
+            if (ImGui::IsItemClicked()) {                                \
+                selected = label;                                        \
+            }                                                            \
+            __VA_ARGS__;                                                 \
+            ImGui::TreePop();                                            \
+        }                                                                \
+    }
+
+            TREE_NODE(Main Entity, TREE_NODE(SubEntity))
+
+            /*
+        if (ImGui::TreeNodeEx("Player",
+                  flags | ImGuiTreeNodeFlags_Selected,
+                  "Player")) {
+        if (ImGui::IsItemClicked()) {
+        node_clicked = i;
+        }
+        if (ImGui::TreeNodeEx("Player Head", flags, "Player Head")) {
+        ImGui::TreePop();
+        }
+        ImGui::TreePop();
+        }
+        if (ImGui::TreeNodeEx("Alien Enemy", flags, "Alien Enemy")) {
+        ImGui::TreePop();
+        };
+        */
+
+            ImGui::EndChild();
+        }
+
+        /*
+                {
+                    ImGui::BeginChild("Assets", ImVec2(region.x * 0.33, region.y
+           * 0.5), ImGuiChildFlags_None);
+
+                    ImGui::Text("Assets");
+
+                    for (int i = 0; i < 100; i++)
+                        ImGui::Text("%04d: scrollable region", i);
+                    ImGui::EndChild();
+                }
+                        */
+
+        {
+            ImGui::SameLine();
+            ImGui::BeginChild("Options", ImVec2(region.x * 0.22, region.y),
+                              ImGuiChildFlags_None);
+
+            ImGui::Text("Options");
+            for (int i = 0; i < 100; i++)
+                ImGui::Text("%04d: scrollable region", i);
+            ImGui::EndChild();
+        }
+        {
+            ImGui::SameLine();
+            ImGui::BeginChild("Preview", ImGui::GetContentRegionAvail(),
+                              ImGuiChildFlags_None);
+
+            ImGui::Text("Preview");
+
+            /*
+        for (int i = 0; i < 100; i++)
+        ImGui::Text("%04d: scrollable region", i);
+            */
+            ImGui::EndChild();
         }
 
         if (ImGui::BeginMainMenuBar()) {
@@ -69,14 +193,15 @@ void EditorUI::draw() {
 
             ImGui::EndMainMenuBar();
         }
-
-        /*
-HelpMarker(
-"Main Area = entire viewport,\nWork Area = entire viewport "
-"minus sections used by the main menu bars, task bars "
-"etc.\n\nEnable the main-menu bar in Examples menu to see "
-"the difference.");
-                */
     }
+
+    /*
+    HelpMarker(
+    "Main Area = entire viewport,\nWork Area = entire viewport "
+    "minus sections used by the main menu bars, task bars "
+    "etc.\n\nEnable the main-menu bar in Examples menu to see "
+    "the difference.");
+            */
+
     ImGui::End();
 }

@@ -7,6 +7,10 @@ project(Presto)
 add_executable(PrestoEditor src/main.cpp src/EditorUI.cpp)
 target_link_libraries(PrestoEditor PRIVATE PrestoEngine glm::glm)
 
+target_precompile_headers(PrestoEditor 
+	PRIVATE src/pch.h
+)
+
 target_sources(PrestoEditor PRIVATE ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IMGUI_DIR}/imgui_tables.cpp ${IMGUI_DIR}/imgui_widgets.cpp ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp ${IMGUI_DIR}/imgui_demo.cpp)
 
 target_include_directories(PrestoEditor

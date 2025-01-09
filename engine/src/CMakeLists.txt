@@ -3,7 +3,6 @@ add_subdirectory(Components)
 add_subdirectory(Modules)
 add_subdirectory(Objects)
 add_subdirectory(Rendering)
-add_subdirectory(Scenes)
 add_subdirectory(Shaders)
 add_subdirectory(Utils)
 

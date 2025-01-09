@@ -1,6 +1,6 @@
 #include "Presto/API/SceneAPI.h"
 
-#include "SceneManager.h"
+#include "Presto/Modules/SceneManager.h"
 
 namespace Presto {
 

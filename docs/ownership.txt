@@ -23,3 +23,30 @@ Entity:
 		- Model
 
 	- Polygon2D
+
+
+Engine
+- Assets
+  - Meshes
+  - Materials
+  - Textures
+
+Editor
+- Project file
+  - Scenes folder
+  	- .prsc scene files
+  - Assets folder
+    - Original .gltf file
+
+
+
+Loading a project
+- Load the .masterpiece file
+- Scan for scenes
+- Load the main scene (listed in the masterpiece)
+
+Loading a scene
+- Go to the desired scene file
+- Check for figures in the scene file
+- Create the tree structure in imgui
+- add the figures to the actual rendered scene in the editor

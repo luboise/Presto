@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Types.h"
+
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
