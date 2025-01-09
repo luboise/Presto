@@ -107,7 +107,6 @@ if (ImGui::Button("Close this window")) {
                                      ImGuiTreeNodeFlags_Leaf};
 
             static std::string selected{};
-            PR_CORE_TRACE(selected);
 
 #define TREE_NODE(Label, ...)                                            \
     {                                                                    \
