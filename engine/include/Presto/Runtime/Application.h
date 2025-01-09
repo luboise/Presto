@@ -25,6 +25,8 @@ namespace Presto {
         virtual void setup() {};
         virtual void tearDown() {};
 
+        void exit() { app_running = false; };
+
         [[nodiscard]] Window* GetWindow() const { return _app_window.get(); };
 
         // Intended to be replaced by user logic
