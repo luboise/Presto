@@ -1,6 +1,8 @@
 #pragma once
 
 // #include "Presto/Core.h"
+#include <memory>
+
 #define F_INIT Init
 #define F_UPDATE Update
 #define F_SHUTDOWN Shutdown

@@ -1,6 +1,7 @@
 #include "Presto/Runtime/Window.h"
 
 #include "EditorUI.h"
+#include "MasterpieceManager.h"
 
 #include <utility>
 #include "backends/imgui_impl_glfw.h"
@@ -38,20 +39,37 @@ void EditorUI::render() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-#define TREE_NODE(Label, ...)                                            \
-    {                                                                    \
-        char label[] = #Label;                                           \
-        if (ImGui::TreeNodeEx(                                           \
-                label,                                                   \
-                flags | (selected == label ? ImGuiTreeNodeFlags_Selected \
-                                           : ImGuiTreeNodeFlags_None),   \
-                label)) {                                                \
-            if (ImGui::IsItemClicked()) {                                \
-                selected = label;                                        \
-            }                                                            \
-            __VA_ARGS__;                                                 \
-            ImGui::TreePop();                                            \
-        }                                                                \
+#define TREE_NODE(Label, ...)                                                  \
+    {                                                                          \
+        char label[] = #Label;                                                 \
+        if (ImGui::TreeNodeEx(                                                 \
+                label,                                                         \
+                flags | (selected_scene == label ? ImGuiTreeNodeFlags_Selected \
+                                                 : ImGuiTreeNodeFlags_None),   \
+                label)) {                                                      \
+            if (ImGui::IsItemClicked()) {                                      \
+                selected_scene = label;                                        \
+            }                                                                  \
+            __VA_ARGS__;                                                       \
+            ImGui::TreePop();                                                  \
+        }                                                                      \
+    }
+
+#define ENTITY_TREE_NODE(Label, ...)                                           \
+    {                                                                          \
+        std::string label{Label};                                              \
+                                                                               \
+        if (ImGui::TreeNodeEx(                                                 \
+                label.data(),                                                  \
+                flags | (selected_scene == label ? ImGuiTreeNodeFlags_Selected \
+                                                 : ImGuiTreeNodeFlags_None),   \
+                label.data())) {                                               \
+            if (ImGui::IsItemClicked()) {                                      \
+                selected_scene = label;                                        \
+            }                                                                  \
+            __VA_ARGS__;                                                       \
+            ImGui::TreePop();                                                  \
+        }                                                                      \
     }
 
 /*
@@ -83,7 +101,58 @@ void EditorUI::draw() {
 
     ImGui::NewFrame();
 
-    auto main_viewport = ImGui::GetMainViewport();
+    if (errorMessages_.size() > 0) {
+        if (ImGui::Begin("Error box")) {
+            ImGui::Text(errorMessages_.front().data());
+            if (ImGui::Button("OK")) {
+                errorMessages_.erase(errorMessages_.begin());
+            }
+            ImGui::End();
+        };
+    } else if (state_ == EditorState::EDITING) {
+        drawMainEditor();
+    } else if (state_ == EditorState::SELECTING_A_FILE) {
+        ImGui::Begin("File Selector");
+        static std::array<char, 100> chosen_file;
+
+        ImGui::InputText("Path", chosen_file.data(), 100,
+                         ImGuiInputTextFlags_ElideLeft);
+        ImGui::SameLine();
+
+        if (ImGui::Button("Open")) {
+            fs::path chosen_path = std::string(chosen_file.data());
+
+            if (!MasterpieceManager::get().openMasterpiece(chosen_path)) {
+                errorMessages_.emplace_back("Unable to open masterpiece.");
+            } else {
+                reloadState();
+            };
+
+            state_ = EditorState::EDITING;
+        }
+
+        ImGui::End();
+    }
+
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("New Masterpiece", "CTRL+SHIFT+N")) {
+            }
+
+            else if (ImGui::MenuItem("Open Masterpiece", "CTRL+O") &&
+                     state_ == EditorState::EDITING) {
+                state_ = EditorState::SELECTING_A_FILE;
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+}
+
+void EditorUI::drawMainEditor() {
+    auto* main_viewport = ImGui::GetMainViewport();
 
     auto dock_flags{ImGuiDockNodeFlags_PassthruCentralNode |
                     ImGuiDockNodeFlags_NoDockingInCentralNode |
@@ -123,27 +192,45 @@ if (visible) app.DisplayDocContents(doc);
 
     */
 
-    CHILD(Scene, 0.22, 1, {
-        ImGui::Text("Scene");
-
-        // ImGuiTreeNodeFlags
-        // flags{ImGuiTreeNodeFlags_CollapsingHeader};
-        ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
-                                 ImGuiTreeNodeFlags_Leaf};
-
-        static std::string selected{};
-
-        TREE_NODE(Main Entity, TREE_NODE(SubEntity))
-
-        ImGui::Separator();
-
-        CHILD(Assets, 1, 0.5, {
-            ImGui::Text("Assets");
-
-            for (int i = 0; i < 100; i++) {
-                ImGui::Text("%04d: scrollable region", i);
+    {
+        ImVec2 proportions = ImGui::GetContentRegionAvail();
+        if (ImGui::Begin("Scene")) {
+            Scene* main_scene{MasterpieceManager::get().getMainScene()};
+            static std::string selected_scene{};
+            ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
+                                     ImGuiTreeNodeFlags_Leaf};
+            if (main_scene == nullptr) {
+                ImGui::Text("No main scene available in masterpiece.");
+            } else {
+                for (const auto& entity_ptr : main_scene->getEntities()) {
+                    std::string name = entity_ptr->getName();
+                    {
+                        std::string label{name};
+                        if (ImGui::TreeNodeEx(
+                                label.data(),
+                                flags | (selected_scene == label
+                                             ? ImGuiTreeNodeFlags_Selected
+                                             : ImGuiTreeNodeFlags_None),
+                                label.data())) {
+                            if (ImGui::IsItemClicked()) {
+                                selected_scene = label;
+                            };
+                            ImGui::TreePop();
+                        }
+                    };
+                }
             }
-        });
+
+            ImGui::End();
+        }
+    };
+
+    CHILD(Assets, 1, 0.5, {
+        ImGui::Text("Assets");
+
+        for (int i = 0; i < 100; i++) {
+            ImGui::Text("%04d: scrollable region", i);
+        }
     });
 
     ImGui::SameLine();
@@ -162,19 +249,10 @@ if (visible) app.DisplayDocContents(doc);
                          ImGuiWindowFlags_NoTitleBar |
                          ImGuiWindowFlags_NoBackground)) {
         ImGui::Text("Preview");
-        ImGui ::End();
-    }
-
-    if (ImGui::BeginMainMenuBar()) {
-        if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("New Masterpiece", "CTRL+SHIFT+N")) {
-            }
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMainMenuBar();
+        ImGui::End();
     }
 }
+
 /*
 if (ImGui::BeginChild("Scene",
                       ImVec2(region.x * 0.22, region.y * 0.5),
@@ -208,3 +286,15 @@ ImGui::TreePop();
 
             ImGui::EndChild();
 */
+
+void EditorUI::reloadState() {
+
+};
+
+void EditorUI::modalPopup(std::string message) {
+    // TODO: Implement this
+};
+
+void EditorUI::errorPopup(std::string message) {
+    errorMessages_.push_back(message);
+};

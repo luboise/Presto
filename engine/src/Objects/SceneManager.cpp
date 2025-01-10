@@ -1,10 +1,12 @@
 #include "Presto/Modules/SceneManager.h"
 
 namespace Presto {
-    Scene* SceneManager::_currentScene = nullptr;
-    std::map<scene_id_t, Scene*> SceneManager::_sceneMap;
 
-    void SceneManager::Init() {};
+    SceneManager::SceneManager() = default;
+
+    void SceneManager::Init() {
+        instance_ = std::unique_ptr<SceneManager>(new SceneManager());
+    };
 
     Scene* SceneManager::LoadScene(const json& j) {
         if (!j.contains("name") || !j.contains("objects")) {
@@ -23,24 +25,46 @@ namespace Presto {
         return Scene::INVALID;
     };
 
-    void SceneManager::SwitchScene(const scene_id_t& id) {
-        Scene* scene_ptr = GetScene(id);
+    void SceneManager::SwitchScene(const scene_name_t& id) {
+        Scene* scene_ptr = getScene(id);
         if (scene_ptr != nullptr) {
             SwitchScene(*scene_ptr);
         }
     }
 
     // TODO: Make this actually switch out the scene
-    void SceneManager::SwitchScene(Scene& scene) { _currentScene = &scene; }
+    void SceneManager::SwitchScene(Scene& scene) { currentScene_ = &scene; }
 
-    Scene* SceneManager::GetScene(const scene_id_t& id) {
-        auto scene_iterator = _sceneMap.find(id);
+    Scene* SceneManager::getScene(const scene_name_t& id) {
+        auto scene_iterator = sceneMap_.find(id);
 
-        if (scene_iterator == _sceneMap.end()) {
+        if (scene_iterator == sceneMap_.end()) {
             PR_CORE_WARN("Unable to get scene: {}", id);
             return nullptr;
         }
 
-        return scene_iterator->second;
+        return scene_iterator->second.get();
+    };
+
+    Scene* SceneManager::newScene(std::string name) {
+        sceneMap_.emplace(name, std::make_unique<Scene>(name));
+
+        return sceneMap_[name].get();
+    };
+
+    Scene* SceneManager::newSceneFromJson(json jsonData) {
+        try {
+            scene_name_t name = jsonData["name"];
+
+            auto new_scene{std::make_unique<Scene>(name)};
+
+            sceneMap_.emplace(name, std::move(new_scene));
+            return getScene(name);
+
+        } catch (std::exception& e) {
+            PR_CORE_ERROR("Unable to create scene from json data.");
+        }
+
+        return nullptr;
     };
 }  // namespace Presto

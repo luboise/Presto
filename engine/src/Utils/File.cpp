@@ -47,7 +47,17 @@ namespace Presto::Utils {
         return buffer;
     };
 
-    json File::GetJSON(const std::string& text) { return json::parse(text); }
+    json File::GetJSON(const std::string& text) {
+        try {
+            return json::parse(text);
+        } catch (...) {
+            return {};
+        }
+    }
+
+    json File::GetJSON(const fs::path& path) {
+        return File::GetJSON(File::ReadFile(path));
+    }
 
     fs::path File::getFullPath(const AssetPath& path) {
         return executableDirectory / path;

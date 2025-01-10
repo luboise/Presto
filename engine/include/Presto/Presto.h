@@ -11,5 +11,4 @@
 #include "Utils.h"               // IWYU pragma: export
 
 // General API
-#include "API/SceneAPI.h"
 #include "Components.h"

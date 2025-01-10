@@ -1,5 +1,7 @@
 #include "Presto/Runtime/Application.h"
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Modules/SceneManager.h"
+
 #include "Presto/Runtime.h"
 
 #include "Presto/Managers.h"
@@ -37,6 +39,7 @@ namespace Presto {
 
         EntityManager::Init();
         ResourceManager::Init();
+        SceneManager::Init();
         Time::init();
     }
 

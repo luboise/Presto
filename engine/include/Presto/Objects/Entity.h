@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Presto/Core/Types.h"
 // #include "Presto/Core/Constants.h"
 
 #include <map>
@@ -11,6 +12,7 @@ namespace Presto {
 
     using ComponentMap = std::map<component_class_t, Component*>;
     using entity_id_t = PR_NUMERIC_ID;
+    using entity_name_t = PR_STRING_ID;
 
     class PRESTO_API Entity {
         friend class EntityManager;
@@ -41,11 +43,15 @@ namespace Presto {
 
         ComponentMap getComponents();
 
+        [[nodiscard]] entity_name_t getName() const { return name_; }
+
        private:
-        explicit Entity(entity_id_t id);
+        explicit Entity(entity_id_t id, entity_name_t = "Entity");
         virtual ~Entity();
 
+        entity_name_t name_;
         entity_id_t id_{UNASSIGNED_ID};
+
         ComponentMap components_;
         glm::vec3 _position{0, 0, 0};
         glm::vec3 _rotation{0, 0, 0};

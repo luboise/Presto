@@ -1,22 +1,33 @@
 #pragma once
 
+#include <utility>
+
 #include "Presto/Core/Types.h"
 
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
-    using scene_id_t = PR_STRING_ID;
+    using scene_name_t = PR_STRING_ID;
 
     class Scene {
        public:
         static constexpr Scene* INVALID = nullptr;
 
+        explicit Scene(scene_name_t name)
+            : name_(std::move(name)), entityList_({}) {};
+
         inline void addEntity(entity_ptr entity) {
-            _entities.push_back(entity);
+            entityList_.push_back(entity);
         };
 
+        [[nodiscard]] std::vector<entity_ptr> getEntities() const;
+
+        [[nodiscard]] scene_name_t getName() const { return name_; };
+
        private:
-        scene_id_t _name;
-        std::vector<entity_ptr> _entities;
+        scene_name_t name_;
+
+        // TODO: Make sure scenes can't share the same entity
+        std::vector<entity_ptr> entityList_;
     };
 }  // namespace Presto

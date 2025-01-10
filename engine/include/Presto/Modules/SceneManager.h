@@ -12,24 +12,30 @@ namespace Presto {
        public:
         static void Init();
 
-        static Scene* LoadScene(const json& j);
-        static void SwitchScene(const scene_id_t&);
-        static void SwitchScene(Scene&);
+        void Update() override {};
 
-        static Scene* GetScene(const scene_id_t&);
+        Scene* newScene(std::string name);
+
+        [[nodiscard]] Scene* newSceneFromJson(json jsonData);
+
+        Scene* LoadScene(const json& j);
+        void SwitchScene(const scene_name_t&);
+        void SwitchScene(Scene&);
+
+        Scene* getScene(const scene_name_t&);
 
         SceneManager(const SceneManager&) = delete;
         SceneManager(SceneManager&&) = delete;
         SceneManager& operator=(const SceneManager&) = delete;
         SceneManager& operator=(SceneManager&&) = delete;
 
-        virtual ~SceneManager() = delete;
+        virtual ~SceneManager() = default;
 
        private:
         SceneManager();
 
-        static Scene* _currentScene;
-        static std::map<scene_id_t, Scene*> _sceneMap;
+        Scene* currentScene_{nullptr};
+        std::map<scene_name_t, std::unique_ptr<Scene>> sceneMap_;
     };
 
 }  // namespace Presto
