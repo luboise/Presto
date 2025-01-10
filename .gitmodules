@@ -18,3 +18,7 @@
 [submodule "ext/TinyGLTF"]
 	path = ext/TinyGLTF
 	url = https://github.com/syoyo/tinygltf.git
+[submodule "ext/imgui"]
+	path = ext/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
