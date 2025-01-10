@@ -94,7 +94,7 @@ std::vector<fs::path> MasterpieceManager::getMasterpieceFilesInDirectory(
 void MasterpieceManager::clearMasterpiece() { sceneMap_.clear(); };
 
 Scene* MasterpieceManager::getMainScene() const {
-    auto search = sceneMap_.find(currentMasterpiece_.name);
+    auto search = sceneMap_.find(currentMasterpiece_.main_scene);
 
     if (search == sceneMap_.end()) {
         return nullptr;
