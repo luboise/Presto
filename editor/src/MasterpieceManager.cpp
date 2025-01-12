@@ -39,6 +39,13 @@ bool MasterpieceManager::openMasterpiece(const fs::path& projectFilepath) {
             auto json_data = Presto::Utils::File::GetJSON(path);
             Scene* new_scene{
                 Presto::SceneManager::Get().newSceneFromJson(json_data)};
+
+            if (new_scene == nullptr) {
+                EditorUI::errorPopup(std::format(
+                    "Error reading scene {} from JSON.", path.string()));
+                continue;
+            }
+
             sceneMap_.emplace(new_scene->getName(), new_scene);
         }
     }

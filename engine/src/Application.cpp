@@ -107,7 +107,8 @@ namespace Presto {
         dispatcher.Dispatch<WindowCloseEvent>(
             BIND_EVENT_FN(Application::OnWindowClose));
 
-        PR_CORE_TRACE("{}", e.ToString());
+        // TODO: Implement log levels
+        // PR_CORE_TRACE("{}", e.ToString());
     }
 
     bool Application::OnWindowClose(WindowCloseEvent& e) {

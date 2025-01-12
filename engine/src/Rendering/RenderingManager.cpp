@@ -91,6 +91,7 @@ for (auto& layer : _renderLayers) {
                           }) |
                           std::views::filter([](auto tuple) {
                               return std::get<0>(tuple) != nullptr &&
+                                     std::get<0>(tuple)->hasResource() &&
                                      std::get<1>(tuple) != nullptr;
                           });
 

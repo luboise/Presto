@@ -3,6 +3,8 @@
 // #include "Presto/Core.h"
 #include <memory>
 
+#include "Presto/Platform.h"
+
 #define F_INIT Init
 #define F_UPDATE Update
 #define F_SHUTDOWN Shutdown

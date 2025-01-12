@@ -1,6 +1,15 @@
 #include "Presto/Modules/SceneManager.h"
+#include "Presto/Components/Renderable/Mesh.h"
+#include "Presto/Modules/EntityManager.h"
 
 namespace Presto {
+    constexpr auto TYPE_KEY = "type";
+    constexpr auto NAME_KEY = "name";
+
+    constexpr auto ENTITY_KEY = "entity";
+
+    constexpr auto OBJECTS_KEY = "objects";
+    constexpr auto COMPONENTS_KEY = "components";
 
     SceneManager::SceneManager() = default;
 
@@ -9,12 +18,12 @@ namespace Presto {
     };
 
     Scene* SceneManager::LoadScene(const json& j) {
-        if (!j.contains("name") || !j.contains("objects")) {
+        if (!j.contains(NAME_KEY) || !j.contains(OBJECTS_KEY)) {
             return Scene::INVALID;
         }
 
-        const auto& scene_name = j["name"];
-        const auto& objects = j["objects"];
+        const auto& scene_name = j[NAME_KEY];
+        const auto& objects = j[OBJECTS_KEY];
 
         PR_CORE_TRACE("Scene: {}", scene_name);
         for (const auto& object : objects) {
@@ -40,7 +49,7 @@ namespace Presto {
 
         if (scene_iterator == sceneMap_.end()) {
             PR_CORE_WARN("Unable to get scene: {}", id);
-            return nullptr;
+            return Scene::INVALID;
         }
 
         return scene_iterator->second.get();
@@ -53,18 +62,101 @@ namespace Presto {
     };
 
     Scene* SceneManager::newSceneFromJson(json jsonData) {
-        try {
-            scene_name_t name = jsonData["name"];
-
-            auto new_scene{std::make_unique<Scene>(name)};
-
-            sceneMap_.emplace(name, std::move(new_scene));
-            return getScene(name);
-
-        } catch (std::exception& e) {
-            PR_CORE_ERROR("Unable to create scene from json data.");
+        if (auto message = validateSceneSyntax(jsonData); message != "") {
+            PR_CORE_ERROR("Error validating scene: {}", message);
+            return Scene::INVALID;
         }
 
-        return nullptr;
-    };
+        scene_name_t scene_name = jsonData[NAME_KEY];
+        auto new_scene{std::make_unique<Scene>(scene_name)};
+
+        for (const auto& object : jsonData[OBJECTS_KEY]) {
+            if (object[TYPE_KEY] == ENTITY_KEY) {
+                auto entity_name = object[NAME_KEY];
+                entity_ptr new_entity =
+                    EntityManager::Get().newEntity(entity_name);
+
+                for (const auto& component : object[COMPONENTS_KEY]) {
+                    if (component["type"] == "mesh") {
+                        auto* new_mesh_component{
+                            EntityManager::Get().newComponent<Mesh>()};
+
+                        new_entity->setComponent(new_mesh_component);
+                    }
+                }
+
+                new_scene->addEntity(new_entity);
+            }
+        }
+        sceneMap_.emplace(scene_name, std::move(new_scene));
+        return getScene(scene_name);
+    }
+
+    std::string SceneManager::validateSceneSyntax(const json& sceneData) {
+        auto hasKeys{
+            [](const json& data,
+               std::initializer_list<std::string> keys) -> std::string {
+                for (const std::string& key : keys) {
+                    if (!data.contains(key)) {
+                        return std::format(
+                            "Unable to find key \"{}\" in json object.", key,
+                            data.type_name());
+                    }
+                }
+
+                return "";
+            }};
+
+        auto validateEntity{[hasKeys](const json& entityData) -> std::string {
+            if (auto message = hasKeys(entityData, {NAME_KEY, COMPONENTS_KEY});
+                message != "") {
+                return message;
+            }
+
+            const auto& componentsDict{entityData[COMPONENTS_KEY]};
+
+            if (!componentsDict.is_object()) {
+                return std::format("Key {} exists, but is not a JSON object.",
+                                   COMPONENTS_KEY);
+            }
+
+            for (const auto& componentKey : componentsDict) {
+                // TODO: Implement individual checks here
+                if (componentKey == "mesh") {
+                } else if (componentKey == "transform") {
+                } else {
+                    return std::format("Invalid component type: {}.",
+                                       std::string(componentKey));
+                }
+            }
+
+            return "";
+        }};
+
+        // Check for name and objects keys
+        if (auto message = hasKeys(sceneData, {NAME_KEY, OBJECTS_KEY});
+            message != "") {
+            return message;
+        }
+
+        if (!sceneData[OBJECTS_KEY].is_array()) {
+            return std::format(
+                "Key {} appears, but its data is not a JSON array.",
+                OBJECTS_KEY);
+        }
+
+        for (const auto& object : sceneData[OBJECTS_KEY]) {
+            // If it is a serialised raw entity, validate it as an entity
+            if (object[TYPE_KEY] == ENTITY_KEY) {
+                if (std::string message = validateEntity(object);
+                    message != "") {
+                    return message;
+                }
+            } else {
+                return std::format("Invalid serialised object type: {}",
+                                   std::string{object[TYPE_KEY]});
+            }
+        }
+        return "";
+    }
 }  // namespace Presto

@@ -34,6 +34,10 @@ namespace Presto {
        private:
         SceneManager();
 
+        // Returns the error as a string if an error occurs when validating the
+        // scene
+        static std::string validateSceneSyntax(const json& sceneData);
+
         Scene* currentScene_{nullptr};
         std::map<scene_name_t, std::unique_ptr<Scene>> sceneMap_;
     };

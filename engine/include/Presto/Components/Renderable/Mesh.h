@@ -22,14 +22,17 @@ namespace Presto {
         friend class EntityManager;
 
        public:
-        static Mesh* New(MeshResource&);
+        [[nodiscard]] bool hasResource() const;
 
         inline const MeshResource& getResource() { return *resource_; }
 
+        void setResource(MeshResource& resource);
+
        private:
         explicit Mesh(MeshResource& resource);
+        Mesh() = default;
 
         [[nodiscard]] RenderData getRenderData() const override;
-        MeshResource* resource_;
+        MeshResource* resource_{nullptr};
     };
 }  // namespace Presto

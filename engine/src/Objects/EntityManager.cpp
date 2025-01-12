@@ -10,7 +10,7 @@ namespace Presto {
     // std::map<entity_id_t, entity_ptr> EntityManager::entityMap_;
 
     // Methods
-    entity_ptr EntityManager::newEntity() {
+    entity_ptr EntityManager::newEntity(const entity_name_t& name) {
         entity_id_t new_id = EntityManager::reserveId();
 
         PR_CORE_ASSERT(
@@ -19,7 +19,7 @@ namespace Presto {
             "Attempted to create entity using existing id: {}", new_id);
 
         auto new_entity = entity_unique_ptr(
-            new Entity(new_id),
+            new Entity(new_id, name),
             [this](Entity* entity) { this->destroyEntity(entity); });
 
         Transform* new_transform = Transform::New();

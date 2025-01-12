@@ -46,6 +46,10 @@ namespace Presto {
         // std::vector<Module*> _modules;
         std::vector<System*> _systems;
 
+        struct AppOptions {};
+
+        AppOptions options_{};
+
        protected:
         Camera* _mainCamera;
         double _delta = 0;
