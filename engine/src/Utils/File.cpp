@@ -2,14 +2,14 @@
 #include "nlohmann/json_fwd.hpp"
 
 namespace Presto::Utils {
-    std::string File::ReadFile(const std::string& filename) {
+    std::string File::ReadFile(const fs::path& path) {
         // ate <-> start at end of file
-        auto filepath = executableDirectory / fs::path(filename);
-        PR_CORE_TRACE(filepath.generic_string());
-        std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+        // auto filepath = executableDirectory / fs::path(path);
+        PR_CORE_TRACE("Reading file at path {}", path.generic_string());
+        std::ifstream file(path, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
-            PR_CORE_ERROR("Unable to load file \"{}\"", filepath.string());
+            PR_CORE_ERROR("Unable to load file \"{}\"", path.string());
             return "";
         }
 
@@ -24,14 +24,14 @@ namespace Presto::Utils {
         return buffer;
     }
 
-    std::vector<std::byte> File::ReadBinaryFile(const std::string& filename) {
+    std::vector<std::byte> File::ReadBinaryFile(const fs::path& path) {
         // ate <-> start at end of file
-        auto filepath = executableDirectory / fs::path(filename);
-        PR_CORE_TRACE(filepath.generic_string());
-        std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+        // auto filepath = executableDirectory / fs::path(filename);
+        PR_CORE_TRACE(path.generic_string());
+        std::ifstream file(path, std::ios::ate | std::ios::binary);
 
         if (!file.is_open()) {
-            PR_CORE_ERROR("Unable to load file \"{}\"", filepath.string());
+            PR_CORE_ERROR("Unable to load file \"{}\"", path.string());
             return {};
         }
 

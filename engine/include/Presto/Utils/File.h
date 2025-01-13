@@ -13,8 +13,8 @@ namespace Presto::Utils::File {
 
     fs::path getFullPath(const AssetPath& path);
 
-    std::string ReadFile(const std::string& filename);
-    std::vector<std::byte> ReadBinaryFile(const std::string& filename);
+    std::string ReadFile(const fs::path& path);
+    std::vector<std::byte> ReadBinaryFile(const fs::path& path);
 
     json GetJSON(const std::string& text);
     json GetJSON(const fs::path& path);

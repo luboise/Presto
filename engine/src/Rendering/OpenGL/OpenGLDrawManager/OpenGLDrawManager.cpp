@@ -1,6 +1,7 @@
 #include "OpenGLDrawManager.h"
 
 #include "Presto/Core.h"
+#include "Presto/Utils/File.h"
 #include "Rendering/OpenGL/utils.h"
 
 namespace Presto {
@@ -87,8 +88,11 @@ if (renderableMap_.contains(data)) {
 
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 
-        constexpr auto DEFAULT_VERTEX_SHADER_PATH = "Shaders/Core/vert.glsl";
-        constexpr auto DEFAULT_FRAGMENT_SHADER_PATH = "Shaders/Core/frag.glsl";
+        const std::string DEFAULT_VERTEX_SHADER_PATH =
+            Utils::File::getFullPath("Shaders/Core/vert.glsl");
+
+        const std::string DEFAULT_FRAGMENT_SHADER_PATH =
+            Utils::File::getFullPath("Shaders/Core/frag.glsl");
 
         auto vertex_code = Utils::File::ReadFile(DEFAULT_VERTEX_SHADER_PATH);
         PR_ASSERT(vertex_code != "",

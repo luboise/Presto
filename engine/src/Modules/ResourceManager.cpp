@@ -84,7 +84,8 @@ namespace Presto {
         return ret;
     }
 
-    MeshResource& ResourceManager::LoadMeshFromDisk(const AssetPath& filepath) {
+    MeshResource& ResourceManager::loadMeshFromDisk(
+        const AssetPath& filepath, const mesh_key_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
@@ -104,7 +105,10 @@ namespace Presto {
     Utils::File::getFullPath(filepath).parent_path());
                     */
 
-            fs::path full_asset_path = Utils::File::getFullPath(filepath);
+            // TODO: Implement full path/cwd system for engine to find it at
+            // runtime, or have the user change it (would help the editor)
+            // fs::path full_asset_path = Utils::File::getFullPath(filepath);
+            fs::path full_asset_path = filepath;
 
             bool ret =
                 loader.LoadASCIIFromFile(&model, &err, &warn, full_asset_path);
@@ -131,7 +135,7 @@ AccessorData texcoords_data =
     getDataFromAccessor(model, primitive.attributes["TEXCOORD_0"]);
                     */
 
-            resource->name = mesh.name;
+            resource->name = customName.empty() ? mesh.name : customName;
             resource->draw_mode = primitive.mode;
 
             resource->indices = getDataFromAccessor2<MeshResource::IndexType>(
@@ -169,4 +173,13 @@ AccessorData texcoords_data =
         instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
     }
 
+    MeshResource* ResourceManager::getMesh(mesh_key_t key) const {
+        for (const auto& mesh : meshResources_) {
+            if (mesh.second->name == key) {
+                return mesh.second.get();
+            }
+        }
+
+        return nullptr;
+    }
 }  // namespace Presto

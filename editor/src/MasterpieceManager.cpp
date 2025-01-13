@@ -1,6 +1,7 @@
 #include "MasterpieceManager.h"
 #include "EditorUI.h"
 
+#include "Presto/Modules/ResourceManager.h"
 #include "Presto/Modules/SceneManager.h"
 #include "Presto/Utils/File.h"
 
@@ -26,28 +27,57 @@ bool MasterpieceManager::openMasterpiece(const fs::path& projectFilepath) {
         EditorUI::errorPopup("Error reading masterpiece file.");
     }
 
-    // Set the name of the project to the title bar of the application
+    fs::path project_directory = projectFilepath.parent_path();
 
     // Search the project path for all assets and load those into the scene
     // manager and asset manager
+    MasterpieceFileSet project_files{
+        getMasterpieceFilesInDirectory(project_directory)};
 
-    std::vector<fs::path> project_files =
-        getMasterpieceFilesInDirectory(projectFilepath.parent_path());
+    // Process all mesh libraries
+    for (const fs::path& library_path : project_files.mesh_libraries) {
+        json mesh_db_json = Presto::Utils::File::GetJSON(library_path);
 
-    for (const fs::path& path : project_files) {
-        if (path.extension() == PR_SCENE_EXTENSION) {
-            auto json_data = Presto::Utils::File::GetJSON(path);
-            Scene* new_scene{
-                Presto::SceneManager::Get().newSceneFromJson(json_data)};
+        if (mesh_db_json.empty()) {
+            EditorUI::errorPopup(
+                std::format("Error opening file {}", library_path.string()));
+            continue;
+        };
 
-            if (new_scene == nullptr) {
-                EditorUI::errorPopup(std::format(
-                    "Error reading scene {} from JSON.", path.string()));
-                continue;
+        for (const auto& [mesh_name, mesh_data] : mesh_db_json.items()) {
+            try {
+                if (!mesh_data.contains("path")) {
+                    EditorUI::errorPopup(std::format(
+                        "Error loading mesh {}. Unable to find key {}",
+                        mesh_name, "resource"));
+                    continue;
+                }
+
+                fs::path resource_path = mesh_data["path"];
+
+                Presto::ResourceManager::Get().loadMeshFromDisk(
+                    project_directory / resource_path, mesh_name);
+
+            } catch (...) {
+                EditorUI::errorPopup(
+                    std::format("Unable to load mesh {}.", mesh_name));
             }
-
-            sceneMap_.emplace(new_scene->getName(), new_scene);
         }
+    }
+
+    // Process all scenes
+    for (const fs::path& path : project_files.scenes) {
+        auto json_data = Presto::Utils::File::GetJSON(path);
+        Scene* new_scene{
+            Presto::SceneManager::Get().newSceneFromJson(json_data)};
+
+        if (new_scene == nullptr) {
+            EditorUI::errorPopup(std::format(
+                "Error reading scene {} from JSON.", path.string()));
+            continue;
+        }
+
+        sceneMap_.emplace(new_scene->getName(), new_scene);
     }
 
     // Open the main scene of the project
@@ -74,13 +104,14 @@ bool MasterpieceManager::openMasterpiece(const fs::path& projectFilepath) {
     }
 
     currentMasterpiece_ = p;
+    // TODO: Set the name of the project to the title bar of the application
 
     return true;
 }
 
-std::vector<fs::path> MasterpieceManager::getMasterpieceFilesInDirectory(
-    const fs::path& directory) {
-    std::vector<fs::path> paths;
+MasterpieceManager::MasterpieceFileSet
+MasterpieceManager::getMasterpieceFilesInDirectory(const fs::path& directory) {
+    MasterpieceFileSet mfs;
 
     for (const auto& file : fs::recursive_directory_iterator(directory)) {
         const fs::path& path = file.path();
@@ -90,12 +121,17 @@ std::vector<fs::path> MasterpieceManager::getMasterpieceFilesInDirectory(
             }
 
             auto extension = path.extension();
-
-            paths.push_back(path);
+            if (extension == PR_SCENE_EXTENSION) {
+                mfs.scenes.push_back(path);
+            } else if (extension == PR_MESH_LIB_EXTENSION) {
+                mfs.mesh_libraries.push_back(path);
+            } else {
+                mfs.others.push_back(path);
+            }
         }
     }
 
-    return paths;
+    return mfs;
 };
 
 void MasterpieceManager::clearMasterpiece() { sceneMap_.clear(); };

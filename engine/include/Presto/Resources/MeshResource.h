@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Types.h"
+
 #include "Presto/Rendering/Renderer.h"
 
 namespace Presto {

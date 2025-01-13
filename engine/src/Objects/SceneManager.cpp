@@ -1,6 +1,7 @@
 #include "Presto/Modules/SceneManager.h"
 #include "Presto/Components/Renderable/Mesh.h"
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Modules/ResourceManager.h"
 
 namespace Presto {
     constexpr auto TYPE_KEY = "type";
@@ -76,10 +77,23 @@ namespace Presto {
                 entity_ptr new_entity =
                     EntityManager::Get().newEntity(entity_name);
 
-                for (const auto& component : object[COMPONENTS_KEY]) {
-                    if (component["type"] == "mesh") {
+                const auto& components = object[COMPONENTS_KEY];
+
+                for (const auto& [componentKey, component] :
+                     components.items()) {
+                    if (componentKey == "mesh") {
+                        auto mesh_data = components[componentKey];
+                        MeshResource* mr{ResourceManager::Get().getMesh(
+                            component["resource"])};
+
+                        if (mr == nullptr) {
+                            PR_CORE_ERROR("Unable to find mesh resource: {}",
+                                          component["resource"]);
+                            return Scene::INVALID;
+                        }
+
                         auto* new_mesh_component{
-                            EntityManager::Get().newComponent<Mesh>()};
+                            EntityManager::Get().newComponent<Mesh>(*mr)};
 
                         new_entity->setComponent(new_mesh_component);
                     }
@@ -120,9 +134,15 @@ namespace Presto {
                                    COMPONENTS_KEY);
             }
 
-            for (const auto& componentKey : componentsDict) {
+            for (const auto& [componentKey, component] :
+                 componentsDict.items()) {
                 // TODO: Implement individual checks here
                 if (componentKey == "mesh") {
+                    // Check that all meshes have a resource
+                    if (auto message = hasKeys(component, {"resource"});
+                        message != "") {
+                        return message;
+                    }
                 } else if (componentKey == "transform") {
                 } else {
                     return std::format("Invalid component type: {}.",
@@ -139,13 +159,17 @@ namespace Presto {
             return message;
         }
 
-        if (!sceneData[OBJECTS_KEY].is_array()) {
+        const auto& objects = sceneData[OBJECTS_KEY];
+
+        if (!objects.is_array()) {
             return std::format(
                 "Key {} appears, but its data is not a JSON array.",
                 OBJECTS_KEY);
         }
 
-        for (const auto& object : sceneData[OBJECTS_KEY]) {
+        for (const auto& object : objects) {
+            hasKeys(object, {TYPE_KEY});
+
             // If it is a serialised raw entity, validate it as an entity
             if (object[TYPE_KEY] == ENTITY_KEY) {
                 if (std::string message = validateEntity(object);

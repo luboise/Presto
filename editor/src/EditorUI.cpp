@@ -173,6 +173,9 @@ void EditorUI::drawMainEditor() {
         ImGuiID asset_selector = ImGui::DockBuilderSplitNode(
             dockspace_id, ImGuiDir_Right, 0.5f, nullptr, &dockspace_id);
 
+        ImGui::DockBuilderGetNode(dockspace_id)->LocalFlags |=
+            ImGuiDockNodeFlags_CentralNode;
+
         ImGui::DockBuilderDockWindow("Left Column", left_column);
         ImGui::DockBuilderDockWindow("Right Column", asset_selector);
         // ImGui::DockBuilderDockWindow("Central Node", dockspace_id);
@@ -242,12 +245,16 @@ if (visible) app.DisplayDocContents(doc);
 
     ImGui::SameLine();
 
-    ImGui::SetNextWindowDockID(dockspace_id);
+    if (ImGui::Begin(
+            "Preview", nullptr,
+            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar |
+                ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDocking |
+                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_AlwaysAutoResize)) {
+        auto* central_node = ImGui::DockBuilderGetCentralNode(dockspace_id);
 
-    if (ImGui::Begin("Preview", nullptr,
-                     ImGuiWindowFlags_AlwaysAutoResize |
-                         ImGuiWindowFlags_NoTitleBar |
-                         ImGuiWindowFlags_NoBackground)) {
+        ImGui::SetWindowPos(central_node->Pos);
+        ImGui::SetWindowSize(central_node->Size);
         ImGui::Text("Preview");
         ImGui::End();
     }

@@ -23,7 +23,12 @@ class MasterpieceManager {
     [[nodiscard]] Presto::Scene* getMainScene() const;
 
    private:
-    static std::vector<fs::path> getMasterpieceFilesInDirectory(
+    struct MasterpieceFileSet {
+        std::vector<fs::path> scenes;
+        std::vector<fs::path> mesh_libraries;
+        std::vector<fs::path> others;
+    };
+    static MasterpieceFileSet getMasterpieceFilesInDirectory(
         const fs::path& directory);
 
     Masterpiece currentMasterpiece_{};
