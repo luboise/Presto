@@ -14,9 +14,12 @@ target_include_directories(PrestoEngine
 target_include_directories(
   PrestoEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
                       ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
+
 target_include_directories(
-  PrestoEngine PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
-                       ${CMAKE_CURRENT_SOURCE_DIR}/src)
+  PrestoEngine
+  PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
+          ${CMAKE_CURRENT_SOURCE_DIR}/src
+          ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stb/)
 
 target_link_libraries(PrestoEngine PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(PrestoEngine PRIVATE glm::glm)

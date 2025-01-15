@@ -23,5 +23,6 @@ namespace Presto {
     using PR_STRING_ID = std::string;
 
     using AssetPath = fs::path;
+    using resource_name_t = PR_STRING_ID;
 
 }  // namespace Presto

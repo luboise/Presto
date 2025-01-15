@@ -1,8 +1,13 @@
 #include "Presto/Modules/ResourceManager.h"
+#include "Presto/Resources/ImageResource.h"
 #include "Presto/Utils/File.h"
 #include "Rendering/Meshes/Cube.h"
 
 #include "tiny_gltf.h"
+
+// NOT NEEDED SINCE TINY_GLTF USES IT
+// #define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // #include "Presto/Rendering/Mesh.h"
 
@@ -85,7 +90,7 @@ namespace Presto {
     }
 
     MeshResource& ResourceManager::loadMeshFromDisk(
-        const AssetPath& filepath, const mesh_key_t& customName) {
+        const AssetPath& filepath, const resource_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
@@ -98,12 +103,6 @@ namespace Presto {
             Model model;
             std::string err;
             std::string warn;
-
-            /*
-    bool ret = loader.LoadASCIIFromString(
-    &model, &err, &warn, data.data(), data.size(),
-    Utils::File::getFullPath(filepath).parent_path());
-                    */
 
             // TODO: Implement full path/cwd system for engine to find it at
             // runtime, or have the user change it (would help the editor)
@@ -118,22 +117,6 @@ namespace Presto {
 
             tinygltf::Mesh& mesh = model.meshes[0];
             tinygltf::Primitive& primitive = mesh.primitives[0];
-
-            /*
-AccessorData index_data =
-    getDataFromAccessor(model, primitive.indices);
-resource->indices.resize(index_data.buffer.size() /
-                         sizeof(glm::float32_t));
-
-AccessorData pos_data =
-    getDataFromAccessor(model, primitive.attributes["POSITION"]);
-
-AccessorData normals_data =
-    getDataFromAccessor(model, primitive.attributes["NORMAL"]);
-
-AccessorData texcoords_data =
-    getDataFromAccessor(model, primitive.attributes["TEXCOORD_0"]);
-                    */
 
             resource->name = customName.empty() ? mesh.name : customName;
             resource->draw_mode = primitive.mode;
@@ -153,6 +136,44 @@ AccessorData texcoords_data =
                     model, primitive.attributes["TEXCOORD_0"]);
         }
 
+        auto key = resource->name;
+        meshResources_[key] = std::move(resource);
+        return *meshResources_[key];
+    }
+
+    ImageResource& ResourceManager::loadImageFromDisk(
+        const AssetPath& filepath, const resource_name_t& customName) {
+        fs::path filename{filepath.stem()};
+        fs::path file_extension = filepath.extension();
+
+        auto resource{std::make_unique<ImageResource>()};
+
+        std::vector<std::byte> data = Utils::File::ReadBinaryFile(filepath);
+
+        int x{};
+        int y{};
+        int channels{};
+
+        // 4 desired channels because we want all images to be RGBA format
+        constexpr int desired_channels = 4;
+
+        unsigned char* casted_data{
+            reinterpret_cast<unsigned char*>(data.data())};
+
+        auto* image_data =
+            stbi_load_from_memory(casted_data, static_cast<int>(data.size()),
+                                  &x, &y, &channels, desired_channels);
+
+        // Get the image data
+        std::span<unsigned char> src_span(image_data, data.size());
+        resource->data = std::vector<uint8_t>(src_span.begin(), src_span.end());
+
+        stbi_image_free(image_data);
+
+        resource->name = customName;
+        resource->width = x;
+        resource->height = y;
+
         /*
     auto* new_mr{new MeshResource()};
 
@@ -164,8 +185,8 @@ AccessorData texcoords_data =
         */
 
         auto key = resource->name;
-        meshResources_[key] = std::move(resource);
-        return *meshResources_[key];
+        imageResources_[key] = std::move(resource);
+        return *imageResources_[key];
     }
 
     void ResourceManager::Init() {
@@ -173,13 +194,22 @@ AccessorData texcoords_data =
         instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
     }
 
-    MeshResource* ResourceManager::getMesh(mesh_key_t key) const {
-        for (const auto& mesh : meshResources_) {
-            if (mesh.second->name == key) {
-                return mesh.second.get();
-            }
+    MeshResource* ResourceManager::getMesh(const resource_name_t& key) const {
+        if (auto found = meshResources_.find(key);
+            found != meshResources_.end()) {
+            return found->second.get();
         }
 
         return nullptr;
     }
+
+    ImageResource* ResourceManager::getImage(const resource_name_t& key) const {
+        if (auto found = imageResources_.find(key);
+            found != imageResources_.end()) {
+            return found->second.get();
+        }
+
+        return nullptr;
+    }
+
 }  // namespace Presto

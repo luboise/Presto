@@ -3,6 +3,7 @@
 #include "Module.h"
 
 #include "Presto/Core/Types.h"
+#include "Presto/Resources/ImageResource.h"
 #include "Presto/Resources/MeshResource.h"
 
 namespace Presto {
@@ -13,11 +14,14 @@ namespace Presto {
         static void Init();
         void Update() override {}
 
-        using mesh_key_t = decltype(MeshResource::name);
         MeshResource& loadMeshFromDisk(const AssetPath& path,
-                                       const mesh_key_t& customName);
+                                       const resource_name_t& customName);
 
-        [[nodiscard]] MeshResource* getMesh(mesh_key_t) const;
+        ImageResource& loadImageFromDisk(const AssetPath& path,
+                                         const resource_name_t& customName);
+
+        [[nodiscard]] MeshResource* getMesh(const resource_name_t&) const;
+        [[nodiscard]] ImageResource* getImage(const resource_name_t&) const;
 
         // Deleted functions
         ResourceManager(const ResourceManager&) = delete;
@@ -29,6 +33,8 @@ namespace Presto {
         ResourceManager() = default;
 
         // Gets the type of name from the MeshResource struct
-        std::map<mesh_key_t, std::unique_ptr<MeshResource>> meshResources_;
+        std::map<resource_name_t, std::unique_ptr<MeshResource>> meshResources_;
+        std::map<resource_name_t, std::unique_ptr<ImageResource>>
+            imageResources_;
     };
 }  // namespace Presto

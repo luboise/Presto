@@ -1,6 +1,9 @@
 #include "Presto/Modules/EntityManager.h"
 #include <algorithm>
+#include <stdexcept>
 #include "Presto/Components/Transform.h"
+#include "Presto/Core/Assert.h"
+#include "Presto/Objects/Entity.h"
 #include "Presto/Runtime/Events/ObjectEvents.h"
 
 namespace Presto {
@@ -80,5 +83,32 @@ namespace Presto {
     std::vector<component_ptr> EntityManager::findComponentsWhere(auto filter) {
         return components_ | std::views::filter(filter);
     }
+
+    entity_tag_id_t EntityManager::getTagId(
+        const entity_tag_name_t& tagName) const {
+        for (entity_tag_id_t i = 0;
+             i < static_cast<entity_tag_id_t>(tagMap_.size()); i++) {
+            if (tagMap_[i] == tagName) {
+                return i;
+            }
+        }
+
+        return INVALID_TAG_ID;
+    };
+
+    entity_tag_id_t EntityManager::createTag(const entity_tag_name_t& tagName) {
+        PR_ASSERT(tagMap_.size() < MAX_TAG_COUNT,
+                  std::format("Creating a new tag exceeds the maximum number "
+                              "of tags allowed ({}).",
+                              MAX_TAG_COUNT));
+
+        PR_ASSERT(getTagId(tagName) != INVALID_TAG_ID,
+                  "Multiple tags can't be created with the same name.");
+
+        auto new_tag_index = tagMap_.size();
+        tagMap_.push_back(tagName);
+
+        return static_cast<entity_tag_id_t>(new_tag_index);
+    };
 
 }  // namespace Presto

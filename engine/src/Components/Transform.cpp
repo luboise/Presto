@@ -1,4 +1,5 @@
 #include "Presto/Components/Transform.h"
+#include <algorithm>
 #include "Presto/Modules/EntityManager.h"
 
 namespace Presto {
@@ -17,10 +18,22 @@ model = glm::scale(model, scale);
 
     void Transform::translate(vec3 translation) {
         this->translation_ += translation;
+        if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
+            this->round();
+        }
     };
 
     Transform* Transform::New() {
         auto& em{EntityManager::Get()};
         return em.newComponent<Transform>();
     }
+
+    void Transform::round() {
+        this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
+                                              : this->translation_.x,
+                              useRounding_[1] ? std::round(this->translation_.y)
+                                              : this->translation_.y,
+                              useRounding_[2] ? std::round(this->translation_.z)
+                                              : this->translation_.z};
+    };
 }  // namespace Presto

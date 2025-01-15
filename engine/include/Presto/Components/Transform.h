@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Presto/Math.h"
+#include "Presto/Objects/Component.h"
+
+#include <array>
 
 namespace Presto {
     class RenderingManager;
@@ -40,12 +43,18 @@ namespace Presto {
         [[nodiscard]] vec3 getPitch() const;
         [[nodiscard]] vec3 getRoll() const;
 
+        void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z}; }
+
         static Transform* New();
 
        private:
         vec3 translation_;
         vec3 yawPitchRoll_;
         vec3 scale_;
+
+        std::array<bool, 3> useRounding_{false};
+
+        void round();
 
         // mat4 _modelView;
         friend class RenderingManager;

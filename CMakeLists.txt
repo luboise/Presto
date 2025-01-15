@@ -40,9 +40,7 @@ find_package(GLEW REQUIRED)
 add_subdirectory(ext/glm)
 add_subdirectory(ext/TinyGLTF)
 
-# find_package(Vulkan REQUIRED)
-# include_directories(${Vulkan_INCLUDE_DIR})
-
+# find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
 if(WIN32)
   set(PLATFORM Windows)
@@ -60,7 +58,6 @@ else()
   message(FATAL_ERROR "Platform not selected."
                       "Expected Windows or Unix platform for compilation.")
 endif()
-
 
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
 

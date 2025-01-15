@@ -23,7 +23,13 @@ namespace Presto {
 
         std::vector<component_ptr> findComponentsWhere(auto filter);
 
+        void addTagToEntity(Entity &entity, entity_tag_name_t tag);
+
         void Update() override;
+
+        entity_tag_id_t createTag(const entity_tag_name_t &tagName);
+        [[nodiscard]] entity_tag_id_t getTagId(
+            const entity_tag_name_t &tagName) const;
 
         EntityManager(const EntityManager &) = delete;
         EntityManager(EntityManager &&) = delete;
@@ -65,6 +71,9 @@ namespace Presto {
         std::map<component_id_t, std::unique_ptr<Component>> components_;
         // static std::vector<component_ptr> components_;
         std::map<entity_id_t, entity_unique_ptr> entityMap_;
+
+        std::vector<entity_tag_name_t> tagMap_;
+
         entity_id_t _currentId{1};
     };
 }  // namespace Presto
