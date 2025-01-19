@@ -13,7 +13,8 @@ namespace Presto {
         using EntityMap = std::map<entity_id_t, entity_ptr>;
 
        public:
-        [[nodiscard]] entity_ptr newEntity(const entity_name_t &name);
+        [[nodiscard]] entity_ptr newEntity(
+            const entity_name_t &name = "Entity");
 
         entity_ptr getEntityByID(entity_id_t id);
 

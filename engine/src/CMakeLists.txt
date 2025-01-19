@@ -15,7 +15,6 @@ target_sources(
           Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
           Rendering/Camera.cpp
-          Rendering/Renderable.cpp
           Runtime/Time.cpp
           Logging.cpp
           pch.cpp

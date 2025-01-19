@@ -5,6 +5,8 @@ out vec4 to_frag;
 
 in vec3 vp;
 in vec3 colour;
+in vec3 normal;
+in vec2 tex_coords;
 
 uniform mat4 view;
 uniform mat4 projection;

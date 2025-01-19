@@ -76,12 +76,14 @@ if (renderableMap_.contains(data)) {
         glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                               (void*)offsetof(Vertex, colour));
 
+        // Set up attribute 2 (normal) from vbo
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        glVertexAttribPointer(2, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                               (void*)offsetof(Vertex, normal));
 
+        // Set up attribute 3 (texture coordinates) from vbo
         glEnableVertexAttribArray(3);
-        glVertexAttribPointer(1, VEC_2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+        glVertexAttribPointer(3, VEC_2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
                               (void*)offsetof(Vertex, tex_coords));
 
         r.shader_program = glCreateProgram();

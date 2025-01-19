@@ -4,7 +4,10 @@
 
 namespace Presto {
     mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale) {
-        mat4 model = glm::translate(mat4{1.0F}, offset);
+        mat4 model{1.0F};
+
+        model = glm::scale(model, scale);
+        model = glm::translate(model, offset);
 
         /*
 model = glm::rotate(model, yawPitchRoll.y, vec3(1, 0, 0));
@@ -36,4 +39,5 @@ model = glm::scale(model, scale);
                               useRounding_[2] ? std::round(this->translation_.z)
                                               : this->translation_.z};
     };
+    void Transform::setScale(vec3 scale) { this->scale_ = scale; };
 }  // namespace Presto

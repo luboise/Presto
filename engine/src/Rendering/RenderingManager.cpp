@@ -3,7 +3,6 @@
 #include "Presto/Modules/EntityManager.h"
 
 #include "Presto/Components/Renderable/Mesh.h"
-// #include "Presto/Components/RenderableProps.h"
 #include "Presto/Components/Transform.h"
 #include "Presto/Rendering/Renderer.h"
 
@@ -97,7 +96,10 @@ for (auto& layer : _renderLayers) {
 
         std::ranges::for_each(
             mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {
-                renderer_->render(std::get<0>(tuple)->getResource().renderId_,
+                Mesh* m{std::get<0>(tuple)};
+                const auto& resource = m->getResource();
+
+                renderer_->render(resource.renderId_,
                                   std::get<1>(tuple)->getModelView());
             });
 
@@ -154,31 +156,4 @@ for (auto& layer : _renderLayers) {
             return mesh;
         }
     */
-
-    /*
-        void RenderingManager::AddRenderable(layer_id_t layer_index,
-                                             Renderable* ptr_renderable) {
-            if (_renderables.isAllocated(ptr_renderable)) {
-                RenderingManager::RemoveRenderable(ptr_renderable);
-            }
-
-            RenderLayer& layer = getLayer(layer_index);
-            renderer_->addToRenderPool(ptr_renderable);
-            layer.addRenderable(ptr_renderable);
-        }
-
-        RenderableProps* RenderingManager::NewRenderableProps() {
-            auto* props{new RenderableProps()};
-            _renderProps.add(props);
-
-            return props;
-        }
-
-        Renderable* RenderingManager::NewRenderable(
-            PrestoRenderableConstructorArgs) {
-            auto* renderable{new Renderable(mesh, props)};
-            // _renderables[];
-            return renderable;
-        }
-            */
 }  // namespace Presto
