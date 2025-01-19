@@ -41,7 +41,7 @@ namespace Presto {
 
         for (int i = 0; i < data.vertices.size(); i++) {
             Vertex v = {.position = mesh.positions[i],
-                        // .colour = mesh.colour[i],
+                        // Default colour of white
                         .colour = {1, 1, 1},
                         .normal = mesh.normals[i],
                         .tex_coords = mesh.tex_coords[i]};

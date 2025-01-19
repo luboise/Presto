@@ -96,9 +96,7 @@ namespace Presto {
 
         auto resource = std::make_unique<MeshResource>();
 
-        if (file_extension == ".gltf") {
-            auto data = Utils::File::ReadFile(filepath);
-
+        if (file_extension == ".gltf" || file_extension == ".glb") {
             TinyGLTF loader;
             Model model;
             std::string err;
@@ -107,10 +105,17 @@ namespace Presto {
             // TODO: Implement full path/cwd system for engine to find it at
             // runtime, or have the user change it (would help the editor)
             // fs::path full_asset_path = Utils::File::getFullPath(filepath);
-            fs::path full_asset_path = filepath;
+            const fs::path& full_asset_path = filepath;
 
-            bool ret =
-                loader.LoadASCIIFromFile(&model, &err, &warn, full_asset_path);
+            bool ret{false};
+
+            if (file_extension == ".gltf") {
+                ret = loader.LoadASCIIFromFile(&model, &err, &warn,
+                                               full_asset_path);
+            } else {
+                ret = loader.LoadBinaryFromFile(&model, &err, &warn,
+                                                full_asset_path);
+            }
 
             PR_CORE_ASSERT(ret, std::string("Failed to read asset ") +
                                     full_asset_path.string());
