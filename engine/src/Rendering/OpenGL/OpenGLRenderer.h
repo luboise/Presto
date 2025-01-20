@@ -24,15 +24,15 @@ namespace Presto {
         // Destructor
         ~OpenGLRenderer() override;
 
-        render_data_id_t registerMesh(const RenderData& data) override;
-        render_data_id_t registerMesh(RenderData&& data) override;
+        render_data_id_t registerRenderGroup(const RenderGroup& data) override;
+        render_data_id_t registerRenderGroup(RenderGroup&& data) override;
 
         void unregisterMesh(render_data_id_t id) override;
         void render(render_data_id_t id, glm::mat4 transform) override;
         void nextFrame() override;
 
        private:
-        void draw(const OpenGLDrawInfo&, const glm::mat4& transform);
+        void draw(const OpenGLDrawBatch&, const glm::mat4& transform);
         void onFrameBufferResized() override {}
         std::unique_ptr<OpenGLDrawManager> drawManager_;
     };

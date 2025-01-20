@@ -2,11 +2,11 @@
 
 #include "Presto/Components/Renderable.h"
 #include "Presto/Core/Constants.h"
-// #include "Presto/Rendering/RenderData.h"
+
 #include "Presto/Resources/ImageResource.h"
 
 namespace Presto {
-    struct RenderData;
+    struct RenderGroup;
     // #define PrestoSpriteConstructorArgs mesh_id_t, const VertexList&, const
     // IndexList&
 
@@ -32,7 +32,6 @@ namespace Presto {
         explicit Sprite(ImageResource& resource);
         Sprite() = default;
 
-        [[nodiscard]] RenderData getRenderData() const override;
         ImageResource* resource_{nullptr};
     };
 }  // namespace Presto

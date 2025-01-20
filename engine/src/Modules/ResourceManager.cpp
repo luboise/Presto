@@ -89,12 +89,12 @@ namespace Presto {
         return ret;
     }
 
-    MeshResource& ResourceManager::loadMeshFromDisk(
+    std::vector<MeshResource*> ResourceManager::loadMeshesFromDisk(
         const AssetPath& filepath, const resource_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
-        auto resource = std::make_unique<MeshResource>();
+        std::vector<MeshResource*> new_meshes;
 
         if (file_extension == ".gltf" || file_extension == ".glb") {
             TinyGLTF loader;
@@ -120,30 +120,51 @@ namespace Presto {
             PR_CORE_ASSERT(ret, std::string("Failed to read asset ") +
                                     full_asset_path.string());
 
-            tinygltf::Mesh& mesh = model.meshes[0];
-            tinygltf::Primitive& primitive = mesh.primitives[0];
+            for (auto& mesh : model.meshes) {
+                auto new_mesh = std::make_unique<MeshResource>();
 
-            resource->name = customName.empty() ? mesh.name : customName;
-            resource->draw_mode = primitive.mode;
+                for (tinygltf::Primitive& primitive : mesh.primitives) {
+                    SubMesh new_submesh;
 
-            resource->indices = getDataFromAccessor2<MeshResource::IndexType>(
-                model, primitive.indices);
+                    new_submesh.draw_mode = primitive.mode;
 
-            resource->positions =
-                getDataFromAccessor2<MeshResource::PositionType>(
-                    model, primitive.attributes["POSITION"]);
+                    new_submesh.indices =
+                        getDataFromAccessor2<SubMesh::IndexType>(
+                            model, primitive.indices);
 
-            resource->normals = getDataFromAccessor2<MeshResource::NormalType>(
-                model, primitive.attributes["NORMAL"]);
+                    new_submesh.positions =
+                        getDataFromAccessor2<SubMesh::PositionType>(
+                            model, primitive.attributes["POSITION"]);
 
-            resource->tex_coords =
-                getDataFromAccessor2<MeshResource::TexCoordsType>(
-                    model, primitive.attributes["TEXCOORD_0"]);
+                    new_submesh.normals =
+                        getDataFromAccessor2<SubMesh::NormalType>(
+                            model, primitive.attributes["NORMAL"]);
+
+                    new_submesh.tex_coords =
+                        getDataFromAccessor2<SubMesh::TexCoordsType>(
+                            model, primitive.attributes["TEXCOORD_0"]);
+
+                    new_mesh->sub_meshes.push_back(new_submesh);
+                }
+                auto key = customName.empty() ? mesh.name : customName;
+                new_mesh->name = key;
+                meshResources_[key] = std::move(new_mesh);
+
+                new_meshes.push_back(meshResources_[key].get());
+            }
         }
 
+        return new_meshes;
+    }
+
+    MaterialResource& ResourceManager::createMaterial(
+        const resource_name_t& customName) {
+        auto resource = std::make_unique<MaterialResource>();
+        resource->name = customName;
+
         auto key = resource->name;
-        meshResources_[key] = std::move(resource);
-        return *meshResources_[key];
+        materialResources_[key] = std::move(resource);
+        return *materialResources_[key];
     }
 
     ImageResource& ResourceManager::loadImageFromDisk(
@@ -211,6 +232,16 @@ namespace Presto {
     ImageResource* ResourceManager::getImage(const resource_name_t& key) const {
         if (auto found = imageResources_.find(key);
             found != imageResources_.end()) {
+            return found->second.get();
+        }
+
+        return nullptr;
+    }
+
+    MaterialResource* ResourceManager::getMaterial(
+        const resource_name_t& key) const {
+        if (auto found = materialResources_.find(key);
+            found != materialResources_.end()) {
             return found->second.get();
         }
 

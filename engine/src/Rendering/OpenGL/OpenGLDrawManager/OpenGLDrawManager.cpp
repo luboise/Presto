@@ -5,9 +5,9 @@
 #include "Rendering/OpenGL/utils.h"
 
 namespace Presto {
-    OpenGLDrawInfo* OpenGLDrawManager::getDrawInfo(draw_key key) {
-        auto x = drawInfoMap_.find(key);
-        if (x == drawInfoMap_.end()) {
+    OpenGLDrawBatch* OpenGLDrawManager::getDrawBatch(draw_key key) {
+        auto x = drawBatchMap_.find(key);
+        if (x == drawBatchMap_.end()) {
             PR_CORE_ERROR(
                 "Unable to find renderable {} in renderable map. Make sure it "
                 "is loaded before rendering it. Returning nullptr.",
@@ -19,7 +19,7 @@ namespace Presto {
         return &(x->second);
     }
 
-    draw_key OpenGLDrawManager::createDrawInfo(RenderData&& data) {
+    draw_key OpenGLDrawManager::createDrawInfo(RenderGroup&& group) {
         constexpr auto VEC_3 = 3;
         constexpr auto VEC_2 = 2;
 
@@ -34,120 +34,129 @@ if (renderableMap_.contains(data)) {
 }
         */
 
-        const VertexList& vertices = data.vertices;
-        const IndexList& indices = data.indices;
+        OpenGLDrawBatch batch{};
 
-        OpenGLDrawInfo r{};
+        for (const auto& data : group.render_list) {
+            OpenGLDrawInfo r{};
 
-        r.vert_count = vertices.size();
-        r.index_count = indices.size();
+            const VertexList& vertices = data.vertices;
+            const IndexList& indices = data.indices;
 
-        r.first_index = 0;
+            r.vert_count = vertices.size();
+            r.index_count = indices.size();
 
-        r.draw_mode = data.draw_mode;
+            r.first_index = 0;
 
-        // Create vertex buffer and write into it
-        glGenBuffers(1, &r.vertex_buf);
-        glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);
-        glBufferData(GL_ARRAY_BUFFER, r.vert_count * sizeof(Vertex),
-                     vertices.data(), GL_STATIC_DRAW);
+            r.draw_mode = data.draw_mode;
 
-        // Bind the indices buffer (EBO)
-        glGenBuffers(1, &r.index_buf);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.index_buf);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, r.index_count * sizeof(Index),
-                     indices.data(), GL_STATIC_DRAW);
+            // Create vertex buffer and write into it
+            glGenBuffers(1, &r.vertex_buf);
+            glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);
+            glBufferData(GL_ARRAY_BUFFER, r.vert_count * sizeof(Vertex),
+                         vertices.data(), GL_STATIC_DRAW);
 
-        // Vertex arrays
-        glGenVertexArrays(1, &r.vao);
-        glBindVertexArray(r.vao);
+            // Bind the indices buffer (EBO)
+            glGenBuffers(1, &r.index_buf);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.index_buf);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, r.index_count * sizeof(Index),
+                         indices.data(), GL_STATIC_DRAW);
 
-        // Bind the buffers to the vao
-        glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.index_buf);
+            // Vertex arrays
+            glGenVertexArrays(1, &r.vao);
+            glBindVertexArray(r.vao);
 
-        // Set up attribute 0 (pos) from vbo
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)(offsetof(Vertex, position)));
+            // Bind the buffers to the vao
+            glBindBuffer(GL_ARRAY_BUFFER, r.vertex_buf);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, r.index_buf);
 
-        // Set up attribute 1 (colour) from vbo
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)offsetof(Vertex, colour));
+            // Set up attribute 0 (pos) from vbo
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                                  (void*)(offsetof(Vertex, position)));
 
-        // Set up attribute 2 (normal) from vbo
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)offsetof(Vertex, normal));
+            // Set up attribute 1 (colour) from vbo
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                                  (void*)offsetof(Vertex, colour));
 
-        // Set up attribute 3 (texture coordinates) from vbo
-        glEnableVertexAttribArray(3);
-        glVertexAttribPointer(3, VEC_2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                              (void*)offsetof(Vertex, tex_coords));
+            // Set up attribute 2 (normal) from vbo
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, VEC_3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                                  (void*)offsetof(Vertex, normal));
 
-        r.shader_program = glCreateProgram();
+            // Set up attribute 3 (texture coordinates) from vbo
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, VEC_2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                                  (void*)offsetof(Vertex, tex_coords));
 
-        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+            r.shader_program = glCreateProgram();
 
-        const std::string DEFAULT_VERTEX_SHADER_PATH =
-            Utils::File::getFullPath("Shaders/Core/vert.glsl");
+            GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 
-        const std::string DEFAULT_FRAGMENT_SHADER_PATH =
-            Utils::File::getFullPath("Shaders/Core/frag.glsl");
+            const std::string DEFAULT_VERTEX_SHADER_PATH =
+                Utils::File::getFullPath("Shaders/Core/vert.glsl");
 
-        auto vertex_code = Utils::File::ReadFile(DEFAULT_VERTEX_SHADER_PATH);
-        PR_ASSERT(vertex_code != "",
-                  "Vertex shader at  {}  could not be read, and returned an "
-                  "empty file.",
-                  DEFAULT_VERTEX_SHADER_PATH);
+            const std::string DEFAULT_FRAGMENT_SHADER_PATH =
+                Utils::File::getFullPath("Shaders/Core/frag.glsl");
 
-        const char* sourceCStr = vertex_code.c_str();
+            auto vertex_code =
+                Utils::File::ReadFile(DEFAULT_VERTEX_SHADER_PATH);
+            PR_ASSERT(
+                vertex_code != "",
+                "Vertex shader at  {}  could not be read, and returned an "
+                "empty file.",
+                DEFAULT_VERTEX_SHADER_PATH);
 
-        glShaderSource(vs, 1, &sourceCStr, nullptr);
-        glCompileShader(vs);
+            const char* sourceCStr = vertex_code.c_str();
 
-        PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
-                       "Shader failed to compile.");
-        glAttachShader(r.shader_program, vs);
+            glShaderSource(vs, 1, &sourceCStr, nullptr);
+            glCompileShader(vs);
 
-        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+            PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
+                           "Shader failed to compile.");
+            glAttachShader(r.shader_program, vs);
 
-        auto fragment_code =
-            Utils::File::ReadFile(DEFAULT_FRAGMENT_SHADER_PATH);
-        PR_ASSERT(fragment_code != "",
-                  "Fragment shader at  {}  could not be read, and returned an "
-                  "empty file.",
-                  DEFAULT_FRAGMENT_SHADER_PATH);
+            GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-        const char* sourceCStr2 = fragment_code.c_str();
+            auto fragment_code =
+                Utils::File::ReadFile(DEFAULT_FRAGMENT_SHADER_PATH);
+            PR_ASSERT(
+                fragment_code != "",
+                "Fragment shader at  {}  could not be read, and returned an "
+                "empty file.",
+                DEFAULT_FRAGMENT_SHADER_PATH);
 
-        glShaderSource(fs, 1, &sourceCStr2, nullptr);
-        glCompileShader(fs);
+            const char* sourceCStr2 = fragment_code.c_str();
 
-        PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
-                       "Shader failed to compile.");
+            glShaderSource(fs, 1, &sourceCStr2, nullptr);
+            glCompileShader(fs);
 
-        // PR_CORE_ASSERT(true ==
-        // OpenGLUtils::ShaderCompiledCorrectly(fs),
-        //"Unable to compile shader.");
-        glAttachShader(r.shader_program, fs);
+            PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
+                           "Shader failed to compile.");
 
-        glLinkProgram(r.shader_program);
+            // PR_CORE_ASSERT(true ==
+            // OpenGLUtils::ShaderCompiledCorrectly(fs),
+            //"Unable to compile shader.");
+            glAttachShader(r.shader_program, fs);
 
-        // Delete shaders after attaching them
-        // TODO: Make the base shaders reusable
-        glDeleteShader(vs);
-        glDeleteShader(fs);
+            glLinkProgram(r.shader_program);
+
+            // Delete shaders after attaching them
+            // TODO: Make the base shaders reusable
+            glDeleteShader(vs);
+            glDeleteShader(fs);
+
+            batch.draws.push_back(r);
+        }
 
         auto new_draw_key = ++currentDrawKey_;
-        auto insertion = drawInfoMap_.emplace(new_draw_key, r);
+        auto insertion = drawBatchMap_.emplace(new_draw_key, batch);
 
         PR_CORE_ASSERT(
             insertion.second,
-            "Presto failed to insert RenderData into the render list.");
+            "Presto failed to insert RenderGroup into the render list.");
 
-        PR_CORE_TRACE("Added new RenderData to the render list.");
+        PR_CORE_TRACE("Added new RenderGroup to the render list.");
 
         return new_draw_key;
     };

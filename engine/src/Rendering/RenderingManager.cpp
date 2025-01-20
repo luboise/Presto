@@ -27,31 +27,37 @@ namespace Presto {
     };
 
     void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
-        RenderData data{};
+        RenderGroup group;
 
-        data.indices.resize(mesh.indices.size());
+        for (const auto& submesh : mesh.sub_meshes) {
+            RenderData data;
 
-        std::ranges::transform(
-            mesh.indices.begin(), mesh.indices.end(), data.indices.begin(),
-            [](auto val) { return static_cast<Index>(val); });
+            data.indices.resize(submesh.indices.size());
 
-        data.vertices.resize(
-            std::min({mesh.positions.size(), mesh.normals.size(),
-                      mesh.tex_coords.size()}));
+            std::ranges::transform(
+                submesh.indices.begin(), submesh.indices.end(),
+                data.indices.begin(),
+                [](auto val) { return static_cast<Index>(val); });
 
-        for (int i = 0; i < data.vertices.size(); i++) {
-            Vertex v = {.position = mesh.positions[i],
-                        // Default colour of white
-                        .colour = {1, 1, 1},
-                        .normal = mesh.normals[i],
-                        .tex_coords = mesh.tex_coords[i]};
-            data.vertices[i] = v;
+            data.vertices.resize(
+                std::min({submesh.positions.size(), submesh.normals.size(),
+                          submesh.tex_coords.size()}));
+
+            for (int i = 0; i < data.vertices.size(); i++) {
+                Vertex v = {.position = submesh.positions[i],
+                            // Default colour of white
+                            .colour = {1, 1, 1},
+                            .normal = submesh.normals[i],
+                            .tex_coords = submesh.tex_coords[i]};
+                data.vertices[i] = v;
+            }
+
+            data.draw_mode = submesh.draw_mode;
+
+            group.render_list.push_back(data);
         }
 
-        data.draw_mode = mesh.draw_mode;
-
-        render_data_id_t r_id = renderer_->registerMesh(data);
-
+        render_data_id_t r_id = renderer_->registerRenderGroup(group);
         mesh.renderId_ = r_id;
     };
 

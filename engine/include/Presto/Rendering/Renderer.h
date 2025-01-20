@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
-#include "RenderData.h"
+#include "RenderGroup.h"
 #include "RenderTypes.h"  // IWYU pragma: export
 
 namespace Presto {
@@ -18,8 +18,8 @@ namespace Presto {
 
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
-        virtual render_data_id_t registerMesh(RenderData&&) = 0;
-        virtual render_data_id_t registerMesh(const RenderData&) = 0;
+        virtual render_data_id_t registerRenderGroup(RenderGroup&&) = 0;
+        virtual render_data_id_t registerRenderGroup(const RenderGroup&) = 0;
 
         virtual void unregisterMesh(render_data_id_t id) = 0;
         virtual void render(render_data_id_t id, glm::mat4 transform) = 0;

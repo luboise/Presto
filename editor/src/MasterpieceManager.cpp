@@ -55,7 +55,7 @@ bool MasterpieceManager::openMasterpiece(const fs::path& projectFilepath) {
 
                 fs::path resource_path = mesh_data["path"];
 
-                Presto::ResourceManager::Get().loadMeshFromDisk(
+                Presto::ResourceManager::Get().loadMeshesFromDisk(
                     project_directory / resource_path, mesh_name);
 
             } catch (...) {

@@ -42,17 +42,18 @@ namespace Presto {
                                                                         */
     }
 
-    render_data_id_t OpenGLRenderer::registerMesh(const RenderData& data) {
-        RenderData copy{data};
+    render_data_id_t OpenGLRenderer::registerRenderGroup(
+        const RenderGroup& data) {
+        RenderGroup copy{data};
         return drawManager_->createDrawInfo(std::move(copy));
     }
 
-    render_data_id_t OpenGLRenderer::registerMesh(RenderData&& data) {
+    render_data_id_t OpenGLRenderer::registerRenderGroup(RenderGroup&& data) {
         return drawManager_->createDrawInfo(std::move(data));
     }
 
     void OpenGLRenderer::render(render_data_id_t id, glm::mat4 transform) {
-        auto* ptr = drawManager_->getDrawInfo(id);
+        auto* ptr = drawManager_->getDrawBatch(id);
 
         // TODO: Implement drawing using the transform
         if (ptr == nullptr) {
@@ -70,31 +71,33 @@ namespace Presto {
         // TODO: Implement unregister
     }
 
-    void OpenGLRenderer::draw(const OpenGLDrawInfo& renderable,
+    void OpenGLRenderer::draw(const OpenGLDrawBatch& batch,
                               const glm::mat4& transform) {
-        GLint view = glGetUniformLocation(renderable.shader_program, "view");
-        GLint projection =
-            glGetUniformLocation(renderable.shader_program, "projection");
+        for (const auto& draw_data : batch.draws) {
+            GLint view = glGetUniformLocation(draw_data.shader_program, "view");
+            GLint projection =
+                glGetUniformLocation(draw_data.shader_program, "projection");
 
-        glUseProgram(renderable.shader_program);
+            glUseProgram(draw_data.shader_program);
 
-        ShaderMatrices mats{};
+            ShaderMatrices mats{};
 
-        constexpr glm::float32 FOV_Y = 90;
+            constexpr glm::float32 FOV_Y = 90;
 
-        mats.view = renderViewMatrix_ * transform;
+            mats.view = renderViewMatrix_ * transform;
 
-        mats.projection = RenderingUtils::getProjectionMatrix(
-            FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
+            mats.projection = RenderingUtils::getProjectionMatrix(
+                FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
 
-        glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
-        glUniformMatrix4fv(projection, 1, GL_FALSE,
-                           glm::value_ptr(mats.projection));
+            glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
+            glUniformMatrix4fv(projection, 1, GL_FALSE,
+                               glm::value_ptr(mats.projection));
 
-        // Commence drawing
-        glBindVertexArray(renderable.vao);
-        glDrawElements(renderable.draw_mode, renderable.index_count,
-                       GL_UNSIGNED_INT, nullptr);
+            // Commence drawing
+            glBindVertexArray(draw_data.vao);
+            glDrawElements(draw_data.draw_mode, draw_data.index_count,
+                           GL_UNSIGNED_INT, nullptr);
+        }
     }
 
     void OpenGLRenderer::nextFrame() {

@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <map>
-#include "Presto/Rendering/RenderData.h"
+#include "Presto/Rendering/RenderGroup.h"
 
 namespace Presto {
 
@@ -21,18 +21,22 @@ namespace Presto {
         int draw_mode;
     };
 
+    struct OpenGLDrawBatch {
+        std::vector<OpenGLDrawInfo> draws;
+    };
+
     // using draw_key = OpenGLDrawInfo*;
 
     using draw_key = PR_NUMERIC_ID;
 
     class OpenGLDrawManager {
        public:
-        draw_key createDrawInfo(RenderData&& data);
+        draw_key createDrawInfo(RenderGroup&& group);
 
-        OpenGLDrawInfo* getDrawInfo(draw_key);
+        OpenGLDrawBatch* getDrawBatch(draw_key);
 
        private:
-        std::map<draw_key, OpenGLDrawInfo> drawInfoMap_;
+        std::map<draw_key, OpenGLDrawBatch> drawBatchMap_;
 
         // TODO: Change this to a more robust system later
         draw_key currentDrawKey_ = 0;
