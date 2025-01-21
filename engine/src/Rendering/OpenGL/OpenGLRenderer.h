@@ -35,6 +35,12 @@ namespace Presto {
         void draw(const OpenGLDrawBatch&, const glm::mat4& transform);
         void onFrameBufferResized() override {}
         std::unique_ptr<OpenGLDrawManager> drawManager_;
+
+        void setupDebugLogging();
+
+        static void debugCallback(GLenum source, GLenum type, GLuint id,
+                                  GLenum severity, GLsizei length,
+                                  const GLchar* message, const void* userParam);
     };
 
 }  // namespace Presto

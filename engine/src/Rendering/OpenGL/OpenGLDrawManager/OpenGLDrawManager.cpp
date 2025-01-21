@@ -119,29 +119,22 @@ if (renderableMap_.contains(data)) {
             glAttachShader(draw_info.shader_program, fs);
 
             glLinkProgram(draw_info.shader_program);
+            PR_CORE_ASSERT(OpenGLUtils::ShaderProgramLinkedCorrectly(
+                               draw_info.shader_program),
+                           "Shader program failed to link.");
 
             // Delete shaders after attaching them
             // TODO: Make the base shaders reusable
             glDeleteShader(vs);
             glDeleteShader(fs);
 
-            glGenTextures(1, &draw_info.mat_props.texture_id);
-            glBindTexture(GL_TEXTURE_2D, draw_info.mat_props.texture_id);
+            draw_info.mat_props.texture = OpenGLTexture(data.material->image);
 
-            const auto& image = data.material->image;
-
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                         static_cast<GLsizei>(image.width),
-                         static_cast<GLsizei>(image.height), 0, GL_RGBA,
-                         GL_UNSIGNED_BYTE, image.bytes.data());
-            // glGenerateMipmap(draw_info.mat_props.texture_id);
-            glGenerateTextureMipmap(draw_info.mat_props.texture_id);
-
-            batch.draws.push_back(draw_info);
+            batch.draws.push_back(std::move(draw_info));
         }
 
         auto new_draw_key = ++currentDrawKey_;
-        auto insertion = drawBatchMap_.emplace(new_draw_key, batch);
+        auto insertion = drawBatchMap_.emplace(new_draw_key, std::move(batch));
 
         PR_CORE_ASSERT(
             insertion.second,

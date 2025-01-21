@@ -1,9 +1,9 @@
 constexpr auto DEFAULT_VERTEX_SHADER = R"(
 
-#version 400
+#version 430
 
-out vec2 tex_coords;
-out vec4 colour;
+layout(location = 0) out vec2 tex_coords;
+layout(location = 1) out vec4 colour;
 
 layout(location = 0) in vec3 _vp;
 layout(location = 1) in vec3 _colour;
@@ -21,14 +21,14 @@ void main() {
 )";
 
 constexpr auto DEFAULT_FRAGMENT_SHADER = R"(
-#version 400
+#version 430
 
 out vec4 colour;
 
-in vec2 _tex_coords;
-in vec4 _colour;
+layout(location = 0) in vec2 _tex_coords;
+layout(location = 1) in vec4 _colour;
 
-uniform sampler2D sampler1;
+layout(location = 0) uniform sampler2D sampler1;
 
 void main() {
     colour = texture(sampler1, _tex_coords);

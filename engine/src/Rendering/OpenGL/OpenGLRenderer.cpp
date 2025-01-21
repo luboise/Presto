@@ -31,6 +31,8 @@ namespace Presto {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);  // Smaller = closer
 
+        setupDebugLogging();
+
         drawManager_ = std::make_unique<OpenGLDrawManager>();
 
         /*
@@ -78,12 +80,23 @@ namespace Presto {
             GLint projection =
                 glGetUniformLocation(draw_data.shader_program, "projection");
 
-            // Set sampler1 to be using texture slot 0
-            GLint sampler_uniform{
-                glGetUniformLocation(draw_data.shader_program, "sampler1")};
-            glUniform1i(sampler_uniform, 0);
+            auto slot = 0;
+            draw_data.mat_props.texture.bind(0);
 
+            PR_CORE_ASSERT(
+                draw_data.mat_props.texture.isLoaded(),
+                "Draw data is used without being loaded in OpenGL Renderer.");
             glUseProgram(draw_data.shader_program);
+
+            // TODO: Make this a one-off function call
+            {
+                GLint sampler{
+                    glGetUniformLocation(draw_data.shader_program, "sampler1")};
+                PR_CORE_ASSERT(sampler != -1,
+                               "Sampler1 is not found in the shader program.");
+                // Set sampler1 to be using texture slot 0
+                glUniform1i(sampler, slot);
+            }
 
             ShaderMatrices mats{};
 
@@ -98,10 +111,6 @@ namespace Presto {
             glUniformMatrix4fv(projection, 1, GL_FALSE,
                                glm::value_ptr(mats.projection));
 
-            // Commence drawing
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, draw_data.mat_props.texture_id);
-
             glBindVertexArray(draw_data.vao);
             glDrawElements(draw_data.draw_mode, draw_data.index_count,
                            GL_UNSIGNED_INT, nullptr);
@@ -114,4 +123,41 @@ namespace Presto {
     }
 
     OpenGLRenderer::~OpenGLRenderer() = default;
+
+    void GLAPIENTRY OpenGLRenderer::debugCallback(GLenum source, GLenum type,
+                                                  GLuint id, GLenum severity,
+                                                  GLsizei length,
+                                                  const GLchar* message,
+                                                  const void* userParam) {
+        PR_CORE_TRACE("OpenGL Debug Message (ID: {}): {}", id, message);
+    }
+
+    void OpenGLRenderer::setupDebugLogging() {
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glEnable(GL_DEBUG_OUTPUT);
+        // Ignore messages that are not errors, warnings, or deprecated behavior
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+                              GL_DEBUG_SEVERITY_HIGH, 0, nullptr, GL_FALSE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+                              GL_DEBUG_SEVERITY_MEDIUM, 0, nullptr, GL_FALSE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW,
+                              0, nullptr, GL_FALSE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+                              GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr,
+                              GL_FALSE);
+
+        // Allow error, warning, and deprecated behavior messages
+        glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_ERROR, GL_DONT_CARE,
+                              0, nullptr, GL_TRUE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR,
+                              GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR,
+                              GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_PERFORMANCE,
+                              GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        glDebugMessageControl(GL_DONT_CARE, GL_DEBUG_TYPE_PORTABILITY,
+                              GL_DONT_CARE, 0, nullptr, GL_TRUE);
+
+        glDebugMessageCallback(debugCallback, nullptr);
+    };
 }  // namespace Presto

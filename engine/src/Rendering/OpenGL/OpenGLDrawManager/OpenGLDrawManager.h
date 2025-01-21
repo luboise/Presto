@@ -4,26 +4,28 @@
 #include <map>
 #include "Presto/Rendering/RenderGroup.h"
 
+#include "OpenGLTexture.h"
+
 namespace Presto {
 
     struct OpenGLMaterialProperties {
         glm::vec4 colour;
-        GLuint texture_id{0};
+        OpenGLTexture texture;
     };
 
     struct OpenGLDrawInfo {
-        GLuint vertex_buf;
-        GLsizei vert_count;
+        GLuint vertex_buf{};
+        GLsizei vert_count{};
 
-        GLuint index_buf;
-        GLsizei index_count;
+        GLuint index_buf{};
+        GLsizei index_count{};
 
-        GLint first_index;
+        GLint first_index{};
 
-        GLuint shader_program;
-        GLuint vao;
+        GLuint shader_program{};
+        GLuint vao{};
 
-        int draw_mode;
+        int draw_mode{};
 
         OpenGLMaterialProperties mat_props;
     };
