@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Constants.h"
+
 #include <map>
 #include "spdlog/common.h"
 
@@ -30,7 +32,7 @@ T* Acquire(AcquireArgs... args) {
             PR_CORE_ASSERT(!isAllocated(new_value),
                            "Attempted to add a value that already exists in "
                            "the allocator: {}",
-                           (fmt::ptr(new_value)))
+                           (fmt::ptr(new_value)));
 
             _entries[_currentId++] = new_value;
         }
@@ -42,7 +44,7 @@ T* Acquire(AcquireArgs... args) {
                            id);
 
             PR_CORE_ASSERT(_entries[id] != nullptr,
-                           "Attempted to release memory from a nullptr.")
+                           "Attempted to release memory from a nullptr.");
 
             delete _entries[id];
             _entries.erase(id);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>  // IWYU pragma: export
 #include <nlohmann/json.hpp>
 #include "Presto/Core/Types.h"
 

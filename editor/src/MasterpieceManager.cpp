@@ -5,7 +5,6 @@
 #include "Presto/Modules/SceneManager.h"
 #include "Presto/Utils/File.h"
 
-#include <filesystem>
 
 void MasterpieceManager::Init() {
     MasterpieceManager::instance_ = std::make_unique<MasterpieceManager>();

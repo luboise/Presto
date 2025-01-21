@@ -13,4 +13,9 @@ using glm::mat4;
 using glm::vec2;
 using glm::vec3;
 
-#define AS_BIT(x) (1 << x)
+// #define AS_BIT(x) (1 << (x))
+
+template <typename T>
+constexpr uint32_t AS_BIT(T val) {
+    return 1 << val;
+}

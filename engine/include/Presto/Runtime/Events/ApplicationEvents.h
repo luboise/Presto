@@ -22,9 +22,12 @@ namespace Presto {
         inline unsigned GetHeight() const { return height; }
 
         std::string ToString() const override {
-            std::stringstream ss;
-            ss << "WindowResizeEvent: " << width << ", " << height;
-            return ss.str();
+            return std::format("WindowResizeEvent: {}, {}", width, height);
+            /*
+std::stringstream ss;
+ss << "WindowResizeEvent: " << width << ", " << height;
+return ss.str();
+            */
         }
 
         EVENT_CLASS_TYPE(WindowResize)

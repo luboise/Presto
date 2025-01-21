@@ -1,5 +1,3 @@
-#include <memory>
-
 #include "Masterpiece.h"
 #include "Presto/Objects/Scene.h"
 
