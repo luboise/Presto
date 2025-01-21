@@ -3,8 +3,6 @@
 #include "Presto/Math.h"
 #include "Presto/Objects/Component.h"
 
-#include <array>
-
 namespace Presto {
     class RenderingManager;
 
@@ -45,7 +43,8 @@ namespace Presto {
         [[nodiscard]] vec3 getPitch() const;
         [[nodiscard]] vec3 getRoll() const;
 
-        void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z}; }
+        // void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z};
+        // }
 
         static Transform* New();
 
@@ -54,7 +53,7 @@ namespace Presto {
         vec3 yawPitchRoll_;
         vec3 scale_;
 
-        std::array<bool, 3> useRounding_{false};
+        // std::array<bool, 3> useRounding_{false};
 
         void round();
 

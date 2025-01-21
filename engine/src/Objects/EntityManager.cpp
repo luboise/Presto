@@ -1,6 +1,5 @@
 #include "Presto/Modules/EntityManager.h"
-#include <algorithm>
-#include <stdexcept>
+
 #include "Presto/Components/Transform.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Entity.h"

@@ -1,4 +1,7 @@
 #include "Presto/Utils/File.h"
+
+#include "Presto/Core/Types.h"
+
 #include "nlohmann/json_fwd.hpp"
 
 namespace Presto::Utils {

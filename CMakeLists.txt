@@ -15,6 +15,14 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       CACHE PATH "Install path" FORCE)
 endif()
 
+option(PR_BUILD_EDITOR "Enable the PrestoEditor target." OFF)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# ##############################################################################
+# ##############################################################################
+# ##############################################################################
+
 find_program(
   GLSLC_PATH
   NAMES glslc
@@ -38,7 +46,10 @@ add_subdirectory(ext/GLFW)
 find_package(GLEW REQUIRED)
 
 add_subdirectory(ext/glm)
+
 add_subdirectory(ext/TinyGLTF)
+
+set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
 
 # find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
@@ -59,7 +70,8 @@ else()
                       "Expected Windows or Unix platform for compilation.")
 endif()
 
-set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
-
 add_subdirectory(engine)
-add_subdirectory(editor)
+
+if(${PR_BUILD_EDITOR})
+  add_subdirectory(editor)
+endif()

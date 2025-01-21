@@ -59,7 +59,7 @@ target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
 target_link_libraries(PrestoEngine PRIVATE tinygltf)
 
 # Needed for shared library
-set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET PrestoEngine PROPERTY POSIT﻿ION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
