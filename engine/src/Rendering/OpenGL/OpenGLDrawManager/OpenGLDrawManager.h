@@ -6,6 +6,11 @@
 
 namespace Presto {
 
+    struct OpenGLMaterialProperties {
+        glm::vec4 colour;
+        GLuint texture_id{0};
+    };
+
     struct OpenGLDrawInfo {
         GLuint vertex_buf;
         GLsizei vert_count;
@@ -19,6 +24,8 @@ namespace Presto {
         GLuint vao;
 
         int draw_mode;
+
+        OpenGLMaterialProperties mat_props;
     };
 
     struct OpenGLDrawBatch {

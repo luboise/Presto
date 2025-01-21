@@ -53,6 +53,7 @@ namespace Presto {
             }
 
             data.draw_mode = submesh.draw_mode;
+            data.material = submesh.material;
 
             group.render_list.push_back(data);
         }

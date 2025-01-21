@@ -1,16 +1,14 @@
 #pragma once
 
-#include "Presto/Core/Types.h"
-
-// #include "Presto/Rendering/Renderer.h"
+#include <cstddef>
+#include <cstdint>
+#include <vector>
 
 namespace Presto {
     struct Image {
-        PR_STRING_ID name;
-
         std::size_t width;
         std::size_t height;
-        std::vector<uint8_t> data;
+        std::vector<uint8_t> bytes;
 
         static constexpr auto PIXEL_BYTE_LENGTH = 4;
 

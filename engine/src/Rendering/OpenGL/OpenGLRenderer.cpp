@@ -78,6 +78,11 @@ namespace Presto {
             GLint projection =
                 glGetUniformLocation(draw_data.shader_program, "projection");
 
+            // Set sampler1 to be using texture slot 0
+            GLint sampler_uniform{
+                glGetUniformLocation(draw_data.shader_program, "sampler1")};
+            glUniform1i(sampler_uniform, 0);
+
             glUseProgram(draw_data.shader_program);
 
             ShaderMatrices mats{};
@@ -94,6 +99,9 @@ namespace Presto {
                                glm::value_ptr(mats.projection));
 
             // Commence drawing
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, draw_data.mat_props.texture_id);
+
             glBindVertexArray(draw_data.vao);
             glDrawElements(draw_data.draw_mode, draw_data.index_count,
                            GL_UNSIGNED_INT, nullptr);

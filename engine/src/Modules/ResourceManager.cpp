@@ -38,8 +38,8 @@ namespace Presto {
 
         auto accessor_offset = bv.byteOffset + accessor.byteOffset;
 
-        memcpy(ret_buffer.data(), buffer.data.data() + accessor_offset,
-               bv.byteLength);
+        std::memcpy(ret_buffer.data(), buffer.data.data() + accessor_offset,
+                    bv.byteLength);
 
         AccessorData ret{.buffer = ret_buffer, .count = accessor.count};
 
@@ -95,6 +95,7 @@ namespace Presto {
         fs::path file_extension = filepath.extension();
 
         std::vector<MeshResource*> new_meshes;
+        std::vector<std::unique_ptr<MaterialResource>> new_materials;
 
         if (file_extension == ".gltf" || file_extension == ".glb") {
             TinyGLTF loader;
@@ -120,6 +121,31 @@ namespace Presto {
             PR_CORE_ASSERT(ret, std::string("Failed to read asset ") +
                                     full_asset_path.string());
 
+            for (auto& material : model.materials) {
+                new_materials.push_back(std::make_unique<MaterialResource>());
+
+                auto& new_material = *new_materials.back();
+
+                new_material.name = material.name;
+
+                auto texture_index =
+                    material.pbrMetallicRoughness.baseColorTexture.index;
+
+                if (texture_index != -1) {
+                    const auto& texture = model.textures[texture_index];
+                    const auto& image_data = model.images[texture.source];
+
+                    Presto::Image& image = new_material.image;
+
+                    image.width = image_data.width;
+                    image.height = image_data.height;
+                    image.bytes.resize(image.size());
+
+                    std::memcpy(image.bytes.data(), image_data.image.data(),
+                                image.bytes.size());
+                }
+            }
+
             for (auto& mesh : model.meshes) {
                 auto new_mesh = std::make_unique<MeshResource>();
 
@@ -144,6 +170,9 @@ namespace Presto {
                         getDataFromAccessor2<SubMesh::TexCoordsType>(
                             model, primitive.attributes["TEXCOORD_0"]);
 
+                    new_submesh.material =
+                        new_materials[primitive.material].get();
+
                     new_mesh->sub_meshes.push_back(new_submesh);
                 }
                 auto key = customName.empty() ? mesh.name : customName;
@@ -151,6 +180,10 @@ namespace Presto {
                 meshResources_[key] = std::move(new_mesh);
 
                 new_meshes.push_back(meshResources_[key].get());
+            }
+
+            for (auto& mat : new_materials) {
+                materialResources_.emplace(mat->name, std::move(mat));
             }
         }
 
