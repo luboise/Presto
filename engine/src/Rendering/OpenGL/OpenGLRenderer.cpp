@@ -76,10 +76,6 @@ namespace Presto {
     void OpenGLRenderer::draw(const OpenGLDrawBatch& batch,
                               const glm::mat4& transform) {
         for (const auto& draw_data : batch.draws) {
-            GLint view = glGetUniformLocation(draw_data.shader_program, "view");
-            GLint projection =
-                glGetUniformLocation(draw_data.shader_program, "projection");
-
             auto slot = 0;
             draw_data.mat_props.texture.bind(0);
 
@@ -102,14 +98,22 @@ namespace Presto {
 
             constexpr glm::float32 FOV_Y = 90;
 
-            mats.view = renderViewMatrix_ * transform;
-
+            mats.view = renderViewMatrix_;
             mats.projection = RenderingUtils::getProjectionMatrix(
                 FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
+            mats.transform = transform;
+
+            GLint view = glGetUniformLocation(draw_data.shader_program, "view");
+            GLint projection =
+                glGetUniformLocation(draw_data.shader_program, "projection");
+            GLint transform =
+                glGetUniformLocation(draw_data.shader_program, "transform");
 
             glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
             glUniformMatrix4fv(projection, 1, GL_FALSE,
                                glm::value_ptr(mats.projection));
+            glUniformMatrix4fv(transform, 1, GL_FALSE,
+                               glm::value_ptr(mats.transform));
 
             glBindVertexArray(draw_data.vao);
             glDrawElements(draw_data.draw_mode, draw_data.index_count,

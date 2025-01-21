@@ -4,19 +4,24 @@ constexpr auto DEFAULT_VERTEX_SHADER = R"(
 
 layout(location = 0) out vec2 tex_coords;
 layout(location = 1) out vec4 colour;
+layout(location = 2) out vec3 normal;
 
 layout(location = 0) in vec3 _vp;
 layout(location = 1) in vec3 _colour;
 layout(location = 2) in vec3 _normal;
 layout(location = 3) in vec2 _tex_coords;
 
-uniform mat4 view;
-uniform mat4 projection;
+layout(location = 0) uniform mat4 view;
+layout(location = 1) uniform mat4 projection;
+layout(location = 2) uniform mat4 transform;
 
 void main() {
-    gl_Position = projection * view * vec4(_vp, 1.0);
+    gl_Position = projection * view * transform * vec4(_vp, 1.0);
     colour = vec4(_colour, 1.0);
     tex_coords = _tex_coords;
+
+	mat3 rotationMatrix = transpose(inverse(mat3(transform)));
+	normal = normalize(rotationMatrix * _normal);
 }
 )";
 
@@ -27,11 +32,19 @@ out vec4 colour;
 
 layout(location = 0) in vec2 _tex_coords;
 layout(location = 1) in vec4 _colour;
+layout(location = 2) in vec3 _normal;
 
-layout(location = 0) uniform sampler2D sampler1;
+layout(location = 3) uniform sampler2D sampler1;
 
 void main() {
-    colour = texture(sampler1, _tex_coords);
+	vec3 the_sun = vec3(-20, 20, 0);
+	float dotProd = dot(normalize(the_sun), normalize(_normal));
+
+    
+	float angle = acos(dotProd);
+	float intensity = max(0.0, dotProd);  // Ensuring no negative values
+
+    colour = texture(sampler1, _tex_coords) * intensity;
 	// colour = vec4(1,1,1,1);
 }
 )";

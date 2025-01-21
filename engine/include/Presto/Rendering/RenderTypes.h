@@ -1,12 +1,14 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
-#include <map>
+
+#include "glm/ext/matrix_float4x4.hpp"
 
 namespace Presto {
     struct ShaderMatrices {
         glm::mat4 view;
         glm::mat4 projection;
+        glm::mat4 transform;
     };
 
     struct DrawInfo {

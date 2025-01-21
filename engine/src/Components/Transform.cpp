@@ -6,15 +6,12 @@ namespace Presto {
     mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale) {
         mat4 model{1.0F};
 
-        model = glm::scale(model, scale);
-        model = glm::translate(model, offset);
+        model = glm::rotate(model, glm::radians(yawPitchRoll.x), vec3(0, 1, 0));
+        model = glm::rotate(model, glm::radians(yawPitchRoll.y), vec3(1, 0, 0));
+        model = glm::rotate(model, glm::radians(yawPitchRoll.z), vec3(0, 0, 1));
 
-        /*
-model = glm::rotate(model, yawPitchRoll.y, vec3(1, 0, 0));
-model = glm::rotate(model, yawPitchRoll.x, vec3(0, 1, 0));
-model = glm::rotate(model, yawPitchRoll.z, vec3(0, 0, 1));
-model = glm::scale(model, scale);
-        */
+        model = glm::translate(model, offset);
+        model = glm::scale(model, scale);
 
         return model;
     }
@@ -25,6 +22,10 @@ model = glm::scale(model, scale);
             this->round();
         }
     };
+
+    void Transform::rotate(double x, double y, double z) {
+        yawPitchRoll_ += vec3(x, y, z);
+    }
 
     Transform* Transform::New() {
         auto& em{EntityManager::Get()};

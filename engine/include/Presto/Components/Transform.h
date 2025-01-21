@@ -25,6 +25,8 @@ namespace Presto {
             this->translate(vec3{x, y, z});
         }
 
+        void rotate(double x = 0, double y = 0, double z = 0);
+
         void setTranslation(vec3 translation);
         void setRotation(vec3 yawPitchRoll);
         void setScale(vec3 scale);
