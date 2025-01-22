@@ -116,7 +116,9 @@ namespace Presto {
         }};
 
         if (e.IsInCategory(EventCategoryKeyboard)) {
-            lambda(*dynamic_cast<KeyEvent*>(&e));
+            if (auto* ptr = dynamic_cast<KeyEvent*>(&e); ptr != nullptr) {
+                lambda(*ptr);
+            }
         }
 
         // TODO: Implement log levels
