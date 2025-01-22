@@ -34,16 +34,16 @@ namespace Presto {
     };
 
     enum EventCategory {
-        None = 0,
-        EventCategoryApplication = AS_BIT(1),
+        None = 0x0000,
+        EventCategoryApplication = 0x0001,
 
-        EventCategoryInput = AS_BIT(2),
-        EventCategoryGamepad = AS_BIT(3),
-        EventCategoryKeyboard = AS_BIT(4),
-        EventCategoryMouse = AS_BIT(5),
-        EventCategoryMouseButton = AS_BIT(6),
+        EventCategoryInput = 0x0002,
+        EventCategoryGamepad = 0x0003,
+        EventCategoryKeyboard = 0x0004,
+        EventCategoryMouse = 0x0005,
+        EventCategoryMouseButton = 0x0006,
 
-        EventCategoryObject = AS_BIT(7)
+        EventCategoryObject = 0x0007
     };
 
     // Defines that can be reused between child classes to get event types,

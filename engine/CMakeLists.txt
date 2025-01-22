@@ -21,8 +21,7 @@ target_include_directories(
           ${CMAKE_CURRENT_SOURCE_DIR}/src
           ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stb/)
 
-target_link_libraries(PrestoEngine PUBLIC nlohmann_json::nlohmann_json)
-target_link_libraries(PrestoEngine PRIVATE glm::glm)
+target_link_libraries(PrestoEngine PUBLIC nlohmann_json::nlohmann_json glm::glm)
 
 # target_link_libraries(PrestoEngine PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")

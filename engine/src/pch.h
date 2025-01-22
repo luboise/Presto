@@ -24,12 +24,10 @@
     #include <Xinput.h>
 #endif
 
-#include <glm/glm.hpp>
-
-#include "Presto/Core.h"
-#include "Presto/Math.h"      // IWYU pragma: export
+#include "Presto/Core.h"      // IWYU pragma: export
 #include "Presto/Objects.h"   // IWYU pragma: export
 #include "Presto/Platform.h"  // IWYU pragma: export
+#include "Utils/Math.h"       // IWYU pragma: export
 
 #include "Presto/Utils.h"  // IWYU pragma: export
 

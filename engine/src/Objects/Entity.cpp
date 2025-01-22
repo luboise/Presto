@@ -14,7 +14,7 @@ namespace Presto {
     }
 
     void Entity::addTag(const entity_tag_name_t& tagName) {
-        entity_tag_id_t tag_id{EntityManager::Get().getTagId(tagName)};
+        entity_tag_id_t tag_id{EntityManager::get().getTagId(tagName)};
         PR_ASSERT(tag_id != INVALID_TAG_ID,
                   std::format("Unable to get tag id for name {}. Has the tag "
                               "been created yet?",

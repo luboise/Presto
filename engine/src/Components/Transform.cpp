@@ -28,11 +28,6 @@ if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
         yawPitchRoll_ += vec3(x, y, z);
     }
 
-    Transform* Transform::New() {
-        auto& em{EntityManager::Get()};
-        return em.newComponent<Transform>();
-    }
-
     /*
 void Transform::round() {
 this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)

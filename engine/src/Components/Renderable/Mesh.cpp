@@ -5,7 +5,7 @@
 namespace Presto {
     void Mesh::setResource(MeshResource& resource) {
         if (!resource.isRegistered()) {
-            RenderingManager::Get().loadMeshOnGpu(resource);
+            RenderingManager::get().loadMeshOnGpu(resource);
         }
 
         resource_ = &resource;

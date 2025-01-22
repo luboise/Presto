@@ -87,7 +87,7 @@ for (auto& layer : _renderLayers) {
         // Update the camera
         renderer_->setViewMatrix(camera_.getViewMatrix());
 
-        auto& em = EntityManager::Get();
+        auto& em = EntityManager::get();
 
         auto mesh_draws = em.findAll() |
                           std::views::transform([](entity_ptr entity) {

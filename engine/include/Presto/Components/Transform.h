@@ -1,10 +1,13 @@
 #pragma once
 
-#include "Presto/Math.h"
 #include "Presto/Objects/Component.h"
 
 namespace Presto {
     class RenderingManager;
+
+    using glm::mat4;
+    using glm::vec2;
+    using glm::vec3;
 
     class PRESTO_API Transform : public Component {
        public:
@@ -29,10 +32,6 @@ namespace Presto {
         void setRotation(vec3 yawPitchRoll);
         void setScale(vec3 scale);
 
-        [[nodiscard]] inline mat4 getModelView() const {
-            return getModelMatrix(translation_, yawPitchRoll_, scale_);
-        };
-
         [[nodiscard]] vec3 getScale() const;
         [[nodiscard]] vec3 getTranslation() const;
 
@@ -46,9 +45,11 @@ namespace Presto {
         // void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z};
         // }
 
-        static Transform* New();
-
        private:
+        [[nodiscard]] inline mat4 getModelView() const {
+            return getModelMatrix(translation_, yawPitchRoll_, scale_);
+        };
+
         vec3 translation_;
         vec3 yawPitchRoll_;
         vec3 scale_;

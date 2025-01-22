@@ -77,7 +77,7 @@ namespace Presto {
             if (object[TYPE_KEY] == ENTITY_KEY) {
                 auto entity_name = object[NAME_KEY];
                 entity_ptr new_entity =
-                    EntityManager::Get().newEntity(entity_name);
+                    EntityManager::get().newEntity(entity_name);
 
                 const auto& components = object[COMPONENTS_KEY];
 
@@ -85,7 +85,7 @@ namespace Presto {
                      components.items()) {
                     if (componentKey == "mesh") {
                         auto mesh_data = components[componentKey];
-                        MeshResource* mr{ResourceManager::Get().getMesh(
+                        MeshResource* mr{ResourceManager::get().getMesh(
                             component["resource"])};
 
                         if (mr == nullptr) {
@@ -95,7 +95,7 @@ namespace Presto {
                         }
 
                         auto* new_mesh_component{
-                            EntityManager::Get().newComponent<Mesh>(*mr)};
+                            EntityManager::get().newComponent<Mesh>(*mr)};
 
                         new_entity->setComponent(new_mesh_component);
                     }

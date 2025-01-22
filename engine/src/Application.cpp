@@ -52,8 +52,8 @@ namespace Presto {
         DebugTimer time_update("Global Time Update");
         DebugTimer garbage_collection_timer("Garbage Collection");
 
-        RenderingManager& rm = RenderingManager::Get();
-        EntityManager& em = EntityManager::Get();
+        RenderingManager& rm = RenderingManager::get();
+        EntityManager& em = EntityManager::get();
 
         while (app_running) {
             // Calculate delta
@@ -71,7 +71,7 @@ namespace Presto {
 
             // Run user logic
             // game_loop_timer.reset();
-            GameLoop();
+            gameLoop();
             // game_loop_timer.printElapsed();
 
             // rendering_timer.reset();
@@ -82,7 +82,8 @@ namespace Presto {
             _app_window->update();
             // window_timer.printElapsed();
 
-            // rendering_timer.reset();
+            em.update();
+
             rm.update();
             // rendering_timer.printElapsed();
 

@@ -1,5 +1,6 @@
 #include "Presto/Modules/EntityManager.h"
 
+#include "Presto/Components/Conductor.h"
 #include "Presto/Components/Transform.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Entity.h"
@@ -16,7 +17,14 @@ namespace Presto {
         instance_ = std::unique_ptr<EntityManager>(new EntityManager());
     }
 
-    void EntityManager::update() {}
+    void EntityManager::update() {
+        for (auto&& [key, value] : entityMap_) {
+            if (auto* script = value->getComponent<Conductor>();
+                script != nullptr) {
+                script->update(*value.get());
+            }
+        }
+    }
 
     void EntityManager::shutdown() {
         instance_->entities_.clear();
@@ -38,7 +46,7 @@ namespace Presto {
             new Entity(new_id, name),
             [this](Entity* entity) { this->destroyEntity(entity); });
 
-        Transform* new_transform = Transform::New();
+        auto* new_transform{newComponent<Transform>()};
         new_entity->setComponent(new_transform);
 
         entityMap_.emplace(new_id, std::move(new_entity));

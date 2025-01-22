@@ -11,7 +11,7 @@ namespace Presto {
         friend class Application;
 
        public:
-        static T& Get() {
+        static T& get() {
             PR_CORE_ASSERT(
                 T::initialised(),
                 std::string("Attempted to get uninitialised module: ") +

@@ -28,7 +28,7 @@ namespace Presto {
         [[nodiscard]] Window* GetWindow() const { return _app_window.get(); };
 
         // Intended to be replaced by user logic
-        virtual void GameLoop() {};
+        virtual void gameLoop() {};
 
         void OnEvent(Event& e);
 

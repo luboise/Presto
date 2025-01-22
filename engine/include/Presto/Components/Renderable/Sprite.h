@@ -7,13 +7,6 @@
 
 namespace Presto {
     struct RenderGroup;
-    // #define PrestoSpriteConstructorArgs mesh_id_t, const VertexList&, const
-    // IndexList&
-
-    struct SpriteCreationInfo {
-        VertexList vertices;
-        IndexList indices;
-    };
 
     using mesh_id_t = PR_NUMERIC_ID;
 

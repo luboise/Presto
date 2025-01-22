@@ -12,7 +12,7 @@ class PrestoEditor : public Presto::Application {
         MasterpieceManager::Init();
     }
 
-    void GameLoop() override {};
+    void gameLoop() override {};
 
     void preLoop() override { EditorUI::draw(); }
 
