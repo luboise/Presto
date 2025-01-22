@@ -1,1 +1,1 @@
-target_sources(PrestoEngine PRIVATE ResourceManager.cpp)
+target_sources(PrestoEngine PRIVATE ResourceManager.cpp EventManager.cpp)

@@ -2,7 +2,10 @@
 
 #include "Presto/Objects/Entity.h"
 
+#include "Presto/Components/Conductor.h"
+
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Modules/EventManager.h"
 #include "Presto/Runtime.h"
 
 using Presto::ObjectCreatedEvent;
@@ -28,4 +31,12 @@ namespace Presto {
     Entity::~Entity() = default;
 
     ComponentMap Entity::getComponents() { return components_; }
+
+    void Entity::checkNewComponent(Component* componentPtr) {
+        auto* conductor_ptr{dynamic_cast<Conductor*>(componentPtr)};
+
+        if (conductor_ptr != nullptr) {
+            EventManager::get().registerCallbacks(*this);
+        }
+    };
 }  // namespace Presto

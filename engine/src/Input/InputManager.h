@@ -6,7 +6,10 @@ namespace Presto {
        public:
         // Window create function that must be implemented per platform
         // Uses default props if unspecified
-        static InputManager* Create();
+
+        static void init();
+        static void shutdown();
+        void update() override {}
 
         InputManager(const InputManager&) = delete;
         InputManager(InputManager&&) = delete;

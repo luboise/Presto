@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+
 #include "Presto/Core/Types.h"
 // #include "Presto/Core/Constants.h"
 
@@ -10,6 +11,7 @@
 namespace Presto {
     // Forward declaration
     class EntityManager;
+    class Conductor;
 
     using ComponentMap = std::map<component_class_t, Component*>;
 
@@ -35,6 +37,8 @@ namespace Presto {
         void setComponent(ComponentClass* component_ptr) {
             component_class_t classID = CLASS_ID(ComponentClass);
             components_.emplace(classID, component_ptr);
+
+            checkNewComponent(component_ptr);
         }
 
         template <typename ComponentClass>
@@ -61,13 +65,16 @@ namespace Presto {
         // it up instead
         virtual ~Entity();
 
+        // TODO: Make this not public (hotfix to get it working)
+        void checkNewComponent(Component* component);
+
        private:
         explicit Entity(entity_id_t id, entity_name_t = "Entity");
 
         entity_name_t name_;
         entity_id_t id_{UNASSIGNED_ID};
 
-        entity_tag_map tags_;
+        entity_tag_map tags_{};
 
         ComponentMap components_;
         glm::vec3 _position{0, 0, 0};

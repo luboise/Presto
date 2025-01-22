@@ -1,5 +1,6 @@
 #include "Presto/Runtime/Application.h"
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Modules/EventManager.h"
 #include "Presto/Modules/SceneManager.h"
 
 #include "Presto/Runtime.h"
@@ -8,6 +9,7 @@
 
 #include "Presto/Runtime/Events/ApplicationEvents.h"
 
+#include "Presto/Runtime/Events/Event.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #include "Utils/DebugTimer.h"
@@ -31,11 +33,12 @@ namespace Presto {
         EntityManager::init();
         ResourceManager::init();
         SceneManager::init();
+        EventManager::init();
         Time::init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
-        Time::init();
+        EventManager::shutdown();
         SceneManager::shutdown();
         ResourceManager::shutdown();
         EntityManager::shutdown();
@@ -105,6 +108,16 @@ namespace Presto {
 
         dispatcher.Dispatch<WindowCloseEvent>(
             BIND_EVENT_FN(Application::OnWindowClose));
+
+        // TODO: Properly put this into the event system
+        auto lambda{[](KeyEvent& event) -> bool {
+            EventManager::get().onKeyEvent(event);
+            return true;
+        }};
+
+        if (e.IsInCategory(EventCategoryKeyboard)) {
+            lambda(*dynamic_cast<KeyEvent*>(&e));
+        }
 
         // TODO: Implement log levels
         // PR_CORE_TRACE("{}", e.ToString());

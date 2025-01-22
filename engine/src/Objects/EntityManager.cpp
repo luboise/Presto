@@ -21,7 +21,7 @@ namespace Presto {
         for (auto&& [key, value] : entityMap_) {
             if (auto* script = value->getComponent<Conductor>();
                 script != nullptr) {
-                script->update(*value.get());
+                script->update();
             }
         }
     }
