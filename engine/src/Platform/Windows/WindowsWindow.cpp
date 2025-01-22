@@ -29,7 +29,7 @@ namespace Presto {
 
     WindowsWindow::~WindowsWindow() { this->Shutdown(); }
 
-    void WindowsWindow::Init(const WindowProperties& props) {
+    void WindowsWindow::init(const WindowProperties& props) {
         this->w_data.title = props.title;
         this->w_data.width = props.width;
         this->w_data.height = props.height;
@@ -63,7 +63,7 @@ namespace Presto {
             case Renderer::VULKAN: {
                 this->_renderer =
                     new VulkanRenderer((GLFWwindow*)this->_windowPtr);
-                PR_CORE_ASSERT(this->_renderer->IsInitialised(),
+                PR_CORE_ASSERT(this->_renderer->initialised(),
                                "The renderer was not initialised.");
                 break;
             }

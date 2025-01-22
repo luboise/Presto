@@ -10,9 +10,9 @@ using nlohmann::json;
 namespace Presto {
     class SceneManager : public Module<SceneManager> {
        public:
-        static void Init();
-
-        void Update() override {};
+        static void init();
+        void update() override {};
+        static void shutdown();
 
         Scene* newScene(std::string name);
 

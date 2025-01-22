@@ -62,7 +62,7 @@ namespace Presto {
         mesh.renderId_ = r_id;
     };
 
-    void RenderingManager::Init() {
+    void RenderingManager::init() {
         PR_CORE_ASSERT(_library != UNSET,
                        "Unable to initialise the RenderingManager with an "
                        "unset graphics library.");
@@ -74,7 +74,7 @@ namespace Presto {
             RenderingManager::_library, RenderingManager::_window));
     }
 
-    void RenderingManager::Update() {
+    void RenderingManager::update() {
         /*
 for (auto& layer : _renderLayers) {
     for (const auto& ptr_renderable : layer._renderables) {
@@ -114,7 +114,7 @@ for (auto& layer : _renderLayers) {
         // performance impact is too much
     }
 
-    void RenderingManager::Shutdown() {}
+    void RenderingManager::shutdown() {}
 
     layer_id_t RenderingManager::addLayer(size_t pos) {
         if (pos == (size_t)-1) {
@@ -152,7 +152,7 @@ for (auto& layer : _renderLayers) {
         return _renderLayers[id];
     }
 
-    void RenderingManager::Clear() { renderer_->nextFrame(); }
+    void RenderingManager::clear() { renderer_->nextFrame(); }
 
     /*
         Mesh* RenderingManager::NewMesh(const VertexList& vertices,
@@ -164,14 +164,14 @@ for (auto& layer : _renderLayers) {
         }
     */
     void RenderingManager::setRenderLibrary(RENDER_LIBRARY library) {
-        PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+        PR_CORE_ASSERT(!RenderingManager::initialised(),
                        "Unable to set render library while the renderer is "
                        "already initialised.");
 
         RenderingManager::_library = library;
     }
     void RenderingManager::setWindow(GLFWAppWindow* window) {
-        PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+        PR_CORE_ASSERT(!RenderingManager::initialised(),
                        "Unable to set window surface while the renderer is "
                        "already initialised.");
 
@@ -179,7 +179,7 @@ for (auto& layer : _renderLayers) {
     }
 
     void RenderingManager::setCamera(Camera& newCam) {
-        PR_CORE_ASSERT(RenderingManager::IsInitialised(),
+        PR_CORE_ASSERT(RenderingManager::initialised(),
                        "Unable to set camera when the RenderingManager is "
                        "uninitialised.")
         camera_ = newCam;

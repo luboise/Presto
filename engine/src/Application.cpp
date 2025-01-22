@@ -17,7 +17,6 @@
 namespace Presto {
     Application::Application() {
         // TODO: Fix this to be injected
-
         auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::Create()));
 
         this->_app_window = std::unique_ptr<GLFWAppWindow>(app_window);
@@ -28,16 +27,21 @@ namespace Presto {
         RenderingManager::setWindow(app_window);
         RenderingManager::setWindow(app_window);
 
-        RenderingManager::Init();
-
-        EntityManager::Init();
-        ResourceManager::Init();
-        SceneManager::Init();
+        RenderingManager::init();
+        EntityManager::init();
+        ResourceManager::init();
+        SceneManager::init();
         Time::init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
-        this->_app_window->Shutdown();
+        Time::init();
+        SceneManager::shutdown();
+        ResourceManager::shutdown();
+        EntityManager::shutdown();
+        RenderingManager::shutdown();
+
+        this->_app_window->shutdown();
         // this->_app_window.release();
     };
 
@@ -75,21 +79,24 @@ namespace Presto {
             // rendering_timer.printElapsed();
 
             // window_timer.reset();
-            _app_window->Update();
+            _app_window->update();
             // window_timer.printElapsed();
 
             // rendering_timer.reset();
-            rm.Update();
+            rm.update();
             // rendering_timer.printElapsed();
 
             postLoop();
 
-            rm.Clear();
+            rm.clear();
 
             // garbage_collection_timer.reset();
             em.collectGarbage();
             // garbage_collection_timer.printElapsed();
         }
+
+        // User teardown function
+        tearDown();
     }
 
     void Application::OnEvent(Event& e) {

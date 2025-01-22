@@ -25,8 +25,7 @@ namespace Presto {
         std::vector<component_ptr> findComponentsWhere(auto filter);
 
         void addTagToEntity(Entity &entity, entity_tag_name_t tag);
-
-        void Update() override;
+        void update() override;
 
         entity_tag_id_t createTag(const entity_tag_name_t &tagName);
         [[nodiscard]] entity_tag_id_t getTagId(
@@ -58,7 +57,8 @@ namespace Presto {
        private:
         EntityManager() = default;
 
-        static void Init();
+        static void init();
+        static void shutdown();
 
         void collectGarbage();
 

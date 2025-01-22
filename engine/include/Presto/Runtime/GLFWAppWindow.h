@@ -13,7 +13,7 @@ namespace Presto {
         explicit GLFWAppWindow(const WindowProperties& props);
         ~GLFWAppWindow() override;
 
-        void Update() override;
+        void update() override;
 
         [[nodiscard]] inline unsigned GetWidth() const override {
             return w_data.width;
@@ -42,9 +42,9 @@ namespace Presto {
        private:
         double _glfwTime;
 
-        virtual void Init(const WindowProperties& props);
+        virtual void init(const WindowProperties& props);
         virtual void SetCallbacks();
-        void Shutdown() override;
+        void shutdown() override;
 
         static bool s_GLFWInitialised;
 

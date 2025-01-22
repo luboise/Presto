@@ -17,15 +17,14 @@ namespace Presto {
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
        public:
-        static void Init();
+        static void init();
 
-        void Update() override;
-        void Clear();
+        void update() override;
+        void clear();
 
-        static void Shutdown();
+        static void shutdown();
 
         static void setRenderLibrary(RENDER_LIBRARY library);
-
         static void setWindow(GLFWAppWindow* window);
 
         inline Camera& getCamera() { return camera_; };

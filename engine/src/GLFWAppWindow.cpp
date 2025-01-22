@@ -14,7 +14,7 @@ namespace Presto {
         return new GLFWAppWindow(props);
     }
 
-    void GLFWAppWindow::Shutdown() {
+    void GLFWAppWindow::shutdown() {
         if (this->_windowPtr != nullptr) {
             glfwDestroyWindow(static_cast<GLFWwindow*>(this->_windowPtr));
             this->_windowPtr = nullptr;
@@ -22,12 +22,12 @@ namespace Presto {
     }
 
     GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) {
-        this->GLFWAppWindow::Init(props);
+        this->GLFWAppWindow::init(props);
     }
 
-    GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::Shutdown(); }
+    GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::shutdown(); }
 
-    void GLFWAppWindow::Init(const WindowProperties& props) {
+    void GLFWAppWindow::init(const WindowProperties& props) {
         this->w_data.title = props.title;
         this->w_data.width = props.width;
         this->w_data.height = props.height;
@@ -160,7 +160,7 @@ namespace Presto {
             });
     }
 
-    void GLFWAppWindow::Update() { glfwPollEvents(); }
+    void GLFWAppWindow::update() { glfwPollEvents(); }
 
     void GLFWAppWindow::SetVSync(bool vsync) {
         if (vsync) {

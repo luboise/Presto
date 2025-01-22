@@ -11,6 +11,20 @@ namespace Presto {
     // entity_id_t EntityManager::_currentId = 0;
     // std::map<entity_id_t, entity_ptr> EntityManager::entityMap_;
 
+    void EntityManager::init() {
+        PR_CORE_INFO("Initialising EntityManager.");
+        instance_ = std::unique_ptr<EntityManager>(new EntityManager());
+    }
+
+    void EntityManager::update() {}
+
+    void EntityManager::shutdown() {
+        instance_->entities_.clear();
+        instance_->components_.clear();
+        instance_->entityMap_.clear();
+        instance_->tagMap_.clear();
+    }
+
     // Methods
     entity_ptr EntityManager::newEntity(const entity_name_t& name) {
         entity_id_t new_id = EntityManager::reserveId();
@@ -51,13 +65,6 @@ namespace Presto {
         // Send event
         Presto::ObjectDestroyedEvent(static_cast<void*>(entity));
     }
-
-    void EntityManager::Init() {
-        PR_CORE_INFO("Initialising EntityManager.");
-        instance_ = std::unique_ptr<EntityManager>(new EntityManager());
-    }
-
-    void EntityManager::Update() {}
 
     entity_id_t EntityManager::reserveId() { return _currentId++; }
 

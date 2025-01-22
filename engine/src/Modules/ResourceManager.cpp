@@ -25,6 +25,17 @@ namespace Presto {
         size_t count{static_cast<size_t>(-1)};
     };
 
+    void ResourceManager::init() {
+        PR_CORE_INFO("Initialising ResourceManager.");
+        instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
+    }
+
+    void ResourceManager::shutdown() {
+        instance_->meshResources_.clear();
+        instance_->imageResources_.clear();
+        instance_->materialResources_.clear();
+    }
+
     AccessorData getDataFromAccessor(const tinygltf::Model& model,
                                      size_t accessorIndex) {
         const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
@@ -246,11 +257,6 @@ namespace Presto {
         auto key = resource->name;
         imageResources_[key] = std::move(resource);
         return *imageResources_[key];
-    }
-
-    void ResourceManager::Init() {
-        PR_CORE_INFO("Initialising ResourceManager.");
-        instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
     }
 
     MeshResource* ResourceManager::getMesh(const resource_name_t& key) const {

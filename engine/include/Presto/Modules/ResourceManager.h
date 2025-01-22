@@ -12,8 +12,9 @@ namespace Presto {
 
     class PRESTO_API ResourceManager : public Module<ResourceManager> {
        public:
-        static void Init();
-        void Update() override {}
+        static void init();
+        void update() override {}
+        static void shutdown();
 
         std::vector<MeshResource*> loadMeshesFromDisk(
             const AssetPath& path, const resource_name_t& customName);

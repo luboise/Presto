@@ -31,10 +31,10 @@ namespace Presto {
         using EventCallbackFn = std::function<void(Event&)>;
 
         virtual ~Window() = default;
-        virtual void Shutdown() = 0;
+        virtual void shutdown() = 0;
 
         // TODO: Move this into the engine
-        virtual void Update() = 0;
+        virtual void update() = 0;
 
         [[nodiscard]] virtual unsigned GetWidth() const = 0;
         [[nodiscard]] virtual unsigned GetHeight() const = 0;

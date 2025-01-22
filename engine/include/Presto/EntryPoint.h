@@ -10,7 +10,7 @@ using AppHandle = std::unique_ptr<Presto::Application>;
 
 #define PRESTO_ENTRY_POINT()                        \
     int main(int argc, char** argv) {               \
-        Presto::Log::Init();                        \
+        Presto::Log::init();                        \
         PR_CORE_WARN("Initialised core logger.");   \
         PR_INFO("Initialised client logger.");      \
         AppHandle app{Presto::createApplication()}; \

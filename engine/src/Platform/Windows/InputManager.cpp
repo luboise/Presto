@@ -11,7 +11,7 @@ namespace Presto {
     std::atomic<bool> InputManager::is_polling;
     std::thread InputManager::input_thread;
 
-    void InputManager::Init() {
+    void InputManager::init() {
         // Set port to 0 (controller 1)
         SetPort(0);
 

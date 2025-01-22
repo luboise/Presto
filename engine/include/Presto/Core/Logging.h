@@ -5,7 +5,7 @@
 namespace Presto {
     class Log {
        public:
-        static void Init();
+        static void init();
 
         inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
             return s_CoreLogger;
