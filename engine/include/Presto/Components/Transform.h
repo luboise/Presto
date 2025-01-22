@@ -21,16 +21,16 @@ namespace Presto {
 
         static mat4 getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale);
 
-        void translate(vec3 translation);
-        void translate(double x = 0, double y = 0, double z = 0) {
-            this->translate(vec3{x, y, z});
+        Transform& translate(vec3 translation);
+        Transform& translate(double x = 0, double y = 0, double z = 0) {
+            return this->translate(vec3{x, y, z});
         }
 
-        void rotate(double x = 0, double y = 0, double z = 0);
+        Transform& rotate(double x = 0, double y = 0, double z = 0);
 
-        void setTranslation(vec3 translation);
-        void setRotation(vec3 yawPitchRoll);
-        void setScale(vec3 scale);
+        Transform& setTranslation(vec3 translation);
+        Transform& setRotation(vec3 yawPitchRoll);
+        Transform& setScale(vec3 scale);
 
         [[nodiscard]] vec3 getScale() const;
         [[nodiscard]] vec3 getTranslation() const;

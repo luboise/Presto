@@ -1,5 +1,4 @@
 #include "Presto/Components/Transform.h"
-#include "Presto/Modules/EntityManager.h"
 
 namespace Presto {
     mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale) {
@@ -15,21 +14,23 @@ namespace Presto {
         return model;
     }
 
-    void Transform::translate(vec3 translation) {
+    Transform& Transform::translate(vec3 translation) {
         this->translation_ += translation;
         /*
 if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
     this->round();
 }
         */
+        return *this;
     };
 
-    void Transform::rotate(double x, double y, double z) {
+    Transform& Transform::rotate(double x, double y, double z) {
         yawPitchRoll_ += vec3(x, y, z);
+        return *this;
     }
 
     /*
-void Transform::round() {
+Transform& Transform::round() {
 this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
                                   : this->translation_.x,
                   useRounding_[1] ? std::round(this->translation_.y)
@@ -39,5 +40,8 @@ this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
 };
                                                                               */
 
-    void Transform::setScale(vec3 scale) { this->scale_ = scale; };
+    Transform& Transform::setScale(vec3 scale) {
+        this->scale_ = scale;
+        return *this;
+    };
 }  // namespace Presto

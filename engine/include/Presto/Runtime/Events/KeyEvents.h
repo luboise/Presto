@@ -3,31 +3,37 @@
 #include "Event.h"
 
 namespace Presto {
+
+    using KeyCode = Input::Key;
+
     // Intended to be abstract
     class KeyEvent : public Event {
        public:
-        inline int GetKeyCode() const { return this->keyCode; }
+        [[nodiscard]] inline KeyCode GetKeyCode() const {
+            return this->keyCode;
+        }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
        protected:
         // Constructor
-        KeyEvent(int keycode) { this->keyCode = keycode; }
-        int keyCode;
+        KeyEvent(KeyCode keycode) : keyCode(keycode) {}
+        KeyCode keyCode;
     };
 
     class KeyPressedEvent : public KeyEvent {
        public:
-        KeyPressedEvent(int keycode, int repeatcount) : KeyEvent(keycode) {
-            this->repeatCount = repeatcount;
+        KeyPressedEvent(KeyCode keycode, int repeatcount)
+            : KeyEvent(keycode), repeatCount(repeatcount) {}
+
+        [[nodiscard]] inline int getRepeatCount() const {
+            return this->repeatCount;
         }
 
-        inline int getRepeatCount() const { return this->repeatCount; }
-
-        std::string ToString() const override {
+        [[nodiscard]] std::string ToString() const override {
             std::stringstream ss;
-            ss << "KeyPressedEvent: Key " << this->keyCode << "  ("
-               << this->repeatCount << " repeats)";
+            ss << "KeyPressedEvent: Key " << Input::CodeOf(this->keyCode)
+               << "  (" << this->repeatCount << " repeats)";
             return ss.str();
         }
 
@@ -40,11 +46,11 @@ namespace Presto {
     class KeyReleasedEvent : public KeyEvent {
        public:
         // Call parent constructor
-        KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
+        explicit KeyReleasedEvent(KeyCode keycode) : KeyEvent(keycode) {}
 
-        std::string ToString() const override {
+        [[nodiscard]] std::string ToString() const override {
             std::stringstream ss;
-            ss << "KeyPressedEvent: " << this->keyCode;
+            ss << "KeyPressedEvent: " << Input::CodeOf(this->keyCode);
             return ss.str();
         }
 

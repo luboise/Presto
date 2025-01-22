@@ -1,11 +1,14 @@
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #include "GLFW/glfw3.h"
+#include "Presto/Core/KeyCodes.h"
+#include "Presto/Runtime.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
 #include "Presto/Runtime/Events/KeyEvents.h"
 #include "Presto/Runtime/Events/MouseEvents.h"
 
 #include "Presto/Rendering/Renderer.h"
+#include "pch.h"
 
 namespace Presto {
     bool GLFWAppWindow::s_GLFWInitialised = false;
@@ -89,24 +92,32 @@ namespace Presto {
             });
 
         glfwSetKeyCallback(
-            (GLFWwindow*)this->_windowPtr,
+            static_cast<GLFWwindow*>(this->_windowPtr),
             [](GLFWwindow* window, int keycode, int scancode, int action,
                int mods) {
-                WindowData& data =
-                    *(WindowData*)(glfwGetWindowUserPointer(window));
+                WindowData& data{*static_cast<WindowData*>(
+                    glfwGetWindowUserPointer(window))};
+
+                Input::Key presto_key_code{getPrestoKeyCode(keycode)};
+
+                // Skip unsupported keys
+                if (presto_key_code == Input::Key::INVALID_KEY) {
+                    return;
+                }
+
                 switch (action) {
                     case GLFW_PRESS: {
-                        KeyPressedEvent e(keycode, 0);
+                        KeyPressedEvent e(presto_key_code, 0);
                         data.event_callback(e);
                         break;
                     }
                     case GLFW_RELEASE: {
-                        KeyReleasedEvent e(keycode);
+                        KeyReleasedEvent e(presto_key_code);
                         data.event_callback(e);
                         break;
                     }
                     case GLFW_REPEAT: {
-                        KeyPressedEvent e(keycode, 1);
+                        KeyPressedEvent e(presto_key_code, 1);
                         data.event_callback(e);
                         break;
                     }
@@ -172,5 +183,20 @@ namespace Presto {
     }
 
     bool GLFWAppWindow::IsVSyncEnabled() { return w_data.VSync; }
+
+    Input::Key GLFWAppWindow::getPrestoKeyCode(int GLFWKeycode) {
+        switch (GLFWKeycode) {
+            case GLFW_KEY_UP:
+                return Input::Key::UP_ARROW;
+            case GLFW_KEY_DOWN:
+                return Input::Key::DOWN_ARROW;
+            case GLFW_KEY_LEFT:
+                return Input::Key::LEFT_ARROW;
+            case GLFW_KEY_RIGHT:
+                return Input::Key::RIGHT_ARROW;
+            default:
+                return Input::Key::INVALID_KEY;
+        }
+    };
 
 }  // namespace Presto

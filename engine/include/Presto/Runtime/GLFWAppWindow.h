@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Components/Conductor.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -47,6 +48,8 @@ namespace Presto {
         void shutdown() override;
 
         static bool s_GLFWInitialised;
+
+        static Input::Key getPrestoKeyCode(int GLFWKeycode);
 
         struct WindowData {
             std::string title;
