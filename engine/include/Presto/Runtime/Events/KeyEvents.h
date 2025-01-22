@@ -9,51 +9,42 @@ namespace Presto {
     // Intended to be abstract
     class KeyEvent : public Event {
        public:
-        [[nodiscard]] inline KeyCode GetKeyCode() const {
-            return this->keyCode;
+        KeyEvent(const KeyEvent &) = default;
+        KeyEvent(KeyEvent &&) = delete;
+        KeyEvent &operator=(const KeyEvent &) = default;
+        KeyEvent &operator=(KeyEvent &&) = delete;
+        virtual ~KeyEvent() = default;
+
+        enum class KeyEventType { PRESSED, RELEASED };
+
+        [[nodiscard]] inline KeyCode getKey() const { return this->keyCode_; }
+
+        [[nodiscard]] inline KeyEventType type() const {
+            return this->eventType_;
+        }
+
+        [[nodiscard]] inline bool isPressedEvent() const {
+            return eventType_ == KeyEventType::PRESSED;
+        }
+
+        [[nodiscard]] inline bool isReleasedEvent() const {
+            return eventType_ == KeyEventType::RELEASED;
         }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
-
-       protected:
-        // Constructor
-        KeyEvent(KeyCode keycode) : keyCode(keycode) {}
-        KeyCode keyCode;
-    };
-
-    class KeyPressedEvent : public KeyEvent {
-       public:
-        KeyPressedEvent(KeyCode keycode, int repeatcount)
-            : KeyEvent(keycode), repeatCount(repeatcount) {}
-
-        [[nodiscard]] inline int getRepeatCount() const {
-            return this->repeatCount;
-        }
+        EVENT_CLASS_TYPE(Key)
 
         [[nodiscard]] std::string ToString() const override {
-            std::stringstream ss;
-            ss << "KeyPressedEvent: Key " << Input::CodeOf(this->keyCode)
-               << "  (" << this->repeatCount << " repeats)";
-            return ss.str();
+            return std::format("KeyEvent: Key ", Input::CodeOf(this->keyCode_));
         }
 
-        EVENT_CLASS_TYPE(KeyPressed)
+        KeyEvent(KeyCode keycode, KeyEventType eventType)
+            : eventType_(eventType), keyCode_(keycode) {}
 
        private:
-        int repeatCount;
-    };
+        // Constructor
 
-    class KeyReleasedEvent : public KeyEvent {
-       public:
-        // Call parent constructor
-        explicit KeyReleasedEvent(KeyCode keycode) : KeyEvent(keycode) {}
-
-        [[nodiscard]] std::string ToString() const override {
-            std::stringstream ss;
-            ss << "KeyPressedEvent: " << Input::CodeOf(this->keyCode);
-            return ss.str();
-        }
-
-        EVENT_CLASS_TYPE(KeyReleased)
+        KeyEventType eventType_;
+        KeyCode keyCode_;
     };
 }  // namespace Presto

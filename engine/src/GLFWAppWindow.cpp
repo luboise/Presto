@@ -107,17 +107,14 @@ namespace Presto {
 
                 switch (action) {
                     case GLFW_PRESS: {
-                        KeyPressedEvent e(presto_key_code, 0);
+                        KeyEvent e(presto_key_code,
+                                   KeyEvent::KeyEventType::PRESSED);
                         data.event_callback(e);
                         break;
                     }
                     case GLFW_RELEASE: {
-                        KeyReleasedEvent e(presto_key_code);
-                        data.event_callback(e);
-                        break;
-                    }
-                    case GLFW_REPEAT: {
-                        KeyPressedEvent e(presto_key_code, 1);
+                        KeyEvent e(presto_key_code,
+                                   KeyEvent::KeyEventType::RELEASED);
                         data.event_callback(e);
                         break;
                     }

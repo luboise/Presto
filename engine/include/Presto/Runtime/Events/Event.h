@@ -21,8 +21,7 @@ namespace Presto {
         GamepadBtnPressed,
         GamepadBtnReleased,
 
-        KeyPressed,
-        KeyReleased,
+        Key,
 
         MouseBtnPressed,
         MouseBtnReleased,
