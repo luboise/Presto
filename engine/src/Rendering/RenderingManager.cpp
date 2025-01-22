@@ -85,7 +85,7 @@ for (auto& layer : _renderLayers) {
         */
 
         // Update the camera
-        renderer_->setViewMatrix(currentCamera_->getViewMatrix());
+        renderer_->setViewMatrix(camera_.getViewMatrix());
 
         auto& em = EntityManager::Get();
 
@@ -163,4 +163,25 @@ for (auto& layer : _renderLayers) {
             return mesh;
         }
     */
+    void RenderingManager::setRenderLibrary(RENDER_LIBRARY library) {
+        PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+                       "Unable to set render library while the renderer is "
+                       "already initialised.");
+
+        RenderingManager::_library = library;
+    }
+    void RenderingManager::setWindow(GLFWAppWindow* window) {
+        PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
+                       "Unable to set window surface while the renderer is "
+                       "already initialised.");
+
+        RenderingManager::_window = window;
+    }
+
+    void RenderingManager::setCamera(Camera& newCam) {
+        PR_CORE_ASSERT(RenderingManager::IsInitialised(),
+                       "Unable to set camera when the RenderingManager is "
+                       "uninitialised.")
+        camera_ = newCam;
+    }
 }  // namespace Presto

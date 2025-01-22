@@ -9,11 +9,11 @@ namespace Presto {
 
         [[nodiscard]] glm::mat4 getViewMatrix() const;
 
-        void setYaw(double newYaw);
-        void setPitch(double newPitch);
-        void setRoll(double newRoll);
-        void setPos(glm::vec3 newPos);
-        void setFocus(glm::vec3 newPos);
+        Camera& setYaw(double newYaw);
+        Camera& setPitch(double newPitch);
+        Camera& setRoll(double newRoll);
+        Camera& setPos(glm::vec3 newPos);
+        Camera& setFocus(glm::vec3 newPos);
 
         [[nodiscard]] double getYaw() const;
         [[nodiscard]] double getPitch() const;

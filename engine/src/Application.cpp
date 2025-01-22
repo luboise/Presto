@@ -6,10 +6,7 @@
 
 #include "Presto/Managers.h"
 
-#include "Presto/Rendering/Camera.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
-
-#include "GLFW/glfw3.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 
@@ -32,10 +29,6 @@ namespace Presto {
         RenderingManager::setWindow(app_window);
 
         RenderingManager::Init();
-
-        // TODO: Make this use an actual component
-        _mainCamera = new Camera();
-        RenderingManager::Get().setCamera(*_mainCamera);
 
         EntityManager::Init();
         ResourceManager::Init();
@@ -94,12 +87,10 @@ namespace Presto {
             rm.Clear();
 
             // garbage_collection_timer.reset();
-            EntityManager::Get().collectGarbage();
+            em.collectGarbage();
             // garbage_collection_timer.printElapsed();
         }
     }
-
-    Camera& Application::GetMainCamera() { return *_mainCamera; }
 
     void Application::OnEvent(Event& e) {
         EventDispatcher dispatcher(e);

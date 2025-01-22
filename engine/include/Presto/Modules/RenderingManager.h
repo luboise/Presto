@@ -2,14 +2,18 @@
 
 #include "Module.h"
 
-#include "Presto/Rendering/Camera.h"
+#include "Presto/Components/Renderable.h"
 #include "Presto/Rendering/RenderLayer.h"
-#include "Presto/Resources/MeshResource.h"
 
+#include "Presto/Rendering/Camera.h"
+
+#include "Presto/Resources/MeshResource.h"
 #include "Presto/Utils/Allocator.h"
 
 namespace Presto {
     using layer_id_t = PR_NUMERIC_ID;
+
+    class RenderLayer;
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
        public:
@@ -20,28 +24,12 @@ namespace Presto {
 
         static void Shutdown();
 
-        static void setRenderLibrary(RENDER_LIBRARY library) {
-            PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
-                           "Unable to set render library while the renderer is "
-                           "already initialised.");
+        static void setRenderLibrary(RENDER_LIBRARY library);
 
-            RenderingManager::_library = library;
-        }
+        static void setWindow(GLFWAppWindow* window);
 
-        static void setWindow(GLFWAppWindow* window) {
-            PR_CORE_ASSERT(!RenderingManager::IsInitialised(),
-                           "Unable to set window surface while the renderer is "
-                           "already initialised.");
-
-            RenderingManager::_window = window;
-        }
-
-        void setCamera(Camera& newCam) {
-            PR_CORE_ASSERT(RenderingManager::IsInitialised(),
-                           "Unable to set camera when the RenderingManager is "
-                           "uninitialised.")
-            currentCamera_ = &newCam;
-        }
+        inline Camera& getCamera() { return camera_; };
+        void setCamera(Camera& newCam);
 
         void renderFrame();
 
@@ -72,7 +60,7 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         static GLFWAppWindow* _window;
 
         // Member vars
-        Camera* currentCamera_ = nullptr;
+        Camera camera_;
 
         explicit RenderingManager(RENDER_LIBRARY library,
                                   GLFWAppWindow* window);

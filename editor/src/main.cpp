@@ -12,18 +12,7 @@ class PrestoEditor : public Presto::Application {
         MasterpieceManager::Init();
     }
 
-    void GameLoop() override {
-        auto time = Presto::Time::totalSecondsSinceStart();
-
-        _mainCamera->setFocus({0, 50, 0});
-
-        constexpr auto camera_distance = 150;
-        constexpr auto camera_height = 165;
-
-        _mainCamera->setPos({glm::sin(time) * camera_distance, camera_height,
-                             glm::cos(time) * camera_distance});
-        // _mainCamera.setYaw(diff);
-    }
+    void GameLoop() override {};
 
     void preLoop() override { EditorUI::draw(); }
 
@@ -32,4 +21,7 @@ class PrestoEditor : public Presto::Application {
     void tearDown() override {}
 };
 
-Presto::Application* Presto::CreateApplication() { return new PrestoEditor(); };
+PRESTO_APP_CLASS(PrestoEditor);
+
+// Presto::Application* Presto::CreateApplication() { return new PrestoEditor();
+// };

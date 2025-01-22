@@ -8,26 +8,36 @@ namespace Presto {
         return _viewMatrix;
     }
 
-    void Camera::setYaw(double newYaw) {
+    Camera& Camera::setYaw(double newYaw) {
         _yaw = newYaw;
         recalculate();
+
+        return *this;
     }
-    void Camera::setPitch(double newPitch) {
+    Camera& Camera::setPitch(double newPitch) {
         _pitch = newPitch;
         recalculate();
+
+        return *this;
     }
-    void Camera::setRoll(double newRoll) {
+    Camera& Camera::setRoll(double newRoll) {
         _roll = newRoll;
         recalculate();
+
+        return *this;
     }
-    void Camera::setPos(glm::vec3 newPos) {
+    Camera& Camera::setPos(glm::vec3 newPos) {
         _cameraPos = newPos;
         recalculate();
+
+        return *this;
     }
 
-    void Camera::setFocus(glm::vec3 newPos) {
+    Camera& Camera::setFocus(glm::vec3 newPos) {
         _focusPoint = newPos;
         recalculate();
+
+        return *this;
     }
 
     double Camera::getYaw() const { return _yaw; }
