@@ -3,6 +3,8 @@
 #include "Module.h"
 
 #include "Presto/Components/Physics/RigidBody.h"
+#include "Presto/Physics/Force.h"
+
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
@@ -14,6 +16,8 @@ namespace Presto {
 
         void update() override;
         void clear();
+
+        void addPersistentForce(Force);
 
         static void shutdown();
 
@@ -31,6 +35,8 @@ namespace Presto {
         explicit PhysicsManager() = default;
 
         void addPairing(const PhysicsPairing&);
+
         std::vector<PhysicsPairing> pairings_;
+        std::vector<Force> persistentForces_;
     };
 }  // namespace Presto

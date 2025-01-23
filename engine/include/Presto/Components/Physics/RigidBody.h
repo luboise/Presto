@@ -2,6 +2,8 @@
 
 #include "Presto/Objects/Component.h"
 
+#include "Presto/Physics/Force.h"
+
 namespace Presto {
     class RenderingManager;
 
@@ -10,16 +12,17 @@ namespace Presto {
         RigidBody() = default;
 
         void addVelocity(vec3 vel);
+        void addAngularVelocity(vec3 angularVel);
+        void addForce(Force force);
 
         struct PhysicsMovement {
             vec3 pos_offset;
             vec3 angular_offset;
         };
 
-        [[nodiscard]] PhysicsMovement calculateMovement() const;
+        [[nodiscard]] Force calculateMovement() const;
 
        private:
-        vec3 velocity_{0};
-        vec3 angularVelocity_{0};
+        Force force_;
     };
 }  // namespace Presto

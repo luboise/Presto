@@ -32,7 +32,9 @@ namespace Presto {
         [[nodiscard]] vec3 getScale() const;
         [[nodiscard]] vec3 getTranslation() const;
 
-        // Returns vec3(yaw,pitch,roll)
+        [[nodiscard]] vec3 getPosition() const;
+
+        // Returns (yaw,pitch,roll)
         [[nodiscard]] vec3 getRotation() const;
 
         [[nodiscard]] vec3 getYaw() const;
