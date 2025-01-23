@@ -1,10 +1,8 @@
 #pragma once
 
-#include <utility>
-
 #include "Presto/Core/Types.h"
 
-#include "Presto/Objects/Entity.h"
+#include "Entity.h"
 
 namespace Presto {
     using scene_name_t = PR_STRING_ID;

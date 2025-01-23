@@ -14,4 +14,7 @@ namespace Presto {
         PR_FAILURE = 1,
     };
 
+    using PR_BIT_TYPE = std::uint16_t;
+
+    constexpr PR_BIT_TYPE AS_BIT(uint8_t x) { return 1U << x; }
 }  // namespace Presto

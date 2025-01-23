@@ -13,15 +13,12 @@ namespace Presto {
         KeyEvent(KeyEvent &&) = delete;
         KeyEvent &operator=(const KeyEvent &) = default;
         KeyEvent &operator=(KeyEvent &&) = delete;
-        virtual ~KeyEvent() = default;
+
+        ~KeyEvent() override = default;
 
         enum class KeyEventType { PRESSED, RELEASED };
 
         [[nodiscard]] inline KeyCode getKey() const { return this->keyCode_; }
-
-        [[nodiscard]] inline KeyEventType type() const {
-            return this->eventType_;
-        }
 
         [[nodiscard]] inline bool isPressedEvent() const {
             return eventType_ == KeyEventType::PRESSED;
@@ -34,7 +31,7 @@ namespace Presto {
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
         EVENT_CLASS_TYPE(Key)
 
-        [[nodiscard]] std::string ToString() const override {
+        [[nodiscard]] std::string toString() const override {
             return std::format("KeyEvent: Key ", Input::CodeOf(this->keyCode_));
         }
 

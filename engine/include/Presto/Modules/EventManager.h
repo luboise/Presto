@@ -1,11 +1,15 @@
-
 #pragma once
 
 #include "Module.h"
 
+#include "Presto/Objects/Entity.h"
+
 #include "Presto/Runtime/Events/KeyEvents.h"
 
 namespace Presto {
+    class Entity;
+    class Component;
+
     class PRESTO_API EventManager : public Module<EventManager> {
         template <typename... Args>
         using HandlerFunction = std::function<void(Args...)>;

@@ -18,16 +18,11 @@ namespace Presto {
             this->height = new_height;
         }
 
-        inline unsigned GetWidth() const { return width; }
-        inline unsigned GetHeight() const { return height; }
+        [[nodiscard]] inline unsigned GetWidth() const { return width; }
+        [[nodiscard]] inline unsigned GetHeight() const { return height; }
 
-        std::string ToString() const override {
+        [[nodiscard]] std::string toString() const override {
             return std::format("WindowResizeEvent: {}, {}", width, height);
-            /*
-std::stringstream ss;
-ss << "WindowResizeEvent: " << width << ", " << height;
-return ss.str();
-            */
         }
 
         EVENT_CLASS_TYPE(WindowResize)

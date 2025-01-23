@@ -1,7 +1,8 @@
 #include "Presto/Modules/EventManager.h"
+#include "Presto/Components/Conductor.h"
 #include "Presto/Core/Logging.h"
 
-#include "Presto/Components/Conductor.h"
+#include "Presto/Objects.h"
 
 namespace Presto {
     void EventManager::registerCallbacks(Entity& entity) {

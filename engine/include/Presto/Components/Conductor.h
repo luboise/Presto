@@ -6,6 +6,8 @@
 
 #include "Presto/Events.h"
 
+#include "Presto/Objects.h"
+
 namespace Presto {
     class PRESTO_API Conductor : public Component {
         friend class EntityManager;

@@ -1,12 +1,5 @@
 #pragma once
 
-// #define AS_BIT(x) (1 << (x))
-
-template <typename T>
-constexpr uint32_t AS_BIT(T val) {
-    return 1 << val;
-}
-
 // GLM
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS

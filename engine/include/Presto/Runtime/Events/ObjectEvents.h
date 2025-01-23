@@ -5,16 +5,14 @@
 namespace Presto {
     class ObjectEvent : public Event {
        public:
-        inline void* getPtr() const { return this->_objectPtr; }
+        [[nodiscard]] inline void* getPtr() const { return this->_objectPtr; }
 
         EVENT_CLASS_CATEGORY(EventCategoryObject)
 
        protected:
         // Constructor
         template <typename T>
-        ObjectEvent(T* objectPtr) {
-            this->_objectPtr = (void*)(objectPtr);
-        }
+        explicit ObjectEvent(T* objectPtr) : _objectPtr((void*)(objectPtr)) {}
         void* _objectPtr;
     };
 
@@ -23,12 +21,10 @@ namespace Presto {
         EVENT_CLASS_TYPE(ObjectCreated)
 
         template <typename T>
-        ObjectCreatedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
+        explicit ObjectCreatedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
 
-        std::string ToString() const override {
-            std::stringstream ss;
-            ss << "Entity created at address 0x" << _objectPtr << ".";
-            return ss.str();
+        [[nodiscard]] std::string toString() const override {
+            return std::format("Entity created at address 0x{}", _objectPtr);
         }
     };
 
@@ -37,12 +33,10 @@ namespace Presto {
         EVENT_CLASS_TYPE(ObjectDestroyed)
 
         template <typename T>
-        ObjectDestroyedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
+        explicit ObjectDestroyedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
 
-        std::string ToString() const override {
-            std::stringstream ss;
-            ss << "Entity at address 0x" << _objectPtr << " destroyed.";
-            return ss.str();
+        [[nodiscard]] std::string toString() const override {
+            return std::format("Entity destroyed at address 0x{}", _objectPtr);
         }
     };
 }  // namespace Presto

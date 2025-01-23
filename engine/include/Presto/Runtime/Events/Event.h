@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Presto/Core.h"
+#include "Presto/Core/Constants.h"
 
 #include <functional>
 #include <string>
+#include <type_traits>
 
 namespace Presto {
     enum class EventType {
@@ -32,31 +34,31 @@ namespace Presto {
         ObjectDestroyed,
     };
 
-    enum EventCategory {
-        None = 0x0000,
-        EventCategoryApplication = 0x0001,
+    using event_category_t = PR_BIT_TYPE;
 
-        EventCategoryInput = 0x0002,
-        EventCategoryGamepad = 0x0003,
-        EventCategoryKeyboard = 0x0004,
-        EventCategoryMouse = 0x0005,
-        EventCategoryMouseButton = 0x0006,
+    enum EventCategory : event_category_t {
+        None = AS_BIT(0),
+        EventCategoryApplication = AS_BIT(1),
 
-        EventCategoryObject = 0x0007
+        EventCategoryInput = AS_BIT(2),
+        EventCategoryGamepad = AS_BIT(3),
+        EventCategoryKeyboard = AS_BIT(4),
+        EventCategoryMouse = AS_BIT(5),
+        EventCategoryMouseButton = AS_BIT(6),
+
+        EventCategoryObject = AS_BIT(7)
     };
 
     // Defines that can be reused between child classes to get event types,
     // consistent between classes
 
-#define EVENT_CLASS_TYPE(type)                                   \
-    static EventType GetStaticType() { return EventType::type; } \
-    virtual EventType GetEventType() const override {            \
-        return GetStaticType();                                  \
-    }                                                            \
-    virtual const char* GetName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)                                             \
+    static EventType getStaticType() { return EventType::type; }           \
+    virtual EventType getType() const override { return getStaticType(); } \
+    virtual const char* getName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) \
-    virtual int GetCategoryFlags() const override { return category; }
+    virtual event_category_t getCategories() const override { return category; }
 
     class Event {
         // EventDispatcher can view private members, needed to dispatch the
@@ -64,20 +66,25 @@ namespace Presto {
         friend class EventDispatcher;
 
        public:
-        [[nodiscard]] virtual EventType GetEventType() const = 0;
-        [[nodiscard]] virtual const char* GetName() const = 0;
-        [[nodiscard]] virtual int GetCategoryFlags() const = 0;
-        [[nodiscard]] virtual std::string ToString() const {
-            return GetName();
+        [[nodiscard]] virtual EventType getType() const = 0;
+        [[nodiscard]] virtual const char* getName() const = 0;
+        [[nodiscard]] virtual event_category_t getCategories() const = 0;
+        [[nodiscard]] virtual std::string toString() const {
+            return getName();
         };
 
-        inline bool IsInCategory(EventCategory category) {
-            return (GetCategoryFlags() & category);
+        [[nodiscard]] inline bool inCategory(EventCategory category) const {
+            return (getCategories() & category) != 0;
         }
+
+        virtual ~Event() = default;
 
        protected:
         bool event_handled = false;
     };
+
+    template <typename T>
+    concept EventInstanceType = std::is_base_of<Event, T>::value;
 
     class EventDispatcher {
         template <typename T>
@@ -86,13 +93,13 @@ namespace Presto {
         using EventFn = std::function<bool(T&)>;
 
        public:
-        EventDispatcher(Event& event) : event(event) {}
+        explicit EventDispatcher(Event& event) : event(event) {}
 
-        template <typename T>
+        template <EventInstanceType T>
         // Call
         bool Dispatch(EventFn<T> func) {
             // Check for type of event
-            if (event.GetEventType() == T::GetStaticType()) {
+            if (event.getType() == T::getStaticType()) {
                 // Call the event handling function
                 event.event_handled = func(*(T*)&event);
                 return true;
@@ -105,6 +112,6 @@ namespace Presto {
     };
 
     inline std::ostream& operator<<(std::ostream& os, const Event& event) {
-        return os << event.ToString();
+        return os << event.toString();
     }
 }  // namespace Presto

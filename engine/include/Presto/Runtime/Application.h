@@ -3,13 +3,14 @@
 // #include "Presto/Events/ApplicationEvents.h"
 // #include "Presto/Window.h"
 
-#include "Events/ApplicationEvents.h"
-#include "Events/Event.h"
 #include "Window.h"
 
 #include "Presto/Objects/System.h"
 
 namespace Presto {
+    class Event;
+    class WindowCloseEvent;
+
     class PRESTO_API Application {
        public:
         Application();
@@ -30,7 +31,7 @@ namespace Presto {
         // Intended to be replaced by user logic
         virtual void gameLoop() {};
 
-        void OnEvent(Event& e);
+        void onEvent(Event& e);
 
        private:
         bool OnWindowClose(WindowCloseEvent& e);

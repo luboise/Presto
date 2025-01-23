@@ -7,14 +7,11 @@
 
 #include "Presto/Managers.h"
 
-#include "Presto/Runtime/Events/ApplicationEvents.h"
+#include "Presto/Events.h"
 
-#include "Presto/Runtime/Events/Event.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #include "Utils/DebugTimer.h"
-
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace Presto {
     Application::Application() {
@@ -23,7 +20,8 @@ namespace Presto {
 
         this->_app_window = std::unique_ptr<GLFWAppWindow>(app_window);
         // this->_app_window = new GLFWAppWindow();
-        _app_window->SetCallbackFunction(BIND_EVENT_FN(Application::OnEvent));
+        _app_window->SetCallbackFunction(
+            [this](auto& e) -> void { this->onEvent(e); });
 
         RenderingManager::setRenderLibrary(OPENGL);
         RenderingManager::setWindow(app_window);
@@ -103,11 +101,11 @@ namespace Presto {
         tearDown();
     }
 
-    void Application::OnEvent(Event& e) {
+    void Application::onEvent(Event& e) {
         EventDispatcher dispatcher(e);
 
         dispatcher.Dispatch<WindowCloseEvent>(
-            BIND_EVENT_FN(Application::OnWindowClose));
+            [this](auto& e) -> bool { return this->OnWindowClose(e); });
 
         // TODO: Properly put this into the event system
         auto lambda{[](KeyEvent& event) -> bool {
@@ -115,14 +113,14 @@ namespace Presto {
             return true;
         }};
 
-        if (e.IsInCategory(EventCategoryKeyboard)) {
+        if (e.inCategory(EventCategoryKeyboard)) {
             if (auto* ptr = dynamic_cast<KeyEvent*>(&e); ptr != nullptr) {
                 lambda(*ptr);
             }
         }
 
         // TODO: Implement log levels
-        // PR_CORE_TRACE("{}", e.ToString());
+        // PR_CORE_TRACE("{}", e.toString());
     }
 
     bool Application::OnWindowClose(WindowCloseEvent& e) {
