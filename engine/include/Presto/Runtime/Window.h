@@ -4,8 +4,8 @@
 
 // #include "Presto/Event.h"
 
-constexpr auto DEFAULT_WIDTH = 1280;
-constexpr auto DEFAULT_HEIGHT = 720;
+constexpr auto DEFAULT_WIDTH = 2560;
+constexpr auto DEFAULT_HEIGHT = 1440;
 
 namespace Presto {
     struct WindowProperties {

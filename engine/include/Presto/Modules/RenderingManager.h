@@ -16,6 +16,8 @@ namespace Presto {
     class RenderLayer;
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
+        friend class Application;
+
        public:
         static void init();
 
@@ -57,6 +59,8 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         // Static vars
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
+
+        void resizeFramebuffer() const;
 
         // Member vars
         Camera camera_;

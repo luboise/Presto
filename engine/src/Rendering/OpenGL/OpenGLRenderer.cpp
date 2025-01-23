@@ -1,18 +1,19 @@
 #include "OpenGLRenderer.h"
+
 #include "OpenGLDrawManager/OpenGLDrawManager.h"
 
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
-#include <GL/glew.h>
-#include <GL/glext.h>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <stdexcept>
 
 #include "Presto/Runtime/GLFWAppWindow.h"
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 namespace Presto {
     using PointType = float;
@@ -99,8 +100,11 @@ namespace Presto {
             constexpr glm::float32 FOV_Y = 90;
 
             mats.view = renderViewMatrix_;
+
+            auto framebufferSize{_glfwWindow->getFramebufferSize()};
+
             mats.projection = RenderingUtils::getProjectionMatrix(
-                FOV_Y, _glfwWindow->GetWidth(), _glfwWindow->GetHeight());
+                FOV_Y, framebufferSize.width, framebufferSize.height);
             mats.transform = transform;
 
             GLint view = glGetUniformLocation(draw_data.shader_program, "view");
@@ -122,7 +126,8 @@ namespace Presto {
     }
 
     void OpenGLRenderer::nextFrame() {
-        glfwSwapBuffers(_glfwWindow->getWindowHandle());
+        glfwSwapBuffers(
+            static_cast<GLFWwindow*>(_glfwWindow->getWindowHandle()));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -164,4 +169,12 @@ namespace Presto {
 
         glDebugMessageCallback(debugCallback, nullptr);
     };
+
+    void OpenGLRenderer::onFrameBufferResized() {
+        auto extents{_glfwWindow->getFramebufferSize()};
+        this->setExtents(extents);
+
+        glViewport(0, 0, static_cast<GLsizei>(extents.width),
+                   static_cast<GLsizei>(extents.height));
+    }
 }  // namespace Presto

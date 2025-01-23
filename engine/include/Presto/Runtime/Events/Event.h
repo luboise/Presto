@@ -15,6 +15,7 @@ namespace Presto {
         WindowFocus,
         WindowLoseFocus,
         WindowMoved,
+        FramebufferResized,
 
         AppTick,
         AppUpdate,

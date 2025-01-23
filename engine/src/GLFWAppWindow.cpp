@@ -1,6 +1,8 @@
 #include "Presto/Runtime/GLFWAppWindow.h"
 
-#include "GLFW/glfw3.h"
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include "Presto/Core/KeyCodes.h"
 #include "Presto/Runtime.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
@@ -8,7 +10,6 @@
 #include "Presto/Runtime/Events/MouseEvents.h"
 
 #include "Presto/Rendering/Renderer.h"
-#include "pch.h"
 
 namespace Presto {
     bool GLFWAppWindow::s_GLFWInitialised = false;
@@ -31,9 +32,12 @@ namespace Presto {
     GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::shutdown(); }
 
     void GLFWAppWindow::init(const WindowProperties& props) {
-        this->w_data.title = props.title;
-        this->w_data.width = props.width;
-        this->w_data.height = props.height;
+        this->windowData_.title = props.title;
+
+        VisualExtents extents{.width = props.width, .height = props.height};
+
+        this->windowData_.window_size = extents;
+        this->windowData_.framebuffer_size = extents;
 
         PR_CORE_INFO("Creating window \"{}\" ({}x{})", props.title, props.width,
                      props.height);
@@ -47,7 +51,7 @@ namespace Presto {
             // Disable OpenGL
             // glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
@@ -60,29 +64,23 @@ namespace Presto {
             (void*)glfwCreateWindow((int)props.width, (int)props.height,
                                     props.title.c_str(), nullptr, nullptr);
 
+        // Set aspect ratio to 16:9
+        glfwSetWindowAspectRatio(static_cast<GLFWwindow*>(this->_windowPtr), 16,
+                                 9);
+
+        glfwSetWindowSizeLimits(static_cast<GLFWwindow*>(this->_windowPtr), 320,
+                                180, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
         // Set the window as the current context
         glfwMakeContextCurrent(static_cast<GLFWwindow*>(this->_windowPtr));
 
         // Link props and glfw window
-        glfwSetWindowUserPointer((GLFWwindow*)this->_windowPtr, &w_data);
+        glfwSetWindowUserPointer((GLFWwindow*)this->_windowPtr, &windowData_);
         this->SetCallbacks();
         this->SetVSync(true);
     }
 
     void GLFWAppWindow::SetCallbacks() {
-        // Set platform specific callbacks
-        glfwSetWindowSizeCallback(
-            (GLFWwindow*)this->_windowPtr,
-            [](GLFWwindow* window, int new_width, int new_height) {
-                WindowData& data =
-                    *(WindowData*)(glfwGetWindowUserPointer(window));
-
-                WindowResizeEvent e(new_width, new_height);
-                data.width = new_width;
-                data.height = new_height;
-                data.event_callback(e);
-            });
-
         glfwSetWindowCloseCallback(
             (GLFWwindow*)this->_windowPtr, [](GLFWwindow* window) {
                 WindowData& data =
@@ -158,13 +156,33 @@ namespace Presto {
                 data.event_callback(e);
             });
 
+        // Set platform specific callbacks
+        glfwSetWindowSizeCallback(
+            (GLFWwindow*)this->_windowPtr,
+            [](GLFWwindow* window, int new_width, int new_height) {
+                constexpr auto INVERSE_RATIO = 9.0 / 16.0;
+
+                WindowData& data =
+                    *(WindowData*)(glfwGetWindowUserPointer(window));
+
+                WindowResizeEvent e(new_width, new_height);
+
+                data.window_size = {
+                    .width = static_cast<size_t>(new_width),
+                    .height = static_cast<size_t>(new_height),
+                };
+                data.event_callback(e);
+            });
+
         glfwSetFramebufferSizeCallback(
             (GLFWwindow*)this->_windowPtr,
             [](GLFWwindow* window, int width, int height) {
                 WindowData& data =
                     *(WindowData*)(glfwGetWindowUserPointer(window));
-
-                data.pRenderer->framebufferResized();
+                data.framebuffer_size = {.width = static_cast<size_t>(width),
+                                         .height = static_cast<size_t>(height)};
+                FramebufferResizedEvent e(width, height);
+                data.event_callback(e);
             });
     }
 
@@ -176,10 +194,10 @@ namespace Presto {
         } else {
             glfwSwapInterval(0);
         }
-        this->w_data.VSync = vsync;
+        this->windowData_.VSync = vsync;
     }
 
-    bool GLFWAppWindow::IsVSyncEnabled() { return w_data.VSync; }
+    bool GLFWAppWindow::IsVSyncEnabled() { return windowData_.VSync; }
 
     Input::Key GLFWAppWindow::getPrestoKeyCode(int GLFWKeycode) {
         switch (GLFWKeycode) {

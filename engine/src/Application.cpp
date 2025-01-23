@@ -1,12 +1,10 @@
 #include "Presto/Runtime/Application.h"
-#include "Presto/Modules/EntityManager.h"
-#include "Presto/Modules/EventManager.h"
-#include "Presto/Modules/PhysicsManager.h"
-#include "Presto/Modules/SceneManager.h"
-
+#include "Presto/Managers.h"
 #include "Presto/Runtime.h"
 
-#include "Presto/Managers.h"
+#include "Presto/Modules/SceneManager.h"
+
+#include "Modules/EventManager.h"
 
 #include "Presto/Events.h"
 
@@ -109,8 +107,16 @@ namespace Presto {
     void Application::onEvent(Event& e) {
         EventDispatcher dispatcher(e);
 
+        dispatcher.Dispatch<WindowResizeEvent>(
+            [this](auto& e) -> bool { return this->onWindowResize(e); });
+
         dispatcher.Dispatch<WindowCloseEvent>(
             [this](auto& e) -> bool { return this->OnWindowClose(e); });
+
+        dispatcher.Dispatch<FramebufferResizedEvent>([](auto& e) -> bool {
+            RenderingManager::get().resizeFramebuffer();
+            return true;
+        });
 
         // TODO: Properly put this into the event system
         auto lambda{[](KeyEvent& event) -> bool {
@@ -127,6 +133,8 @@ namespace Presto {
         // TODO: Implement log levels
         // PR_CORE_TRACE("{}", e.toString());
     }
+
+    bool Application::onWindowResize(WindowResizeEvent& e) { return true; };
 
     bool Application::OnWindowClose(WindowCloseEvent& e) {
         this->app_running = false;

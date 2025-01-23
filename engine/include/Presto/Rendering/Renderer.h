@@ -18,6 +18,9 @@ namespace Presto {
 
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
+        void setExtents(VisualExtents extents) { extents_ = extents; };
+        [[nodiscard]] VisualExtents getExtents() const { return extents_; }
+
         virtual render_data_id_t registerRenderGroup(RenderGroup&&) = 0;
         virtual render_data_id_t registerRenderGroup(const RenderGroup&) = 0;
 
@@ -34,13 +37,16 @@ namespace Presto {
         }
 
         void framebufferResized() { this->_framebufferResized = true; }
-        virtual void onFrameBufferResized() {}
+        virtual void onFrameBufferResized() = 0;
 
         virtual ~Renderer() = default;
 
        protected:
-        GLFWAppWindow* _glfwWindow = nullptr;
+        GLFWAppWindow* _glfwWindow{nullptr};
         glm::mat4 renderViewMatrix_{};
-        bool _framebufferResized = false;
+        bool _framebufferResized{false};
+
+       private:
+        VisualExtents extents_{};
     };
 }  // namespace Presto

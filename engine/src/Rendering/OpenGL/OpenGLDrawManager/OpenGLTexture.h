@@ -1,4 +1,5 @@
-#include <GL/gl.h>
+#include <GL/glew.h>
+
 #include "Presto/Resources/Image.h"
 
 namespace Presto {

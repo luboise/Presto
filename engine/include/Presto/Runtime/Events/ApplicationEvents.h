@@ -32,6 +32,26 @@ namespace Presto {
         unsigned width, height;
     };
 
+    class FramebufferResizedEvent : public Event {
+       public:
+        FramebufferResizedEvent(unsigned new_width, unsigned new_height)
+            : width(new_width), height(new_height) {}
+
+        [[nodiscard]] inline unsigned GetWidth() const { return width; }
+        [[nodiscard]] inline unsigned GetHeight() const { return height; }
+
+        [[nodiscard]] std::string toString() const override {
+            return std::format("FramebufferResizedEvent: {}, {}", width,
+                               height);
+        }
+
+        EVENT_CLASS_TYPE(FramebufferResized)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
+       private:
+        unsigned width, height;
+    };
+
     class WindowCloseEvent : public Event {
        public:
         WindowCloseEvent() {}

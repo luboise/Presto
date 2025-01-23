@@ -44,8 +44,11 @@ void main() {
 	float angle = acos(dotProd);
 	float intensity = max(0.0, dotProd);  // Ensuring no negative values
 
+	intensity = intensity * 0.8 + 0.2;
+
 	// Disable lighting for debugging
-    intensity = 1;
+    // intensity = 1;
+
     colour = texture(sampler1, _tex_coords) * intensity;
 }
 )";

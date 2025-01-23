@@ -1,14 +1,11 @@
-#include <utility>
-
 #include "Presto/Objects/Entity.h"
 
 #include "Presto/Components/Conductor.h"
 
+#include "Modules/EventManager.h"
 #include "Presto/Components/Physics/RigidBody.h"
 #include "Presto/Modules/EntityManager.h"
-#include "Presto/Modules/EventManager.h"
 #include "Presto/Modules/PhysicsManager.h"
-#include "Presto/Runtime.h"
 
 using Presto::ObjectCreatedEvent;
 

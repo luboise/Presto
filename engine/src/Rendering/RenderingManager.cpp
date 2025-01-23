@@ -184,4 +184,8 @@ for (auto& layer : _renderLayers) {
                        "uninitialised.")
         camera_ = newCam;
     }
+
+    void RenderingManager::resizeFramebuffer() const {
+        renderer_->onFrameBufferResized();
+    };
 }  // namespace Presto

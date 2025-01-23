@@ -3,6 +3,7 @@
 // #include "Presto/Events/ApplicationEvents.h"
 // #include "Presto/Window.h"
 
+#include "Presto/Runtime/Events/ApplicationEvents.h"
 #include "Window.h"
 
 #include "Presto/Objects/System.h"
@@ -35,6 +36,7 @@ namespace Presto {
 
        private:
         bool OnWindowClose(WindowCloseEvent& e);
+        bool onWindowResize(WindowResizeEvent& e);
 
         void RunSystems();
 

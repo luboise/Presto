@@ -1,9 +1,8 @@
 #pragma once
 
-#include <GL/glew.h>
+#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
 #include "Presto/Rendering/Renderer.h"
-#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
 namespace Presto {
     class GLFWAppWindow;
@@ -33,7 +32,7 @@ namespace Presto {
 
        private:
         void draw(const OpenGLDrawBatch&, const glm::mat4& transform);
-        void onFrameBufferResized() override {}
+        void onFrameBufferResized() override;
         std::unique_ptr<OpenGLDrawManager> drawManager_;
 
         void setupDebugLogging();

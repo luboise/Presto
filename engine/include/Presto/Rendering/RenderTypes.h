@@ -20,4 +20,9 @@ namespace Presto {
         size_t index_count = 0;
         uint32_t index_offset = 0;
     };
+
+    struct VisualExtents {
+        size_t width;
+        size_t height;
+    };
 }  // namespace Presto

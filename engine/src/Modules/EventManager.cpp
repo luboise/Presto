@@ -1,4 +1,5 @@
-#include "Presto/Modules/EventManager.h"
+#include "EventManager.h"
+
 #include "Presto/Components/Conductor.h"
 #include "Presto/Core/Logging.h"
 

@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Presto/Components/Conductor.h"
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
+#include "Presto/Rendering/RenderTypes.h"
 #include "Window.h"
 
 namespace Presto {
@@ -17,24 +14,34 @@ namespace Presto {
         void update() override;
 
         [[nodiscard]] inline unsigned GetWidth() const override {
-            return w_data.width;
+            return windowData_.window_size.width;
         }
         [[nodiscard]] inline unsigned GetHeight() const override {
-            return w_data.height;
+            return windowData_.window_size.height;
         }
 
         inline void SetCallbackFunction(const EventCallbackFn& fn) override {
-            w_data.event_callback = fn;
+            windowData_.event_callback = fn;
         }
 
-        [[nodiscard]] inline GLFWwindow* getWindowHandle() const {
-            return static_cast<GLFWwindow*>(this->_windowPtr);
+        [[nodiscard]] inline void* getWindowHandle() const {
+            return this->_windowPtr;
         }
-        explicit operator GLFWwindow*() const {
-            return this->getWindowHandle();
-        }
-        explicit operator const GLFWwindow*() const {
-            return this->getWindowHandle();
+
+        /*
+explicit operator GLFWwindow*() const {
+    return this->getWindowHandle();
+}
+        */
+
+        /*
+                explicit operator const GLFWwindow*() const {
+                    return this->getWindowHandle();
+                }
+                        */
+
+        [[nodiscard]] const VisualExtents& getFramebufferSize() const {
+            return windowData_.framebuffer_size;
         }
 
         void SetVSync(bool vsync) override;
@@ -53,15 +60,17 @@ namespace Presto {
 
         struct WindowData {
             std::string title;
-            unsigned width;
-            unsigned height;
-            bool VSync;
+
+            VisualExtents window_size;
+            VisualExtents framebuffer_size;
+
+            bool VSync{false};
 
             EventCallbackFn event_callback;
-            Renderer* pRenderer;
+            Renderer* pRenderer{nullptr};
         };
 
-        WindowData w_data;
+        WindowData windowData_;
     };
 
 }  // namespace Presto
