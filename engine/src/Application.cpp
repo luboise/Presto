@@ -1,6 +1,7 @@
 #include "Presto/Runtime/Application.h"
 #include "Presto/Modules/EntityManager.h"
 #include "Presto/Modules/EventManager.h"
+#include "Presto/Modules/PhysicsManager.h"
 #include "Presto/Modules/SceneManager.h"
 
 #include "Presto/Runtime.h"
@@ -32,10 +33,12 @@ namespace Presto {
         ResourceManager::init();
         SceneManager::init();
         EventManager::init();
+        PhysicsManager::init();
         Time::init();
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
+        PhysicsManager::shutdown();
         EventManager::shutdown();
         SceneManager::shutdown();
         ResourceManager::shutdown();
@@ -53,8 +56,9 @@ namespace Presto {
         DebugTimer time_update("Global Time Update");
         DebugTimer garbage_collection_timer("Garbage Collection");
 
-        RenderingManager& rm = RenderingManager::get();
-        EntityManager& em = EntityManager::get();
+        RenderingManager& rendering = RenderingManager::get();
+        EntityManager& entities = EntityManager::get();
+        PhysicsManager& physics = PhysicsManager::get();
 
         while (app_running) {
             // Calculate delta
@@ -83,17 +87,18 @@ namespace Presto {
             _app_window->update();
             // window_timer.printElapsed();
 
-            em.update();
+            entities.update();
+            physics.update();
+            rendering.update();
 
-            rm.update();
             // rendering_timer.printElapsed();
 
             postLoop();
 
-            rm.clear();
+            rendering.clear();
 
             // garbage_collection_timer.reset();
-            em.collectGarbage();
+            entities.collectGarbage();
             // garbage_collection_timer.printElapsed();
         }
 

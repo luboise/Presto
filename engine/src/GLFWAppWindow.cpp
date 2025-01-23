@@ -191,6 +191,8 @@ namespace Presto {
                 return Input::Key::LEFT_ARROW;
             case GLFW_KEY_RIGHT:
                 return Input::Key::RIGHT_ARROW;
+            case GLFW_KEY_SPACE:
+                return Input::Key::SPACEBAR;
             default:
                 return Input::Key::INVALID_KEY;
         }

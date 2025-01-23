@@ -24,6 +24,11 @@ if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
         return *this;
     };
 
+    Transform& Transform::rotate(vec3 rotation) {
+        yawPitchRoll_ += rotation;
+        return *this;
+    }
+
     Transform& Transform::rotate(double x, double y, double z) {
         yawPitchRoll_ += vec3(x, y, z);
         return *this;

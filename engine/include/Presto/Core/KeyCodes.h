@@ -9,6 +9,7 @@ namespace Presto::Input {
         DOWN_ARROW = 0x0002,
         UP_ARROW = 0x0003,
         RIGHT_ARROW = 0x0004,
+        SPACEBAR = 0x0005,
     };
 
     constexpr KeyCodeType CodeOf(Key key) noexcept {

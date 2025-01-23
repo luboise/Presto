@@ -1,6 +1,7 @@
 #include "Presto/Modules/EntityManager.h"
 
 #include "Presto/Components/Conductor.h"
+#include "Presto/Components/Physics/RigidBody.h"
 #include "Presto/Components/Transform.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Entity.h"
@@ -18,6 +19,13 @@ namespace Presto {
     }
 
     void EntityManager::update() {
+        for (auto&& [key, value] : entityMap_) {
+            if (auto* script = value->getComponent<Conductor>();
+                script != nullptr) {
+                script->update();
+            }
+        }
+
         for (auto&& [key, value] : entityMap_) {
             if (auto* script = value->getComponent<Conductor>();
                 script != nullptr) {

@@ -4,8 +4,10 @@
 
 #include "Presto/Components/Conductor.h"
 
+#include "Presto/Components/Physics/RigidBody.h"
 #include "Presto/Modules/EntityManager.h"
 #include "Presto/Modules/EventManager.h"
+#include "Presto/Modules/PhysicsManager.h"
 #include "Presto/Runtime.h"
 
 using Presto::ObjectCreatedEvent;
@@ -37,6 +39,13 @@ namespace Presto {
 
         if (conductor_ptr != nullptr) {
             EventManager::get().registerCallbacks(*this);
+        }
+
+        auto* rigidbody_ptr{dynamic_cast<RigidBody*>(componentPtr)};
+
+        if (rigidbody_ptr != nullptr) {
+            PhysicsManager::get().addPairing(
+                {.entity = this, .body = rigidbody_ptr});
         }
     };
 }  // namespace Presto

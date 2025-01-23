@@ -5,10 +5,6 @@
 namespace Presto {
     class RenderingManager;
 
-    using glm::mat4;
-    using glm::vec2;
-    using glm::vec3;
-
     class PRESTO_API Transform : public Component {
        public:
         Transform() = default;
@@ -26,6 +22,7 @@ namespace Presto {
             return this->translate(vec3{x, y, z});
         }
 
+        Transform& rotate(vec3 rotation);
         Transform& rotate(double x = 0, double y = 0, double z = 0);
 
         Transform& setTranslation(vec3 translation);
