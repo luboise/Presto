@@ -4,6 +4,7 @@
 
 namespace Presto {
     using PR_NUMERIC_ID = uint32_t;
+    using PR_SIZE = std::size_t;
 
     enum RENDER_LIBRARY { UNSET, VULKAN, OPENGL, DIRECTX };
 

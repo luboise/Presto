@@ -65,8 +65,8 @@ namespace Presto {
                                     props.title.c_str(), nullptr, nullptr);
 
         // Set aspect ratio to 16:9
-        glfwSetWindowAspectRatio(static_cast<GLFWwindow*>(this->_windowPtr), 16,
-                                 9);
+        glfwSetWindowAspectRatio(static_cast<GLFWwindow*>(this->_windowPtr),
+                                 (int)props.width, (int)props.height);
 
         glfwSetWindowSizeLimits(static_cast<GLFWwindow*>(this->_windowPtr), 320,
                                 180, GLFW_DONT_CARE, GLFW_DONT_CARE);

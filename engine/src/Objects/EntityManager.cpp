@@ -5,6 +5,7 @@
 #include "Presto/Components/Transform.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Entity.h"
+#include "Presto/Objects/Figure.h"
 #include "Presto/Runtime/Events/ObjectEvents.h"
 
 namespace Presto {
@@ -133,4 +134,20 @@ namespace Presto {
         return static_cast<entity_tag_id_t>(new_tag_index);
     };
 
+    bool EntityManager::exists(entity_id_t id) const {
+        return std::ranges::none_of(entityMap_ | std::views::keys,
+                                    [id](auto& key) { return key == id; });
+    };
+
+    std::vector<Entity*> EntityManager::newEntities(PR_SIZE count) {
+        PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
+                       "Invalid entity count construction requested.");
+        std::vector<Entity*> entities(count);
+
+        for (auto i = 0; i < count; i++) {
+            entities[i] = newEntity("Entity");
+        }
+
+        return entities;
+    };
 }  // namespace Presto
