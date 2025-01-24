@@ -30,11 +30,7 @@ namespace Presto {
         instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
     }
 
-    void ResourceManager::shutdown() {
-        instance_->meshResources_.clear();
-        instance_->imageResources_.clear();
-        instance_->materialResources_.clear();
-    }
+    void ResourceManager::shutdown() { instance_->resources_.clear(); }
 
     AccessorData getDataFromAccessor(const tinygltf::Model& model,
                                      size_t accessorIndex) {
@@ -137,7 +133,7 @@ namespace Presto {
 
                 auto& new_material = *new_materials.back();
 
-                new_material.name = material.name;
+                new_material.name_ = material.name;
 
                 auto texture_index =
                     material.pbrMetallicRoughness.baseColorTexture.index;
@@ -146,14 +142,16 @@ namespace Presto {
                     const auto& texture = model.textures[texture_index];
                     const auto& image_data = model.images[texture.source];
 
-                    Presto::Image& image = new_material.image;
+                    Presto::Image image{
+                        .width = static_cast<size_t>(image_data.width),
+                        .height = static_cast<size_t>(image_data.height)};
 
-                    image.width = image_data.width;
-                    image.height = image_data.height;
                     image.bytes.resize(image.size());
 
                     std::memcpy(image.bytes.data(), image_data.image.data(),
                                 image.bytes.size());
+
+                    new_material.setImage(image);
                 }
             }
 
@@ -181,20 +179,24 @@ namespace Presto {
                         getDataFromAccessor2<SubMesh::TexCoordsType>(
                             model, primitive.attributes["TEXCOORD_0"]);
 
-                    new_submesh.material =
+                    new_submesh.defaultMaterial_ =
                         new_materials[primitive.material].get();
 
                     new_mesh->sub_meshes.push_back(new_submesh);
                 }
                 auto key = customName.empty() ? mesh.name : customName;
-                new_mesh->name = key;
-                meshResources_[key] = std::move(new_mesh);
+                new_mesh->name_ = key;
 
-                new_meshes.push_back(meshResources_[key].get());
+                resources_[ResourceType::MESH][key] = std::move(new_mesh);
+
+                new_meshes.push_back(resources_[ResourceType::MESH][key]
+                                         .get()
+                                         ->as<MeshResource>());
             }
 
             for (auto& mat : new_materials) {
-                materialResources_.emplace(mat->name, std::move(mat));
+                resources_[ResourceType::MATERIAL].emplace(mat->name_,
+                                                           std::move(mat));
             }
         }
 
@@ -204,19 +206,18 @@ namespace Presto {
     MaterialResource& ResourceManager::createMaterial(
         const resource_name_t& customName) {
         auto resource = std::make_unique<MaterialResource>();
-        resource->name = customName;
+        resource->name_ = customName;
 
-        auto key = resource->name;
-        materialResources_[key] = std::move(resource);
-        return *materialResources_[key];
+        auto key = resource->name_;
+        resources_[ResourceType::MATERIAL][key] = std::move(resource);
+        return *(
+            resources_[ResourceType::MATERIAL][key]->as<MaterialResource>());
     }
 
     ImageResource& ResourceManager::loadImageFromDisk(
         const AssetPath& filepath, const resource_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
-
-        auto resource{std::make_unique<ImageResource>()};
 
         std::vector<std::byte> data = Utils::File::ReadBinaryFile(filepath);
 
@@ -236,13 +237,19 @@ namespace Presto {
 
         // Get the image data
         std::span<unsigned char> src_span(image_data, data.size());
-        resource->data = std::vector<uint8_t>(src_span.begin(), src_span.end());
+
+        Image new_image{
+            .width = static_cast<size_t>(x),
+            .height = static_cast<size_t>(y),
+            .bytes = std::vector<uint8_t>(src_span.begin(), src_span.end())};
 
         stbi_image_free(image_data);
 
-        resource->name = customName;
-        resource->width = x;
-        resource->height = y;
+        new_image.width = x;
+        new_image.height = y;
+
+        auto new_resource{
+            std::make_unique<ImageResource>(customName, new_image)};
 
         /*
     auto* new_mr{new MeshResource()};
@@ -254,37 +261,40 @@ namespace Presto {
     new_mr->indices = default_cube.indices;
         */
 
-        auto key = resource->name;
-        imageResources_[key] = std::move(resource);
-        return *imageResources_[key];
+        auto key = new_resource->name();
+
+        resources_[ResourceType::IMAGE][key] = std::move(new_resource);
+        return *(resources_[ResourceType::IMAGE][key]->as<ImageResource>());
     }
 
-    MeshResource* ResourceManager::getMesh(const resource_name_t& key) const {
-        if (auto found = meshResources_.find(key);
-            found != meshResources_.end()) {
-            return found->second.get();
-        }
-
-        return nullptr;
+    /*
+MeshResource* ResourceManager::getMesh(const resource_name_t& key) const {
+    if (auto found = meshResources_.find(key);
+        found != meshResources_.end()) {
+        return found->second.get();
     }
 
-    ImageResource* ResourceManager::getImage(const resource_name_t& key) const {
-        if (auto found = imageResources_.find(key);
-            found != imageResources_.end()) {
-            return found->second.get();
-        }
+    return nullptr;
+}
 
-        return nullptr;
+ImageResource* ResourceManager::getImage(const resource_name_t& key) const {
+    if (auto found = imageResources_.find(key);
+        found != imageResources_.end()) {
+        return found->second.get();
     }
 
-    MaterialResource* ResourceManager::getMaterial(
-        const resource_name_t& key) const {
-        if (auto found = materialResources_.find(key);
-            found != materialResources_.end()) {
-            return found->second.get();
-        }
+    return nullptr;
+}
 
-        return nullptr;
+MaterialResource* ResourceManager::getMaterial(
+    const resource_name_t& key) const {
+    if (auto found = materialResources_.find(key);
+        found != materialResources_.end()) {
+        return found->second.get();
     }
+
+    return nullptr;
+}
+    */
 
 }  // namespace Presto

@@ -2,6 +2,7 @@
 
 #include "Presto/Components/Renderable.h"
 #include "Presto/Core/Constants.h"
+#include "Presto/Resources/MaterialResource.h"
 #include "Presto/Resources/MeshResource.h"
 
 namespace Presto {
@@ -16,14 +17,19 @@ namespace Presto {
        public:
         [[nodiscard]] bool hasResource() const;
 
-        inline const MeshResource& getResource() { return *resource_; }
+        inline const MeshResource& getMesh() { return *meshResource_; }
+        void setMesh(MeshResource& resource);
 
-        void setResource(MeshResource& resource);
+        inline const MaterialResource& getMaterial() {
+            return *materialResource_;
+        };
+        void setMaterial(MaterialResource& resource);
 
        private:
         explicit Mesh(MeshResource& resource);
         Mesh() = default;
 
-        MeshResource* resource_{nullptr};
+        MeshResource* meshResource_{nullptr};
+        MaterialResource* materialResource_{nullptr};
     };
 }  // namespace Presto

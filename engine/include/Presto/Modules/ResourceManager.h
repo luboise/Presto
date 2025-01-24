@@ -8,7 +8,20 @@
 #include "Presto/Resources/MeshResource.h"
 
 namespace Presto {
-    enum class ResourceType { JSON, RAW };
+    // enum class ResourceType { JSON, RAW };
+
+    template <ResourceType Type>
+    struct ResourceTraits;
+
+    template <>
+    struct ResourceTraits<ResourceType::MESH> {
+        using ResourcePtr = MeshResource*;
+    };
+
+    template <>
+    struct ResourceTraits<ResourceType::MATERIAL> {
+        using ResourcePtr = MaterialResource*;
+    };
 
     class PRESTO_API ResourceManager : public Module<ResourceManager> {
        public:
@@ -24,10 +37,11 @@ namespace Presto {
 
         MaterialResource& createMaterial(const resource_name_t& customName);
 
-        [[nodiscard]] MeshResource* getMesh(const resource_name_t&) const;
-        [[nodiscard]] ImageResource* getImage(const resource_name_t&) const;
-        [[nodiscard]] MaterialResource* getMaterial(
-            const resource_name_t&) const;
+        template <ResourceType Type>
+        [[nodiscard]] ResourceTraits<Type>::ResourcePtr find(
+            const resource_name_t& key) {
+            return resources_[Type][key].get();
+        };
 
         // Deleted functions
         ResourceManager(const ResourceManager&) = delete;
@@ -38,11 +52,17 @@ namespace Presto {
        private:
         ResourceManager() = default;
 
-        // Gets the type of name from the MeshResource struct
-        std::map<resource_name_t, std::unique_ptr<MeshResource>> meshResources_;
-        std::map<resource_name_t, std::unique_ptr<ImageResource>>
-            imageResources_;
-        std::map<resource_name_t, std::unique_ptr<MaterialResource>>
-            materialResources_;
+        std::map<ResourceType,
+                 std::map<resource_name_t, std::unique_ptr<Resource>>>
+            resources_;
+
+        /*
+// Gets the type of name from the MeshResource struct
+std::map<resource_name_t, std::unique_ptr<MeshResource>> meshResources_;
+std::map<resource_name_t, std::unique_ptr<ImageResource>>
+    imageResources_;
+std::map<resource_name_t, std::unique_ptr<MaterialResource>>
+    materialResources_;
+*/
     };
 }  // namespace Presto

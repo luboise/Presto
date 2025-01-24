@@ -128,7 +128,7 @@ if (renderableMap_.contains(data)) {
             glDeleteShader(vs);
             glDeleteShader(fs);
 
-            draw_info.mat_props.texture = OpenGLTexture(data.material->image);
+            draw_info.mat_props.texture = OpenGLTexture(data.material->image_);
 
             batch.draws.push_back(std::move(draw_info));
         }

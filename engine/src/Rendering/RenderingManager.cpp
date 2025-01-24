@@ -29,7 +29,7 @@ namespace Presto {
     void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
         RenderGroup group;
 
-        for (const auto& submesh : mesh.sub_meshes) {
+        for (const SubMesh& submesh : mesh.sub_meshes) {
             RenderData data;
 
             data.indices.resize(submesh.indices.size());
@@ -53,7 +53,7 @@ namespace Presto {
             }
 
             data.draw_mode = submesh.draw_mode;
-            data.material = submesh.material;
+            data.material = submesh.defaultMaterial_;
 
             group.render_list.push_back(data);
         }
@@ -104,7 +104,7 @@ for (auto& layer : _renderLayers) {
         std::ranges::for_each(
             mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {
                 Mesh* m{std::get<0>(tuple)};
-                const auto& resource = m->getResource();
+                const auto& resource = m->getMesh();
 
                 renderer_->render(resource.renderId_,
                                   std::get<1>(tuple)->getModelView());

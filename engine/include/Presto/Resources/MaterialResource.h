@@ -1,14 +1,27 @@
 #pragma once
 
-#include "Presto/Core/Types.h"
 #include "Presto/Resources/Image.h"
 
+#include "Presto/Resources/Resource.h"
+
+#include "Presto/Resources/ImageResource.h"
+
 namespace Presto {
-    struct MaterialResource {
-        friend class ResourceManager;
+    class MaterialResource final : public Resource {
+       public:
+        MaterialResource(PR_STRING_ID name, ImageResource* image);
 
-        PR_STRING_ID name;
+        [[nodiscard]] constexpr ResourceType getType() const override {
+            return ResourceType::MATERIAL;
+        };
 
-        Presto::Image image;
+        void setImage(ImageResource* image);
+
+        [[nodiscard]] Image getImage() const;
+
+       private:
+        void load() override;
+
+        ImageResource* image_;
     };
 }  // namespace Presto

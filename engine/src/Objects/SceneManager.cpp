@@ -85,8 +85,10 @@ namespace Presto {
                      components.items()) {
                     if (componentKey == "mesh") {
                         auto mesh_data = components[componentKey];
-                        MeshResource* mr{ResourceManager::get().getMesh(
-                            component["resource"])};
+
+                        MeshResource* mr{
+                            ResourceManager::get().find<ResourceType::MESH>(
+                                component["resource"])};
 
                         if (mr == nullptr) {
                             PR_CORE_ERROR("Unable to find mesh resource: {}",

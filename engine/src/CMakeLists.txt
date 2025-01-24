@@ -4,6 +4,7 @@ add_subdirectory(Modules)
 add_subdirectory(Objects)
 add_subdirectory(Physics)
 add_subdirectory(Rendering)
+add_subdirectory(Resources)
 add_subdirectory(Shaders)
 add_subdirectory(Utils)
 

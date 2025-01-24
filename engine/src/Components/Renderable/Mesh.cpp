@@ -3,14 +3,14 @@
 #include "Presto/Modules/RenderingManager.h"
 
 namespace Presto {
-    void Mesh::setResource(MeshResource& resource) {
-        if (!resource.isRegistered()) {
+    void Mesh::setMesh(MeshResource& resource) {
+        if (!resource.loaded()) {
             RenderingManager::get().loadMeshOnGpu(resource);
         }
 
-        resource_ = &resource;
+        meshResource_ = &resource;
     }
-    bool Mesh::hasResource() const { return resource_ != nullptr; }
+    bool Mesh::hasResource() const { return meshResource_ != nullptr; }
 
-    Mesh::Mesh(MeshResource& resource) { this->setResource(resource); };
+    Mesh::Mesh(MeshResource& resource) { this->setMesh(resource); };
 }  // namespace Presto
