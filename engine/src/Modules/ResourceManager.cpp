@@ -129,7 +129,8 @@ namespace Presto {
                                     full_asset_path.string());
 
             for (auto& material : model.materials) {
-                new_materials.push_back(std::make_unique<MaterialResource>());
+                new_materials.push_back(
+                    std::make_unique<MaterialResource>(material.name));
 
                 auto& new_material = *new_materials.back();
 
@@ -151,39 +152,43 @@ namespace Presto {
                     std::memcpy(image.bytes.data(), image_data.image.data(),
                                 image.bytes.size());
 
-                    new_material.setImage(image);
+                    ImageResource* image_resource{
+                        createImageResource(texture.name, image)};
+
+                    new_material.setImage(image_resource);
                 }
             }
 
             for (auto& mesh : model.meshes) {
-                auto new_mesh = std::make_unique<MeshResource>();
+                auto new_mesh = std::make_unique<MeshResource>(mesh.name);
 
                 for (tinygltf::Primitive& primitive : mesh.primitives) {
-                    SubMesh new_submesh;
+                    RawMeshData new_submesh;
 
                     new_submesh.draw_mode = primitive.mode;
 
                     new_submesh.indices =
-                        getDataFromAccessor2<SubMesh::IndexType>(
+                        getDataFromAccessor2<RawMeshData::IndexType>(
                             model, primitive.indices);
 
                     new_submesh.positions =
-                        getDataFromAccessor2<SubMesh::PositionType>(
+                        getDataFromAccessor2<RawMeshData::PositionType>(
                             model, primitive.attributes["POSITION"]);
 
                     new_submesh.normals =
-                        getDataFromAccessor2<SubMesh::NormalType>(
+                        getDataFromAccessor2<RawMeshData::NormalType>(
                             model, primitive.attributes["NORMAL"]);
 
                     new_submesh.tex_coords =
-                        getDataFromAccessor2<SubMesh::TexCoordsType>(
+                        getDataFromAccessor2<RawMeshData::TexCoordsType>(
                             model, primitive.attributes["TEXCOORD_0"]);
 
                     new_submesh.defaultMaterial_ =
                         new_materials[primitive.material].get();
 
-                    new_mesh->sub_meshes.push_back(new_submesh);
+                    new_mesh->meshes_.push_back(new_submesh);
                 }
+
                 auto key = customName.empty() ? mesh.name : customName;
                 new_mesh->name_ = key;
 
@@ -205,7 +210,7 @@ namespace Presto {
 
     MaterialResource& ResourceManager::createMaterial(
         const resource_name_t& customName) {
-        auto resource = std::make_unique<MaterialResource>();
+        auto resource = std::make_unique<MaterialResource>(customName);
         resource->name_ = customName;
 
         auto key = resource->name_;
@@ -297,4 +302,9 @@ MaterialResource* ResourceManager::getMaterial(
 }
     */
 
+    ImageResource* ResourceManager::createImageResource(
+        const resource_name_t& customName, const Presto::Image& image) {
+        resources_[ResourceType::IMAGE][customName] =
+            std::make_unique<ImageResource>(customName, image);
+    };
 }  // namespace Presto

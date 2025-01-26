@@ -32,7 +32,7 @@ namespace Presto {
         [[nodiscard]] std::size_t size() const { return image_.size(); };
 
        private:
-        void load() override {}
+        void load() override;
 
         Presto::Image image_;
     };

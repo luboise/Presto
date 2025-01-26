@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Rendering/RenderTypes.h"
 #include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
 #include "Presto/Rendering/Renderer.h"
@@ -23,15 +24,24 @@ namespace Presto {
         // Destructor
         ~OpenGLRenderer() override;
 
-        render_data_id_t registerRenderGroup(const RenderGroup& data) override;
-        render_data_id_t registerRenderGroup(RenderGroup&& data) override;
+        renderer_mesh_id_t loadMesh(MeshData data) override;
+        void unloadMesh(renderer_mesh_id_t id) override;
 
-        void unregisterMesh(render_data_id_t id) override;
-        void render(render_data_id_t id, glm::mat4 transform) override;
+        renderer_material_id_t loadMaterial(MaterialData material) override;
+        void unloadMaterial(renderer_material_id_t id) override;
+
+        renderer_texture_id_t loadTexture(Presto::Image image) override;
+        void unloadTexture(renderer_texture_id_t id) override;
+
+        void render(renderer_mesh_id_t meshId, renderer_texture_id_t materialId,
+                    glm::mat4 transform) override;
+
         void nextFrame() override;
 
        private:
-        void draw(const OpenGLDrawBatch&, const glm::mat4& transform);
+        void draw(const OpenGLMeshInfo& meshInfo,
+                  const OpenGLTexture& albedoTexture, glm::mat4 transform);
+
         void onFrameBufferResized() override;
         std::unique_ptr<OpenGLDrawManager> drawManager_;
 

@@ -45,86 +45,6 @@ namespace Presto {
                                                                         */
     }
 
-    render_data_id_t OpenGLRenderer::registerRenderGroup(
-        const RenderGroup& data) {
-        RenderGroup copy{data};
-        return drawManager_->createDrawInfo(std::move(copy));
-    }
-
-    render_data_id_t OpenGLRenderer::registerRenderGroup(RenderGroup&& data) {
-        return drawManager_->createDrawInfo(std::move(data));
-    }
-
-    void OpenGLRenderer::render(render_data_id_t id, glm::mat4 transform) {
-        auto* ptr = drawManager_->getDrawBatch(id);
-
-        // TODO: Implement drawing using the transform
-        if (ptr == nullptr) {
-            PR_CORE_ERROR(
-                "getRenderable() returned a nullptr for renderable {}. "
-                "Skipping drawing.",
-                id);
-            return;
-        }
-
-        this->draw(*ptr, transform);
-    }
-
-    void OpenGLRenderer::unregisterMesh(render_data_id_t id) {
-        // TODO: Implement unregister
-    }
-
-    void OpenGLRenderer::draw(const OpenGLDrawBatch& batch,
-                              const glm::mat4& transform) {
-        for (const auto& draw_data : batch.draws) {
-            auto slot = 0;
-            draw_data.mat_props.texture.bind(0);
-
-            PR_CORE_ASSERT(
-                draw_data.mat_props.texture.isLoaded(),
-                "Draw data is used without being loaded in OpenGL Renderer.");
-            glUseProgram(draw_data.shader_program);
-
-            // TODO: Make this a one-off function call
-            {
-                GLint sampler{
-                    glGetUniformLocation(draw_data.shader_program, "sampler1")};
-                PR_CORE_ASSERT(sampler != -1,
-                               "Sampler1 is not found in the shader program.");
-                // Set sampler1 to be using texture slot 0
-                glUniform1i(sampler, slot);
-            }
-
-            ShaderMatrices mats{};
-
-            constexpr glm::float32 FOV_Y = 90;
-
-            mats.view = renderViewMatrix_;
-
-            auto framebufferSize{_glfwWindow->getFramebufferSize()};
-
-            mats.projection = RenderingUtils::getProjectionMatrix(
-                FOV_Y, framebufferSize.width, framebufferSize.height);
-            mats.transform = transform;
-
-            GLint view = glGetUniformLocation(draw_data.shader_program, "view");
-            GLint projection =
-                glGetUniformLocation(draw_data.shader_program, "projection");
-            GLint transform =
-                glGetUniformLocation(draw_data.shader_program, "transform");
-
-            glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
-            glUniformMatrix4fv(projection, 1, GL_FALSE,
-                               glm::value_ptr(mats.projection));
-            glUniformMatrix4fv(transform, 1, GL_FALSE,
-                               glm::value_ptr(mats.transform));
-
-            glBindVertexArray(draw_data.vao);
-            glDrawElements(draw_data.draw_mode, draw_data.index_count,
-                           GL_UNSIGNED_INT, nullptr);
-        }
-    }
-
     void OpenGLRenderer::nextFrame() {
         glfwSwapBuffers(
             static_cast<GLFWwindow*>(_glfwWindow->getWindowHandle()));
@@ -177,4 +97,94 @@ namespace Presto {
         glViewport(0, 0, static_cast<GLsizei>(extents.width),
                    static_cast<GLsizei>(extents.height));
     }
+
+    renderer_mesh_id_t OpenGLRenderer::loadMesh(MeshData data) {
+        return this->drawManager_->addMesh(data);
+    };
+
+    void OpenGLRenderer::unloadMesh(renderer_mesh_id_t id) {
+        this->drawManager_->removeMesh(id);
+    };
+
+    void OpenGLRenderer::unloadMaterial(renderer_material_id_t id) {};
+
+    renderer_material_id_t OpenGLRenderer::loadMaterial(MaterialData material) {
+    };
+
+    renderer_texture_id_t OpenGLRenderer::loadTexture(Presto::Image image) {
+        return drawManager_->addTexture(image);
+    };
+
+    void OpenGLRenderer::unloadTexture(renderer_texture_id_t id) {};
+
+    void OpenGLRenderer::render(renderer_mesh_id_t meshId,
+                                renderer_texture_id_t imageId,
+                                glm::mat4 transform) {
+        auto* mesh{drawManager_->getMeshInfo(meshId)};
+        auto* albedo{drawManager_->getTexture(imageId)};
+
+        // TODO: Implement drawing using the transform
+        if (mesh == nullptr || albedo == nullptr) {
+            PR_CORE_ERROR(
+                "getRenderable() returned a nullptr for renderable. "
+                "Skipping drawing.");
+            return;
+        }
+
+        this->draw(*mesh, *albedo, transform);
+    };
+
+    void OpenGLRenderer::draw(const OpenGLMeshInfo& meshInfo,
+                              const OpenGLTexture& albedoTexture,
+                              glm::mat4 transform) {
+        auto slot = 0;
+        albedoTexture.bind(slot);
+
+        /*
+PR_CORE_ASSERT(
+    draw_data.mat_props.texture.isLoaded(),
+    "Draw data is used without being loaded in OpenGL Renderer.");
+        */
+
+        glUseProgram(meshInfo.shader_program);
+
+        // TODO: Make this a one-off function call
+        {
+            GLint sampler{
+                glGetUniformLocation(meshInfo.shader_program, "sampler1")};
+            PR_CORE_ASSERT(sampler != -1,
+                           "Sampler1 is not found in the shader program.");
+            // Set sampler1 to be using texture slot 0
+            glUniform1i(sampler, slot);
+        }
+
+        ShaderMatrices mats{};
+
+        constexpr glm::float32 FOV_Y = 90;
+
+        mats.view = renderViewMatrix_;
+
+        auto framebufferSize{_glfwWindow->getFramebufferSize()};
+
+        mats.projection = RenderingUtils::getProjectionMatrix(
+            FOV_Y, framebufferSize.width, framebufferSize.height);
+        mats.transform = transform;
+
+        GLint view{glGetUniformLocation(meshInfo.shader_program, "view")};
+        glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
+
+        GLint projection{
+            glGetUniformLocation(meshInfo.shader_program, "projection")};
+        glUniformMatrix4fv(projection, 1, GL_FALSE,
+                           glm::value_ptr(mats.projection));
+
+        GLint transformLoc{
+            glGetUniformLocation(meshInfo.shader_program, "transform")};
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
+                           glm::value_ptr(mats.transform));
+
+        glBindVertexArray(meshInfo.vao);
+        glDrawElements(meshInfo.draw_mode, meshInfo.index_count,
+                       GL_UNSIGNED_INT, nullptr);
+    };
 }  // namespace Presto

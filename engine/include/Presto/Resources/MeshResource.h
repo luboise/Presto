@@ -2,48 +2,33 @@
 
 #include "Presto/Core/Types.h"
 
-#include "Presto/Rendering/Renderer.h"
-#include "Presto/Resources/MaterialResource.h"
+#include "Presto/Rendering/MeshData.h"
+#include "Presto/Rendering/RenderTypes.h"
 
 #include "Resource.h"
 
 namespace Presto {
-    struct SubMesh {
-        using PositionType = vec3;
-        using NormalType = vec3;
-        using TexCoordsType = vec2;
-        using IndexType = unsigned short;
-
-        std::vector<PositionType> positions;
-        std::vector<NormalType> normals;
-        std::vector<TexCoordsType> tex_coords;
-
-        // size_t index_count;
-        std::vector<IndexType> indices;
-
-        MaterialResource* defaultMaterial_;
-
-        int draw_mode{};
-    };
-
     class MeshResource final : public Resource {
         friend class ResourceManager;
         friend class RenderingManager;
 
        public:
+        explicit MeshResource(resource_name_t name);
+
         [[nodiscard]] constexpr ResourceType getType() const override {
             return ResourceType::MESH;
         };
 
-        [[nodiscard]] const std::vector<SubMesh>& getSubMeshes() const {
-            return sub_meshes;
+        [[nodiscard]] const std::vector<RawMeshData>& getSubMeshes() const {
+            return meshes_;
         }
 
        private:
         void load() override;
 
-        std::vector<SubMesh> sub_meshes;
+        std::vector<RawMeshData> meshes_;
+        std::vector<renderer_mesh_id_t> meshIds_;
 
-        render_data_id_t renderId_ = UNREGISTERED_RENDER_DATA_ID;
+        renderer_mesh_id_t renderId_ = UNREGISTERED_RENDER_DATA_ID;
     };
 }  // namespace Presto
