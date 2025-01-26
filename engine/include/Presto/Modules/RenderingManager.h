@@ -8,6 +8,7 @@
 #include "Presto/Rendering/Camera.h"
 
 #include "Presto/Resources/MeshResource.h"
+#include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Utils/Allocator.h"
 
 namespace Presto {

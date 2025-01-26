@@ -1,16 +1,15 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
-#include "RenderGroup.h"
+#include "Presto/Rendering/MaterialData.h"
 #include "RenderTypes.h"  // IWYU pragma: export
+
+#include "Presto/Rendering/MeshData.h"
 
 namespace Presto {
     class GLFWAppWindow;
 
     enum SHADER_MODULE_TYPE { VERTEX, FRAGMENT };
-
-    using render_data_id_t = PR_NUMERIC_ID;
-    constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
 
     class Renderer {
        public:
@@ -21,11 +20,19 @@ namespace Presto {
         void setExtents(VisualExtents extents) { extents_ = extents; };
         [[nodiscard]] VisualExtents getExtents() const { return extents_; }
 
-        virtual render_data_id_t registerRenderGroup(RenderGroup&&) = 0;
-        virtual render_data_id_t registerRenderGroup(const RenderGroup&) = 0;
+        virtual renderer_mesh_id_t loadMesh(MeshData data) = 0;
+        virtual void unloadMesh(renderer_mesh_id_t id) = 0;
 
-        virtual void unregisterMesh(render_data_id_t id) = 0;
-        virtual void render(render_data_id_t id, glm::mat4 transform) = 0;
+        virtual renderer_material_id_t loadMaterial(MaterialData material) = 0;
+        virtual void unloadMaterial(renderer_material_id_t id) = 0;
+
+        virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
+        virtual void unloadTexture(renderer_texture_id_t id) = 0;
+
+        virtual void render(renderer_mesh_id_t meshId,
+                            renderer_texture_id_t materialId,
+                            glm::mat4 transform) = 0;
+
         virtual void nextFrame() = 0;
 
         void setViewMatrix(const glm::mat4& newViewMatrix) {

@@ -15,12 +15,14 @@ namespace Presto {
 
     template <>
     struct ResourceTraits<ResourceType::MESH> {
-        using ResourcePtr = MeshResource*;
+        using ResourceT = MeshResource;
+        using ResourcePtr = ResourceT*;
     };
 
     template <>
     struct ResourceTraits<ResourceType::MATERIAL> {
-        using ResourcePtr = MaterialResource*;
+        using ResourceT = MaterialResource;
+        using ResourcePtr = ResourceT*;
     };
 
     class PRESTO_API ResourceManager : public Module<ResourceManager> {
@@ -37,10 +39,13 @@ namespace Presto {
 
         MaterialResource& createMaterial(const resource_name_t& customName);
 
+        ImageResource* createImageResource(const resource_name_t& customName,
+                                           const Presto::Image& image);
+
         template <ResourceType Type>
         [[nodiscard]] ResourceTraits<Type>::ResourcePtr find(
             const resource_name_t& key) {
-            return resources_[Type][key].get();
+            return resources_[Type][key]->as<ResourceTraits<Type>::ResourceT>();
         };
 
         // Deleted functions

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Rendering/MaterialData.h"
 #include "Presto/Resources/Image.h"
 
 #include "Presto/Resources/Resource.h"
@@ -9,11 +10,13 @@
 namespace Presto {
     class MaterialResource final : public Resource {
        public:
-        MaterialResource(PR_STRING_ID name, ImageResource* image);
+        MaterialResource(PR_STRING_ID name, ImageResource* image = nullptr);
 
         [[nodiscard]] constexpr ResourceType getType() const override {
             return ResourceType::MATERIAL;
         };
+
+        [[nodiscard]] MaterialData getData() const;
 
         void setImage(ImageResource* image);
 
@@ -22,6 +25,6 @@ namespace Presto {
        private:
         void load() override;
 
-        ImageResource* image_;
+        ImageResource* albedoImage_;
     };
 }  // namespace Presto

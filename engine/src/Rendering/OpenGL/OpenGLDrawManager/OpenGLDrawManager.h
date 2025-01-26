@@ -2,18 +2,18 @@
 
 #include <GL/glew.h>
 #include <map>
-#include "Presto/Rendering/RenderGroup.h"
+#include "Presto/Rendering/MeshData.h"
 
 #include "OpenGLTexture.h"
+#include "Presto/Rendering/RenderTypes.h"
 
 namespace Presto {
-
     struct OpenGLMaterialProperties {
         glm::vec4 colour;
         OpenGLTexture texture;
     };
 
-    struct OpenGLDrawInfo {
+    struct OpenGLMeshInfo {
         GLuint vertex_buf{};
         GLsizei vert_count{};
 
@@ -26,29 +26,30 @@ namespace Presto {
         GLuint vao{};
 
         int draw_mode{};
-
-        OpenGLMaterialProperties mat_props;
     };
 
-    struct OpenGLDrawBatch {
-        std::vector<OpenGLDrawInfo> draws;
-    };
-
-    // using draw_key = OpenGLDrawInfo*;
+    struct OpenGLDrawBatch {};
 
     using draw_key = PR_NUMERIC_ID;
 
     class OpenGLDrawManager {
        public:
-        draw_key createDrawInfo(RenderGroup&& group);
+        renderer_mesh_id_t addMesh(const MeshData&);
+        void removeMesh(renderer_mesh_id_t);
 
-        OpenGLDrawBatch* getDrawBatch(draw_key);
+        OpenGLMeshInfo* getMeshInfo(renderer_mesh_id_t);
+
+        renderer_texture_id_t addTexture(const Presto::Image& image);
+        void removeTexture(renderer_texture_id_t);
+
+        OpenGLTexture* getTexture(renderer_texture_id_t);
 
        private:
-        std::map<draw_key, OpenGLDrawBatch> drawBatchMap_;
+        std::map<renderer_mesh_id_t, OpenGLMeshInfo> meshMap_;
+        std::map<renderer_mesh_id_t, OpenGLTexture> textureMap_;
 
         // TODO: Change this to a more robust system later
-        draw_key currentDrawKey_ = 0;
+        draw_key currentKey = 0;
 
         GLuint createShaderProgram(const char*);
     };

@@ -27,39 +27,42 @@ namespace Presto {
     };
 
     void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
-        RenderGroup group;
+        const std::size_t mesh_count{mesh.meshes_.size()};
 
-        for (const SubMesh& submesh : mesh.sub_meshes) {
-            RenderData data;
+        mesh.meshIds_.resize(mesh_count);
 
-            data.indices.resize(submesh.indices.size());
+        for (int i = 0; i < mesh_count; i++) {
+            const RawMeshData& submesh{mesh.meshes_[i]};
+
+            MeshData mesh_data;
+
+            mesh_data.indices.resize(submesh.indices.size());
 
             std::ranges::transform(
                 submesh.indices.begin(), submesh.indices.end(),
-                data.indices.begin(),
+                mesh_data.indices.begin(),
                 [](auto val) { return static_cast<Index>(val); });
 
-            data.vertices.resize(
+            mesh_data.vertices.resize(
                 std::min({submesh.positions.size(), submesh.normals.size(),
                           submesh.tex_coords.size()}));
 
-            for (int i = 0; i < data.vertices.size(); i++) {
+            for (int i = 0; i < mesh_data.vertices.size(); i++) {
                 Vertex v = {.position = submesh.positions[i],
                             // Default colour of white
                             .colour = {1, 1, 1},
                             .normal = submesh.normals[i],
                             .tex_coords = submesh.tex_coords[i]};
-                data.vertices[i] = v;
+                mesh_data.vertices[i] = v;
             }
 
-            data.draw_mode = submesh.draw_mode;
-            data.material = submesh.defaultMaterial_;
+            mesh_data.draw_mode = submesh.draw_mode;
+            // data.material = submesh.defaultMaterial_;
 
-            group.render_list.push_back(data);
+            renderer_mesh_id_t new_id{this->renderer_->loadMesh(mesh_data)};
+
+            mesh.meshIds_[i] = new_id;
         }
-
-        render_data_id_t r_id = renderer_->registerRenderGroup(group);
-        mesh.renderId_ = r_id;
     };
 
     void RenderingManager::init() {
@@ -107,7 +110,7 @@ for (auto& layer : _renderLayers) {
                 const auto& resource = m->getMesh();
 
                 renderer_->render(resource.renderId_,
-                                  std::get<1>(tuple)->getModelView());
+                                  std::get<1>(tuple)->getModelView(), );
             });
 
         // TODO: Refactor this to cache in the RenderingManager if the
