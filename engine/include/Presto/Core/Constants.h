@@ -18,4 +18,8 @@ namespace Presto {
     using PR_BIT_TYPE = std::uint16_t;
 
     constexpr PR_BIT_TYPE AS_BIT(uint8_t x) { return 1U << x; }
+
+    constexpr double PR_MINIMUM_NEAR_DISTANCE = 0.1;
+
+    constexpr PR_NUMERIC_ID PR_MATERIAL_DEFAULT_3D = 0;
 }  // namespace Presto

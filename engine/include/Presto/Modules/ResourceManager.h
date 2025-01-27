@@ -45,7 +45,8 @@ namespace Presto {
         template <ResourceType Type>
         [[nodiscard]] ResourceTraits<Type>::ResourcePtr find(
             const resource_name_t& key) {
-            return resources_[Type][key]->as<ResourceTraits<Type>::ResourceT>();
+            return resources_[Type][key]
+                ->as<typename ResourceTraits<Type>::ResourceT>();
         };
 
         // Deleted functions

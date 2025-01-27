@@ -2,13 +2,17 @@
 
 #include "OpenGLDrawManager/OpenGLDrawManager.h"
 
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
 #include "Rendering/OpenGL/OpenGLMaterial.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
+#include "OpenGLDrawManager/DefaultShaders.h"
+
 #include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
 #include <stdexcept>
 
 #include "Presto/Runtime/GLFWAppWindow.h"
@@ -37,6 +41,14 @@ namespace Presto {
 
         drawManager_ = std::make_unique<OpenGLDrawManager>();
 
+        ShaderPtr default_shader = std::make_shared<OpenGLShader>();
+        default_shader->setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
+            .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
+            .linkShaderProgram();
+
+        drawManager_->setMaterial(PR_MATERIAL_DEFAULT_3D,
+                                  OpenGLMaterial{default_shader});
+
         /*
                 constexpr auto POS_VECTOR_SIZE = 3;
                 constexpr auto TRIANGLE_POINT_COUNT = POS_VECTOR_SIZE * 3;
@@ -54,11 +66,9 @@ namespace Presto {
 
     OpenGLRenderer::~OpenGLRenderer() = default;
 
-    void GLAPIENTRY OpenGLRenderer::debugCallback(GLenum source, GLenum type,
-                                                  GLuint id, GLenum severity,
-                                                  GLsizei length,
-                                                  const GLchar* message,
-                                                  const void* userParam) {
+    void GLAPIENTRY OpenGLRenderer::debugCallback(
+        GLenum /*source*/, GLenum /*type*/, GLuint id, GLenum /*severity*/,
+        GLsizei /*length*/, const GLchar* message, const void* /*userParam*/) {
         PR_CORE_TRACE("OpenGL Debug Message (ID: {}): {}", id, message);
     }
 
@@ -107,37 +117,38 @@ namespace Presto {
         this->drawManager_->removeMesh(id);
     };
 
-    void OpenGLRenderer::unloadMaterial(renderer_material_id_t id) {};
-
-    renderer_material_id_t OpenGLRenderer::loadMaterial(MaterialData material) {
-    };
-
     renderer_texture_id_t OpenGLRenderer::loadTexture(Presto::Image image) {
         return drawManager_->addTexture(image);
     };
 
-    void OpenGLRenderer::unloadTexture(renderer_texture_id_t id) {};
+    void OpenGLRenderer::unloadTexture(renderer_texture_id_t id) {
+        drawManager_->removeTexture(id);
+    };
 
-    void OpenGLRenderer::render(renderer_mesh_id_t meshId,
-                                renderer_texture_id_t imageId,
-                                glm::mat4 transform) {
+    void OpenGLRenderer::render(renderer_mesh_id_t meshId) {
         auto* mesh{drawManager_->getMeshInfo(meshId)};
-        auto* albedo{drawManager_->getTexture(imageId)};
+        // auto* albedo{drawManager_->getTexture(imageId)};
 
-        // TODO: Implement drawing using the transform
-        if (mesh == nullptr || albedo == nullptr) {
+        if (mesh == nullptr) {
             PR_CORE_ERROR(
-                "getRenderable() returned a nullptr for renderable. "
-                "Skipping drawing.");
+                "OpenGL render function received nullptr mesh data of ID {}.\n"
+                "Skipping this mesh.",
+                meshId);
             return;
         }
 
-        this->draw(*mesh, *albedo, transform);
+        PR_CORE_ASSERT(currentMaterial_ != nullptr,
+                       "OpenGL is unable to render with no material set.");
+
+        this->draw(*mesh);
     };
 
-    void OpenGLRenderer::draw(const OpenGLMeshInfo& meshInfo,
-                              OpenGLMaterial& material, glm::mat4 transform) {
-        material.bind();
+    void OpenGLRenderer::draw(const OpenGLMeshInfo& meshInfo) {
+        // If the uniforms have been updated or the material has been updated,
+        // update the values
+        if (this->isDirty()) {
+            updateUniforms();
+        }
 
         glBindVertexArray(meshInfo.vao);
         glDrawElements(meshInfo.draw_mode, meshInfo.index_count,
@@ -148,5 +159,55 @@ PR_CORE_ASSERT(
     draw_data.mat_props.texture.isLoaded(),
     "Draw data is used without being loaded in OpenGL Renderer.");
         */
+    };
+
+    void OpenGLRenderer::bindMaterial(const MaterialData& data) {
+        auto id{data.materialType};
+
+        OpenGLMaterial* material{drawManager_->getMaterial(id)};
+
+        PR_ASSERT(material != nullptr,
+                  "Unable to bind non-existant material from id {}.", id);
+
+        if (material == currentMaterial_) {
+            PR_CORE_TRACE(
+                "Redundant material binding has occurred for material with ID "
+                "{}. Skipping this binding.",
+                id);
+            return;
+        }
+
+        OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};
+        PR_ASSERT(diffuse != nullptr,
+                  "Unable to bind material with null diffuse texture.");
+
+        material->setDiffuse(diffuse);
+
+        material->bind();
+
+        currentMaterial_ = material;
+
+        setDirty();
+    };
+
+    void OpenGLRenderer::unbindMaterial() {
+        currentMaterial_->unbind();
+        currentMaterial_ = nullptr;
+    };
+
+    void OpenGLRenderer::updateUniforms() {
+        PR_CORE_ASSERT(currentMaterial_ != nullptr,
+                       "Unable to setup uniforms on a null material.");
+
+        ShaderPtr shader{currentMaterial_->getShader()};
+
+        shader->setUniform("view", globalUniforms_.view);
+        shader->setUniform("projection", globalUniforms_.projection);
+        // TODO: Make this a one-off function call
+        shader->setUniform("sampler1", std::int8_t(0));
+
+        shader->setUniform("transform", objectUniforms_.transform);
+
+        setDirty(false);
     };
 }  // namespace Presto

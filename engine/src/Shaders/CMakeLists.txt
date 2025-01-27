@@ -90,6 +90,7 @@ macro(compileshadersfortarget target_name shader_source_dir)
 
         add_custom_command(
           TARGET ${target_name}
+          POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E make_directory ${OUTDIR}
           COMMAND ${GLSLC_PATH} ${shader_file} -o ${OUTPATH}
           COMMENT "Compiling  ${shader_file}  to  ${OUTPATH}")

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Resources/MaterialResource.h"
+#include "Presto/Rendering/MaterialData.h"
 
 namespace Presto {
     struct RawMeshData {
@@ -16,7 +16,7 @@ namespace Presto {
         // size_t index_count;
         std::vector<IndexType> indices;
 
-        MaterialResource* defaultMaterial_;
+        MaterialData material_data;
 
         int draw_mode{};
     };

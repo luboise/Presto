@@ -14,6 +14,10 @@ namespace Presto {
         // friend class RenderingManager;
         friend class EntityManager;
 
+        // TODO: Make the render trigger when the entity enters the scene so
+        // that this friend declaration isn't necessary
+        friend class RenderingManager;
+
        public:
         [[nodiscard]] bool hasResource() const;
 
@@ -26,6 +30,8 @@ namespace Presto {
         void setMaterial(MaterialResource& resource);
 
        private:
+        MeshResource* getMeshResource() { return meshResource_; }
+
         explicit Mesh(MeshResource& resource);
         Mesh() = default;
 

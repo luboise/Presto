@@ -1,4 +1,5 @@
 #include "OpenGLShader.h"
+#include "Presto/Utils/File.h"
 #include "Rendering/OpenGL/utils.h"
 
 #include "OpenGLDrawManager/DefaultShaders.h"
@@ -40,15 +41,18 @@ view = glGetUniformLocation(shaderProgram_, "transform");
         setReady(true);
     };
 
-    void OpenGLShader::setShader(const AssetPath& shaderPath,
-                                 ShaderStage type) {
+    OpenGLShader& OpenGLShader::setShader(const AssetPath& shaderPath,
+                                          ShaderStage type) {
+        auto data = Utils::File::ReadFile(shaderPath);
+        return setShader(data.data(), type);
+    };
+
+    OpenGLShader& OpenGLShader::setShader(const char* data, ShaderStage type) {
         switch (type) {
             case ShaderStage::VERTEX: {
-                GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+                GLuint vs{glCreateShader(GL_VERTEX_SHADER)};
 
-                const char* sourceCStr = DEFAULT_VERTEX_SHADER;
-
-                glShaderSource(vs, 1, &sourceCStr, nullptr);
+                glShaderSource(vs, 1, &data, nullptr);
                 glCompileShader(vs);
 
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
@@ -60,11 +64,9 @@ view = glGetUniformLocation(shaderProgram_, "transform");
                 break;
             }
             case ShaderStage::FRAGMENT: {
-                GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+                GLuint fs{glCreateShader(GL_FRAGMENT_SHADER)};
 
-                const char* sourceCStr2 = DEFAULT_FRAGMENT_SHADER;
-
-                glShaderSource(fs, 1, &sourceCStr2, nullptr);
+                glShaderSource(fs, 1, &data, nullptr);
                 glCompileShader(fs);
 
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
@@ -77,10 +79,11 @@ view = glGetUniformLocation(shaderProgram_, "transform");
             }
             default: {
                 PR_CORE_ERROR("Invalid shader set in OpenGL Pipeline.");
-                return;
             }
         }
-    };
+
+        return *this;
+    }
 
     void OpenGLShader::setUniform(uniform_name_t property, Presto::mat4 value) {
         setMat4(property, glm::value_ptr(value));

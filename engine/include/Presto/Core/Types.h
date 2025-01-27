@@ -29,4 +29,9 @@ namespace Presto {
     using AssetPath = fs::path;
     using resource_name_t = PR_STRING_ID;
 
+    struct VisualExtents {
+        std::uint16_t width;
+        std::uint16_t height;
+    };
+
 }  // namespace Presto

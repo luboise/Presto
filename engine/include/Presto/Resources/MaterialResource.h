@@ -10,7 +10,11 @@
 namespace Presto {
     class MaterialResource final : public Resource {
        public:
-        MaterialResource(PR_STRING_ID name, ImageResource* image = nullptr);
+        friend class RenderingManager;
+
+        explicit MaterialResource(PR_STRING_ID name,
+                                  ImageResource* image = nullptr);
+        ~MaterialResource() override = default;
 
         [[nodiscard]] constexpr ResourceType getType() const override {
             return ResourceType::MATERIAL;
@@ -25,6 +29,6 @@ namespace Presto {
        private:
         void load() override;
 
-        ImageResource* albedoImage_;
+        ImageResource* diffuseImage_;
     };
 }  // namespace Presto

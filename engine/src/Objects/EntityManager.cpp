@@ -144,7 +144,7 @@ namespace Presto {
                        "Invalid entity count construction requested.");
         std::vector<Entity*> entities(count);
 
-        for (auto i = 0; i < count; i++) {
+        for (PR_SIZE i = 0; i < count; i++) {
             entities[i] = newEntity("Entity");
         }
 

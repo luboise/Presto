@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Presto/Rendering/RenderTypes.h"
 #include "Window.h"
 
 namespace Presto {
@@ -13,19 +12,19 @@ namespace Presto {
 
         void update() override;
 
-        [[nodiscard]] inline unsigned GetWidth() const override {
+        [[nodiscard]] inline unsigned getWidth() const override {
             return windowData_.window_size.width;
         }
-        [[nodiscard]] inline unsigned GetHeight() const override {
+        [[nodiscard]] inline unsigned getHeight() const override {
             return windowData_.window_size.height;
         }
 
-        inline void SetCallbackFunction(const EventCallbackFn& fn) override {
+        inline void setCallbackFunction(const EventCallbackFn& fn) override {
             windowData_.event_callback = fn;
         }
 
         [[nodiscard]] inline void* getWindowHandle() const {
-            return this->_windowPtr;
+            return this->windowPtr_;
         }
 
         /*
@@ -44,8 +43,8 @@ explicit operator GLFWwindow*() const {
             return windowData_.framebuffer_size;
         }
 
-        void SetVSync(bool vsync) override;
-        bool IsVSyncEnabled() override;
+        void setVSync(bool vsync) override;
+        bool vSyncEnabled() override;
 
        private:
         double _glfwTime;
@@ -72,5 +71,4 @@ explicit operator GLFWwindow*() const {
 
         WindowData windowData_;
     };
-
 }  // namespace Presto

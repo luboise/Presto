@@ -12,6 +12,8 @@ namespace Presto {
        public:
         using shader_property_key_t = std::string;
 
+        using opengl_shader_ptr_t = std::shared_ptr<OpenGLShader>;
+
         OpenGLShader();
 
         void use() const override;
@@ -29,7 +31,8 @@ namespace Presto {
 
         void setTexture(uniform_name_t property, Texture value) override;
 
-        void setShader(const AssetPath& shaderPath, ShaderStage type);
+        OpenGLShader& setShader(const AssetPath& shaderPath, ShaderStage type);
+        OpenGLShader& setShader(const char* data, ShaderStage type);
 
         void linkShaderProgram();
 

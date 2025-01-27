@@ -16,7 +16,6 @@ target_sources(
   PRIVATE Application.cpp
           Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
-          Rendering/Camera.cpp
           Runtime/Time.cpp
           Logging.cpp
           pch.cpp

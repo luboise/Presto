@@ -32,6 +32,7 @@ endif()
 set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
+target_compile_options(PrestoEngine PRIVATE -Wall -Wextra)
 
 add_subdirectory(src)
 

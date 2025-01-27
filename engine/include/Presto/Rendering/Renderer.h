@@ -1,17 +1,21 @@
 #pragma once
 
-#include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MaterialData.h"
-#include "RenderTypes.h"  // IWYU pragma: export
+#include "Presto/Components/Camera.h"
+#include "Presto/Mixins/LazyCalculator.h"
 
-#include "Presto/Rendering/MeshData.h"
+#include "Presto/Rendering/MaterialData.h"
+#include "Presto/Resources/Image.h"
+
+#include "RenderTypes.h"  // IWYU pragma: export
 
 namespace Presto {
     class GLFWAppWindow;
 
-    class Renderer {
+    class Renderer : protected LazyCalculator {
        public:
         Renderer() = default;
+
+        virtual ~Renderer() = default;
 
         void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
@@ -21,34 +25,36 @@ namespace Presto {
         virtual renderer_mesh_id_t loadMesh(MeshData data) = 0;
         virtual void unloadMesh(renderer_mesh_id_t id) = 0;
 
-        virtual renderer_material_id_t loadMaterial(MaterialData material) = 0;
-        virtual void unloadMaterial(renderer_material_id_t id) = 0;
+        // TODO: Implement custom materials/shaders
+        /*
+virtual renderer_material_id_t loadMaterial(MaterialData material) = 0;
+virtual void unloadMaterial(renderer_material_id_t id) = 0;
+        */
 
         virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
         virtual void unloadTexture(renderer_texture_id_t id) = 0;
 
-        virtual void render(renderer_mesh_id_t meshId,
-                            renderer_texture_id_t materialId,
-                            glm::mat4 transform) = 0;
+        virtual void bindMaterial(const MaterialData&) = 0;
+        virtual void unbindMaterial() = 0;
+
+        virtual void render(renderer_mesh_id_t meshId) = 0;
 
         virtual void nextFrame() = 0;
 
-        void setViewMatrix(const glm::mat4& newViewMatrix) {
-            renderViewMatrix_ = newViewMatrix;
-        }
+        void setCameraData(Camera& camera);
+        void setCameraData(GlobalUniforms&&);
 
-        void setViewMatrix(glm::mat4&& newViewMatrix) {
-            renderViewMatrix_ = newViewMatrix;
-        }
+        void setObjectData(ObjectUniforms&&);
 
         void framebufferResized() { this->_framebufferResized = true; }
         virtual void onFrameBufferResized() = 0;
 
-        virtual ~Renderer() = default;
-
        protected:
         GLFWAppWindow* _glfwWindow{nullptr};
-        glm::mat4 renderViewMatrix_{};
+
+        GlobalUniforms globalUniforms_{};
+        ObjectUniforms objectUniforms_{};
+
         bool _framebufferResized{false};
 
        private:

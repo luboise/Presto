@@ -11,4 +11,6 @@ namespace Presto {
     };
 
     Resource::Resource(PR_STRING_ID name) : name_(std::move(name)) {};
+
+    Resource::~Resource() = default;
 }  // namespace Presto

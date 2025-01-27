@@ -17,7 +17,7 @@ namespace Presto {
         virtual void start() {};
         virtual void update() {};
 
-        virtual void onInput(KeyEvent& event) { handlesInput_ = false; };
+        virtual void onInput(KeyEvent& /*unused*/) { handlesInput_ = false; };
         bool handlesInput_{true};
 
        protected:

@@ -2,10 +2,12 @@
 
 #include <GL/glew.h>
 #include <map>
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/MeshData.h"
 
 #include "OpenGLTexture.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Rendering/OpenGL/OpenGLMaterial.h"
 
 namespace Presto {
     struct OpenGLMaterialProperties {
@@ -33,23 +35,35 @@ namespace Presto {
     using draw_key = PR_NUMERIC_ID;
 
     class OpenGLDrawManager {
+        // Materials
+        static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
+
        public:
+        OpenGLMeshInfo* getMeshInfo(renderer_mesh_id_t);
         renderer_mesh_id_t addMesh(const MeshData&);
         void removeMesh(renderer_mesh_id_t);
 
-        OpenGLMeshInfo* getMeshInfo(renderer_mesh_id_t);
+        OpenGLMaterial* getMaterial(renderer_material_id_t);
 
+        // TODO: Implement custom shaders/materials
+        /*
+         renderer_material_id_t addMaterial(const Presto::Image& image);
+         void removeMaterial(renderer_material_id_t);
+                */
+
+        void setMaterial(renderer_material_id_t, OpenGLMaterial&&);
+
+        OpenGLTexture* getTexture(renderer_texture_id_t);
         renderer_texture_id_t addTexture(const Presto::Image& image);
         void removeTexture(renderer_texture_id_t);
 
-        OpenGLTexture* getTexture(renderer_texture_id_t);
-
        private:
         std::map<renderer_mesh_id_t, OpenGLMeshInfo> meshMap_;
-        std::map<renderer_mesh_id_t, OpenGLTexture> textureMap_;
+        std::map<renderer_material_id_t, OpenGLMaterial> materialMap_;
+        std::map<renderer_texture_id_t, OpenGLTexture> textureMap_;
 
         // TODO: Change this to a more robust system later
-        draw_key currentKey = 0;
+        draw_key currentKey_ = PR_MINIMUM_MATERIAL_KEY;
 
         GLuint createShaderProgram(const char*);
     };

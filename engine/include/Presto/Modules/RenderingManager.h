@@ -7,7 +7,11 @@
 
 #include "Presto/Rendering/RenderLayer.h"
 
+#include "Presto/Resources/ImageResource.h"
+
+#include "Presto/Resources/MaterialResource.h"
 #include "Presto/Resources/MeshResource.h"
+
 #include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Utils/Allocator.h"
 
@@ -18,9 +22,11 @@ namespace Presto {
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
         friend class Application;
+        friend void ImageResource::load();
+        friend void MaterialResource::load();
 
        public:
-        static void init();
+        static void init(Camera& defaultCamera);
 
         void update() override;
         void clear();
@@ -30,10 +36,8 @@ namespace Presto {
         static void setRenderLibrary(RENDER_LIBRARY library);
         static void setWindow(GLFWAppWindow* window);
 
-        inline Camera& getCamera() { return activeCamera_; };
         void setCamera(Camera& newCam);
-
-        void renderFrame();
+        inline Camera& getCamera() { return activeCamera_; };
 
         void loadMeshOnGpu(MeshResource&);
 
@@ -60,6 +64,8 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         // Static vars
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
+
+        void loadImageOnGpu(ImageResource*);
 
         void resizeFramebuffer() const;
 

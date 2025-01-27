@@ -28,7 +28,6 @@ namespace Presto {
 
         std::vector<RawMeshData> meshes_;
         std::vector<renderer_mesh_id_t> meshIds_;
-
-        renderer_mesh_id_t renderId_ = UNREGISTERED_RENDER_DATA_ID;
+        std::vector<renderer_material_id_t> materialIds_;
     };
 }  // namespace Presto

@@ -55,7 +55,7 @@ namespace Presto {
 
         // std::array<bool, 3> useRounding_{false};
 
-        void round();
+        // void round();
 
         // mat4 _modelView;
         friend class RenderingManager;

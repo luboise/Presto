@@ -156,6 +156,10 @@ namespace Presto {
                         createImageResource(texture.name, image)};
 
                     new_material.setImage(image_resource);
+
+                    // TODO: Maybe make this load when an entity enters the
+                    // scene, or at the end of every update loop
+                    new_material.ensureLoaded();
                 }
             }
 
@@ -183,8 +187,8 @@ namespace Presto {
                         getDataFromAccessor2<RawMeshData::TexCoordsType>(
                             model, primitive.attributes["TEXCOORD_0"]);
 
-                    new_submesh.defaultMaterial_ =
-                        new_materials[primitive.material].get();
+                    new_submesh.material_data =
+                        new_materials[primitive.material].get()->getData();
 
                     new_mesh->meshes_.push_back(new_submesh);
                 }
@@ -306,5 +310,7 @@ MaterialResource* ResourceManager::getMaterial(
         const resource_name_t& customName, const Presto::Image& image) {
         resources_[ResourceType::IMAGE][customName] =
             std::make_unique<ImageResource>(customName, image);
+
+        return resources_[ResourceType::IMAGE][customName]->as<ImageResource>();
     };
 }  // namespace Presto

@@ -7,8 +7,8 @@
 #include "DefaultShaders.h"
 
 namespace Presto {
-    OpenGLMeshInfo* OpenGLDrawManager::getMeshInfo(renderer_mesh_id_t key) {
-        auto mesh{meshMap_.find(key)};
+    OpenGLMeshInfo* OpenGLDrawManager::getMeshInfo(renderer_mesh_id_t id) {
+        auto mesh{meshMap_.find(id)};
 
         return (mesh == meshMap_.end()) ? nullptr : &(mesh->second);
     }
@@ -112,7 +112,7 @@ if (renderableMap_.contains(data)) {
 
         // mesh_info..texture =
 
-        auto new_key{++currentKey};
+        auto new_key{++currentKey_};
         auto insertion = meshMap_.emplace(new_key, mesh_info);
 
         PR_CORE_ASSERT(
@@ -128,11 +128,34 @@ if (renderableMap_.contains(data)) {
         const Presto::Image& image) {
         OpenGLTexture tex{image};
 
-        auto new_key{++currentKey};
+        auto new_key{++currentKey_};
         textureMap_.emplace(new_key, std::move(tex));
 
         return new_key;
     };
+
+    OpenGLMaterial* OpenGLDrawManager::getMaterial(renderer_material_id_t id) {
+        auto material{materialMap_.find(id)};
+
+        return (material == materialMap_.end()) ? nullptr : &(material->second);
+    }
+
+    /*
+        void OpenGLDrawManager::removeMaterial(renderer_material_id_t id) {
+            auto erased{materialMap_.erase(id)};
+            if (erased == 0) {
+                PR_CORE_WARN(
+                    "A delete was requested for a non-existant material with ID
+       {} " "in " "the OpenGL Draw Manager.", id);
+            }
+        };
+            */
+
+    void OpenGLDrawManager::setMaterial(renderer_material_id_t id,
+                                        OpenGLMaterial&& material) {
+        materialMap_.emplace(id, std::move(material));
+    };
+
 }  // namespace Presto
 
 /*

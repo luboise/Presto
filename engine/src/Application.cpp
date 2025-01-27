@@ -1,4 +1,5 @@
 #include "Presto/Runtime/Application.h"
+
 #include "Presto/Managers.h"
 
 #include "Presto/Components/Camera.h"
@@ -18,29 +19,27 @@
 namespace Presto {
     Application::Application() {
         // TODO: Fix this to be injected
-        auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::Create()));
+        auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::create()));
 
         this->_app_window = std::unique_ptr<GLFWAppWindow>(app_window);
         // this->_app_window = new GLFWAppWindow();
-        _app_window->SetCallbackFunction(
+        _app_window->setCallbackFunction(
             [this](auto& e) -> void { this->onEvent(e); });
 
         RenderingManager::setRenderLibrary(OPENGL);
         RenderingManager::setWindow(app_window);
         RenderingManager::setWindow(app_window);
 
-        RenderingManager::init();
         EntityManager::init();
+
+        Camera* default_camera{EntityManager::get().newComponent<Camera>()};
+        RenderingManager::init(*default_camera);
+
         ResourceManager::init();
         SceneManager::init();
         EventManager::init();
         PhysicsManager::init();
         Time::init();
-
-        Camera& default_camera{EntityManager::get().newComponent<Camera>()};
-        Camera default_camera{};
-
-        RenderingManager::setCamera(default_camera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
