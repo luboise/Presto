@@ -88,7 +88,7 @@ for (auto& layer : _renderLayers) {
         */
 
         // Update the camera
-        renderer_->setViewMatrix(camera_.getViewMatrix());
+        renderer_->setViewMatrix(activeCamera_.getViewMatrix());
 
         auto& em = EntityManager::get();
 
@@ -185,7 +185,7 @@ for (auto& layer : _renderLayers) {
         PR_CORE_ASSERT(RenderingManager::initialised(),
                        "Unable to set camera when the RenderingManager is "
                        "uninitialised.")
-        camera_ = newCam;
+        activeCamera_ = newCam;
     }
 
     void RenderingManager::resizeFramebuffer() const {

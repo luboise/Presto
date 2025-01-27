@@ -9,8 +9,6 @@
 namespace Presto {
     class GLFWAppWindow;
 
-    enum SHADER_MODULE_TYPE { VERTEX, FRAGMENT };
-
     class Renderer {
        public:
         Renderer() = default;

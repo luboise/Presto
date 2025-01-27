@@ -5,6 +5,17 @@
 
 namespace Presto {
     class OpenGLMaterial : public Material {
-        OpenGLMaterial(OpenGLShader s);
+        friend class OpenGLRenderer;
+
+        OpenGLMaterial(OpenGLShader& s);
+
+       public:
+        void setProperty(std::string property, const void* value) override;
+
+       private:
+        void bind() override;
+        void unbind() override;
+
+        OpenGLShader* shader_;
     };
 }  // namespace Presto

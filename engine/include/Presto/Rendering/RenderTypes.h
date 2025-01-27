@@ -2,13 +2,14 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include "glm/ext/matrix_float4x4.hpp"
-
 namespace Presto {
-    struct ShaderMatrices {
-        glm::mat4 view;
-        glm::mat4 projection;
-        glm::mat4 transform;
+    struct GlobalUniforms {
+        Presto::mat4 view;
+        Presto::mat4 projection;
+    };
+
+    struct ObjectUniforms {
+        Presto::mat4 transform;
     };
 
     struct DrawInfo {
@@ -37,5 +38,7 @@ namespace Presto {
         VertexList vertices;
         IndexList indices;
     };
+
+    enum class ShaderStage { VERTEX, FRAGMENT };
 
 }  // namespace Presto

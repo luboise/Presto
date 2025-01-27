@@ -4,6 +4,7 @@
 
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
+#include "Rendering/OpenGL/OpenGLMaterial.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -135,56 +136,17 @@ namespace Presto {
     };
 
     void OpenGLRenderer::draw(const OpenGLMeshInfo& meshInfo,
-                              const OpenGLTexture& albedoTexture,
-                              glm::mat4 transform) {
-        auto slot = 0;
-        albedoTexture.bind(slot);
+                              OpenGLMaterial& material, glm::mat4 transform) {
+        material.bind();
+
+        glBindVertexArray(meshInfo.vao);
+        glDrawElements(meshInfo.draw_mode, meshInfo.index_count,
+                       GL_UNSIGNED_INT, nullptr);
 
         /*
 PR_CORE_ASSERT(
     draw_data.mat_props.texture.isLoaded(),
     "Draw data is used without being loaded in OpenGL Renderer.");
         */
-
-        glUseProgram(meshInfo.shader_program);
-
-        // TODO: Make this a one-off function call
-        {
-            GLint sampler{
-                glGetUniformLocation(meshInfo.shader_program, "sampler1")};
-            PR_CORE_ASSERT(sampler != -1,
-                           "Sampler1 is not found in the shader program.");
-            // Set sampler1 to be using texture slot 0
-            glUniform1i(sampler, slot);
-        }
-
-        ShaderMatrices mats{};
-
-        constexpr glm::float32 FOV_Y = 90;
-
-        mats.view = renderViewMatrix_;
-
-        auto framebufferSize{_glfwWindow->getFramebufferSize()};
-
-        mats.projection = RenderingUtils::getProjectionMatrix(
-            FOV_Y, framebufferSize.width, framebufferSize.height);
-        mats.transform = transform;
-
-        GLint view{glGetUniformLocation(meshInfo.shader_program, "view")};
-        glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(mats.view));
-
-        GLint projection{
-            glGetUniformLocation(meshInfo.shader_program, "projection")};
-        glUniformMatrix4fv(projection, 1, GL_FALSE,
-                           glm::value_ptr(mats.projection));
-
-        GLint transformLoc{
-            glGetUniformLocation(meshInfo.shader_program, "transform")};
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
-                           glm::value_ptr(mats.transform));
-
-        glBindVertexArray(meshInfo.vao);
-        glDrawElements(meshInfo.draw_mode, meshInfo.index_count,
-                       GL_UNSIGNED_INT, nullptr);
     };
 }  // namespace Presto

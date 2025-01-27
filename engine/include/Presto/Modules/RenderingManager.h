@@ -2,10 +2,10 @@
 
 #include "Module.h"
 
+#include "Presto/Components/Camera.h"
 #include "Presto/Components/Renderable.h"
-#include "Presto/Rendering/RenderLayer.h"
 
-#include "Presto/Rendering/Camera.h"
+#include "Presto/Rendering/RenderLayer.h"
 
 #include "Presto/Resources/MeshResource.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
@@ -30,7 +30,7 @@ namespace Presto {
         static void setRenderLibrary(RENDER_LIBRARY library);
         static void setWindow(GLFWAppWindow* window);
 
-        inline Camera& getCamera() { return camera_; };
+        inline Camera& getCamera() { return activeCamera_; };
         void setCamera(Camera& newCam);
 
         void renderFrame();
@@ -64,10 +64,10 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         void resizeFramebuffer() const;
 
         // Member vars
-        Camera camera_;
+        Camera& activeCamera_;
 
-        explicit RenderingManager(RENDER_LIBRARY library,
-                                  GLFWAppWindow* window);
+        explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
+                                  Camera& defaultCamera);
 
         Renderer* renderer_;
 

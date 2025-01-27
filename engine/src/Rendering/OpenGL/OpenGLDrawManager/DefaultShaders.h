@@ -11,9 +11,14 @@ layout(location = 1) in vec3 _colour;
 layout(location = 2) in vec3 _normal;
 layout(location = 3) in vec2 _tex_coords;
 
-layout(location = 0) uniform mat4 view;
-layout(location = 1) uniform mat4 projection;
-layout(location = 2) uniform mat4 transform;
+layout(location = 0) uniform GlobalUniforms {
+	mat4 view;
+	mat4 projection;
+};
+
+layout(location = 1) uniform ObjectUniforms {
+	mat4 transform;
+};
 
 void main() {
     gl_Position = projection * view * transform * vec4(_vp, 1.0);

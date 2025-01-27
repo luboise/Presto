@@ -1,5 +1,8 @@
 #include "Presto/Runtime/Application.h"
 #include "Presto/Managers.h"
+
+#include "Presto/Components/Camera.h"
+
 #include "Presto/Runtime.h"
 
 #include "Presto/Modules/SceneManager.h"
@@ -33,6 +36,11 @@ namespace Presto {
         EventManager::init();
         PhysicsManager::init();
         Time::init();
+
+        Camera& default_camera{EntityManager::get().newComponent<Camera>()};
+        Camera default_camera{};
+
+        RenderingManager::setCamera(default_camera);
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/

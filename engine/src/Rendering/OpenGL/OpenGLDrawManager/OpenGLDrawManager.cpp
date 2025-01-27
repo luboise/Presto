@@ -110,41 +110,6 @@ if (renderableMap_.contains(data)) {
         glVertexAttribPointer(3, VEC_2, GL_FLOAT, GL_FALSE, STRIDE,
                               (void*)offsetof(Vertex, tex_coords));
 
-        mesh_info.shader_program = glCreateProgram();
-
-        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-
-        const char* sourceCStr = DEFAULT_VERTEX_SHADER;
-
-        glShaderSource(vs, 1, &sourceCStr, nullptr);
-        glCompileShader(vs);
-
-        PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
-                       "Shader failed to compile.");
-        glAttachShader(mesh_info.shader_program, vs);
-
-        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-
-        const char* sourceCStr2 = DEFAULT_FRAGMENT_SHADER;
-
-        glShaderSource(fs, 1, &sourceCStr2, nullptr);
-        glCompileShader(fs);
-
-        PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
-                       "Shader failed to compile.");
-
-        glAttachShader(mesh_info.shader_program, fs);
-
-        glLinkProgram(mesh_info.shader_program);
-        PR_CORE_ASSERT(
-            OpenGLUtils::ShaderProgramLinkedCorrectly(mesh_info.shader_program),
-            "Shader program failed to link.");
-
-        // Delete shaders after attaching them
-        // TODO: Make the base shaders reusable
-        glDeleteShader(vs);
-        glDeleteShader(fs);
-
         // mesh_info..texture =
 
         auto new_key{++currentKey};
