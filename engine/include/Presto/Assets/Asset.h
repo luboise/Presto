@@ -3,16 +3,16 @@
 #include "Presto/Core/Concepts.h"
 
 namespace Presto {
-    enum class ResourceType { MESH, MATERIAL, IMAGE };
+    enum class AssetType { MESH, MATERIAL, IMAGE };
 
-    class Resource {
+    class Asset {
         friend class ResourceManager;
 
        public:
-        explicit Resource(PR_STRING_ID name);
-        virtual ~Resource();
+        explicit Asset(PR_STRING_ID name);
+        virtual ~Asset();
 
-        [[nodiscard]] constexpr virtual ResourceType getType() const = 0;
+        [[nodiscard]] constexpr virtual AssetType getType() const = 0;
 
         void ensureLoaded();
 
@@ -20,7 +20,7 @@ namespace Presto {
 
         [[nodiscard]] PR_STRING_ID name() const { return name_; }
 
-        template <DerivedFrom<Resource> Subclass>
+        template <DerivedFrom<Asset> Subclass>
         Subclass* as() {
             return dynamic_cast<Subclass*>(this);
         }

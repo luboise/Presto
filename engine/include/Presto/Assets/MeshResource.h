@@ -5,18 +5,18 @@
 #include "Presto/Rendering/MeshData.h"
 #include "Presto/Rendering/RenderTypes.h"
 
-#include "Resource.h"
+#include "Asset.h"
 
 namespace Presto {
-    class MeshResource final : public Resource {
+    class ModelAsset final : public Asset {
         friend class ResourceManager;
         friend class RenderingManager;
 
        public:
-        explicit MeshResource(resource_name_t name);
+        explicit ModelAsset(resource_name_t name);
 
-        [[nodiscard]] constexpr ResourceType getType() const override {
-            return ResourceType::MESH;
+        [[nodiscard]] constexpr AssetType getType() const override {
+            return AssetType::MESH;
         };
 
         [[nodiscard]] const std::vector<RawMeshData>& getSubMeshes() const {

@@ -2,7 +2,7 @@
 #include "Presto/Core/Types.h"
 #include "Presto/Modules/EntityManager.h"
 
-#include "Presto/Components/Renderable/Mesh.h"
+#include "Presto/Components/Renderable/MeshGroup.h"
 #include "Presto/Components/Transform.h"
 #include "Presto/Rendering/Renderer.h"
 
@@ -28,7 +28,7 @@ namespace Presto {
         this->addLayer();
     };
 
-    void RenderingManager::loadMeshOnGpu(MeshResource& mesh) {
+    void RenderingManager::loadMeshOnGpu(ModelAsset& mesh) {
         const std::size_t mesh_count{mesh.meshes_.size()};
 
         mesh.meshIds_.resize(mesh_count);
@@ -97,7 +97,7 @@ for (auto& layer : _renderLayers) {
 
         auto mesh_draws{em.findAll() |
                         std::views::transform([](entity_ptr entity) {
-                            auto* m_ptr = entity->getComponent<Mesh>();
+                            auto* m_ptr = entity->getComponent<MeshGroup>();
                             auto* t_ptr = entity->getComponent<Transform>();
                             return std::make_tuple(m_ptr, t_ptr);
                         }) |
@@ -112,8 +112,8 @@ for (auto& layer : _renderLayers) {
         }
 
         std::ranges::for_each(
-            mesh_draws, [this](std::tuple<Mesh*, Transform*> tuple) {
-                Mesh* m{std::get<0>(tuple)};
+            mesh_draws, [this](std::tuple<MeshGroup*, Transform*> tuple) {
+                MeshGroup* m{std::get<0>(tuple)};
                 const auto& resource = m->getMesh();
 
                 renderer_->setObjectData(
@@ -207,7 +207,7 @@ for (auto& layer : _renderLayers) {
         renderer_->onFrameBufferResized();
     };
 
-    void RenderingManager::loadImageOnGpu(ImageResource* resource) {
+    void RenderingManager::loadImageOnGpu(ImageAsset* resource) {
         if (resource->loaded()) {
             PR_CORE_WARN(
                 "Attempted redundant load of image resource {}. Skipping this "

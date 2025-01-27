@@ -1,26 +1,27 @@
 #pragma once
 
-#include "Presto/Rendering/RenderTypes.h"
-#include "Presto/Resources/Image.h"
+#include "Presto/Assets/Image.h"
 
-#include "Presto/Resources/Resource.h"
+#include "Presto/Rendering/RenderTypes.h"
+
+#include "Presto/Assets/Asset.h"
 
 // #include "Presto/Rendering/Renderer.h"
 
 namespace Presto {
-    class ImageResource final : public Resource {
+    class ImageAsset final : public Asset {
         friend class RenderingManager;
 
         using image_data_t = std::vector<uint8_t>;
 
        public:
-        ImageResource(PR_STRING_ID name, Presto::Image image)
-            : Resource(std::move(name)), image_(std::move(image)) {};
+        ImageAsset(PR_STRING_ID name, Presto::Image image)
+            : Asset(std::move(name)), image_(std::move(image)) {};
 
-        ~ImageResource() override = default;
+        ~ImageAsset() override = default;
 
-        [[nodiscard]] constexpr ResourceType getType() const override {
-            return ResourceType::IMAGE;
+        [[nodiscard]] constexpr AssetType getType() const override {
+            return AssetType::IMAGE;
         };
 
         [[nodiscard]] Presto::Image getImage() const { return image_; }

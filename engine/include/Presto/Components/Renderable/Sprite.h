@@ -17,14 +17,14 @@ namespace Presto {
        public:
         [[nodiscard]] bool hasResource() const;
 
-        inline const ImageResource& getResource() { return *resource_; }
+        inline const ImageAsset& getResource() { return *resource_; }
 
-        void setResource(ImageResource& resource);
+        void setResource(ImageAsset& resource);
 
        private:
-        explicit Sprite(ImageResource& resource);
+        explicit Sprite(ImageAsset& resource);
         Sprite() = default;
 
-        ImageResource* resource_{nullptr};
+        ImageAsset* resource_{nullptr};
     };
 }  // namespace Presto

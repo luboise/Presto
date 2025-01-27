@@ -1,7 +1,7 @@
 #include "Presto/Components/Renderable/Sprite.h"
 
 namespace Presto {
-    void Sprite::setResource(ImageResource& resource) {
+    void Sprite::setResource(ImageAsset& resource) {
         // TODO: Implement loading the image on the GPU when its needed
         /*
 if (!resource.isRegistered()) {
@@ -13,5 +13,5 @@ if (!resource.isRegistered()) {
     }
     bool Sprite::hasResource() const { return resource_ != nullptr; }
 
-    Sprite::Sprite(ImageResource& resource) { this->setResource(resource); };
+    Sprite::Sprite(ImageAsset& resource) { this->setResource(resource); };
 }  // namespace Presto

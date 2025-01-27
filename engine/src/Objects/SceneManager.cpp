@@ -1,5 +1,5 @@
 #include "Presto/Modules/SceneManager.h"
-#include "Presto/Components/Renderable/Mesh.h"
+#include "Presto/Components/Renderable/MeshGroup.h"
 #include "Presto/Modules/EntityManager.h"
 #include "Presto/Modules/ResourceManager.h"
 
@@ -86,7 +86,7 @@ namespace Presto {
                     if (componentKey == "mesh") {
                         auto mesh_data = components[componentKey];
 
-                        MeshResource* mr{
+                        ModelAsset* mr{
                             ResourceManager::get().find<ResourceType::MESH>(
                                 component["resource"])};
 
@@ -97,7 +97,7 @@ namespace Presto {
                         }
 
                         auto* new_mesh_component{
-                            EntityManager::get().newComponent<Mesh>(*mr)};
+                            EntityManager::get().newComponent<MeshGroup>(*mr)};
 
                         new_entity->setComponent(new_mesh_component);
                     }

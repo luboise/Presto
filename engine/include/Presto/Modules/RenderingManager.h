@@ -22,8 +22,8 @@ namespace Presto {
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
         friend class Application;
-        friend void ImageResource::load();
-        friend void MaterialResource::load();
+        friend void ImageAsset::load();
+        friend void MaterialAsset::load();
 
        public:
         static void init(Camera& defaultCamera);
@@ -39,7 +39,7 @@ namespace Presto {
         void setCamera(Camera& newCam);
         inline Camera& getCamera() { return activeCamera_; };
 
-        void loadMeshOnGpu(MeshResource&);
+        void loadMeshOnGpu(ModelAsset&);
 
         RenderingManager(const RenderingManager&) = delete;
         RenderingManager(RenderingManager&&) = delete;
@@ -65,7 +65,7 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
 
-        void loadImageOnGpu(ImageResource*);
+        void loadImageOnGpu(ImageAsset*);
 
         void resizeFramebuffer() const;
 

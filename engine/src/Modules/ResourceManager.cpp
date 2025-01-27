@@ -9,7 +9,7 @@
 // #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-// #include "Presto/Rendering/Mesh.h"
+// #include "Presto/Rendering/MeshGroup.h"
 
 using namespace tinygltf;
 
@@ -96,13 +96,13 @@ namespace Presto {
         return ret;
     }
 
-    std::vector<MeshResource*> ResourceManager::loadMeshesFromDisk(
+    std::vector<ModelAsset*> ResourceManager::loadMeshesFromDisk(
         const AssetPath& filepath, const resource_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
-        std::vector<MeshResource*> new_meshes;
-        std::vector<std::unique_ptr<MaterialResource>> new_materials;
+        std::vector<ModelAsset*> new_meshes;
+        std::vector<std::unique_ptr<MaterialAsset>> new_materials;
 
         if (file_extension == ".gltf" || file_extension == ".glb") {
             TinyGLTF loader;
@@ -212,9 +212,9 @@ namespace Presto {
         return new_meshes;
     }
 
-    MaterialResource& ResourceManager::createMaterial(
+    MaterialAsset& ResourceManager::createMaterial(
         const resource_name_t& customName) {
-        auto resource = std::make_unique<MaterialResource>(customName);
+        auto resource = std::make_unique<MaterialAsset>(customName);
         resource->name_ = customName;
 
         auto key = resource->name_;
@@ -223,7 +223,7 @@ namespace Presto {
             resources_[ResourceType::MATERIAL][key]->as<MaterialResource>());
     }
 
-    ImageResource& ResourceManager::loadImageFromDisk(
+    ImageAsset& ResourceManager::loadImageFromDisk(
         const AssetPath& filepath, const resource_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
@@ -257,8 +257,7 @@ namespace Presto {
         new_image.width = x;
         new_image.height = y;
 
-        auto new_resource{
-            std::make_unique<ImageResource>(customName, new_image)};
+        auto new_resource{std::make_unique<ImageAsset>(customName, new_image)};
 
         /*
     auto* new_mr{new MeshResource()};
@@ -306,7 +305,7 @@ MaterialResource* ResourceManager::getMaterial(
 }
     */
 
-    ImageResource* ResourceManager::createImageResource(
+    ImageAsset* ResourceManager::createImageResource(
         const resource_name_t& customName, const Presto::Image& image) {
         resources_[ResourceType::IMAGE][customName] =
             std::make_unique<ImageResource>(customName, image);

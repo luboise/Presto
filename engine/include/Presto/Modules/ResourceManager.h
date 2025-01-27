@@ -2,26 +2,26 @@
 
 #include "Module.h"
 
+#include "Presto/Assets/ImageAsset.h"
+#include "Presto/Assets/MaterialAsset.h"
+#include "Presto/Assets/MeshAsset.h"
 #include "Presto/Core/Types.h"
-#include "Presto/Resources/ImageResource.h"
-#include "Presto/Resources/MaterialResource.h"
-#include "Presto/Resources/MeshResource.h"
 
 namespace Presto {
     // enum class ResourceType { JSON, RAW };
 
-    template <ResourceType Type>
+    template <AssetType Type>
     struct ResourceTraits;
 
     template <>
-    struct ResourceTraits<ResourceType::MESH> {
-        using ResourceT = MeshResource;
+    struct ResourceTraits<AssetType::MESH> {
+        using ResourceT = ModelAsset;
         using ResourcePtr = ResourceT*;
     };
 
     template <>
-    struct ResourceTraits<ResourceType::MATERIAL> {
-        using ResourceT = MaterialResource;
+    struct ResourceTraits<AssetType::MATERIAL> {
+        using ResourceT = MaterialAsset;
         using ResourcePtr = ResourceT*;
     };
 
@@ -31,16 +31,16 @@ namespace Presto {
         void update() override {}
         static void shutdown();
 
-        std::vector<MeshResource*> loadMeshesFromDisk(
+        std::vector<ModelAsset*> loadMeshesFromDisk(
             const AssetPath& path, const resource_name_t& customName);
 
-        ImageResource& loadImageFromDisk(const AssetPath& path,
-                                         const resource_name_t& customName);
+        ImageAsset& loadImageFromDisk(const AssetPath& path,
+                                      const resource_name_t& customName);
 
-        MaterialResource& createMaterial(const resource_name_t& customName);
+        MaterialAsset& createMaterial(const resource_name_t& customName);
 
-        ImageResource* createImageResource(const resource_name_t& customName,
-                                           const Presto::Image& image);
+        ImageAsset* createImageResource(const resource_name_t& customName,
+                                        const Presto::Image& image);
 
         template <ResourceType Type>
         [[nodiscard]] ResourceTraits<Type>::ResourcePtr find(
@@ -59,7 +59,7 @@ namespace Presto {
         ResourceManager() = default;
 
         std::map<ResourceType,
-                 std::map<resource_name_t, std::unique_ptr<Resource>>>
+                 std::map<resource_name_t, std::unique_ptr<Asset>>>
             resources_;
 
         /*

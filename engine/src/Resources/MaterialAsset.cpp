@@ -3,19 +3,17 @@
 #include "Presto/Modules/RenderingManager.h"
 
 namespace Presto {
-    MaterialResource::MaterialResource(PR_STRING_ID name, ImageResource* image)
-        : Resource(std::move(name)), diffuseImage_(image) {}
+    MaterialAsset::MaterialAsset(PR_STRING_ID name, ImageAsset* image)
+        : Asset(std::move(name)), diffuseImage_(image) {}
 
-    void MaterialResource::setImage(ImageResource* image) {
+    void MaterialAsset::setImage(ImageAsset* image) {
         diffuseImage_ = image;
         diffuseImage_->ensureLoaded();
     }
 
-    Image MaterialResource::getImage() const {
-        return diffuseImage_->getImage();
-    }
+    Image MaterialAsset::getImage() const { return diffuseImage_->getImage(); }
 
-    MaterialData MaterialResource::getData() const {
+    MaterialData MaterialAsset::getData() const {
         MaterialData data{};
         data.materialType = PR_MATERIAL_DEFAULT_3D;
         if (diffuseImage_ != nullptr) {
@@ -25,7 +23,7 @@ namespace Presto {
         return data;
     }
 
-    void MaterialResource::load() {
+    void MaterialAsset::load() {
         RenderingManager::get().loadImageOnGpu(this->diffuseImage_);
     };
 }  // namespace Presto
