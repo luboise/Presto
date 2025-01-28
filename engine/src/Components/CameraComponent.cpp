@@ -77,8 +77,13 @@ namespace Presto {
 
     CameraComponent& CameraComponent::setDistances(camera_distance_t near,
                                                    camera_distance_t far) {
-        PR_ASSERT(near >= 0, "The camera's near distance must be at least {}",
+        PR_ASSERT(near >= PR_MINIMUM_NEAR_DISTANCE,
+                  "The camera's near distance must be at least {}",
                   PR_MINIMUM_NEAR_DISTANCE)
+        PR_ASSERT(
+            far > near,
+            "The camera's far distance must be at least the near distance.")
+
         near_ = near;
         far_ = far;
 
