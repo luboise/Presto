@@ -3,8 +3,5 @@
 #include "Presto/Modules/RenderingManager.h"
 
 namespace Presto {
-    void ImageAsset::load() {
-        RenderingManager::get().loadImageOnGpu(
-            std::shared_ptr<ImageAsset>(this));
-    }
+    void ImageAsset::load() { RenderingManager::get().loadImageOnGpu(*this); }
 }  // namespace Presto

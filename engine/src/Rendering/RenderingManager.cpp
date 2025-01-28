@@ -186,15 +186,19 @@ namespace Presto {
     };
 
     void RenderingManager::loadImageOnGpu(const ImagePtr& image) {
-        if (image->loaded()) {
+        image->ensureLoaded();
+    };
+
+    void RenderingManager::loadImageOnGpu(ImageAsset& image) {
+        if (image.loaded()) {
             PR_CORE_WARN(
                 "Attempted redundant load of image resource {}. Skipping this "
                 "load.",
-                fmt::ptr(image));
+                image.renderId_);
 
             return;
         }
-        auto image_id{renderer_->loadTexture(image->getImage())};
-        image->textureId_ = image_id;
+        auto image_id{renderer_->loadTexture(image.getImage())};
+        image.renderId_ = image_id;
     };
 }  // namespace Presto

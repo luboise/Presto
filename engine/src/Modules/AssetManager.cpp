@@ -165,8 +165,8 @@ namespace Presto {
 
             for (size_t i = 0; i < model.meshes.size(); i++) {
                 auto& mesh = model.meshes[i];
-                auto new_name{customNames.size() >= i - 1 ? customNames[i]
-                                                          : mesh.name};
+                auto new_name{i >= (customNames.size() - 1) ? customNames[i]
+                                                            : mesh.name};
 
                 auto new_model{std::make_shared<ModelAsset>(new_name)};
 
@@ -203,7 +203,7 @@ namespace Presto {
 
                 new_model->name_ = new_name;
 
-                assets_[AssetType::MESH][new_name] = new_model;
+                assets_[AssetType::MODEL][new_name] = new_model;
 
                 new_models.push_back(new_model);
             }

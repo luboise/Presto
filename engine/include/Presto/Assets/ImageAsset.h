@@ -36,14 +36,14 @@ namespace Presto {
         [[nodiscard]] std::size_t size() const { return image_.size(); };
 
         [[nodiscard]] renderer_texture_id_t getRenderId() const {
-            return textureId_;
+            return renderId_;
         };
 
        private:
         void load() override;
 
         Presto::Image image_;
-        renderer_texture_id_t textureId_{UNREGISTERED_RENDER_DATA_ID};
+        renderer_texture_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
     };
 
     using ImagePtr = AssetPtr<ImageAsset>;

@@ -66,7 +66,9 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
 
+        // TODO: Make this take a reference instead and clean up the logic
         void loadImageOnGpu(const ImagePtr&);
+        void loadImageOnGpu(ImageAsset&);
 
         void resizeFramebuffer() const;
 
