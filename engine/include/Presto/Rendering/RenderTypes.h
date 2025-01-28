@@ -23,13 +23,31 @@ namespace Presto {
     constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
 
     using renderer_mesh_id_t = PR_NUMERIC_ID;
-    using renderer_material_id_t = PR_NUMERIC_ID;
+    using renderer_pipeline_id_t = PR_NUMERIC_ID;
     using renderer_texture_id_t = PR_NUMERIC_ID;
+
+    struct RawMeshData {
+        using PositionType = vec3;
+        using NormalType = vec3;
+        using TexCoordsType = vec2;
+        using IndexType = unsigned short;
+
+        std::vector<PositionType> positions;
+        std::vector<NormalType> normals;
+        std::vector<TexCoordsType> tex_coords;
+
+        // size_t index_count;
+        std::vector<IndexType> indices;
+
+        int draw_mode{};
+    };
 
     struct MeshData {
         int draw_mode;
         VertexList vertices;
         IndexList indices;
+
+        static MeshData from(const RawMeshData&);
     };
 
     enum class ShaderStage { VERTEX, FRAGMENT };

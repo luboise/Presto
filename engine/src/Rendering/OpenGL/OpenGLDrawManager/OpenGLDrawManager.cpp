@@ -134,7 +134,7 @@ if (renderableMap_.contains(data)) {
         return new_key;
     };
 
-    OpenGLMaterial* OpenGLDrawManager::getMaterial(renderer_material_id_t id) {
+    OpenGLPipeline* OpenGLDrawManager::getMaterial(renderer_pipeline_id_t id) {
         auto material{materialMap_.find(id)};
 
         return (material == materialMap_.end()) ? nullptr : &(material->second);
@@ -151,8 +151,8 @@ if (renderableMap_.contains(data)) {
         };
             */
 
-    void OpenGLDrawManager::setMaterial(renderer_material_id_t id,
-                                        OpenGLMaterial&& material) {
+    void OpenGLDrawManager::setMaterial(renderer_pipeline_id_t id,
+                                        OpenGLPipeline&& material) {
         materialMap_.emplace(id, std::move(material));
     };
 

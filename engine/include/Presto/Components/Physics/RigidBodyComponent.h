@@ -7,9 +7,9 @@
 namespace Presto {
     class RenderingManager;
 
-    class PRESTO_API RigidBody : public Component {
+    class PRESTO_API RigidBodyComponent : public Component {
        public:
-        RigidBody() = default;
+        RigidBodyComponent() = default;
 
         void addVelocity(vec3 vel);
         void addAngularVelocity(vec3 angularVel);

@@ -3,35 +3,35 @@
 #include "Presto/Objects/Component.h"
 
 #include "Presto/Mixins/LazyCalculator.h"
-#include "Presto/Rendering/RenderTypes.h"
 
 namespace Presto {
     enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 
-    class Camera : public Component, LazyCalculator {
+    class CameraComponent : public Component, LazyCalculator {
         using camera_fov_t = double;
         using camera_distance_t = double;
 
        public:
-        Camera();
+        CameraComponent();
 
         [[nodiscard]] Presto::mat4 getViewMatrix();
         [[nodiscard]] Presto::mat4 getProjectionMatrix();
 
-        Camera& setYaw(double newYaw);
-        Camera& setPitch(double newPitch);
-        Camera& setRoll(double newRoll);
-        Camera& setPos(Presto::vec3 newPos);
-        Camera& setFocus(Presto::vec3 newPos);
+        CameraComponent& setYaw(double newYaw);
+        CameraComponent& setPitch(double newPitch);
+        CameraComponent& setRoll(double newRoll);
+        CameraComponent& setPos(Presto::vec3 newPos);
+        CameraComponent& setFocus(Presto::vec3 newPos);
 
-        Camera& setExtents(VisualExtents newExtents);
+        CameraComponent& setExtents(VisualExtents newExtents);
 
         // Sets the camera's FOV to a new value in degrees
-        Camera& setFOV(camera_fov_t fovDegrees);
+        CameraComponent& setFOV(camera_fov_t fovDegrees);
 
         // Sets the near and far planes of a perspective projection.
         // Requires near >= PR_MINIMUM_NEAR_DISTANCE, and far >= near
-        Camera& setDistances(camera_distance_t near, camera_distance_t far);
+        CameraComponent& setDistances(camera_distance_t near,
+                                      camera_distance_t far);
 
         [[nodiscard]] double getYaw() const;
         [[nodiscard]] double getPitch() const;
@@ -40,7 +40,7 @@ namespace Presto {
         [[nodiscard]] Presto::vec3 getFocus() const;
 
        private:
-        CameraType type_;
+        CameraType type_{CameraType::PERSPECTIVE};
 
         Presto::vec3 _cameraPos{0, 0, 0.75};
 

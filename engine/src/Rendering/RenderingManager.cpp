@@ -2,8 +2,8 @@
 #include "Presto/Core/Types.h"
 #include "Presto/Modules/EntityManager.h"
 
-#include "Presto/Components/Renderable/MeshGroup.h"
-#include "Presto/Components/Transform.h"
+#include "Presto/Components/Renderable/ModelComponent.h"
+#include "Presto/Components/TransformComponent.h"
 #include "Presto/Rendering/Renderer.h"
 
 // #include "Rendering/Vulkan/VulkanRenderer.h"
@@ -19,7 +19,7 @@ namespace Presto {
 
     RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                        GLFWAppWindow* window,
-                                       Camera& defaultCamera)
+                                       CameraComponent& defaultCamera)
         : activeCamera_(defaultCamera) {
         auto* newrenderer_ = Presto::CreateRenderer(library, window);
         renderer_ = newrenderer_;
@@ -28,46 +28,18 @@ namespace Presto {
         this->addLayer();
     };
 
-    void RenderingManager::loadMeshOnGpu(ModelAsset& mesh) {
-        const std::size_t mesh_count{mesh.meshes_.size()};
-
-        mesh.meshIds_.resize(mesh_count);
-
-        for (std::size_t i = 0; i < mesh_count; i++) {
-            const RawMeshData& submesh{mesh.meshes_[i]};
-
-            MeshData mesh_data;
-
-            mesh_data.indices.resize(submesh.indices.size());
-
-            std::ranges::transform(
-                submesh.indices.begin(), submesh.indices.end(),
-                mesh_data.indices.begin(),
-                [](auto val) { return static_cast<Index>(val); });
-
-            mesh_data.vertices.resize(
-                std::min({submesh.positions.size(), submesh.normals.size(),
-                          submesh.tex_coords.size()}));
-
-            for (std::size_t i = 0; i < mesh_data.vertices.size(); i++) {
-                Vertex v = {.position = submesh.positions[i],
-                            // Default colour of white
-                            .colour = {1, 1, 1},
-                            .normal = submesh.normals[i],
-                            .tex_coords = submesh.tex_coords[i]};
-                mesh_data.vertices[i] = v;
-            }
-
-            mesh_data.draw_mode = submesh.draw_mode;
-            // data.material = submesh.defaultMaterial_;
-
-            renderer_mesh_id_t new_id{this->renderer_->loadMesh(mesh_data)};
-
-            mesh.meshIds_[i] = new_id;
-        }
+    void RenderingManager::loadMeshOnGpu(MeshAsset& mesh) {
+        auto new_id{renderer_->loadMesh(mesh.data_)};
+        mesh.renderId_ = new_id;
     };
 
-    void RenderingManager::init(Camera& defaultCamera) {
+    void RenderingManager::loadModelOnGpu(ModelAsset& model) {
+        for (MeshPtr& mesh : model.meshes_) {
+            mesh->ensureLoaded();
+        }
+    }
+
+    void RenderingManager::init(CameraComponent& defaultCamera) {
         PR_CORE_ASSERT(_library != UNSET,
                        "Unable to initialise the RenderingManager with an "
                        "unset graphics library.");
@@ -82,12 +54,12 @@ namespace Presto {
 
     void RenderingManager::update() {
         /*
-for (auto& layer : _renderLayers) {
+    for (auto& layer : _renderLayers) {
     for (const auto& ptr_renderable : layer._renderables) {
         renderer_->render(ptr_renderable,
                           currentCamera_->getViewMatrix());
     }
-}
+    }
         */
 
         // Update the global uniforms to the current camera
@@ -95,35 +67,41 @@ for (auto& layer : _renderLayers) {
 
         auto& em = EntityManager::get();
 
-        auto mesh_draws{em.findAll() |
-                        std::views::transform([](entity_ptr entity) {
-                            auto* m_ptr = entity->getComponent<MeshGroup>();
-                            auto* t_ptr = entity->getComponent<Transform>();
-                            return std::make_tuple(m_ptr, t_ptr);
-                        }) |
-                        std::views::filter([](auto tuple) {
-                            return std::get<0>(tuple) != nullptr &&
-                                   std::get<0>(tuple)->hasResource() &&
-                                   std::get<1>(tuple) != nullptr;
-                        })};
+        auto mesh_draws{
+            em.findAll() | std::views::transform([](entity_ptr entity) {
+                auto* m_ptr = entity->getComponent<ModelComponent>();
+                auto* t_ptr = entity->getComponent<TransformComponent>();
+                return std::make_tuple(m_ptr, t_ptr);
+            }) |
+            std::views::filter([](auto tuple) {
+                return std::get<0>(tuple) != nullptr &&
+                       std::get<0>(tuple)->meshCount() > 0 &&
+                       std::get<1>(tuple) != nullptr;
+            })};
 
-        for (const auto&& [mesh_ptr, transform_ptr] : mesh_draws) {
-            mesh_ptr->getMeshResource()->ensureLoaded();
-        }
+        /*
+                for (const auto&& [model_ptr, transform_ptr] : mesh_draws) {
+                    for (size_t i = 0; i < model_ptr->size(); i++) {
+                        model_ptr->getModelAsset()->ensureLoaded();
+                    }
+                }
+                        */
 
         std::ranges::for_each(
-            mesh_draws, [this](std::tuple<MeshGroup*, Transform*> tuple) {
-                MeshGroup* m{std::get<0>(tuple)};
-                const auto& resource = m->getMesh();
-
+            mesh_draws,
+            [this](std::tuple<ModelComponent*, TransformComponent*> tuple) {
                 renderer_->setObjectData(
                     {.transform = std::get<1>(tuple)->getModelView()});
 
-                for (std::size_t i = 0; i < resource.meshIds_.size(); i++) {
-                    renderer_->bindMaterial(
-                        resource.getSubMeshes()[i].material_data);
+                ModelComponent* model{std::get<0>(tuple)};
 
-                    auto mesh_id{resource.meshIds_[i]};
+                for (std::size_t i = 0; i < model->meshCount(); i++) {
+                    const auto& mesh{model->getMesh(i)};
+                    const auto& material{model->getMaterial(i)};
+
+                    renderer_->bindMaterial(material->getData());
+
+                    auto mesh_id{mesh->renderId_};
                     renderer_->render(mesh_id);
                 }
             });
@@ -196,7 +174,7 @@ for (auto& layer : _renderLayers) {
         RenderingManager::_window = window;
     }
 
-    void RenderingManager::setCamera(Camera& newCam) {
+    void RenderingManager::setCamera(CameraComponent& newCam) {
         PR_CORE_ASSERT(RenderingManager::initialised(),
                        "Unable to set camera when the RenderingManager is "
                        "uninitialised.")
@@ -207,16 +185,16 @@ for (auto& layer : _renderLayers) {
         renderer_->onFrameBufferResized();
     };
 
-    void RenderingManager::loadImageOnGpu(ImageAsset* resource) {
-        if (resource->loaded()) {
+    void RenderingManager::loadImageOnGpu(const ImagePtr& image) {
+        if (image->loaded()) {
             PR_CORE_WARN(
                 "Attempted redundant load of image resource {}. Skipping this "
                 "load.",
-                fmt::ptr(resource));
+                fmt::ptr(image));
 
             return;
         }
-        auto image_id{renderer_->loadTexture(resource->getImage())};
-        resource->textureId_ = image_id;
+        auto image_id{renderer_->loadTexture(image->getImage())};
+        image->textureId_ = image_id;
     };
 }  // namespace Presto

@@ -3,13 +3,13 @@
 #include "Presto/Core/Concepts.h"
 
 namespace Presto {
-    enum class AssetType { MESH, MATERIAL, IMAGE };
+    enum class AssetType { MESH, MODEL, MATERIAL, IMAGE };
 
     class Asset {
-        friend class ResourceManager;
+        friend class AssetManager;
 
        public:
-        explicit Asset(PR_STRING_ID name);
+        explicit Asset(asset_name_t name = PR_ANY_NAME);
         virtual ~Asset();
 
         [[nodiscard]] constexpr virtual AssetType getType() const = 0;
@@ -18,7 +18,7 @@ namespace Presto {
 
         [[nodiscard]] bool loaded() const { return loaded_; }
 
-        [[nodiscard]] PR_STRING_ID name() const { return name_; }
+        [[nodiscard]] asset_name_t name() const { return name_; }
 
         template <DerivedFrom<Asset> Subclass>
         Subclass* as() {
@@ -28,9 +28,11 @@ namespace Presto {
        private:
         virtual void load() = 0;
 
-        PR_STRING_ID name_;
+        asset_name_t name_;
 
         bool loaded_{false};
     };
 
+    template <DerivedFrom<Asset> T>
+    using AssetPtr = std::shared_ptr<T>;
 }  // namespace Presto

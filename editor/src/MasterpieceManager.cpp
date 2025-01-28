@@ -1,7 +1,7 @@
 #include "MasterpieceManager.h"
 #include "EditorUI.h"
 
-#include "Presto/Modules/ResourceManager.h"
+#include "Presto/Modules/AssetManager.h"
 #include "Presto/Modules/SceneManager.h"
 #include "Presto/Utils/File.h"
 
@@ -54,7 +54,7 @@ bool MasterpieceManager::openMasterpiece(const fs::path& projectFilepath) {
 
                 fs::path resource_path = mesh_data["path"];
 
-                Presto::ResourceManager::Get().loadMeshesFromDisk(
+                Presto::AssetManager::Get().loadMeshesFromDisk(
                     project_directory / resource_path, mesh_name);
 
             } catch (...) {

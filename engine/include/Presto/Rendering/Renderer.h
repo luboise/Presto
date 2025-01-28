@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Presto/Components/Camera.h"
+#include "Presto/Components/CameraComponent.h"
 #include "Presto/Mixins/LazyCalculator.h"
 
+#include "Presto/Assets/Image.h"
+
 #include "Presto/Rendering/MaterialData.h"
-#include "Presto/Resources/Image.h"
 
 #include "RenderTypes.h"  // IWYU pragma: export
 
@@ -41,7 +42,7 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
 
         virtual void nextFrame() = 0;
 
-        void setCameraData(Camera& camera);
+        void setCameraData(CameraComponent& camera);
         void setCameraData(GlobalUniforms&&);
 
         void setObjectData(ObjectUniforms&&);

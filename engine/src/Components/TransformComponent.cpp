@@ -1,7 +1,8 @@
-#include "Presto/Components/Transform.h"
+#include "Presto/Components/TransformComponent.h"
 
 namespace Presto {
-    mat4 Transform::getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale) {
+    mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
+                                            vec3 scale) {
         mat4 model{1.0F};
 
         model = glm::rotate(model, glm::radians(yawPitchRoll.x), vec3(0, 1, 0));
@@ -14,7 +15,7 @@ namespace Presto {
         return model;
     }
 
-    Transform& Transform::translate(vec3 translation) {
+    TransformComponent& TransformComponent::translate(vec3 translation) {
         this->translation_ += translation;
         /*
 if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
@@ -24,12 +25,13 @@ if (std::ranges::any_of(useRounding_, [](bool val) { return val; })) {
         return *this;
     };
 
-    Transform& Transform::rotate(vec3 rotation) {
+    TransformComponent& TransformComponent::rotate(vec3 rotation) {
         yawPitchRoll_ += rotation;
         return *this;
     }
 
-    Transform& Transform::rotate(double x, double y, double z) {
+    TransformComponent& TransformComponent::rotate(double x, double y,
+                                                   double z) {
         yawPitchRoll_ += vec3(x, y, z);
         return *this;
     }
@@ -45,9 +47,9 @@ this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
 };
                                                                               */
 
-    Transform& Transform::setScale(vec3 scale) {
+    TransformComponent& TransformComponent::setScale(vec3 scale) {
         this->scale_ = scale;
         return *this;
     };
-    vec3 Transform::getPosition() const { return translation_; }
+    vec3 TransformComponent::getPosition() const { return translation_; }
 }  // namespace Presto

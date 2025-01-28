@@ -5,10 +5,10 @@
 namespace Presto {
     class RenderingManager;
 
-    class PRESTO_API Transform : public Component {
+    class PRESTO_API TransformComponent : public Component {
        public:
-        Transform() = default;
-        Transform(vec3 translation, vec3 rotation, vec3 scale);
+        TransformComponent() = default;
+        TransformComponent(vec3 translation, vec3 rotation, vec3 scale);
 
         static mat4 getModelMatrix(vec3 offset, vec3 yawPitchRoll,
                                    glm::float32 scale) {
@@ -17,17 +17,18 @@ namespace Presto {
 
         static mat4 getModelMatrix(vec3 offset, vec3 yawPitchRoll, vec3 scale);
 
-        Transform& translate(vec3 translation);
-        Transform& translate(double x = 0, double y = 0, double z = 0) {
+        TransformComponent& translate(vec3 translation);
+        TransformComponent& translate(double x = 0, double y = 0,
+                                      double z = 0) {
             return this->translate(vec3{x, y, z});
         }
 
-        Transform& rotate(vec3 rotation);
-        Transform& rotate(double x = 0, double y = 0, double z = 0);
+        TransformComponent& rotate(vec3 rotation);
+        TransformComponent& rotate(double x = 0, double y = 0, double z = 0);
 
-        Transform& setTranslation(vec3 translation);
-        Transform& setRotation(vec3 yawPitchRoll);
-        Transform& setScale(vec3 scale);
+        TransformComponent& setTranslation(vec3 translation);
+        TransformComponent& setRotation(vec3 yawPitchRoll);
+        TransformComponent& setScale(vec3 scale);
 
         [[nodiscard]] vec3 getScale() const;
         [[nodiscard]] vec3 getTranslation() const;

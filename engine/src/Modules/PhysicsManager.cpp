@@ -1,10 +1,10 @@
 #include "Presto/Modules/PhysicsManager.h"
 
-#include "Presto/Components/Transform.h"
+#include "Presto/Components/TransformComponent.h"
 
 #include "Presto/Runtime/Time.h"
 
-#include "Presto/Components/Physics/RigidBody.h"
+#include "Presto/Components/Physics/RigidBodyComponent.h"
 #include "Presto/Physics/Force.h"
 
 namespace Presto {
@@ -26,7 +26,7 @@ namespace Presto {
 
             Force force{pairing.body->calculateMovement() * delta};
 
-            pairing.entity->getComponent<Transform>()
+            pairing.entity->getComponent<TransformComponent>()
                 ->translate(force.velocity)
                 .rotate(force.angular_velocity);
         }

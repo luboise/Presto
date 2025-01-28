@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "Presto/Rendering/Renderer.h"
-#include "ResourcesModule/ResourceManager.h"
+#include "ResourcesModule/AssetManager.h"
 
 namespace Presto {
     using ShaderCreateInfo = VkPipelineShaderStageCreateInfo;
@@ -25,7 +25,7 @@ namespace Presto {
     VulkanShader::VulkanShader(VkDevice device, SHADER_MODULE_TYPE type,
                                const std::string& filepath)
         : _device(device) {
-        auto code = ResourceManager::ReadFile(filepath);
+        auto code = AssetManager::ReadFile(filepath);
 
         PR_ASSERT(code.size() > 0,
                   "Attempted to create a shader from an empty code vector.");

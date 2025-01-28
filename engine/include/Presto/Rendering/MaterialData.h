@@ -9,7 +9,7 @@ namespace Presto {
     };
 
     struct MaterialData {
-        renderer_material_id_t materialType{PR_MATERIAL_DEFAULT_3D};
+        renderer_pipeline_id_t materialType{PR_PIPELINE_DEFAULT_3D};
         renderer_texture_id_t diffuseTexture{UNREGISTERED_RENDER_DATA_ID};
 
         // TODO: Implement lighting props

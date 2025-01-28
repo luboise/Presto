@@ -5,7 +5,7 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
-#include "Rendering/OpenGL/OpenGLMaterial.h"
+#include "Rendering/OpenGL/OpenGLPipeline.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
 #include "OpenGLDrawManager/DefaultShaders.h"
@@ -46,8 +46,8 @@ namespace Presto {
             .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
             .linkShaderProgram();
 
-        drawManager_->setMaterial(PR_MATERIAL_DEFAULT_3D,
-                                  OpenGLMaterial{default_shader});
+        drawManager_->setMaterial(PR_PIPELINE_DEFAULT_3D,
+                                  OpenGLPipeline{default_shader});
 
         /*
                 constexpr auto POS_VECTOR_SIZE = 3;
@@ -164,7 +164,7 @@ PR_CORE_ASSERT(
     void OpenGLRenderer::bindMaterial(const MaterialData& data) {
         auto id{data.materialType};
 
-        OpenGLMaterial* material{drawManager_->getMaterial(id)};
+        OpenGLPipeline* material{drawManager_->getMaterial(id)};
 
         PR_ASSERT(material != nullptr,
                   "Unable to bind non-existant material from id {}.", id);

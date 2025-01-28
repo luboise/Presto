@@ -3,7 +3,6 @@
 #include <functional>
 #include "Module.h"
 
-#include "Presto/Components/Transform.h"
 #include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
 
@@ -57,6 +56,7 @@ T *newEntity(Args &&...args) {
 
     auto new_entity{entity_unique_ptr(
         new T(new_id, args...),
+
         [this](Entity *entity) { this->destroyEntity(entity); })};
 
     auto *new_transform{newComponent<Transform>()};
@@ -73,7 +73,7 @@ T *newEntity(Args &&...args) {
         T *newComponent(Args &&...args) {
             // std::unique_ptr<Component> new_component{new T};
             auto new_component{
-                std::unique_ptr<Component>(new T(std::forward<Args>(args)...))};
+                std::shared_ptr<Component>(new T(std::forward<Args>(args)...))};
 
             component_id_t new_id{reserveId()};
             new_component->id_ = new_id;
@@ -98,7 +98,7 @@ T *newEntity(Args &&...args) {
             std::unique_ptr<Entity, std::function<void(Entity *)>>;
 
         std::vector<entity_ptr> entities_;
-        std::map<component_id_t, std::unique_ptr<Component>> components_;
+        std::map<component_id_t, std::shared_ptr<Component>> components_;
         // static std::vector<component_ptr> components_;
         std::map<entity_id_t, entity_unique_ptr> entityMap_;
 

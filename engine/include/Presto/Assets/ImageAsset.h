@@ -45,4 +45,6 @@ namespace Presto {
         Presto::Image image_;
         renderer_texture_id_t textureId_{UNREGISTERED_RENDER_DATA_ID};
     };
+
+    using ImagePtr = AssetPtr<ImageAsset>;
 }  // namespace Presto

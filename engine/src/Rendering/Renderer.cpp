@@ -1,7 +1,7 @@
 #include "Presto/Rendering/Renderer.h"
 
 namespace Presto {
-    void Renderer::setCameraData(Camera& camera) {
+    void Renderer::setCameraData(CameraComponent& camera) {
         globalUniforms_ = {.view = camera.getViewMatrix(),
                            .projection = camera.getProjectionMatrix()};
         setDirty();

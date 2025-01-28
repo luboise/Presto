@@ -1,5 +1,7 @@
-#include "Presto/Modules/ResourceManager.h"
-#include "Presto/Resources/ImageResource.h"
+#include "Presto/Modules/AssetManager.h"
+
+#include "Presto/Assets/ImageAsset.h"
+
 #include "Presto/Utils/File.h"
 #include "Rendering/Meshes/Cube.h"
 
@@ -8,8 +10,6 @@
 // NOT NEEDED SINCE TINY_GLTF USES IT
 // #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-// #include "Presto/Rendering/MeshGroup.h"
 
 using namespace tinygltf;
 
@@ -25,12 +25,12 @@ namespace Presto {
         size_t count{static_cast<size_t>(-1)};
     };
 
-    void ResourceManager::init() {
-        PR_CORE_INFO("Initialising ResourceManager.");
-        instance_ = std::unique_ptr<ResourceManager>(new ResourceManager());
+    void AssetManager::init() {
+        PR_CORE_INFO("Initialising AssetManager.");
+        instance_ = std::unique_ptr<AssetManager>(new AssetManager());
     }
 
-    void ResourceManager::shutdown() { instance_->resources_.clear(); }
+    void AssetManager::shutdown() { instance_->assets_.clear(); }
 
     AccessorData getDataFromAccessor(const tinygltf::Model& model,
                                      size_t accessorIndex) {
@@ -96,13 +96,14 @@ namespace Presto {
         return ret;
     }
 
-    std::vector<ModelAsset*> ResourceManager::loadMeshesFromDisk(
-        const AssetPath& filepath, const resource_name_t& customName) {
+    std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
+        const AssetPath& filepath,
+        const std::vector<asset_name_t>& customNames) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
-        std::vector<ModelAsset*> new_meshes;
-        std::vector<std::unique_ptr<MaterialAsset>> new_materials;
+        std::vector<ModelPtr> new_models;
+        std::vector<MaterialPtr> new_material_ptrs;
 
         if (file_extension == ".gltf" || file_extension == ".glb") {
             TinyGLTF loader;
@@ -129,12 +130,11 @@ namespace Presto {
                                     full_asset_path.string());
 
             for (auto& material : model.materials) {
-                new_materials.push_back(
-                    std::make_unique<MaterialResource>(material.name));
+                new_material_ptrs.push_back(
+                    std::make_shared<MaterialAsset>(material.name));
+                auto new_material{this->createMaterial(material.name)};
 
-                auto& new_material = *new_materials.back();
-
-                new_material.name_ = material.name;
+                new_material->name_ = material.name;
 
                 auto texture_index =
                     material.pbrMetallicRoughness.baseColorTexture.index;
@@ -152,19 +152,23 @@ namespace Presto {
                     std::memcpy(image.bytes.data(), image_data.image.data(),
                                 image.bytes.size());
 
-                    ImageResource* image_resource{
-                        createImageResource(texture.name, image)};
+                    ImagePtr image_resource{
+                        createImageAsset(texture.name, image)};
 
-                    new_material.setImage(image_resource);
+                    new_material->setDiffuseTexture(image_resource);
 
                     // TODO: Maybe make this load when an entity enters the
                     // scene, or at the end of every update loop
-                    new_material.ensureLoaded();
+                    new_material->ensureLoaded();
                 }
             }
 
-            for (auto& mesh : model.meshes) {
-                auto new_mesh = std::make_unique<MeshResource>(mesh.name);
+            for (size_t i = 0; i < model.meshes.size(); i++) {
+                auto& mesh = model.meshes[i];
+                auto new_name{customNames.size() >= i - 1 ? customNames[i]
+                                                          : mesh.name};
+
+                auto new_model{std::make_shared<ModelAsset>(new_name)};
 
                 for (tinygltf::Primitive& primitive : mesh.primitives) {
                     RawMeshData new_submesh;
@@ -187,44 +191,44 @@ namespace Presto {
                         getDataFromAccessor2<RawMeshData::TexCoordsType>(
                             model, primitive.attributes["TEXCOORD_0"]);
 
-                    new_submesh.material_data =
-                        new_materials[primitive.material].get()->getData();
+                    // Turn the raw mesh data into a new mesh asset
+                    MeshData data{MeshData::from(new_submesh)};
+                    auto new_mesh_asset{
+                        std::make_shared<MeshAsset>(std::move(data))};
 
-                    new_mesh->meshes_.push_back(new_submesh);
+                    new_mesh_asset->setDefaultMaterial(
+                        new_material_ptrs[primitive.material]);
+                    new_model->meshes_.push_back(new_mesh_asset);
                 }
 
-                auto key = customName.empty() ? mesh.name : customName;
-                new_mesh->name_ = key;
+                new_model->name_ = new_name;
 
-                resources_[ResourceType::MESH][key] = std::move(new_mesh);
+                assets_[AssetType::MESH][new_name] = new_model;
 
-                new_meshes.push_back(resources_[ResourceType::MESH][key]
-                                         .get()
-                                         ->as<MeshResource>());
+                new_models.push_back(new_model);
             }
 
-            for (auto& mat : new_materials) {
-                resources_[ResourceType::MATERIAL].emplace(mat->name_,
-                                                           std::move(mat));
+            for (auto& mat : new_material_ptrs) {
+                assets_[AssetType::MATERIAL].emplace(mat->name_,
+                                                     std::move(mat));
             }
         }
 
-        return new_meshes;
+        return new_models;
+    };
+
+    MaterialPtr AssetManager::createMaterial(const asset_name_t& customName) {
+        auto new_material{std::make_shared<MaterialAsset>(customName)};
+        new_material->name_ = customName;
+
+        auto key = new_material->name_;
+        assets_[AssetType::MATERIAL][key] = new_material;
+
+        return new_material;
     }
 
-    MaterialAsset& ResourceManager::createMaterial(
-        const resource_name_t& customName) {
-        auto resource = std::make_unique<MaterialAsset>(customName);
-        resource->name_ = customName;
-
-        auto key = resource->name_;
-        resources_[ResourceType::MATERIAL][key] = std::move(resource);
-        return *(
-            resources_[ResourceType::MATERIAL][key]->as<MaterialResource>());
-    }
-
-    ImageAsset& ResourceManager::loadImageFromDisk(
-        const AssetPath& filepath, const resource_name_t& customName) {
+    ImagePtr AssetManager::loadImageFromDisk(const AssetPath& filepath,
+                                             const asset_name_t& customName) {
         fs::path filename{filepath.stem()};
         fs::path file_extension = filepath.extension();
 
@@ -257,10 +261,10 @@ namespace Presto {
         new_image.width = x;
         new_image.height = y;
 
-        auto new_resource{std::make_unique<ImageAsset>(customName, new_image)};
+        auto new_resource{std::make_shared<ImageAsset>(customName, new_image)};
 
         /*
-    auto* new_mr{new MeshResource()};
+    auto* new_mr{new ModelAsset()};
 
     auto default_cube = Meshes::Cube({0, 0, 0}, 1, {1, 1, 1});
 
@@ -271,33 +275,34 @@ namespace Presto {
 
         auto key = new_resource->name();
 
-        resources_[ResourceType::IMAGE][key] = std::move(new_resource);
-        return *(resources_[ResourceType::IMAGE][key]->as<ImageResource>());
+        assets_[AssetType::IMAGE][key] = new_resource;
+
+        return new_resource;
     }
 
     /*
-MeshResource* ResourceManager::getMesh(const resource_name_t& key) const {
-    if (auto found = meshResources_.find(key);
-        found != meshResources_.end()) {
+ModelAsset* AssetManager::getMesh(const resource_name_t& key) const {
+    if (auto found = meshAssets_.find(key);
+        found != meshAssets_.end()) {
         return found->second.get();
     }
 
     return nullptr;
 }
 
-ImageResource* ResourceManager::getImage(const resource_name_t& key) const {
-    if (auto found = imageResources_.find(key);
-        found != imageResources_.end()) {
+ImagePtr AssetManager::getImage(const resource_name_t& key) const {
+    if (auto found = imageAssets_.find(key);
+        found != imageAssets_.end()) {
         return found->second.get();
     }
 
     return nullptr;
 }
 
-MaterialResource* ResourceManager::getMaterial(
+MaterialAsset* AssetManager::getMaterial(
     const resource_name_t& key) const {
-    if (auto found = materialResources_.find(key);
-        found != materialResources_.end()) {
+    if (auto found = materialAssets_.find(key);
+        found != materialAssets_.end()) {
         return found->second.get();
     }
 
@@ -305,11 +310,12 @@ MaterialResource* ResourceManager::getMaterial(
 }
     */
 
-    ImageAsset* ResourceManager::createImageResource(
-        const resource_name_t& customName, const Presto::Image& image) {
-        resources_[ResourceType::IMAGE][customName] =
-            std::make_unique<ImageResource>(customName, image);
+    ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
+                                            const Presto::Image& image) {
+        auto new_image{std::make_shared<ImageAsset>(customName, image)};
+        assets_[AssetType::IMAGE][customName] = new_image;
 
-        return resources_[ResourceType::IMAGE][customName]->as<ImageResource>();
+        return new_image;
     };
+
 }  // namespace Presto

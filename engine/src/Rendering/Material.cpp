@@ -1,3 +1,3 @@
-// #include "Presto/Rendering/Material.h"
+// #include "Presto/Rendering/Pipeline.h"
 
 namespace Presto {}  // namespace Presto

@@ -3,14 +3,13 @@
 #include <GL/glew.h>
 #include <map>
 #include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MeshData.h"
 
 #include "OpenGLTexture.h"
 #include "Presto/Rendering/RenderTypes.h"
-#include "Rendering/OpenGL/OpenGLMaterial.h"
+#include "Rendering/OpenGL/OpenGLPipeline.h"
 
 namespace Presto {
-    struct OpenGLMaterialProperties {
+    struct OpenGLPipelineProperties {
         glm::vec4 colour;
         OpenGLTexture texture;
     };
@@ -43,7 +42,7 @@ namespace Presto {
         renderer_mesh_id_t addMesh(const MeshData&);
         void removeMesh(renderer_mesh_id_t);
 
-        OpenGLMaterial* getMaterial(renderer_material_id_t);
+        OpenGLPipeline* getMaterial(renderer_pipeline_id_t);
 
         // TODO: Implement custom shaders/materials
         /*
@@ -51,7 +50,7 @@ namespace Presto {
          void removeMaterial(renderer_material_id_t);
                 */
 
-        void setMaterial(renderer_material_id_t, OpenGLMaterial&&);
+        void setMaterial(renderer_pipeline_id_t, OpenGLPipeline&&);
 
         OpenGLTexture* getTexture(renderer_texture_id_t);
         renderer_texture_id_t addTexture(const Presto::Image& image);
@@ -59,7 +58,7 @@ namespace Presto {
 
        private:
         std::map<renderer_mesh_id_t, OpenGLMeshInfo> meshMap_;
-        std::map<renderer_material_id_t, OpenGLMaterial> materialMap_;
+        std::map<renderer_pipeline_id_t, OpenGLPipeline> materialMap_;
         std::map<renderer_texture_id_t, OpenGLTexture> textureMap_;
 
         // TODO: Change this to a more robust system later

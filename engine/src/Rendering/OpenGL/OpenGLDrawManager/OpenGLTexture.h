@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-#include "Presto/Resources/Image.h"
+#include "Presto/Assets/Image.h"
 
 namespace Presto {
     class OpenGLTexture {

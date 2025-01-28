@@ -1,6 +1,6 @@
 #include <utility>
 
-#include "Presto/Resources/Asset.h"
+#include "Presto/Assets/Asset.h"
 
 namespace Presto {
     void Asset::ensureLoaded() {

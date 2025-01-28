@@ -2,15 +2,14 @@
 
 #include "Module.h"
 
-#include "Presto/Components/Camera.h"
+#include "Presto/Components/CameraComponent.h"
 #include "Presto/Components/Renderable.h"
 
 #include "Presto/Rendering/RenderLayer.h"
 
-#include "Presto/Resources/ImageResource.h"
-
-#include "Presto/Resources/MaterialResource.h"
-#include "Presto/Resources/MeshResource.h"
+#include "Presto/Assets/ImageAsset.h"
+#include "Presto/Assets/MaterialAsset.h"
+#include "Presto/Assets/ModelAsset.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Utils/Allocator.h"
@@ -22,11 +21,12 @@ namespace Presto {
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
         friend class Application;
+
         friend void ImageAsset::load();
         friend void MaterialAsset::load();
 
        public:
-        static void init(Camera& defaultCamera);
+        static void init(CameraComponent& defaultCamera);
 
         void update() override;
         void clear();
@@ -36,10 +36,11 @@ namespace Presto {
         static void setRenderLibrary(RENDER_LIBRARY library);
         static void setWindow(GLFWAppWindow* window);
 
-        void setCamera(Camera& newCam);
-        inline Camera& getCamera() { return activeCamera_; };
+        void setCamera(CameraComponent& newCam);
+        inline CameraComponent& getCamera() { return activeCamera_; };
 
-        void loadMeshOnGpu(ModelAsset&);
+        void loadMeshOnGpu(MeshAsset&);
+        void loadModelOnGpu(ModelAsset&);
 
         RenderingManager(const RenderingManager&) = delete;
         RenderingManager(RenderingManager&&) = delete;
@@ -65,15 +66,15 @@ void RemoveRenderable(Renderable* ptr_renderable) {
         static RENDER_LIBRARY _library;
         static GLFWAppWindow* _window;
 
-        void loadImageOnGpu(ImageAsset*);
+        void loadImageOnGpu(const ImagePtr&);
 
         void resizeFramebuffer() const;
 
         // Member vars
-        Camera& activeCamera_;
+        CameraComponent& activeCamera_;
 
         explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
-                                  Camera& defaultCamera);
+                                  CameraComponent& defaultCamera);
 
         Renderer* renderer_;
 

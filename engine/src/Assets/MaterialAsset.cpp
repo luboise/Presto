@@ -1,13 +1,16 @@
-#include "Presto/Resources/MaterialResource.h"
+#include <utility>
+
+#include "Presto/Assets/MaterialAsset.h"
+
 #include "Presto/Core/Constants.h"
 #include "Presto/Modules/RenderingManager.h"
 
 namespace Presto {
-    MaterialAsset::MaterialAsset(PR_STRING_ID name, ImageAsset* image)
-        : Asset(std::move(name)), diffuseImage_(image) {}
+    MaterialAsset::MaterialAsset(PR_STRING_ID name, ImagePtr image)
+        : Asset(std::move(name)), diffuseImage_(std::move(image)) {}
 
-    void MaterialAsset::setImage(ImageAsset* image) {
-        diffuseImage_ = image;
+    void MaterialAsset::setDiffuseTexture(ImagePtr image) {
+        diffuseImage_ = std::move(image);
         diffuseImage_->ensureLoaded();
     }
 
@@ -15,7 +18,7 @@ namespace Presto {
 
     MaterialData MaterialAsset::getData() const {
         MaterialData data{};
-        data.materialType = PR_MATERIAL_DEFAULT_3D;
+        data.materialType = PR_PIPELINE_DEFAULT_3D;
         if (diffuseImage_ != nullptr) {
             data.diffuseTexture = diffuseImage_->getRenderId();
         }

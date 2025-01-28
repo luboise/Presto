@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Rendering/Material.h"
+#include "Presto/Rendering/Pipeline.h"
 #include "Rendering/OpenGL/OpenGLShader.h"
 
 #include "OpenGLDrawManager/OpenGLTexture.h"
@@ -8,11 +8,11 @@
 namespace Presto {
     using ShaderPtr = OpenGLShader::opengl_shader_ptr_t;
 
-    class OpenGLMaterial : public Material {
+    class OpenGLPipeline : public Pipeline {
         friend class OpenGLRenderer;
 
-        explicit OpenGLMaterial(ShaderPtr& ptr);
-        explicit OpenGLMaterial(OpenGLShader&& s);
+        explicit OpenGLPipeline(ShaderPtr& ptr);
+        explicit OpenGLPipeline(OpenGLShader&& s);
 
        public:
         void setProperty(std::string property, const void* value) override;

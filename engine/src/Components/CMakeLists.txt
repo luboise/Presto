@@ -1,3 +1,5 @@
 target_sources(
-  PrestoEngine PRIVATE Renderable/MeshGroup.cpp Renderable/Sprite.cpp
-                       Physics/RigidBody.cpp Camera.cpp Transform.cpp)
+  PrestoEngine
+  PRIVATE Renderable/ModelComponent.cpp Renderable/SpriteComponent.cpp
+          Physics/RigidBodyComponent.cpp CameraComponent.cpp
+          TransformComponent.cpp)

@@ -2,7 +2,7 @@
 
 #include "Presto/Managers.h"
 
-#include "Presto/Components/Camera.h"
+#include "Presto/Components/CameraComponent.h"
 
 #include "Presto/Runtime.h"
 
@@ -32,10 +32,11 @@ namespace Presto {
 
         EntityManager::init();
 
-        Camera* default_camera{EntityManager::get().newComponent<Camera>()};
+        CameraComponent* default_camera{
+            EntityManager::get().newComponent<CameraComponent>()};
         RenderingManager::init(*default_camera);
 
-        ResourceManager::init();
+        AssetManager::init();
         SceneManager::init();
         EventManager::init();
         PhysicsManager::init();
@@ -46,7 +47,7 @@ namespace Presto {
         PhysicsManager::shutdown();
         EventManager::shutdown();
         SceneManager::shutdown();
-        ResourceManager::shutdown();
+        AssetManager::shutdown();
         EntityManager::shutdown();
         RenderingManager::shutdown();
 

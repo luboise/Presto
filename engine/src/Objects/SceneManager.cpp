@@ -1,7 +1,8 @@
 #include "Presto/Modules/SceneManager.h"
-#include "Presto/Components/Renderable/MeshGroup.h"
+#include "Presto/Components/Renderable/ModelComponent.h"
+
+#include "Presto/Modules/AssetManager.h"
 #include "Presto/Modules/EntityManager.h"
-#include "Presto/Modules/ResourceManager.h"
 
 namespace Presto {
     constexpr auto TYPE_KEY = "type";
@@ -86,9 +87,8 @@ namespace Presto {
                     if (componentKey == "mesh") {
                         auto mesh_data = components[componentKey];
 
-                        ModelAsset* mr{
-                            ResourceManager::get().find<ResourceType::MESH>(
-                                component["resource"])};
+                        ModelPtr mr{AssetManager::get().find<AssetType::MESH>(
+                            component["resource"])};
 
                         if (mr == nullptr) {
                             PR_CORE_ERROR("Unable to find mesh resource: {}",
@@ -97,7 +97,8 @@ namespace Presto {
                         }
 
                         auto* new_mesh_component{
-                            EntityManager::get().newComponent<MeshGroup>(*mr)};
+                            EntityManager::get().newComponent<ModelComponent>(
+                                mr)};
 
                         new_entity->setComponent(new_mesh_component);
                     }

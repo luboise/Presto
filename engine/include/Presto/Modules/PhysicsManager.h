@@ -2,7 +2,8 @@
 
 #include "Module.h"
 
-#include "Presto/Components/Physics/RigidBody.h"
+#include "Presto/Components/Physics/RigidBodyComponent.h"
+
 #include "Presto/Physics/Force.h"
 
 #include "Presto/Objects/Entity.h"
@@ -28,7 +29,7 @@ namespace Presto {
 
         struct PhysicsPairing {
             Entity* entity;
-            RigidBody* body;
+            RigidBodyComponent* body;
         };
 
        private:

@@ -1,8 +1,7 @@
 #include "Presto/Modules/EntityManager.h"
 
-#include "Presto/Components/Conductor.h"
-#include "Presto/Components/Physics/RigidBody.h"
-#include "Presto/Components/Transform.h"
+#include "Presto/Components/ConductorComponent.h"
+#include "Presto/Components/TransformComponent.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Entity.h"
 #include "Presto/Objects/Figure.h"
@@ -21,18 +20,20 @@ namespace Presto {
 
     void EntityManager::update() {
         for (auto&& [key, value] : entityMap_) {
-            if (auto* script = value->getComponent<Conductor>();
+            if (auto* script = value->getComponent<ConductorComponent>();
                 script != nullptr) {
                 script->update();
             }
         }
 
-        for (auto&& [key, value] : entityMap_) {
-            if (auto* script = value->getComponent<Conductor>();
-                script != nullptr) {
-                script->update();
-            }
-        }
+        /*
+for (auto&& [key, value] : entityMap_) {
+    if (auto* script = value->getComponent<ConductorComponent>();
+        script != nullptr) {
+        script->update();
+    }
+}
+        */
     }
 
     void EntityManager::shutdown() {
@@ -55,7 +56,7 @@ namespace Presto {
             new Entity(new_id, name),
             [this](Entity* entity) { this->destroyEntity(entity); });
 
-        auto* new_transform{newComponent<Transform>()};
+        auto* new_transform{newComponent<TransformComponent>()};
         new_entity->setComponent(new_transform);
 
         entityMap_.emplace(new_id, std::move(new_entity));

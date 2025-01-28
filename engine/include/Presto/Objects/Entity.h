@@ -11,7 +11,7 @@
 namespace Presto {
     // Forward declaration
     class EntityManager;
-    class Conductor;
+    class ConductorComponent;
 
     using ComponentMap = std::map<component_class_t, Component*>;
 

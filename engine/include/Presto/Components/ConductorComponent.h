@@ -1,15 +1,12 @@
 #pragma once
 
 #include "Presto/Core.h"
-
+#include "Presto/Events.h"
+#include "Presto/Objects.h"
 #include "Presto/Platform.h"
 
-#include "Presto/Events.h"
-
-#include "Presto/Objects.h"
-
 namespace Presto {
-    class PRESTO_API Conductor : public Component {
+    class PRESTO_API ConductorComponent : public Component {
         friend class EntityManager;
         friend class EventManager;
 
@@ -29,5 +26,5 @@ namespace Presto {
         // ~Conductor() override = default;
     };
 
-    using Presto::Conductor;
+    using Presto::ConductorComponent;
 }  // namespace Presto
