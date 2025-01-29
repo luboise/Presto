@@ -17,6 +17,8 @@ namespace Presto {
         virtual void onInput(KeyEvent& /*unused*/) { handlesInput_ = false; };
         bool handlesInput_{true};
 
+        void onEnterScene() override { this->start(); }
+
        protected:
         Entity* entity{nullptr};
 

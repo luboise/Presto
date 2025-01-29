@@ -107,6 +107,6 @@ T *newEntity(Args &&...args) {
 
         entity_id_t _currentId{1};
 
-        std::queue<entity_ptr> entityQueue_;
+        std::queue<entity_unique_ptr> entityQueue_;
     };
 }  // namespace Presto

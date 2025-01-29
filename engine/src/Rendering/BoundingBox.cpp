@@ -47,6 +47,6 @@ namespace Presto {
             return 0;
         }
 
-        return 1.0 / max;
+        return 0.5 / max;
     }
 }  // namespace Presto

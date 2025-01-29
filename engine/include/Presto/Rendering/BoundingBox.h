@@ -23,7 +23,8 @@ namespace Presto {
          *
          * For example, if the bounding box has an x_min of -0.5, an x_max
          * of 1.5, a y_min of 0, a y_max of 2.0, a z_min of 0.1 and a z_max of
-         * 0.3, the model will be scaled so that all values are between [-1, 1].
+         * 0.3, the model will be scaled so that all values are between [-0.5,
+         * 0.5].
          */
         double getNormalisingFactor();
     };
