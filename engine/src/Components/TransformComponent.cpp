@@ -57,4 +57,9 @@ this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
         return *this;
     };
     vec3 TransformComponent::getPosition() const { return translation_; }
+
+    TransformComponent& TransformComponent::setTranslation(vec3 translation) {
+        translation_ = translation;
+        return *this;
+    };
 }  // namespace Presto

@@ -8,6 +8,8 @@
 
 #include "Presto/Core/Types.h"
 
+#include <map>
+
 namespace Presto {
     // enum class ResourceType { JSON, RAW };
 

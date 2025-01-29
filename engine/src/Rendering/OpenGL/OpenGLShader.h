@@ -3,6 +3,8 @@
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Shader.h"
 
+#include <map>
+
 #include <GL/glew.h>
 
 namespace Presto {
