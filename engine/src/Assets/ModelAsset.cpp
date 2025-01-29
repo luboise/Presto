@@ -9,4 +9,14 @@ namespace Presto {
 
     ModelAsset::ModelAsset(asset_name_t modelName)
         : Asset(std::move(modelName)) {}
+
+    BoundingBox ModelAsset::getBoundingBox() {
+        BoundingBox box{};
+
+        for (const auto& mesh : meshes_) {
+            box.merge(mesh->getBoundingBox());
+        }
+
+        return box;
+    }
 }  // namespace Presto

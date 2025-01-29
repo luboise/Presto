@@ -6,6 +6,8 @@
 
 #include "Presto/Assets/MeshAsset.h"
 
+#include "Presto/Rendering/BoundingBox.h"
+
 namespace Presto {
     class ModelAsset final : public Asset {
         friend class AssetManager;
@@ -23,6 +25,8 @@ namespace Presto {
         [[nodiscard]] const std::vector<MeshPtr>& getMeshes() {
             return meshes_;
         }
+
+        BoundingBox getBoundingBox();
 
        private:
         void load() override;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Rendering/BoundingBox.h"
 namespace Presto {
     struct GlobalUniforms {
         Presto::mat4 view;
@@ -48,6 +49,7 @@ namespace Presto {
         IndexList indices;
 
         static MeshData from(const RawMeshData&);
+        [[nodiscard]] BoundingBox getBoundingBox() const;
     };
 
     enum class ShaderStage { VERTEX, FRAGMENT };

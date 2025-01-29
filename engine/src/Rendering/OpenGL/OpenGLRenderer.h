@@ -43,7 +43,7 @@ void unloadMaterial(renderer_material_id_t id) override;
         void nextFrame() override;
 
        private:
-        OpenGLPipeline* currentMaterial_{nullptr};
+        OpenGLPipeline* currentPipeline_{nullptr};
 
         void updateUniforms();
 

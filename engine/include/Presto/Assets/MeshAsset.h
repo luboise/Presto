@@ -3,6 +3,7 @@
 #include "Presto/Assets/Asset.h"
 #include "Presto/Assets/MaterialAsset.h"
 
+#include "Presto/Rendering/BoundingBox.h"
 #include "Presto/Rendering/RenderTypes.h"
 
 namespace Presto {
@@ -14,6 +15,10 @@ namespace Presto {
 
         [[nodiscard]] constexpr AssetType getType() const override {
             return AssetType::MESH;
+        };
+
+        [[nodiscard]] inline BoundingBox getBoundingBox() const {
+            return data_.getBoundingBox();
         };
 
         void setDefaultMaterial(const MaterialPtr&);

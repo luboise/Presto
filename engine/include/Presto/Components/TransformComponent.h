@@ -28,6 +28,8 @@ namespace Presto {
 
         TransformComponent& setTranslation(vec3 translation);
         TransformComponent& setRotation(vec3 yawPitchRoll);
+
+        TransformComponent& setScale(float);
         TransformComponent& setScale(vec3 scale);
 
         [[nodiscard]] vec3 getScale() const;

@@ -47,6 +47,11 @@ this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
 };
                                                                               */
 
+    TransformComponent& TransformComponent::setScale(float scale) {
+        this->scale_ = vec3{scale};
+        return *this;
+    };
+
     TransformComponent& TransformComponent::setScale(vec3 scale) {
         this->scale_ = scale;
         return *this;

@@ -137,7 +137,7 @@ namespace Presto {
             return;
         }
 
-        PR_CORE_ASSERT(currentMaterial_ != nullptr,
+        PR_CORE_ASSERT(currentPipeline_ != nullptr,
                        "OpenGL is unable to render with no material set.");
 
         this->draw(*mesh);
@@ -164,42 +164,37 @@ PR_CORE_ASSERT(
     void OpenGLRenderer::bindMaterial(const MaterialData& data) {
         auto id{data.materialType};
 
-        OpenGLPipeline* material{drawManager_->getMaterial(id)};
+        OpenGLPipeline* pipeline{drawManager_->getMaterial(id)};
 
-        PR_ASSERT(material != nullptr,
+        PR_ASSERT(pipeline != nullptr,
                   "Unable to bind non-existant material from id {}.", id);
 
-        if (material == currentMaterial_) {
-            PR_CORE_TRACE(
-                "Redundant material binding has occurred for material with ID "
-                "{}. Skipping this binding.",
-                id);
-            return;
+        if (pipeline != currentPipeline_) {
+            currentPipeline_ = pipeline;
+            PR_CORE_TRACE("Switching to new pipeline {}", fmt::ptr(pipeline));
         }
 
         OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};
         PR_ASSERT(diffuse != nullptr,
                   "Unable to bind material with null diffuse texture.");
 
-        material->setDiffuse(diffuse);
+        currentPipeline_->setDiffuse(diffuse);
 
-        material->bind();
-
-        currentMaterial_ = material;
+        currentPipeline_->bind();
 
         setDirty();
     };
 
     void OpenGLRenderer::unbindMaterial() {
-        currentMaterial_->unbind();
-        currentMaterial_ = nullptr;
+        currentPipeline_->unbind();
+        currentPipeline_ = nullptr;
     };
 
     void OpenGLRenderer::updateUniforms() {
-        PR_CORE_ASSERT(currentMaterial_ != nullptr,
+        PR_CORE_ASSERT(currentPipeline_ != nullptr,
                        "Unable to setup uniforms on a null material.");
 
-        ShaderPtr shader{currentMaterial_->getShader()};
+        ShaderPtr shader{currentPipeline_->getShader()};
 
         shader->setUniform("view", globalUniforms_.view);
         shader->setUniform("projection", globalUniforms_.projection);
