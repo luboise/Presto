@@ -31,6 +31,8 @@ namespace Presto {
         [[nodiscard]] component_id_t getId() const { return this->id_; };
 
        private:
+        virtual void onEnterScene() {};
+
         component_id_t id_{UNASSIGNED_ID};
         bool renderable_ = false;
     };

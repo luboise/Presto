@@ -72,16 +72,16 @@ namespace Presto {
             // PRINT FPS
             // PR_CORE_TRACE("{:.2f} FPS", 1 / Time::deltaSeconds());
 
-            // TODO: Create new entities at start of new frame
-
             // time_update.reset();
             Time::update();
             // time_update.printElapsed();
 
+            entities.instantiateEntities();
+
+            // USER PRE-LOOP LOGIC
             preLoop();
 
-            // Run user logic
-            // game_loop_timer.reset();
+            // USER GAME-LOOP LOGIC
             gameLoop();
             // game_loop_timer.printElapsed();
 
@@ -99,6 +99,7 @@ namespace Presto {
 
             // rendering_timer.printElapsed();
 
+            // USER POST-LOOP LOGIC
             postLoop();
 
             rendering.clear();

@@ -45,6 +45,8 @@ namespace Presto {
         };
 
        private:
+        void onEnterScene() override;
+
         explicit ModelComponent(const ModelPtr&);
         ModelComponent() = default;
 

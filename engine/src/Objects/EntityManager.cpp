@@ -60,7 +60,15 @@ for (auto&& [key, value] : entityMap_) {
         new_entity->setComponent(new_transform);
 
         entityMap_.emplace(new_id, std::move(new_entity));
-        return entityMap_[new_id].get();
+
+        entity_ptr handle{entityMap_[new_id].get()};
+        PR_CORE_ASSERT(
+            handle != nullptr,
+            "Internal error: A new entity handle has been retrieved as null.");
+
+        entityQueue_.push(handle);
+
+        return handle;
     }
 
     void EntityManager::destroyEntity(entity_ptr entity) {
@@ -151,4 +159,18 @@ for (auto&& [key, value] : entityMap_) {
 
         return entities;
     };
+
+    void EntityManager::instantiateEntities() {
+        entity_ptr entity{};
+        while (!entityQueue_.empty()) {
+            entity = entityQueue_.front();
+            entityQueue_.pop();
+
+            auto& components{entity->components_};
+
+            for (auto& [key, component] : components) {
+                component->onEnterScene();
+            }
+        };
+    }
 }  // namespace Presto

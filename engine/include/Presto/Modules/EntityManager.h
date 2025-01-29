@@ -1,6 +1,7 @@
 #pragma once
 
-#include <functional>
+#include <queue>
+
 #include "Module.h"
 
 #include "Presto/Objects/Component.h"
@@ -18,6 +19,7 @@ namespace Presto {
        public:
         [[nodiscard]] entity_ptr newEntity(
             const entity_name_t &name = "Entity");
+        std::vector<Entity *> newEntities(PR_SIZE count);
 
         entity_ptr getEntityByID(entity_id_t id);
 
@@ -43,8 +45,6 @@ namespace Presto {
 
         // ~EntityManager() = default;
 
-        std::vector<Entity *> newEntities(PR_SIZE count);
-
         /*
 template <typename T = Entity, typename... Args>
 T *newEntity(Args &&...args) {
@@ -67,8 +67,8 @@ T *newEntity(Args &&...args) {
 };
         */
 
-        // TODO: Consider making this private. It's not a huge deal either way,
-        // and people can just choose which one they use.
+        // TODO: Consider making this private. It's not a huge deal either
+        // way, and people can just choose which one they use.
         template <typename T, typename... Args>
         T *newComponent(Args &&...args) {
             // std::unique_ptr<Component> new_component{new T};
@@ -89,6 +89,7 @@ T *newEntity(Args &&...args) {
         static void init();
         static void shutdown();
 
+        void instantiateEntities();
         void collectGarbage();
 
         void destroyEntity(entity_ptr entity);
@@ -105,5 +106,7 @@ T *newEntity(Args &&...args) {
         std::vector<entity_tag_name_t> tagMap_;
 
         entity_id_t _currentId{1};
+
+        std::queue<entity_ptr> entityQueue_;
     };
 }  // namespace Presto

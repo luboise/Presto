@@ -11,3 +11,5 @@
 
 // General API
 #include "Components.h"
+
+#include "Assets.h"

@@ -24,7 +24,7 @@ namespace Presto {
             return AssetType::IMAGE;
         };
 
-        [[nodiscard]] Presto::Image getImage() const { return image_; }
+        [[nodiscard]] const Presto::Image& getImage() const { return image_; }
 
         [[nodiscard]] std::size_t getWidth() const { return image_.width; }
         [[nodiscard]] std::size_t getHeight() const { return image_.height; }

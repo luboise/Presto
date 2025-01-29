@@ -21,4 +21,16 @@ namespace Presto {
             materialOverrides_.push_back(nullptr);
         }
     };
+
+    void ModelComponent::onEnterScene() {
+        for (auto& mesh : meshes_) {
+            mesh->ensureLoaded();
+        }
+
+        for (auto& material : materialOverrides_) {
+            if (material != nullptr) {
+                material->ensureLoaded();
+            }
+        }
+    };
 }  // namespace Presto

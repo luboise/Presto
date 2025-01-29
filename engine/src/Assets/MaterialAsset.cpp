@@ -14,7 +14,7 @@ namespace Presto {
         diffuseImage_->ensureLoaded();
     }
 
-    Image MaterialAsset::getImage() const { return diffuseImage_->getImage(); }
+    ImagePtr MaterialAsset::getImage() const { return diffuseImage_; }
 
     MaterialData MaterialAsset::getData() const {
         MaterialData data{};

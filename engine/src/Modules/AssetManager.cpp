@@ -248,13 +248,22 @@ namespace Presto {
             stbi_load_from_memory(casted_data, static_cast<int>(data.size()),
                                   &x, &y, &channels, desired_channels);
 
-        // Get the image data
-        std::span<unsigned char> src_span(image_data, data.size());
+        if (image_data == nullptr) {
+            PR_ERROR("Unable to load image from path {}", filepath.string());
+            return nullptr;
+        }
 
-        Image new_image{
-            .width = static_cast<size_t>(x),
-            .height = static_cast<size_t>(y),
-            .bytes = std::vector<uint8_t>(src_span.begin(), src_span.end())};
+        Image new_image{.width = static_cast<size_t>(x),
+                        .height = static_cast<size_t>(y),
+                        .bytes{}};
+
+        new_image.bytes.resize(new_image.size());
+
+        // Get the image data
+        std::span<unsigned char> src_span(image_data, new_image.bytes.size());
+
+        new_image.bytes =
+            std::vector<uint8_t>(src_span.begin(), src_span.end());
 
         stbi_image_free(image_data);
 

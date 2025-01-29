@@ -5,7 +5,6 @@
 
 #include "Presto/Assets/Asset.h"
 
-#include "Presto/Assets/Image.h"
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Rendering/RenderTypes.h"
 
@@ -25,7 +24,7 @@ namespace Presto {
 
         void setDiffuseTexture(ImagePtr image);
 
-        [[nodiscard]] Image getImage() const;
+        [[nodiscard]] ImagePtr getImage() const;
 
        private:
         void load() override;

@@ -62,21 +62,26 @@ namespace Presto {
     }
         */
 
+        struct DrawStruct {
+            ModelComponent* model;
+            TransformComponent* transform;
+        };
+
         // Update the global uniforms to the current camera
         renderer_->setCameraData(activeCamera_);
 
         auto& em = EntityManager::get();
 
         auto mesh_draws{
-            em.findAll() | std::views::transform([](entity_ptr entity) {
-                auto* m_ptr = entity->getComponent<ModelComponent>();
-                auto* t_ptr = entity->getComponent<TransformComponent>();
-                return std::make_tuple(m_ptr, t_ptr);
+            em.findAll() |
+            std::views::transform([](entity_ptr entity) -> DrawStruct {
+                return {entity->getComponent<ModelComponent>(),
+                        entity->getComponent<TransformComponent>()};
             }) |
-            std::views::filter([](auto tuple) {
-                return std::get<0>(tuple) != nullptr &&
-                       std::get<0>(tuple)->meshCount() > 0 &&
-                       std::get<1>(tuple) != nullptr;
+            std::views::filter([](const DrawStruct& drawStruct) {
+                return drawStruct.model != nullptr &&
+                       drawStruct.model->meshCount() > 0 &&
+                       drawStruct.transform != nullptr;
             })};
 
         /*
@@ -87,24 +92,20 @@ namespace Presto {
                 }
                         */
 
-        std::ranges::for_each(
-            mesh_draws,
-            [this](std::tuple<ModelComponent*, TransformComponent*> tuple) {
-                renderer_->setObjectData(
-                    {.transform = std::get<1>(tuple)->getModelView()});
+        std::ranges::for_each(mesh_draws, [this](const DrawStruct& drawStruct) {
+            renderer_->setObjectData(
+                {.transform = drawStruct.transform->getModelView()});
 
-                ModelComponent* model{std::get<0>(tuple)};
+            for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
+                const auto& mesh{drawStruct.model->getMesh(i)};
+                const auto& material{drawStruct.model->getMaterial(i)};
 
-                for (std::size_t i = 0; i < model->meshCount(); i++) {
-                    const auto& mesh{model->getMesh(i)};
-                    const auto& material{model->getMaterial(i)};
+                renderer_->bindMaterial(material->getData());
 
-                    renderer_->bindMaterial(material->getData());
-
-                    auto mesh_id{mesh->renderId_};
-                    renderer_->render(mesh_id);
-                }
-            });
+                auto mesh_id{mesh->renderId_};
+                renderer_->render(mesh_id);
+            }
+        });
 
         // TODO: Refactor this to cache in the RenderingManager if the
         // performance impact is too much
