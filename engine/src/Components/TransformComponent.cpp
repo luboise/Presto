@@ -5,11 +5,12 @@ namespace Presto {
                                             vec3 scale) {
         mat4 model{1.0F};
 
+        model = glm::translate(model, offset);
+
         model = glm::rotate(model, glm::radians(yawPitchRoll.x), vec3(0, 1, 0));
         model = glm::rotate(model, glm::radians(yawPitchRoll.y), vec3(1, 0, 0));
         model = glm::rotate(model, glm::radians(yawPitchRoll.z), vec3(0, 0, 1));
 
-        model = glm::translate(model, offset);
         model = glm::scale(model, scale);
 
         return model;
@@ -62,4 +63,10 @@ this->translation_ = {useRounding_[0] ? std::round(this->translation_.x)
         translation_ = translation;
         return *this;
     };
+
+    TransformComponent& TransformComponent::setRotation(vec3 yawPitchRoll) {
+        this->yawPitchRoll_ = yawPitchRoll;
+        return *this;
+    };
+    vec3 TransformComponent::getRotation() const { return yawPitchRoll_; };
 }  // namespace Presto
