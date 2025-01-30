@@ -52,6 +52,8 @@ namespace Presto {
 
         void setMaterial(renderer_pipeline_id_t, OpenGLPipeline&&);
 
+        void setTexture(renderer_texture_id_t id, OpenGLTexture&& texture);
+
         OpenGLTexture* getTexture(renderer_texture_id_t);
         renderer_texture_id_t addTexture(const Presto::Image& image);
         void removeTexture(renderer_texture_id_t);

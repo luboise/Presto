@@ -17,6 +17,8 @@
 #include "Utils/DebugTimer.h"
 
 namespace Presto {
+    constexpr auto DEFAULT_FOV = 120;
+
     Application::Application() {
         // TODO: Fix this to be injected
         auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::create()));
@@ -34,6 +36,9 @@ namespace Presto {
 
         CameraComponent* default_camera{
             EntityManager::get().newComponent<CameraComponent>()};
+
+        default_camera->setFOV(DEFAULT_FOV);
+
         RenderingManager::init(*default_camera);
 
         AssetManager::init();

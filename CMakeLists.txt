@@ -70,6 +70,8 @@ else()
                       "Expected Windows or Unix platform for compilation.")
 endif()
 
+add_compile_definitions("$<$<CONFIG:Debug>:PR_DEBUG_BUILD>")
+
 add_subdirectory(engine)
 
 if(${PR_BUILD_EDITOR})

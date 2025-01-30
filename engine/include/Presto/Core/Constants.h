@@ -22,6 +22,7 @@ namespace Presto {
     constexpr double PR_MINIMUM_NEAR_DISTANCE = 0.1;
 
     constexpr PR_NUMERIC_ID PR_PIPELINE_DEFAULT_3D = 0;
+    constexpr PR_NUMERIC_ID PR_DEFAULT_TEXTURE = 1;
 
     constexpr PR_STRING_ID PR_ANY_NAME;
 }  // namespace Presto

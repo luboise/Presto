@@ -49,6 +49,31 @@ namespace Presto {
         drawManager_->setMaterial(PR_PIPELINE_DEFAULT_3D,
                                   OpenGLPipeline{default_shader});
 
+        drawManager_->setTexture(PR_DEFAULT_TEXTURE,
+                                 OpenGLTexture{Presto::Image{.width = 2,
+                                                             .height = 2,
+                                                             .bytes = {
+                                                                 0,
+                                                                 0,
+                                                                 0,
+                                                                 255,
+
+                                                                 255,
+                                                                 255,
+                                                                 255,
+                                                                 255,
+
+                                                                 255,
+                                                                 255,
+                                                                 255,
+                                                                 255,
+
+                                                                 0,
+                                                                 0,
+                                                                 0,
+                                                                 255,
+                                                             }}});
+
         /*
                 constexpr auto POS_VECTOR_SIZE = 3;
                 constexpr auto TRIANGLE_POINT_COUNT = POS_VECTOR_SIZE * 3;
@@ -175,8 +200,16 @@ PR_CORE_ASSERT(
         }
 
         OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};
-        PR_ASSERT(diffuse != nullptr,
-                  "Unable to bind material with null diffuse texture.");
+        if (diffuse == nullptr) {
+            PR_WARN("No diffuse texture was available. Using default texture.");
+        } else {
+            diffuse = drawManager_->getTexture(PR_DEFAULT_TEXTURE);
+
+            // TODO: Move this to a place where its always checked instead of
+            // only when it's needed
+            PR_CORE_ASSERT(diffuse != nullptr,
+                           "The default texture could not be found.");
+        }
 
         currentPipeline_->setDiffuse(diffuse);
 

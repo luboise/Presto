@@ -15,3 +15,9 @@
 #else
     #error Build platform not specified. Expected PR_PLATFORM_WINDOWS or PR_PLATFORM_UNIX
 #endif
+
+#ifdef PR_DEBUG_BUILD
+    #define PR_DEBUG_ONLY_CODE(x) x
+#else
+    #define PR_DEBUG_ONLY_CODE(x)
+#endif

@@ -100,7 +100,15 @@ namespace Presto {
                 const auto& mesh{drawStruct.model->getMesh(i)};
                 const auto& material{drawStruct.model->getMaterial(i)};
 
-                renderer_->bindMaterial(material->getData());
+                MaterialData mat_data{};
+
+                if (material != nullptr) {
+                    mat_data = material->getData();
+                } else if (!mesh->defaultMaterial_.expired()) {
+                    mat_data = mesh->defaultMaterial_.lock()->getData();
+                }
+
+                renderer_->bindMaterial(mat_data);
 
                 auto mesh_id{mesh->renderId_};
                 renderer_->render(mesh_id);

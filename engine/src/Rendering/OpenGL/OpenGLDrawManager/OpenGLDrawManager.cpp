@@ -1,6 +1,7 @@
 #include "OpenGLDrawManager.h"
 
 #include "Presto/Core.h"
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Rendering/OpenGL/utils.h"
 
@@ -35,6 +36,14 @@ namespace Presto {
     };
 
     OpenGLTexture* OpenGLDrawManager::getTexture(renderer_texture_id_t id) {
+        if (id == UNREGISTERED_RENDER_DATA_ID) {
+            PR_WARN(
+                "An unregistered texture has been requested in the draw "
+                "manager. Using the default texture.");
+
+            return &textureMap_[PR_DEFAULT_TEXTURE];
+        }
+
         auto texture{textureMap_.find(id)};
 
         return texture == textureMap_.end() ? nullptr : &(texture->second);
@@ -154,6 +163,11 @@ if (renderableMap_.contains(data)) {
     void OpenGLDrawManager::setMaterial(renderer_pipeline_id_t id,
                                         OpenGLPipeline&& material) {
         materialMap_.emplace(id, std::move(material));
+    };
+
+    void OpenGLDrawManager::setTexture(renderer_texture_id_t id,
+                                       OpenGLTexture&& texture) {
+        textureMap_.emplace(id, std::move(texture));
     };
 
 }  // namespace Presto
