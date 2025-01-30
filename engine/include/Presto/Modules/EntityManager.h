@@ -37,7 +37,9 @@ namespace Presto {
         std::vector<entity_ptr> findWhere(auto filter);
 
         MapFilterView<ComponentMap> findComponentsWhere(
-            const MapFilter<ComponentMap> &filter);
+            const MapFilter<ComponentMap> &filter = [](auto &) {
+                return true;
+            });
 
         void addTagToEntity(Entity &entity, entity_tag_name_t tag);
         void update() override;

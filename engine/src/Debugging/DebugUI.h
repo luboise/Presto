@@ -1,6 +1,8 @@
 #include "Presto/Objects/Scene.h"
 #include "Presto/Runtime/Window.h"
 
+#include "ComponentBits.h"
+
 namespace Presto {
     class DebugUI {
        public:
@@ -47,5 +49,7 @@ namespace Presto {
         static void handleInput();
 
         inline static std::function<void()> exitCallback_;
+
+        inline static CheckedComponentBits componentBits_{-1U};
     };
 }  // namespace Presto

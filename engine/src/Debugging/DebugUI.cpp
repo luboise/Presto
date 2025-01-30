@@ -1,3 +1,6 @@
+#include "Debugging/ComponentBits.h"
+#include "Presto/Components/Renderable/ModelComponent.h"
+#include "Presto/Components/TransformComponent.h"
 #include "Presto/Modules/EntityManager.h"
 #include "Presto/Objects/Entity.h"
 #include "Presto/Runtime/Window.h"
@@ -341,13 +344,35 @@ namespace Presto {
     };
 
     void DebugUI::drawComponentBrowser() {
-        ImVec2 proportions = ImGui::GetContentRegionAvail();
         if (ImGui::Begin("Component Browser")) {
+            ImGui::BeginTable(
+                "ComponentBrowserTable", 2,
+                ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersH);
+
+            ImGui::TableNextColumn();
+
             ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
                                      ImGuiTreeNodeFlags_Leaf};
 
+            auto bits{DebugUI::componentBits_};
+
             auto components{EntityManager::get().findComponentsWhere(
-                [](auto& /*component*/) { return true; })};
+                [bits](const ComponentPtr& component) {
+                    if (bits == -1U) {
+                        return true;
+                    }
+
+                    if (((bits & TRANSFORM_BIT) != 0U) &&
+                        component->isOfType<TransformComponent*>()) {
+                        return true;
+                    }
+                    if (((bits & MODEL_BIT) != 0U) &&
+                        component->isOfType<ModelComponent*>()) {
+                        return true;
+                    }
+
+                    return false;
+                })};
 
             for (const ComponentPtr& component : components) {
                 auto id{component->getId()};
@@ -368,6 +393,34 @@ namespace Presto {
                     }
                 };
             }
+
+            ImGui::TableNextColumn();
+            ImGui::Text("Filters");
+
+            auto make_checkbox{
+                [bits](const char* label, CheckedComponentBit bit) {
+                    bool enabled{static_cast<bool>(bits & bit)};
+                    if (ImGui::Checkbox(label, &enabled)) {
+                        DebugUI::componentBits_ = DebugUI::componentBits_ ^ bit;
+                    };
+                }};
+
+            bool all_enabled{DebugUI::componentBits_ == -1U};
+            if (ImGui::Checkbox("All", &all_enabled)) {
+                if (DebugUI::componentBits_ == 0) {
+                    DebugUI::componentBits_ = ~0U;
+                } else if (DebugUI::componentBits_ != -1U) {
+                    DebugUI::componentBits_ = -1U;
+                } else {
+                    DebugUI::componentBits_ = 0;
+                }
+            }
+
+            make_checkbox("Transform", TRANSFORM_BIT);
+            make_checkbox("Model", MODEL_BIT);
+            make_checkbox("Camera", CAMERA_BIT);
+
+            ImGui::EndTable();
 
             ImGui::End();
         }
