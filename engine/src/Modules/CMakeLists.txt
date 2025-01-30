@@ -1,2 +1,2 @@
-target_sources(PrestoEngine PRIVATE AssetManager.cpp EventManager.cpp
+target_sources(${PRESTO_ENGINE_NAME} PRIVATE AssetManager.cpp EventManager.cpp
                                     PhysicsManager.cpp)

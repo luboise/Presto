@@ -1,20 +1,16 @@
 #include "Presto/Runtime/Application.h"
-
-#include "Presto/Managers.h"
-
-#include "Presto/Components/CameraComponent.h"
-
-#include "Presto/Runtime.h"
-
-#include "Presto/Modules/SceneManager.h"
-
 #include "Modules/EventManager.h"
-
+#include "Presto/Components/CameraComponent.h"
 #include "Presto/Events.h"
-
+#include "Presto/Managers.h"
+#include "Presto/Modules/SceneManager.h"
+#include "Presto/Runtime.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
-
 #include "Utils/DebugTimer.h"
+
+#ifdef PR_DEBUG_BUILD
+    #include "Debugging/DebugUI.h"
+#endif
 
 namespace Presto {
     constexpr auto DEFAULT_FOV = 120;
@@ -46,9 +42,14 @@ namespace Presto {
         EventManager::init();
         PhysicsManager::init();
         Time::init();
+
+        PR_DEBUG_ONLY_CODE(
+            DebugUI::initialise(app_window, [this] { this->exit(); }))
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
+        PR_DEBUG_ONLY_CODE(DebugUI::shutdown())
+
         PhysicsManager::shutdown();
         EventManager::shutdown();
         SceneManager::shutdown();
@@ -83,6 +84,9 @@ namespace Presto {
 
             entities.instantiateEntities();
 
+            // Draw the debug UI
+            PR_DEBUG_ONLY_CODE(DebugUI::draw())
+
             // USER PRE-LOOP LOGIC
             preLoop();
 
@@ -103,6 +107,8 @@ namespace Presto {
             rendering.update();
 
             // rendering_timer.printElapsed();
+
+            PR_DEBUG_ONLY_CODE(DebugUI::render())
 
             // USER POST-LOOP LOGIC
             postLoop();

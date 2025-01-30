@@ -15,13 +15,25 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       CACHE PATH "Install path" FORCE)
 endif()
 
-option(PR_BUILD_EDITOR "Enable the PrestoEditor target." OFF)
+option(PRESTO_BUILD_EDITOR "Enable the PrestoEditor target." OFF)
+option(PRESTO_DEBUG_BUILD "Enable the PrestoEditor target." OFF)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # ##############################################################################
 # ##############################################################################
 # ##############################################################################
+
+set(PRESTO_ENGINE_NAME "PrestoEngine")
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  message(STATUS "Creating a debug build of Presto")
+  set(PRESTO_DEBUG_BUILD ON)
+
+  set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
+
+  add_compile_definitions(PR_DEBUG_BUILD)
+endif()
 
 find_program(
   GLSLC_PATH
@@ -47,9 +59,8 @@ find_package(GLEW REQUIRED)
 
 add_subdirectory(ext/glm)
 
+set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
 add_subdirectory(ext/TinyGLTF)
-
-set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext/imgui)
 
 # find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
@@ -70,10 +81,8 @@ else()
                       "Expected Windows or Unix platform for compilation.")
 endif()
 
-add_compile_definitions("$<$<CONFIG:Debug>:PR_DEBUG_BUILD>")
-
 add_subdirectory(engine)
 
-if(${PR_BUILD_EDITOR})
+if(PRESTO_BUILD_EDITOR)
   add_subdirectory(editor)
 endif()

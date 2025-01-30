@@ -1,1 +1,1 @@
-target_sources(PrestoEngine PRIVATE VulkanVertex.cpp VulkanUtils.cpp)
+target_sources(${PRESTO_ENGINE_NAME} PRIVATE VulkanVertex.cpp VulkanUtils.cpp)

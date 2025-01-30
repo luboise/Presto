@@ -1,1 +1,1 @@
-target_sources(PrestoEngine PRIVATE File.cpp DebugTimer.cpp Timer.cpp)
+target_sources(${PRESTO_ENGINE_NAME} PRIVATE File.cpp DebugTimer.cpp Timer.cpp)

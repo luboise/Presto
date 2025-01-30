@@ -1,2 +1,2 @@
-target_sources(PrestoEngine PRIVATE DescriptorManager.cpp
+target_sources(${PRESTO_ENGINE_NAME} PRIVATE DescriptorManager.cpp
                                     DescriptorGroup/DescriptorGroup.cpp)

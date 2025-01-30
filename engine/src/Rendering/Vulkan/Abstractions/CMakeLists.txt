@@ -1,5 +1,5 @@
 target_sources(
-  PrestoEngine
+	${PRESTO_ENGINE_NAME}
   PRIVATE Implementations/DescriptorSetLayout.cpp
           Implementations/DescriptorPool.cpp
           Implementations/CommandPool.cpp

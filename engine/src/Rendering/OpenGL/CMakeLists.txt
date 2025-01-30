@@ -1,5 +1,5 @@
 target_sources(
-  PrestoEngine
+	${PRESTO_ENGINE_NAME}
   PRIVATE OpenGLRenderer.cpp utils.cpp OpenGLPipeline.cpp OpenGLShader.cpp
           OpenGLDrawManager/OpenGLDrawManager.cpp
           OpenGLDrawManager/OpenGLTexture.cpp)

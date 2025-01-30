@@ -1,3 +1,6 @@
+target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE
+                          ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
+
 add_subdirectory(Assets)
 add_subdirectory(Common)
 add_subdirectory(Components)
@@ -8,11 +11,12 @@ add_subdirectory(Rendering)
 add_subdirectory(Shaders)
 add_subdirectory(Utils)
 
-target_precompile_headers(PrestoEngine PRIVATE
-                          ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
+if(PRESTO_DEBUG_BUILD)
+  add_subdirectory(Debugging)
+endif()
 
 target_sources(
-  PrestoEngine
+  ${PRESTO_ENGINE_NAME}
   PRIVATE Application.cpp
           Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp

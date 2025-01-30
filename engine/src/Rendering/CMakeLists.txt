@@ -2,5 +2,5 @@
 add_subdirectory(OpenGL)
 
 target_sources(
-  PrestoEngine PRIVATE BoundingBox.cpp Renderer.cpp Utils/RenderingUtils.cpp
+	${PRESTO_ENGINE_NAME} PRIVATE BoundingBox.cpp Renderer.cpp Utils/RenderingUtils.cpp
                        RendererFactory.cpp RenderTypes.cpp Material.cpp)

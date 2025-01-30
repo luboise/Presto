@@ -6,42 +6,46 @@ project(Presto)
 # find_package(glm REQUIRED PATHS ./ext/glm)
 
 # Engine definitions
-add_library(PrestoEngine SHARED)
+add_library(${PRESTO_ENGINE_NAME} SHARED)
 
-target_include_directories(PrestoEngine
+target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_include_directories(
-  PrestoEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
-                      ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
+  ${PRESTO_ENGINE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
+                               ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
 
 target_include_directories(
-  PrestoEngine
+  ${PRESTO_ENGINE_NAME}
   PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/src
           ${CMAKE_CURRENT_SOURCE_DIR}/../ext/stb/)
 
-target_link_libraries(PrestoEngine PUBLIC nlohmann_json::nlohmann_json glm::glm)
+target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
+                                                   glm::glm)
 
-# target_link_libraries(PrestoEngine PRIVATE glfw)
+# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
-  target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
+  target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE dwmapi.lib
+                                                      XInput9_1_0.lib)
 endif()
 
 # Needed for shared library
-set_property(TARGET PrestoEngine PROPERTY POSITION_INDEPENDENT_CODE ON)
+set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_compile_definitions(PrestoEngine PRIVATE PR_BUILD_LIB)
-target_compile_options(PrestoEngine PRIVATE -Wall -Wextra)
+target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
+target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
 
 add_subdirectory(src)
 
-# target_link_libraries(PrestoEngine PRIVATE glfw)
+# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
-  target_link_libraries(PrestoEngine PRIVATE dwmapi.lib XInput9_1_0.lib)
+  target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE dwmapi.lib
+                                                      XInput9_1_0.lib)
 endif()
 
-target_link_libraries(PrestoEngine PUBLIC glfw ${Vulkan_LIBRARIES} spdlog)
+target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC glfw ${Vulkan_LIBRARIES}
+                                                   spdlog)
 
 set(TINYGLTF_HEADER_ONLY
     OFF
@@ -52,15 +56,17 @@ set(TINYGLTF_INSTALL
 
 set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# target_include_directories(PrestoEngine PUBLIC
+# target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC
 # ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
 
-target_link_libraries(PrestoEngine PRIVATE ${OPENGL_LIBRARIES} glfw GLEW::GLEW)
-target_link_libraries(PrestoEngine PRIVATE tinygltf)
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${OPENGL_LIBRARIES} glfw
+                                                    GLEW::GLEW)
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE tinygltf)
 
 # Needed for shared library
-set_property(TARGET PrestoEngine PROPERTY POSIT﻿ION_INDEPENDENT_CODE ON)
+set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSIT﻿ION_INDEPENDENT_CODE
+                                                   ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
-compileshadersfortarget(PrestoEngine "${PRESTO_BASE_SHADER_DIR}")
+compileshadersfortarget(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}")
