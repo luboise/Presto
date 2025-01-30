@@ -29,7 +29,7 @@ namespace Presto {
 
     Entity::~Entity() = default;
 
-    ComponentMap Entity::getComponents() { return components_; }
+    Entity::ComponentMap Entity::getComponents() { return components_; }
 
     void Entity::checkNewComponent(Component* componentPtr) {
         auto* conductor_ptr{dynamic_cast<ConductorComponent*>(componentPtr)};

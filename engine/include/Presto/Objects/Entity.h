@@ -13,8 +13,6 @@ namespace Presto {
     class EntityManager;
     class ConductorComponent;
 
-    using ComponentMap = std::map<component_class_t, Component*>;
-
     using entity_id_t = PR_NUMERIC_ID;
     using entity_name_t = PR_STRING_ID;
 
@@ -27,6 +25,8 @@ namespace Presto {
 
     class PRESTO_API Entity {
         friend class EntityManager;
+
+        using ComponentMap = std::map<component_class_t, Component*>;
 
        public:
         static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};

@@ -110,8 +110,9 @@ for (auto&& [key, value] : entityMap_) {
         return entityMap_ | std::views::values | std::views::filter(filter);
     }
 
-    std::vector<component_ptr> EntityManager::findComponentsWhere(auto filter) {
-        return components_ | std::views::filter(filter);
+    MapFilterView<EntityManager::ComponentMap>
+    EntityManager::findComponentsWhere(const MapFilter<ComponentMap>& filter) {
+        return components_ | std::views::values | std::views::filter(filter);
     }
 
     entity_tag_id_t EntityManager::getTagId(

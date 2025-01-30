@@ -37,5 +37,5 @@ namespace Presto {
         bool renderable_ = false;
     };
 
-    using component_ptr = Component*;
+    using ComponentPtr = std::shared_ptr<Component>;
 }  // namespace Presto

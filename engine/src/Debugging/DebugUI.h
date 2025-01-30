@@ -31,12 +31,18 @@ namespace Presto {
        private:
         inline static bool visible_{false};
 
+        inline static bool showEntityBrowser_{true};
+        inline static bool showComponentBrowser_{true};
+
         inline static EditorState state_{EditorState::EDITING};
         inline static entity_ptr selectedEntity_{nullptr};
 
         inline static std::vector<std::string> errorMessages_;
 
         static void drawMainEditor();
+
+        static void drawEntityBrowser();
+        static void drawComponentBrowser();
 
         static void handleInput();
 

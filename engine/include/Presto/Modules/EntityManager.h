@@ -9,12 +9,21 @@
 
 #include "Presto/Objects/Figure.h"
 
+#include "Presto/Core/ViewHandling.h"
+
 namespace Presto {
     class PRESTO_API EntityManager : public Module<EntityManager> {
         friend class Application;
         friend Figure::~Figure();
 
         using EntityMap = std::map<entity_id_t, entity_ptr>;
+        using ComponentMap = std::map<component_id_t, ComponentPtr>;
+
+        using ComponentFilter = std::function<bool(ComponentPtr)>;
+
+        using a =
+            std::ranges::filter_view<std::ranges::values_view<ComponentMap>,
+                                     ComponentFilter>;
 
        public:
         [[nodiscard]] entity_ptr newEntity(
@@ -27,7 +36,8 @@ namespace Presto {
 
         std::vector<entity_ptr> findWhere(auto filter);
 
-        std::vector<component_ptr> findComponentsWhere(auto filter);
+        MapFilterView<ComponentMap> findComponentsWhere(
+            const MapFilter<ComponentMap> &filter);
 
         void addTagToEntity(Entity &entity, entity_tag_name_t tag);
         void update() override;
@@ -99,8 +109,7 @@ T *newEntity(Args &&...args) {
             std::unique_ptr<Entity, std::function<void(Entity *)>>;
 
         std::vector<entity_ptr> entities_;
-        std::map<component_id_t, std::shared_ptr<Component>> components_;
-        // static std::vector<component_ptr> components_;
+        ComponentMap components_;
         std::map<entity_id_t, entity_unique_ptr> entityMap_;
 
         std::vector<entity_tag_name_t> tagMap_;

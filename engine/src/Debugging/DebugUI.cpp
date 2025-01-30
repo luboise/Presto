@@ -205,38 +205,12 @@ namespace Presto {
 
         */
 
-        {
-            ImVec2 proportions = ImGui::GetContentRegionAvail();
-            if (ImGui::Begin("Scene")) {
-                ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
-                                         ImGuiTreeNodeFlags_Leaf};
+        if (showEntityBrowser_) {
+            drawEntityBrowser();
+        };
 
-                std::vector<entity_ptr> entities{
-                    EntityManager::get().findAll()};
-
-                for (const auto& entity_ptr : entities) {
-                    entity_id_t id{entity_ptr->getId()};
-                    {
-                        std::string label{
-                            std::format("({}) {}", id, entity_ptr->getName())};
-
-                        if (ImGui::TreeNodeEx(
-                                label.data(),
-                                flags | (entity_ptr == selectedEntity_
-                                             ? ImGuiTreeNodeFlags_Selected
-                                             : ImGuiTreeNodeFlags_None),
-                                "%s", label.data())) {
-                            if (ImGui::IsItemClicked()) {
-                                selectedEntity_ = entity_ptr;
-                            };
-
-                            ImGui::TreePop();
-                        }
-                    };
-                }
-
-                ImGui::End();
-            }
+        if (showComponentBrowser_) {
+            drawComponentBrowser();
         };
 
         CHILD(Assets, 1, 0.5, {
@@ -332,4 +306,71 @@ namespace Presto {
             }
         }
     }
+
+    void DebugUI::drawEntityBrowser() {
+        ImVec2 proportions = ImGui::GetContentRegionAvail();
+        if (ImGui::Begin("Entity Browser")) {
+            ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
+                                     ImGuiTreeNodeFlags_Leaf};
+
+            std::vector<entity_ptr> entities{EntityManager::get().findAll()};
+
+            for (const auto& entity_ptr : entities) {
+                entity_id_t id{entity_ptr->getId()};
+                {
+                    std::string label{
+                        std::format("({}) {}", id, entity_ptr->getName())};
+
+                    if (ImGui::TreeNodeEx(
+                            label.data(),
+                            flags | (entity_ptr == selectedEntity_
+                                         ? ImGuiTreeNodeFlags_Selected
+                                         : ImGuiTreeNodeFlags_None),
+                            "%s", label.data())) {
+                        if (ImGui::IsItemClicked()) {
+                            selectedEntity_ = entity_ptr;
+                        };
+
+                        ImGui::TreePop();
+                    }
+                };
+            }
+
+            ImGui::End();
+        }
+    };
+
+    void DebugUI::drawComponentBrowser() {
+        ImVec2 proportions = ImGui::GetContentRegionAvail();
+        if (ImGui::Begin("Component Browser")) {
+            ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
+                                     ImGuiTreeNodeFlags_Leaf};
+
+            auto components{EntityManager::get().findComponentsWhere(
+                [](auto& /*component*/) { return true; })};
+
+            for (const ComponentPtr& component : components) {
+                auto id{component->getId()};
+                {
+                    std::string label{std::format("({}) Component", id)};
+
+                    if (ImGui::TreeNodeEx(
+                            label.data(),
+                            flags | (/*entity_ptr == selectedEntity_*/ true
+                                         ? ImGuiTreeNodeFlags_Selected
+                                         : ImGuiTreeNodeFlags_None),
+                            "%s", label.data())) {
+                        if (ImGui::IsItemClicked()) {
+                            // selectedEntity_ = entity_ptr;
+                        };
+
+                        ImGui::TreePop();
+                    }
+                };
+            }
+
+            ImGui::End();
+        }
+    };
+
 }  // namespace Presto
