@@ -13,3 +13,4 @@ using Model = Presto::ModelComponent;
 using RigidBody = Presto::RigidBodyComponent;
 using Sprite = Presto::SpriteComponent;
 using Transform = Presto::TransformComponent;
+using Canvas = Presto::CanvasComponent;

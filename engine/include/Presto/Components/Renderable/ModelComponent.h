@@ -19,6 +19,8 @@ namespace Presto {
         friend class RenderingManager;
 
        public:
+        ModelComponent() = delete;
+
         inline MeshPtr getMesh(std::uint8_t index = 0) {
             if (meshes_.size() == 0 || index >= meshes_.size()) {
                 return nullptr;
@@ -48,7 +50,6 @@ namespace Presto {
         void onEnterScene() override;
 
         explicit ModelComponent(const ModelPtr&);
-        ModelComponent() = default;
 
         std::vector<MeshPtr> meshes_;
         std::vector<MaterialPtr> materialOverrides_;

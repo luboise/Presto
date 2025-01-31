@@ -7,3 +7,6 @@
 
 #include "Components/CameraComponent.h"     // IWYU pragma: export
 #include "Components/TransformComponent.h"  // IWYU pragma: export
+
+// UI
+#include "Components/UI/CanvasComponent.h"  // IWYU pragma: export

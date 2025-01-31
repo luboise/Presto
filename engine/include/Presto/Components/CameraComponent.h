@@ -12,8 +12,6 @@ namespace Presto {
         using camera_distance_t = double;
 
        public:
-        CameraComponent();
-
         [[nodiscard]] Presto::mat4 getViewMatrix();
         [[nodiscard]] Presto::mat4 getProjectionMatrix();
 
@@ -40,6 +38,8 @@ namespace Presto {
         [[nodiscard]] Presto::vec3 getFocus() const;
 
        private:
+        CameraComponent();
+
         CameraType type_{CameraType::PERSPECTIVE};
 
         Presto::vec3 _cameraPos{0, 0, 0.75};
@@ -53,7 +53,7 @@ namespace Presto {
 
         // TODO: Move the default extents somewhere else
         // Default extents of 1080p
-        VisualExtents extents_{1920, 1080};
+        VisualExtents extents_{.width = 1920, .height = 1080};
 
         double _yaw{0.0};
         double _pitch{0.0};

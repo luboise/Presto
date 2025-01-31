@@ -7,6 +7,7 @@
 
 #include <array>
 #include <map>
+#include <memory>
 
 namespace Presto {
     // Forward declaration
@@ -33,25 +34,26 @@ namespace Presto {
 
         [[nodiscard]] entity_id_t getId() const { return this->id_; };
 
+        // TODO: Move component ID into the component class if possible
+        // (Commponent itself cannot be templated!)
         template <typename ComponentClass>
-        void setComponent(ComponentClass* component_ptr) {
-            component_class_t classID = CLASS_ID(ComponentClass);
-            components_.emplace(classID, component_ptr);
+        void setComponent(ComponentPtr<ComponentClass> component_ptr) {
+            component_class_t id{ClassID<ComponentClass>};
+            components_.emplace(id, component_ptr);
 
             checkNewComponent(component_ptr);
         }
 
-        template <typename ComponentClass>
-        ComponentClass* getComponent() {
-            component_class_t classID = CLASS_ID(ComponentClass);
+        template <DerivedFrom<Component> ComponentClass>
+        ComponentPtr<ComponentClass> getComponent() {
+            component_class_t id{ClassID<ComponentClass>};
 
-            auto component_i = components_.find(classID);
+            auto component_i{components_.find(id)};
             if (component_i == components_.end()) {
                 return nullptr;
             }
 
-            auto* x = component_i->second;
-            return dynamic_cast<ComponentClass*>(x);
+            return ComponentPtr<ComponentClass>{component_i->second};
         }
 
         ComponentMap getComponents();

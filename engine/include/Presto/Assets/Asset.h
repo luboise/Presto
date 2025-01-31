@@ -34,5 +34,5 @@ namespace Presto {
     };
 
     template <DerivedFrom<Asset> T>
-    using AssetPtr = std::shared_ptr<T>;
+    using AssetPtr = Ptr<T>;
 }  // namespace Presto

@@ -8,6 +8,7 @@ namespace Presto {
 
        public:
        private:
+        Renderable() = default;
     };
 
 }  // namespace Presto

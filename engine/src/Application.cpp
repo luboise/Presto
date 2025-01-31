@@ -30,7 +30,7 @@ namespace Presto {
 
         EntityManager::init();
 
-        CameraComponent* default_camera{
+        auto default_camera{
             EntityManager::get().newComponent<CameraComponent>()};
 
         default_camera->setFOV(DEFAULT_FOV);

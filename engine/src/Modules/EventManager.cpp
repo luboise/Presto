@@ -7,8 +7,7 @@
 
 namespace Presto {
     void EventManager::registerCallbacks(Entity& entity) {
-        ConductorComponent* conductor{
-            entity.getComponent<ConductorComponent>()};
+        ComponentPtr conductor{entity.getComponent<ConductorComponent>()};
 
         if (conductor == nullptr) {
             PR_WARN("Attempted to register entity with no conductor.");

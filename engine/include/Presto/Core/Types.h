@@ -34,4 +34,6 @@ namespace Presto {
         std::uint16_t height;
     };
 
+    template <typename T>
+    using Ptr = std::shared_ptr<T>;
 }  // namespace Presto

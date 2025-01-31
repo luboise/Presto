@@ -63,8 +63,8 @@ namespace Presto {
         */
 
         struct DrawStruct {
-            ModelComponent* model;
-            TransformComponent* transform;
+            ComponentPtr<ModelComponent> model;
+            ComponentPtr<TransformComponent> transform;
         };
 
         // Update the global uniforms to the current camera
@@ -75,8 +75,9 @@ namespace Presto {
         auto mesh_draws{
             em.findAll() |
             std::views::transform([](entity_ptr entity) -> DrawStruct {
-                return {entity->getComponent<ModelComponent>(),
-                        entity->getComponent<TransformComponent>()};
+                return {
+                    .model = entity->getComponent<ModelComponent>(),
+                    .transform = entity->getComponent<TransformComponent>()};
             }) |
             std::views::filter([](const DrawStruct& drawStruct) {
                 return drawStruct.model != nullptr &&

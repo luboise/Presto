@@ -96,7 +96,7 @@ namespace Presto {
                             return Scene::INVALID;
                         }
 
-                        auto* new_mesh_component{
+                        ComponentPtr new_mesh_component{
                             EntityManager::get().newComponent<ModelComponent>(
                                 mr)};
 
