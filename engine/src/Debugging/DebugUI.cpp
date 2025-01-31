@@ -2,6 +2,7 @@
 #include "Presto/Components/Renderable/ModelComponent.h"
 #include "Presto/Components/TransformComponent.h"
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
 #include "Presto/Runtime/Window.h"
 
@@ -357,24 +358,24 @@ namespace Presto {
             auto bits{DebugUI::componentBits_};
 
             auto components{EntityManager::get().findComponentsWhere(
-                [bits](const ComponentPtr& component) {
+                [bits](const GenericComponentPtr& component) {
                     if (bits == -1U) {
                         return true;
                     }
 
                     if (((bits & TRANSFORM_BIT) != 0U) &&
-                        component->isOfType<TransformComponent*>()) {
+                        component->isOfType<TransformComponent>()) {
                         return true;
                     }
                     if (((bits & MODEL_BIT) != 0U) &&
-                        component->isOfType<ModelComponent*>()) {
+                        component->isOfType<ModelComponent>()) {
                         return true;
                     }
 
                     return false;
                 })};
 
-            for (const ComponentPtr& component : components) {
+            for (const GenericComponentPtr& component : components) {
                 auto id{component->getId()};
                 {
                     std::string label{std::format("({}) Component", id)};

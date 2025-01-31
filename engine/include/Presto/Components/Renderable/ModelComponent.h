@@ -2,15 +2,15 @@
 
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
-#include "Presto/Components/Renderable.h"
 #include "Presto/Core/Constants.h"
+#include "Presto/Objects/Component.h"
 
 namespace Presto {
     struct RenderGroup;
 
     using mesh_id_t = PR_NUMERIC_ID;
 
-    class PRESTO_API ModelComponent : public Renderable {
+    class PRESTO_API ModelComponent : public Component {
         // friend class RenderingManager;
         friend class EntityManager;
 

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Presto/Components/Renderable.h"
 #include "Presto/Core/Constants.h"
 
 #include "Presto/Assets/ImageAsset.h"
+#include "Presto/Objects/Component.h"
 
 namespace Presto {
     struct RenderGroup;
 
     using mesh_id_t = PR_NUMERIC_ID;
 
-    class PRESTO_API SpriteComponent : public Renderable {
+    class PRESTO_API SpriteComponent : public Component {
         // friend class RenderingManager;
         friend class EntityManager;
 

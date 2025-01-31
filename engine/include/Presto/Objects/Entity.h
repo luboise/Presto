@@ -12,7 +12,6 @@
 namespace Presto {
     // Forward declaration
     class EntityManager;
-    class ConductorComponent;
 
     using entity_id_t = PR_NUMERIC_ID;
     using entity_name_t = PR_STRING_ID;
@@ -26,8 +25,9 @@ namespace Presto {
 
     class PRESTO_API Entity {
         friend class EntityManager;
+        friend class EventManager;
 
-        using ComponentMap = std::map<component_class_t, Component*>;
+        using ComponentMap = std::map<class_id_t, ComponentPtr<Component>>;
 
        public:
         static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};
@@ -36,24 +36,25 @@ namespace Presto {
 
         // TODO: Move component ID into the component class if possible
         // (Commponent itself cannot be templated!)
-        template <typename ComponentClass>
+        template <ComponentType ComponentClass>
         void setComponent(ComponentPtr<ComponentClass> component_ptr) {
-            component_class_t id{ClassID<ComponentClass>};
+            class_id_t id{ClassID<ComponentClass>};
             components_.emplace(id, component_ptr);
 
             checkNewComponent(component_ptr);
         }
 
-        template <DerivedFrom<Component> ComponentClass>
+        template <ComponentType ComponentClass>
         ComponentPtr<ComponentClass> getComponent() {
-            component_class_t id{ClassID<ComponentClass>};
+            auto id{ClassID<ComponentClass>};
 
-            auto component_i{components_.find(id)};
-            if (component_i == components_.end()) {
+            auto component_it{components_.find(id)};
+            if (component_it == components_.end()) {
                 return nullptr;
             }
 
-            return ComponentPtr<ComponentClass>{component_i->second};
+            return {std::dynamic_pointer_cast<ComponentClass>(
+                component_it->second)};
         }
 
         ComponentMap getComponents();
@@ -68,7 +69,7 @@ namespace Presto {
         virtual ~Entity();
 
         // TODO: Make this not public (hotfix to get it working)
-        void checkNewComponent(Component* component);
+        void checkNewComponent(GenericComponentPtr componentPtr);
 
        private:
         explicit Entity(entity_id_t id, entity_name_t = "Entity");

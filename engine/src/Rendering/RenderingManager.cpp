@@ -1,5 +1,4 @@
 #include "Presto/Modules/RenderingManager.h"
-#include "Presto/Core/Types.h"
 #include "Presto/Modules/EntityManager.h"
 
 #include "Presto/Components/Renderable/ModelComponent.h"
@@ -25,7 +24,7 @@ namespace Presto {
         renderer_ = newrenderer_;
 
         // Add default layer
-        this->addLayer();
+        // this->addLayer();
     };
 
     void RenderingManager::loadMeshOnGpu(MeshAsset& mesh) {
@@ -122,41 +121,43 @@ namespace Presto {
 
     void RenderingManager::shutdown() {}
 
-    layer_id_t RenderingManager::addLayer(size_t pos) {
-        if (pos == (size_t)-1) {
-            pos = _renderLayers.size();
-        } else {
-            PR_ASSERT(pos < _renderLayers.size(),
-                      "Invalid position given for new layer \"{}\".", pos);
-        }
-
-        _renderLayers.insert(_renderLayers.begin() + pos, RenderLayer());
-        return pos;
+    /*
+layer_id_t RenderingManager::addLayer(size_t pos) {
+    if (pos == (size_t)-1) {
+        pos = _renderLayers.size();
+    } else {
+        PR_ASSERT(pos < _renderLayers.size(),
+                  "Invalid position given for new layer \"{}\".", pos);
     }
 
-    void RenderingManager::removeLayer(layer_id_t id) {
-        PR_CORE_ASSERT(hasLayer(id),
-                       "Attempted to remove layer with invalid index {}."
-                       "\tMax allowed index: {}",
-                       id, _renderLayers.size() - 1);
-        _renderLayers.erase(_renderLayers.begin() + id);
-    }
-    bool RenderingManager::hasLayer(layer_id_t index) {
-        return (index < _renderLayers.size());
-    }
+    _renderLayers.insert(_renderLayers.begin() + pos, RenderLayer());
+    return pos;
+}
 
-    RenderLayer& RenderingManager::getLayer(layer_id_t id) {
-        PR_CORE_ASSERT(_renderLayers.size() > 0,
-                       "Attempted to get layer {} but there are no layers.",
-                       id);
+void RenderingManager::removeLayer(layer_id_t id) {
+    PR_CORE_ASSERT(hasLayer(id),
+                   "Attempted to remove layer with invalid index {}."
+                   "\tMax allowed index: {}",
+                   id, _renderLayers.size() - 1);
+    _renderLayers.erase(_renderLayers.begin() + id);
+}
+bool RenderingManager::hasLayer(layer_id_t index) {
+    return (index < _renderLayers.size());
+}
 
-        PR_CORE_ASSERT(
-            hasLayer(id),
-            "Attempted to get layer with invalid index {}. Expected [0,{}]", id,
-            _renderLayers.size() - 1);
+RenderLayer& RenderingManager::getLayer(layer_id_t id) {
+    PR_CORE_ASSERT(_renderLayers.size() > 0,
+                   "Attempted to get layer {} but there are no layers.",
+                   id);
 
-        return _renderLayers[id];
-    }
+    PR_CORE_ASSERT(
+        hasLayer(id),
+        "Attempted to get layer with invalid index {}. Expected [0,{}]", id,
+        _renderLayers.size() - 1);
+
+    return _renderLayers[id];
+}
+    */
 
     void RenderingManager::clear() { renderer_->nextFrame(); }
 

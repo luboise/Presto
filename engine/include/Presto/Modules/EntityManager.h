@@ -1,15 +1,13 @@
 #pragma once
 
-#include <queue>
-
+#include <memory>
 #include "Module.h"
 
+#include "Presto/Core/ViewHandling.h"
 #include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
 
 #include "Presto/Objects/Figure.h"
-
-#include "Presto/Core/ViewHandling.h"
 
 namespace Presto {
     class PRESTO_API EntityManager : public Module<EntityManager> {
@@ -17,15 +15,10 @@ namespace Presto {
         friend Figure::~Figure();
 
         using EntityMap = std::map<entity_id_t, entity_ptr>;
-        using ComponentMap = std::map<component_id_t, ComponentPtr>;
-
-        using ComponentFilter = std::function<bool(ComponentPtr)>;
-
-        using a =
-            std::ranges::filter_view<std::ranges::values_view<ComponentMap>,
-                                     ComponentFilter>;
 
        public:
+        using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
+
         [[nodiscard]] entity_ptr newEntity(
             const entity_name_t &name = "Entity");
         std::vector<Entity *> newEntities(PR_SIZE count);
@@ -36,10 +29,16 @@ namespace Presto {
 
         std::vector<entity_ptr> findWhere(auto filter);
 
-        MapFilterView<ComponentMap> findComponentsWhere(
-            const MapFilter<ComponentMap> &filter = [](auto &) {
-                return true;
-            });
+        ComponentSearchResults findComponentsWhere(
+            const ComponentFilter & = [](auto &) { return true; });
+
+        template <ComponentType T>
+        std::vector<ComponentPtr<T>> &findComponentsByType() {
+            return *getComponentList<T>();
+        }
+
+        template <ComponentType T>
+        std::vector<T> *getComponents() {}
 
         void addTagToEntity(Entity &entity, entity_tag_name_t tag);
         void update() override;
@@ -55,7 +54,7 @@ namespace Presto {
         EntityManager &operator=(const EntityManager &) = delete;
         EntityManager &operator=(EntityManager &&) = delete;
 
-        // ~EntityManager() = default;
+        ~EntityManager();
 
         /*
 template <typename T = Entity, typename... Args>
@@ -67,7 +66,7 @@ T *newEntity(Args &&...args) {
                    new_id);
 
     auto new_entity{entity_unique_ptr(
-        new T(new_id, args...),
+        new T(new_id, args..uu.),
 
         [this](Entity *entity) { this->destroyEntity(entity); })};
 
@@ -82,21 +81,24 @@ T *newEntity(Args &&...args) {
         // TODO: Consider making this private. It's not a huge deal either
         // way, and people can just choose which one they use.
         template <typename T, typename... Args>
-        T *newComponent(Args &&...args) {
+        // TODO: Fix this concept
+        // requires std::constructible_from<T, Args...>
+        ComponentPtr<T> newComponent(Args &&...args) {
+            std::vector<ComponentPtr<T>> *list{getComponentList<T>()};
+
             // std::unique_ptr<Component> new_component{new T};
-            auto new_component{
-                std::shared_ptr<Component>(new T(std::forward<Args>(args)...))};
+            ComponentPtr<T> new_component{new T(std::forward<Args>(args)...)};
 
             component_id_t new_id{reserveId()};
             new_component->id_ = new_id;
 
-            components_.emplace(new_id, std::move(new_component));
+            auto &emplaced{list->emplace_back(new_component)};
 
-            return static_cast<T *>(components_[new_id].get());
+            return std::dynamic_pointer_cast<T>(emplaced);
         };
 
        private:
-        EntityManager() = default;
+        EntityManager();
 
         static void init();
         static void shutdown();
@@ -104,20 +106,31 @@ T *newEntity(Args &&...args) {
         void instantiateEntities();
         void collectGarbage();
 
+        template <ComponentType T>
+        std::vector<ComponentPtr<T>> *getComponentList() {
+            auto it{componentDatabase_.find(ClassID<T>)};
+
+            if (it == componentDatabase_.end()) {
+                auto emplaced{
+                    componentDatabase_.emplace(ClassID<T>, ComponentList{})};
+                it = componentDatabase_.find(ClassID<T>);
+            }
+
+            return reinterpret_cast<std::vector<ComponentPtr<T>> *>(
+                &(it->second));
+        }
+
         void destroyEntity(entity_ptr entity);
         entity_id_t reserveId();
 
         using entity_unique_ptr =
             std::unique_ptr<Entity, std::function<void(Entity *)>>;
 
-        std::vector<entity_ptr> entities_;
-        ComponentMap components_;
-        std::map<entity_id_t, entity_unique_ptr> entityMap_;
+        ComponentDatabase componentDatabase_;
 
-        std::vector<entity_tag_name_t> tagMap_;
+        struct Impl;
+        Impl *impl_;
 
-        entity_id_t _currentId{1};
-
-        std::queue<entity_unique_ptr> entityQueue_;
+        // ComponentMap components_;
     };
 }  // namespace Presto

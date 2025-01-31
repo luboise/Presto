@@ -2,8 +2,12 @@
 
 #include <map>
 #include <ranges>
+#include "Presto/Objects/Component.h"
 
 namespace Presto {
+    using namespace std::ranges;
+    using namespace std::views;
+
     template <typename V>
     using Filter = std::function<bool(V &)>;
 
@@ -39,4 +43,13 @@ namespace Presto {
     template <MapLike M>
     using MapFilterView =
         FilterView<typename M::key_type, typename M::mapped_type>;
+
+    using ComponentFilter = std::function<bool(const GenericComponentPtr &)>;
+
+    using ComponentList = std::vector<GenericComponentPtr>;
+    using ComponentDatabase = std::map<class_id_t, ComponentList>;
+
+    using ComponentSearchResults = filter_view<
+        all_t<join_view<elements_view<ref_view<ComponentDatabase>, 1>>>,
+        ComponentFilter>;
 }  // namespace Presto

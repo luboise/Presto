@@ -1,3 +1,4 @@
+#include "Debugging/ComponentBits.h"
 #include "Presto/Objects/Scene.h"
 #include "Presto/Runtime/Window.h"
 

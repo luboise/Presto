@@ -3,9 +3,6 @@
 #include "Module.h"
 
 #include "Presto/Components/CameraComponent.h"
-#include "Presto/Components/Renderable.h"
-
-#include "Presto/Rendering/RenderLayer.h"
 
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
@@ -16,8 +13,6 @@
 
 namespace Presto {
     using layer_id_t = PR_NUMERIC_ID;
-
-    class RenderLayer;
 
     class PRESTO_API RenderingManager : public Module<RenderingManager> {
         friend class Application;
@@ -80,12 +75,12 @@ void RemoveRenderable(Renderable* ptr_renderable) {
 
         Renderer* renderer_;
 
-        std::vector<RenderLayer> _renderLayers;
+        // std::vector<RenderLayer> _renderLayers;
 
         // Allocator<Mesh> _meshes;
-        Allocator<Renderable> _renderables;
+        // Allocator<Renderable> _renderables;
 
-        bool hasLayer(layer_id_t index);
-        RenderLayer& getLayer(layer_id_t id);
+        // bool hasLayer(layer_id_t index);
+        // RenderLayer& getLayer(layer_id_t id);
     };
 }  // namespace Presto

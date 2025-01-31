@@ -11,6 +11,8 @@ namespace Presto {
         using camera_fov_t = double;
         using camera_distance_t = double;
 
+        friend class EntityManager;
+
        public:
         [[nodiscard]] Presto::mat4 getViewMatrix();
         [[nodiscard]] Presto::mat4 getProjectionMatrix();

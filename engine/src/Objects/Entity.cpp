@@ -1,4 +1,5 @@
 #include "Presto/Objects/Entity.h"
+#include <memory>
 
 #include "Presto/Components/ConductorComponent.h"
 
@@ -31,14 +32,17 @@ namespace Presto {
 
     Entity::ComponentMap Entity::getComponents() { return components_; }
 
-    void Entity::checkNewComponent(Component* componentPtr) {
-        auto* conductor_ptr{dynamic_cast<ConductorComponent*>(componentPtr)};
+    void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
+        // auto* conductor_ptr{dynamic_cast<ConductorComponent*>(componentPtr)};
+        auto conductor_ptr{
+            std::dynamic_pointer_cast<ConductorComponent>(componentPtr)};
 
         if (conductor_ptr != nullptr) {
             EventManager::get().registerCallbacks(*this);
         }
 
-        auto* rigidbody_ptr{dynamic_cast<RigidBodyComponent*>(componentPtr)};
+        auto rigidbody_ptr{
+            std::dynamic_pointer_cast<RigidBodyComponent>(componentPtr)};
 
         if (rigidbody_ptr != nullptr) {
             PhysicsManager::get().addPairing(

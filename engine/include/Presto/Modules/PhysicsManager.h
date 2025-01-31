@@ -10,7 +10,7 @@
 
 namespace Presto {
     class PRESTO_API PhysicsManager : public Module<PhysicsManager> {
-        friend void Entity::checkNewComponent(Component*);
+        friend void Entity::checkNewComponent(GenericComponentPtr);
 
        public:
         static void init();
@@ -29,7 +29,7 @@ namespace Presto {
 
         struct PhysicsPairing {
             Entity* entity;
-            RigidBodyComponent* body;
+            ComponentPtr<RigidBodyComponent> body;
         };
 
        private:

@@ -4,7 +4,6 @@
 
 #include "Presto/Runtime/Time.h"
 
-#include "Presto/Components/Physics/RigidBodyComponent.h"
 #include "Presto/Physics/Force.h"
 
 namespace Presto {

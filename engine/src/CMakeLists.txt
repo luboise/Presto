@@ -18,7 +18,7 @@ endif()
 target_sources(
   ${PRESTO_ENGINE_NAME}
   PRIVATE Application.cpp
-          Rendering/RenderLayer.cpp
+          # Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
           Runtime/Time.cpp
           Logging.cpp

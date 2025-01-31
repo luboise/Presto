@@ -14,7 +14,7 @@ namespace Presto {
         template <typename... Args>
         using HandlerFunction = std::function<void(Args...)>;
 
-        friend void Entity::checkNewComponent(Component*);
+        friend void Entity::checkNewComponent(GenericComponentPtr);
 
        public:
         static void init() {
