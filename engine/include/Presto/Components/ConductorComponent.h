@@ -2,10 +2,14 @@
 
 #include "Presto/Core.h"
 #include "Presto/Events.h"
-#include "Presto/Objects.h"
+
+#include "Presto/Objects/Component.h"
+
 #include "Presto/Platform.h"
 
 namespace Presto {
+    class Entity;
+
     class PRESTO_API ConductorComponent : public Component {
         friend class EntityManager;
         friend class EventManager;
@@ -18,6 +22,8 @@ namespace Presto {
         bool handlesInput_{true};
 
         void onEnterScene() override { this->start(); }
+
+        bool registered_{false};
 
        protected:
         Entity* entity{nullptr};

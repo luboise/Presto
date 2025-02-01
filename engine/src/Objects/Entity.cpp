@@ -30,7 +30,7 @@ namespace Presto {
 
     Entity::~Entity() = default;
 
-    Entity::ComponentMap Entity::getComponents() { return components_; }
+    Entity::ComponentMap& Entity::getComponents() { return components_; }
 
     void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
         // auto* conductor_ptr{dynamic_cast<ConductorComponent*>(componentPtr)};
@@ -49,4 +49,17 @@ namespace Presto {
                 {.entity = this, .body = rigidbody_ptr});
         }
     };
+
+    std::vector<ComponentPtr<ConductorComponent>> Entity::getConductors() {
+        auto data{getComponents() | std::views::values |
+                  std::views::transform(
+                      [](auto& val) -> ComponentPtr<ConductorComponent> {
+                          return std::dynamic_pointer_cast<ConductorComponent>(
+                              val);
+                      }) |
+                  std::views::filter(
+                      [](const auto& val) -> bool { return val != nullptr; })};
+
+        return {data.begin(), data.end()};
+    }
 }  // namespace Presto

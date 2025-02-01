@@ -1,7 +1,6 @@
 #include "Presto/Modules/EntityManager.h"
 #include <queue>
 
-#include "Presto/Components/ConductorComponent.h"
 #include "Presto/Components/TransformComponent.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Component.h"
@@ -37,21 +36,12 @@ namespace Presto {
     }
 
     void EntityManager::update() {
-        for (auto&& [key, value] : impl_->entity_map) {
-            if (auto script{value->getComponent<ConductorComponent>()};
-                script != nullptr) {
+        // TODO: Move this somewhere cached instead
+        for (auto& entity : impl_->entity_map | std::views::values) {
+            for (auto& script : entity->getConductors()) {
                 script->update();
             }
         }
-
-        /*
-for (auto&& [key, value] : entityMap_) {
-    if (auto* script = value->getComponent<ConductorComponent>();
-        script != nullptr) {
-        script->update();
-    }
-}
-        */
     }
 
     void EntityManager::shutdown() {

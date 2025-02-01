@@ -2,16 +2,21 @@
 #include <memory>
 
 #include "Presto/Components/ConductorComponent.h"
-#include "Presto/Core/Logging.h"
 
 #include "Presto/Objects.h"
 
 namespace Presto {
+    using ConductorPtr = ComponentPtr<ConductorComponent>;
+
+    using MakeConductor = std::function<ConductorPtr(GenericComponentPtr& val)>;
+
     void EventManager::registerCallbacks(Entity& entity) {
-        for (auto& component : entity.components_ | std::views::values) {
-            auto conductor{
-                std::dynamic_pointer_cast<ConductorComponent>(component)};
-            if (conductor == nullptr) {
+        for (const auto& conductor : entity.getConductors()) {
+            if (conductor->registered_) {
+                PR_ASSERT(&entity == conductor->entity,
+                          "A Conductor component has been assigned to multiple "
+                          "different entities.");
+
                 continue;
             }
 
@@ -20,7 +25,7 @@ namespace Presto {
                     conductor->onInput(event);
                 });
             }
-
+            conductor->registered_ = true;
             conductor->entity = &entity;
         }
     }

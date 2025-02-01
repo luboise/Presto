@@ -2,12 +2,12 @@
 
 #include "Component.h"
 
+#include "Presto/Components/ConductorComponent.h"
+
 #include "Presto/Core/Types.h"
 // #include "Presto/Core/Constants.h"
 
-#include <array>
 #include <map>
-#include <memory>
 
 namespace Presto {
     // Forward declaration
@@ -27,9 +27,9 @@ namespace Presto {
         friend class EntityManager;
         friend class EventManager;
 
+       public:
         using ComponentMap = std::map<class_id_t, ComponentPtr<Component>>;
 
-       public:
         static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};
 
         [[nodiscard]] entity_id_t getId() const { return this->id_; };
@@ -44,6 +44,9 @@ namespace Presto {
             checkNewComponent(component_ptr);
         }
 
+        [[nodiscard]] std::vector<ComponentPtr<ConductorComponent>>
+        getConductors();
+
         template <ComponentType ComponentClass>
         ComponentPtr<ComponentClass> getComponent() {
             auto id{ClassID<ComponentClass>};
@@ -57,7 +60,7 @@ namespace Presto {
                 component_it->second)};
         }
 
-        ComponentMap getComponents();
+        ComponentMap& getComponents();
 
         void addTag(const entity_tag_name_t& tag);
         void addTag(entity_tag_id_t tag);

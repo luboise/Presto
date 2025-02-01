@@ -7,8 +7,8 @@
 #include "Presto/Runtime/Events/KeyEvents.h"
 
 namespace Presto {
-    class Entity;
-    class Component;
+    // class Entity;
+    // class Component;
 
     class PRESTO_API EventManager : public Module<EventManager> {
         template <typename... Args>
