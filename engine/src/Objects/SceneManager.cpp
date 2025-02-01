@@ -15,7 +15,7 @@ namespace Presto {
 
     SceneManager::SceneManager() = default;
 
-    SceneManager::~SceneManager() { instance_->sceneMap_.clear(); };
+    SceneManager::~SceneManager() { this->sceneMap_.clear(); };
 
     Scene* SceneManager::LoadScene(const json& j) {
         if (!j.contains(NAME_KEY) || !j.contains(OBJECTS_KEY)) {

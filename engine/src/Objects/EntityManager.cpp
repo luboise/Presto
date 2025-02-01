@@ -27,9 +27,9 @@ namespace Presto {
     EntityManager::EntityManager() : impl_(new Impl()) {};
 
     EntityManager::~EntityManager() {
-        instance_->componentDatabase_.clear();
-        instance_->impl_->entity_map.clear();
-        instance_->impl_->tag_map.clear();
+        this->componentDatabase_.clear();
+        this->impl_->entity_map.clear();
+        this->impl_->tag_map.clear();
         delete impl_;
     };
 
