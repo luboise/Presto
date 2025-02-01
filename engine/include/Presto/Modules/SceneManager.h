@@ -8,11 +8,11 @@
 using nlohmann::json;
 
 namespace Presto {
-    class SceneManager : public Module<SceneManager> {
+    class SceneManager final : public Module<SceneManager> {
+        MODULE_FUNCTIONS(SceneManager);
+
        public:
-        static void init();
         void update() override {};
-        static void shutdown();
 
         Scene* newScene(std::string name);
 
@@ -24,15 +24,9 @@ namespace Presto {
 
         Scene* getScene(const scene_name_t&);
 
-        SceneManager(const SceneManager&) = delete;
-        SceneManager(SceneManager&&) = delete;
-        SceneManager& operator=(const SceneManager&) = delete;
-        SceneManager& operator=(SceneManager&&) = delete;
-
-        virtual ~SceneManager() = default;
-
        private:
         SceneManager();
+        ~SceneManager();
 
         // Returns the error as a string if an error occurs when validating the
         // scene

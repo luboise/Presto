@@ -7,27 +7,17 @@
 #include "Presto/Runtime/Events/KeyEvents.h"
 
 namespace Presto {
-    // class Entity;
-    // class Component;
 
-    class PRESTO_API EventManager : public Module<EventManager> {
+    class PRESTO_API EventManager final : public Module<EventManager> {
+        MODULE_FUNCTIONS(EventManager);
+
         template <typename... Args>
         using HandlerFunction = std::function<void(Args...)>;
 
         friend void Entity::checkNewComponent(GenericComponentPtr);
 
        public:
-        static void init() {
-            instance_ = std::unique_ptr<EventManager>(new EventManager());
-        };
         void update() override {}
-        static void shutdown() {};
-
-        // Deleted functions
-        EventManager(const EventManager&) = delete;
-        EventManager(EventManager&&) = delete;
-        EventManager& operator=(const EventManager&) = delete;
-        EventManager& operator=(EventManager&&) = delete;
 
         template <typename T>
         void addHandler(const HandlerFunction<T>& handler) {
@@ -41,8 +31,10 @@ namespace Presto {
 
         void onKeyEvent(KeyEvent& event);
 
+       protected:
        private:
         EventManager() = default;
+        ~EventManager() = default;
 
         void registerCallbacks(Entity&);
 

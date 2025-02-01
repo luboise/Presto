@@ -40,11 +40,11 @@ namespace Presto {
         using ResourcePtr = AssetPtr<ResourceT>;
     };
 
-    class PRESTO_API AssetManager : public Module<AssetManager> {
+    class PRESTO_API AssetManager final : public Module<AssetManager> {
+        MODULE_FUNCTIONS(AssetManager);
+
        public:
-        static void init();
         void update() override {}
-        static void shutdown();
 
         std::vector<ModelPtr> loadModelsFromDisk(
             const AssetPath& filepath, const asset_name_t& customName) {
@@ -70,14 +70,9 @@ namespace Presto {
             return std::dynamic_pointer_cast<ReturnType>(assets_[Type][key]);
         };
 
-        // Deleted functions
-        AssetManager(const AssetManager&) = delete;
-        AssetManager(AssetManager&&) = delete;
-        AssetManager& operator=(const AssetManager&) = delete;
-        AssetManager& operator=(AssetManager&&) = delete;
-
        private:
         AssetManager() = default;
+        ~AssetManager() = default;
 
         std::map<AssetType, std::map<asset_name_t, std::shared_ptr<Asset>>>
             assets_;

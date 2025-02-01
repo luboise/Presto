@@ -7,12 +7,7 @@
 #include "Presto/Physics/Force.h"
 
 namespace Presto {
-
-    void PhysicsManager::init() {
-        instance_ = std::unique_ptr<PhysicsManager>(new PhysicsManager());
-    }
-
-    void PhysicsManager::shutdown() { instance_->pairings_.clear(); }
+    PhysicsManager::~PhysicsManager() { pairings_.clear(); }
 
     void PhysicsManager::update() {
         auto delta{Time::deltaSeconds()};

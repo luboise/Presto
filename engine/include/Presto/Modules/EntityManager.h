@@ -10,8 +10,14 @@
 #include "Presto/Objects/Figure.h"
 
 namespace Presto {
-    class PRESTO_API EntityManager : public Module<EntityManager> {
+    class PRESTO_API EntityManager final : public Module<EntityManager> {
+        MODULE_FUNCTIONS(EntityManager);
+
         friend class Application;
+        friend class Module;
+
+        // friend class Module<EntityManager>;
+
         friend Figure::~Figure();
 
         using EntityMap = std::map<entity_id_t, entity_ptr>;
@@ -48,13 +54,6 @@ namespace Presto {
             const entity_tag_name_t &tagName) const;
 
         [[nodiscard]] bool exists(entity_id_t id) const;
-
-        EntityManager(const EntityManager &) = delete;
-        EntityManager(EntityManager &&) = delete;
-        EntityManager &operator=(const EntityManager &) = delete;
-        EntityManager &operator=(EntityManager &&) = delete;
-
-        ~EntityManager();
 
         /*
 template <typename T = Entity, typename... Args>
@@ -97,12 +96,11 @@ T *newEntity(Args &&...args) {
             return std::dynamic_pointer_cast<T>(emplaced);
         };
 
-       private:
+       protected:
         EntityManager();
+        virtual ~EntityManager();
 
-        static void init();
-        static void shutdown();
-
+       private:
         void instantiateEntities();
         void collectGarbage();
 

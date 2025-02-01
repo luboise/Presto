@@ -25,13 +25,6 @@ namespace Presto {
         size_t count{static_cast<size_t>(-1)};
     };
 
-    void AssetManager::init() {
-        PR_CORE_INFO("Initialising AssetManager.");
-        instance_ = std::unique_ptr<AssetManager>(new AssetManager());
-    }
-
-    void AssetManager::shutdown() { instance_->assets_.clear(); }
-
     AccessorData getDataFromAccessor(const tinygltf::Model& model,
                                      size_t accessorIndex) {
         const tinygltf::Accessor& accessor = model.accessors[accessorIndex];

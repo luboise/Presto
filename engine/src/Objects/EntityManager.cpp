@@ -15,8 +15,6 @@ namespace Presto {
     // std::map<entity_id_t, entity_ptr> EntityManager::entityMap_;
 
     struct EntityManager::Impl {
-        std::vector<entity_ptr> entities;
-
         std::map<entity_id_t, entity_unique_ptr> entity_map;
 
         std::vector<entity_tag_name_t> tag_map;
@@ -28,12 +26,12 @@ namespace Presto {
 
     EntityManager::EntityManager() : impl_(new Impl()) {};
 
-    EntityManager::~EntityManager() { delete impl_; };
-
-    void EntityManager::init() {
-        PR_CORE_INFO("Initialising EntityManager.");
-        instance_ = std::unique_ptr<EntityManager>(new EntityManager());
-    }
+    EntityManager::~EntityManager() {
+        instance_->componentDatabase_.clear();
+        instance_->impl_->entity_map.clear();
+        instance_->impl_->tag_map.clear();
+        delete impl_;
+    };
 
     void EntityManager::update() {
         // TODO: Move this somewhere cached instead
@@ -42,13 +40,6 @@ namespace Presto {
                 script->update();
             }
         }
-    }
-
-    void EntityManager::shutdown() {
-        instance_->componentDatabase_.clear();
-        instance_->impl_->entities.clear();
-        instance_->impl_->entity_map.clear();
-        instance_->impl_->tag_map.clear();
     }
 
     // Methods
@@ -78,18 +69,8 @@ namespace Presto {
     }
 
     void EntityManager::destroyEntity(entity_ptr entity) {
-        // Remove from map
-        impl_->entity_map.erase(entity->id_);
-
-        // Remove from vector
-        auto it = impl_->entities.begin();
-        while (it != impl_->entities.end()) {
-            if (*it == entity) {
-                impl_->entities.erase(it);
-                break;
-            }
-            it++;
-        }
+        // // Remove from map
+        // impl_->entity_map.erase(entity->id_);
 
         // Delete the entity
         delete entity;

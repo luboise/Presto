@@ -3,29 +3,20 @@
 #include "Module.h"
 
 #include "Presto/Components/Physics/RigidBodyComponent.h"
-
+#include "Presto/Objects/Entity.h"
 #include "Presto/Physics/Force.h"
 
-#include "Presto/Objects/Entity.h"
-
 namespace Presto {
-    class PRESTO_API PhysicsManager : public Module<PhysicsManager> {
+    class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
+        MODULE_FUNCTIONS(PhysicsManager);
+
         friend void Entity::checkNewComponent(GenericComponentPtr);
 
        public:
-        static void init();
-
         void update() override;
         void clear();
 
         void addPersistentForce(Force);
-
-        static void shutdown();
-
-        PhysicsManager(const PhysicsManager&) = delete;
-        PhysicsManager(PhysicsManager&&) = delete;
-        PhysicsManager& operator=(const PhysicsManager&) = delete;
-        PhysicsManager& operator=(PhysicsManager&&) = delete;
 
         struct PhysicsPairing {
             Entity* entity;
@@ -34,6 +25,7 @@ namespace Presto {
 
        private:
         explicit PhysicsManager() = default;
+        ~PhysicsManager();
 
         void addPairing(const PhysicsPairing&);
 

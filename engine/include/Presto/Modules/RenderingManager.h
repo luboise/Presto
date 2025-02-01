@@ -9,13 +9,12 @@
 #include "Presto/Assets/ModelAsset.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
-#include "Presto/Utils/Allocator.h"
 
 namespace Presto {
     using layer_id_t = PR_NUMERIC_ID;
 
-    class PRESTO_API RenderingManager : public Module<RenderingManager> {
-        friend class Application;
+    class PRESTO_API RenderingManager final : public Module<RenderingManager> {
+        MODULE_FUNCTIONS(RenderingManager);
 
         friend void ImageAsset::load();
         friend void MaterialAsset::load();
@@ -36,11 +35,6 @@ namespace Presto {
 
         void loadMeshOnGpu(MeshAsset&);
         void loadModelOnGpu(ModelAsset&);
-
-        RenderingManager(const RenderingManager&) = delete;
-        RenderingManager(RenderingManager&&) = delete;
-        RenderingManager& operator=(const RenderingManager&) = delete;
-        RenderingManager& operator=(RenderingManager&&) = delete;
 
         layer_id_t addLayer(size_t pos = -1);
         void removeLayer(layer_id_t id);
