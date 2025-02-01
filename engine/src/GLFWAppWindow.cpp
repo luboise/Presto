@@ -1,4 +1,5 @@
 #include "Presto/Runtime/GLFWAppWindow.h"
+#include <memory>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -14,8 +15,8 @@
 namespace Presto {
     bool GLFWAppWindow::s_GLFWInitialised = false;
 
-    Window* Window::create(const WindowProperties& props) {
-        return new GLFWAppWindow(props);
+    Window::WindowPtr Window::create(const WindowProperties& props) {
+        return std::make_unique<GLFWAppWindow>(props);
     }
 
     void GLFWAppWindow::shutdown() {
@@ -25,9 +26,7 @@ namespace Presto {
         }
     }
 
-    GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) {
-        this->GLFWAppWindow::init(props);
-    }
+    GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) { init(props); }
 
     GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::shutdown(); }
 
@@ -94,7 +93,7 @@ namespace Presto {
         glfwSetKeyCallback(
             static_cast<GLFWwindow*>(this->windowPtr_),
             [](GLFWwindow* window, int keycode, int scancode, int action,
-               int mods) {
+               int /*mods*/) {
                 WindowData& data{*static_cast<WindowData*>(
                     glfwGetWindowUserPointer(window))};
 
@@ -125,7 +124,7 @@ namespace Presto {
 
         glfwSetMouseButtonCallback(
             window_ptr,
-            [](GLFWwindow* window, int button, int action, int mods) {
+            [](GLFWwindow* window, int button, int action, int /*mods*/) {
                 WindowData& data{*static_cast<WindowData*>(
                     glfwGetWindowUserPointer(window))};
 

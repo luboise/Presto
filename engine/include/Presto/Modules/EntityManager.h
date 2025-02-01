@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "Module.h"
 
 #include "Presto/Core/ViewHandling.h"

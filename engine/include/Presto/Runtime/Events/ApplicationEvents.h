@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace Presto {
     /**
      * WindowResizeEvent
@@ -13,20 +11,18 @@ namespace Presto {
      */
     class WindowResizeEvent : public Event {
        public:
-        WindowResizeEvent(unsigned new_width, unsigned new_height) {
-            this->width = new_width;
-            this->height = new_height;
-        }
+        WindowResizeEvent(unsigned new_width, unsigned new_height)
+            : width(new_width), height(new_height) {}
 
-        [[nodiscard]] inline unsigned GetWidth() const { return width; }
-        [[nodiscard]] inline unsigned GetHeight() const { return height; }
+        [[nodiscard]] unsigned GetWidth() const { return width; }
+        [[nodiscard]] unsigned GetHeight() const { return height; }
 
         [[nodiscard]] std::string toString() const override {
             return std::format("WindowResizeEvent: {}, {}", width, height);
         }
 
         EVENT_CLASS_TYPE(WindowResize)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
 
        private:
         unsigned width, height;
@@ -37,8 +33,8 @@ namespace Presto {
         FramebufferResizedEvent(unsigned new_width, unsigned new_height)
             : width(new_width), height(new_height) {}
 
-        [[nodiscard]] inline unsigned GetWidth() const { return width; }
-        [[nodiscard]] inline unsigned GetHeight() const { return height; }
+        [[nodiscard]] unsigned GetWidth() const { return width; }
+        [[nodiscard]] unsigned GetHeight() const { return height; }
 
         [[nodiscard]] std::string toString() const override {
             return std::format("FramebufferResizedEvent: {}, {}", width,
@@ -46,7 +42,7 @@ namespace Presto {
         }
 
         EVENT_CLASS_TYPE(FramebufferResized)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
 
        private:
         unsigned width, height;
@@ -54,33 +50,33 @@ namespace Presto {
 
     class WindowCloseEvent : public Event {
        public:
-        WindowCloseEvent() {}
+        WindowCloseEvent() = default;
 
         EVENT_CLASS_TYPE(WindowClose)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
     };
 
     class AppTickEvent : public Event {
        public:
-        AppTickEvent() {}
+        AppTickEvent() = default;
 
         EVENT_CLASS_TYPE(AppTick)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
     };
 
     class AppUpdateEvent : public Event {
        public:
-        AppUpdateEvent() {}
+        AppUpdateEvent() = default;
 
         EVENT_CLASS_TYPE(AppUpdate)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
     };
 
     class AppRenderEvent : public Event {
        public:
-        AppRenderEvent() {}
+        AppRenderEvent() = default;
 
         EVENT_CLASS_TYPE(AppRender)
-        EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
     };
 }  // namespace Presto

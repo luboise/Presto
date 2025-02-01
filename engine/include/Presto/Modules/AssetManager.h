@@ -2,8 +2,12 @@
 
 #include "Module.h"
 
-#include "Presto/Assets/ImageAsset.h"
-#include "Presto/Assets/MaterialAsset.h"
+// #include "Presto/Assets/ImageAsset.h"
+// #include "Presto/Assets/MaterialAsset.h"
+// #include "Presto/Assets/ModelAsset.h"
+
+#include "Presto/Assets/Asset.h"
+
 #include "Presto/Assets/ModelAsset.h"
 
 #include "Presto/Core/Types.h"

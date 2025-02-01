@@ -7,8 +7,8 @@ namespace Presto {
        public:
         MouseMovedEvent(float x, float y) : mouseX(x), mouseY(y) {}
 
-        [[nodiscard]] inline float GetMouseX() const { return this->mouseX; }
-        [[nodiscard]] inline float GetMouseY() const { return this->mouseY; }
+        [[nodiscard]] float GetMouseX() const { return this->mouseX; }
+        [[nodiscard]] float GetMouseY() const { return this->mouseY; }
 
         [[nodiscard]] std::string toString() const override {
             return std::format("MouseMovedEvent: ({}, {})", this->mouseY,
@@ -16,7 +16,8 @@ namespace Presto {
         }
 
         EVENT_CLASS_TYPE(MouseMoved)
-        EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
+                             EventCategory::EventCategoryMouse)
 
        private:
         float mouseX;
@@ -28,12 +29,8 @@ namespace Presto {
         MouseScrolledEvent(float xOffset, float yOffset)
             : scrollXOffset(xOffset), scrollYOffset(yOffset) {}
 
-        [[nodiscard]] inline float GetXOffset() const {
-            return this->scrollXOffset;
-        }
-        [[nodiscard]] inline float GetYOffset() const {
-            return this->scrollYOffset;
-        }
+        [[nodiscard]] float GetXOffset() const { return this->scrollXOffset; }
+        [[nodiscard]] float GetYOffset() const { return this->scrollYOffset; }
 
         [[nodiscard]] std::string toString() const override {
             return std::format("MouseScrolledEvent:  (x: {}, y: {})",
@@ -41,7 +38,8 @@ namespace Presto {
         }
 
         EVENT_CLASS_TYPE(MouseScrolled)
-        EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
+                             EventCategory::EventCategoryMouse)
 
        private:
         float scrollXOffset;
@@ -50,18 +48,20 @@ namespace Presto {
 
     class MouseButtonEvent : public Event {
        public:
-        [[nodiscard]] inline int GetMouseButton() const { return mouse_button; }
+        [[nodiscard]] int GetMouseButton() const { return mouse_button; }
 
-        EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse |
-                             EventCategoryMouseButton)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
+                             EventCategory::EventCategoryMouse |
+                             EventCategory::EventCategoryMouseButton)
        protected:
-        MouseButtonEvent(int button) { this->mouse_button = button; }
+        MouseButtonEvent(int button) : mouse_button(button) {}
         int mouse_button;
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent {
        public:
-        MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+        explicit MouseButtonPressedEvent(int button)
+            : MouseButtonEvent(button) {}
 
         [[nodiscard]] std::string toString() const override {
             return std::format("MouseButtonPressedEvent:  Button {}",
@@ -73,7 +73,8 @@ namespace Presto {
 
     class MouseButtonReleasedEvent : public MouseButtonEvent {
        public:
-        MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+        explicit MouseButtonReleasedEvent(int button)
+            : MouseButtonEvent(button) {}
 
         [[nodiscard]] std::string toString() const override {
             return std::format("MouseButtonReleasedEvent:  Button {}",

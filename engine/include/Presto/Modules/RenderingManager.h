@@ -2,15 +2,15 @@
 
 #include "Module.h"
 
-#include "Presto/Components/CameraComponent.h"
-
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 
-#include "Presto/Runtime/GLFWAppWindow.h"
-
 namespace Presto {
+    class GLFWAppWindow;
+    class Renderer;
+    class CameraComponent;
+
     using layer_id_t = PR_NUMERIC_ID;
 
     class PRESTO_API RenderingManager final : public Module<RenderingManager> {
@@ -31,7 +31,7 @@ namespace Presto {
         static void setWindow(GLFWAppWindow* window);
 
         void setCamera(CameraComponent& newCam);
-        inline CameraComponent& getCamera() { return activeCamera_; };
+        CameraComponent& getCamera() { return activeCamera_; };
 
         void loadMeshOnGpu(MeshAsset&);
         void loadModelOnGpu(ModelAsset&);

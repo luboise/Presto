@@ -3,6 +3,7 @@
 #include "OpenGLDrawManager/OpenGLDrawManager.h"
 
 #include "Presto/Core/Constants.h"
+#include "Presto/Rendering/MaterialData.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
 #include "Rendering/OpenGL/OpenGLPipeline.h"
@@ -10,12 +11,9 @@
 
 #include "OpenGLDrawManager/DefaultShaders.h"
 
-#include <glm/gtc/type_ptr.hpp>
-
-#include <memory>
-#include <stdexcept>
-
 #include "Presto/Runtime/GLFWAppWindow.h"
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Core/KeyCodes.h"
 #include "Window.h"
 
 namespace Presto {
@@ -12,20 +13,18 @@ namespace Presto {
 
         void update() override;
 
-        [[nodiscard]] inline unsigned getWidth() const override {
+        [[nodiscard]] unsigned getWidth() const override {
             return windowData_.window_size.width;
         }
-        [[nodiscard]] inline unsigned getHeight() const override {
+        [[nodiscard]] unsigned getHeight() const override {
             return windowData_.window_size.height;
         }
 
-        inline void setCallbackFunction(const EventCallbackFn& fn) override {
+        void setCallbackFunction(const EventCallbackFn& fn) override {
             windowData_.event_callback = fn;
         }
 
-        [[nodiscard]] inline void* getWindowHandle() const {
-            return this->windowPtr_;
-        }
+        [[nodiscard]] void* getWindowHandle() const { return this->windowPtr_; }
 
         /*
 explicit operator GLFWwindow*() const {
@@ -46,9 +45,12 @@ explicit operator GLFWwindow*() const {
         void setVSync(bool vsync) override;
         bool vSyncEnabled() override;
 
-       private:
-        double _glfwTime;
+        GLFWAppWindow(const GLFWAppWindow&) = default;
+        GLFWAppWindow(GLFWAppWindow&&) = delete;
+        GLFWAppWindow& operator=(const GLFWAppWindow&) = default;
+        GLFWAppWindow& operator=(GLFWAppWindow&&) = delete;
 
+       private:
         virtual void init(const WindowProperties& props);
         virtual void SetCallbacks();
         void shutdown() override;

@@ -1,6 +1,7 @@
 #include "Presto/Modules/RenderingManager.h"
 #include "Presto/Modules/EntityManager.h"
 
+#include "Presto/Components/CameraComponent.h"
 #include "Presto/Components/Renderable/ModelComponent.h"
 #include "Presto/Components/TransformComponent.h"
 #include "Presto/Rendering/Renderer.h"
@@ -9,8 +10,6 @@
 
 #include "Presto/Rendering/RendererFactory.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
-
-#include <algorithm>
 
 namespace Presto {
     RENDER_LIBRARY RenderingManager::_library = UNSET;

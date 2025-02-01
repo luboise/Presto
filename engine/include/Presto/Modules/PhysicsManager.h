@@ -4,7 +4,6 @@
 
 #include "Presto/Components/Physics/RigidBodyComponent.h"
 #include "Presto/Objects/Entity.h"
-#include "Presto/Physics/Force.h"
 
 namespace Presto {
     class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {

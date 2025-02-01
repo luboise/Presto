@@ -17,16 +17,17 @@ namespace Presto {
 
     Application::Application() {
         // TODO: Fix this to be injected
-        auto* app_window = (dynamic_cast<GLFWAppWindow*>(Window::create()));
-
-        this->_app_window = std::unique_ptr<GLFWAppWindow>(app_window);
+        this->appWindow_ = Window::create();
         // this->_app_window = new GLFWAppWindow();
-        _app_window->setCallbackFunction(
+        appWindow_->setCallbackFunction(
             [this](auto& e) -> void { this->onEvent(e); });
 
         RenderingManager::setRenderLibrary(OPENGL);
-        RenderingManager::setWindow(app_window);
-        RenderingManager::setWindow(app_window);
+
+        GLFWAppWindow* window{dynamic_cast<GLFWAppWindow*>(appWindow_.get())};
+
+        RenderingManager::setWindow(window);
+        RenderingManager::setWindow(window);
 
         EntityManager::init();
 
@@ -44,7 +45,7 @@ namespace Presto {
         Time::init();
 
         PR_DEBUG_ONLY_CODE(
-            DebugUI::initialise(app_window, [this] { this->exit(); }))
+            DebugUI::initialise(window, [this] { this->exit(); }))
     }
 
     Application::~Application() { /*this->app_window->Shutdown();*/
@@ -57,7 +58,7 @@ namespace Presto {
         EntityManager::shutdown();
         RenderingManager::shutdown();
 
-        this->_app_window->shutdown();
+        this->appWindow_->shutdown();
         // this->_app_window.release();
     };
 
@@ -72,7 +73,7 @@ namespace Presto {
         EntityManager& entities = EntityManager::get();
         PhysicsManager& physics = PhysicsManager::get();
 
-        while (app_running) {
+        while (running_) {
             // Calculate delta
 
             // PRINT FPS
@@ -95,11 +96,11 @@ namespace Presto {
             // game_loop_timer.printElapsed();
 
             // rendering_timer.reset();
-            RunSystems();
+            // runSystems();
             // rendering_timer.printElapsed();
 
             // window_timer.reset();
-            _app_window->update();
+            appWindow_->update();
             // window_timer.printElapsed();
 
             entities.update();
@@ -131,9 +132,9 @@ namespace Presto {
             [this](auto& e) -> bool { return this->onWindowResize(e); });
 
         dispatcher.Dispatch<WindowCloseEvent>(
-            [this](auto& e) -> bool { return this->OnWindowClose(e); });
+            [this](auto& e) -> bool { return this->onWindowClose(e); });
 
-        dispatcher.Dispatch<FramebufferResizedEvent>([](auto& e) -> bool {
+        dispatcher.Dispatch<FramebufferResizedEvent>([](auto& /*e*/) -> bool {
             RenderingManager::get().resizeFramebuffer();
             return true;
         });
@@ -154,16 +155,21 @@ namespace Presto {
         // PR_CORE_TRACE("{}", e.toString());
     }
 
-    bool Application::onWindowResize(WindowResizeEvent& e) { return true; };
+    // TODO: Implement this
+    bool Application::onWindowResize(WindowResizeEvent& /*e*/) { return true; };
 
-    bool Application::OnWindowClose(WindowCloseEvent& e) {
-        this->app_running = false;
+    bool Application::onWindowClose(WindowCloseEvent& /*e*/) {
+        this->running_ = false;
         return true;
     }
 
-    void Application::RunSystems() {
-        for (auto& system : _systems) {
-            system->Update();
-        }
+    /*
+void Application::runSystems() {
+    for (auto& system : _systems) {
+        system->Update();
     }
+}
+    */
+
+    Window& Application::getWindow() const { return *appWindow_; };
 }  // namespace Presto

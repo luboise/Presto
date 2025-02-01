@@ -1,4 +1,5 @@
 #include "Presto/Rendering/Renderer.h"
+#include "Presto/Components/CameraComponent.h"
 
 namespace Presto {
     void Renderer::setCameraData(CameraComponent& camera) {

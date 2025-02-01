@@ -2,6 +2,8 @@
 
 // #ifdef PR_PLATFORM_WINDOWS
 
+#include <memory>
+
 #include "Presto/Runtime/Application.h"
 
 using AppHandle = std::unique_ptr<Presto::Application>;

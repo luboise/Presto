@@ -1,16 +1,11 @@
 #pragma once
 
-// #include "Presto/Events/ApplicationEvents.h"
-// #include "Presto/Window.h"
-
-#include "Presto/Runtime/Events/ApplicationEvents.h"
-#include "Window.h"
-
-#include "Presto/Objects/System.h"
-
+#include "Presto/Runtime/Window.h"
 namespace Presto {
     class Event;
+
     class WindowCloseEvent;
+    class WindowResizeEvent;
 
     class PRESTO_API Application {
        public:
@@ -25,26 +20,31 @@ namespace Presto {
         virtual void setup() {};
         virtual void tearDown() {};
 
-        void exit() { app_running = false; };
+        void exit() { running_ = false; };
 
-        [[nodiscard]] Window* GetWindow() const { return _app_window.get(); };
+        [[nodiscard]] Window& getWindow() const;
 
         // Intended to be replaced by user logic
         virtual void gameLoop() {};
 
         void onEvent(Event& e);
 
+        Application(const Application&) = delete;
+        Application(Application&&) = delete;
+        Application& operator=(const Application&) = delete;
+        Application& operator=(Application&&) = delete;
+
        private:
-        bool OnWindowClose(WindowCloseEvent& e);
+        bool onWindowClose(WindowCloseEvent& e);
         bool onWindowResize(WindowResizeEvent& e);
 
-        void RunSystems();
+        // void runSystems();
 
-        std::unique_ptr<Window> _app_window;
-        bool app_running = true;
+        WindowPtr appWindow_;
+        bool running_ = true;
 
         // std::vector<Module*> _modules;
-        std::vector<System*> _systems;
+        // std::vector<System*> _systems;
 
         struct AppOptions {};
 

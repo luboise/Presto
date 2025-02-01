@@ -1,16 +1,14 @@
 #pragma once
 
-#include "Presto/Components/CameraComponent.h"
 #include "Presto/Mixins/LazyCalculator.h"
-
-#include "Presto/Assets/Image.h"
-
-#include "Presto/Rendering/MaterialData.h"
 
 #include "RenderTypes.h"  // IWYU pragma: export
 
 namespace Presto {
     class GLFWAppWindow;
+    class CameraComponent;
+    class Image;
+    class MaterialData;
 
     class Renderer : protected LazyCalculator {
        public:

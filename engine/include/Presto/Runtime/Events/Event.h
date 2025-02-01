@@ -58,8 +58,10 @@ namespace Presto {
     virtual EventType getType() const override { return getStaticType(); } \
     virtual const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) \
-    virtual event_category_t getCategories() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category)                                      \
+    [[nodiscard]] virtual event_category_t getCategories() const override { \
+        return category;                                                    \
+    }
 
     class Event {
         // EventDispatcher can view private members, needed to dispatch the
@@ -74,7 +76,7 @@ namespace Presto {
             return getName();
         };
 
-        [[nodiscard]] inline bool inCategory(EventCategory category) const {
+        [[nodiscard]] bool inCategory(EventCategory category) const {
             return (getCategories() & category) != 0;
         }
 
@@ -85,7 +87,7 @@ namespace Presto {
     };
 
     template <typename T>
-    concept EventInstanceType = std::is_base_of<Event, T>::value;
+    concept EventInstanceType = std::is_base_of_v<Event, T>;
 
     class EventDispatcher {
         template <typename T>

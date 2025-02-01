@@ -14,9 +14,7 @@ namespace Presto {
         explicit Scene(scene_name_t name)
             : name_(std::move(name)), entityList_({}) {};
 
-        inline void addEntity(entity_ptr entity) {
-            entityList_.push_back(entity);
-        };
+        void addEntity(entity_ptr entity) { entityList_.push_back(entity); };
 
         [[nodiscard]] std::vector<entity_ptr> getEntities() const;
 

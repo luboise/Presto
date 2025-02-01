@@ -1,13 +1,10 @@
 #pragma once
 
-#include <cstdint>
-
-#include "Presto/Core/Concepts.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Platform.h"
 
 namespace Presto {
-    // using component_class_t = uint32_t;
+    // using component_class_t = std::uint32_t;
 
     using class_id_t = size_t;
 
@@ -28,7 +25,7 @@ namespace Presto {
     using ComponentRef = Ref<T>;
 
     class PRESTO_API Component {
-        using ComponentIDBit = uint32_t;
+        using ComponentIDBit = std::uint32_t;
 
         friend class EntityManager;
 

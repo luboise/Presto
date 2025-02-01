@@ -5,9 +5,9 @@
 namespace Presto {
     class ObjectEvent : public Event {
        public:
-        [[nodiscard]] inline void* getPtr() const { return this->_objectPtr; }
+        [[nodiscard]] void* getPtr() const { return this->_objectPtr; }
 
-        EVENT_CLASS_CATEGORY(EventCategoryObject)
+        EVENT_CLASS_CATEGORY(EventCategory::EventCategoryObject)
 
        protected:
         // Constructor

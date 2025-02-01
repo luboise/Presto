@@ -3,7 +3,7 @@
 #include "Presto/Core/Concepts.h"
 
 namespace Presto {
-    enum class AssetType { MESH, MODEL, MATERIAL, IMAGE };
+    enum class AssetType : std::uint8_t { MESH, MODEL, MATERIAL, IMAGE };
 
     class Asset {
         friend class AssetManager;

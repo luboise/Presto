@@ -1,5 +1,7 @@
 #include "Presto/Objects/Figure.h"
+
 #include "Presto/Modules/EntityManager.h"
+#include "Presto/Objects/Entity.h"
 
 namespace Presto {
     Figure::Figure(figure_size_t size) {
@@ -17,4 +19,10 @@ namespace Presto {
         }
     }
 
+    Entity& Figure::get(std::size_t index) {
+        PR_ASSERT(index < entities_.size(),
+                  std::format("Index out of acccepted bounds [1, {}]",
+                              entities_.size()));
+        return *entities_[index];
+    };
 }  // namespace Presto
