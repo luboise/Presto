@@ -55,3 +55,35 @@ void main() {
     colour = texture(sampler1, _tex_coords) * intensity;
 }
 )";
+
+constexpr auto DEFAULT_UI_VERTEX_SHADER = R"(
+
+#version 430
+
+layout(location = 0) out vec2 tex_coords;
+
+layout(location = 0) in vec2 _screen_position;
+layout(location = 1) in vec2 _tex_coords;
+
+// Global uniforms
+layout(location = 0) uniform mat4 view;
+layout(location = 1) uniform mat4 projection;
+
+void main() {
+    gl_Position = projection * vec4(_vp, 1.0);
+    tex_coords = _tex_coords;
+}
+)";
+
+constexpr auto DEFAULT_UI_FRAGMENT_SHADER = R"(
+#version 430
+
+out vec4 colour;
+
+layout(location = 0) in vec2 _tex_coords;
+layout(location = 1) uniform sampler2D sampler1;
+
+void main() {
+    colour = texture(sampler1, _tex_coords);
+}
+)";

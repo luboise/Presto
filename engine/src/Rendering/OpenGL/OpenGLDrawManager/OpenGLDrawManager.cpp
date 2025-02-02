@@ -122,7 +122,7 @@ if (renderableMap_.contains(data)) {
         // mesh_info..texture =
 
         auto new_key{++currentKey_};
-        auto insertion = meshMap_.emplace(new_key, mesh_info);
+        auto insertion{meshMap_.emplace(new_key, mesh_info)};
 
         PR_CORE_ASSERT(
             insertion.second,

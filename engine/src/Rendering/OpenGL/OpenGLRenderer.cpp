@@ -39,13 +39,20 @@ namespace Presto {
 
         drawManager_ = std::make_unique<OpenGLDrawManager>();
 
-        ShaderPtr default_shader = std::make_shared<OpenGLShader>();
+        ShaderPtr default_shader{std::make_shared<OpenGLShader>()};
         default_shader->setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
             .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
             .linkShaderProgram();
 
+        ShaderPtr ui_shader{std::make_shared<OpenGLShader>()};
+        default_shader->setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
+            .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
+            .linkShaderProgram();
+
         drawManager_->setMaterial(PR_PIPELINE_DEFAULT_3D,
                                   OpenGLPipeline{default_shader});
+        drawManager_->setMaterial(PR_PIPELINE_DEFAULT_UI,
+                                  OpenGLPipeline{ui_shader});
 
         drawManager_->setTexture(PR_DEFAULT_TEXTURE,
                                  OpenGLTexture{Presto::Image{.width = 2,

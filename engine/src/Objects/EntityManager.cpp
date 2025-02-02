@@ -83,6 +83,7 @@ namespace Presto {
 
     // TODO: Implement this to clean up dangling entities/components
     void EntityManager::collectGarbage() {};
+
     std::vector<entity_ptr> EntityManager::findAll() {
         std::vector<entity_ptr> entities(impl_->entity_map.size());
         int i = 0;

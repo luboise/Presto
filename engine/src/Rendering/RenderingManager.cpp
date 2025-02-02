@@ -68,7 +68,7 @@ namespace Presto {
         // Update the global uniforms to the current camera
         renderer_->setCameraData(activeCamera_);
 
-        auto& em = EntityManager::get();
+        auto& em{EntityManager::get()};
 
         auto mesh_draws{
             em.findAll() |

@@ -19,9 +19,13 @@ namespace Presto {
 
     class PRESTO_API CanvasItem {
        public:
-        explicit CanvasItem(CanvasPosition position) : position(position) {}
+        explicit CanvasItem(CanvasPosition position) : position_(position) {}
+
+        [[nodiscard]] const CanvasPosition& getPosition() const {
+            return position_;
+        }
 
        private:
-        CanvasPosition position;
+        CanvasPosition position_;
     };
 }  // namespace Presto

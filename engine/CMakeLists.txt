@@ -64,8 +64,7 @@ target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${OPENGL_LIBRARIES} glfw
 target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE tinygltf)
 
 # Needed for shared library
-set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSIT﻿ION_INDEPENDENT_CODE
-                                                   ON)
+set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
