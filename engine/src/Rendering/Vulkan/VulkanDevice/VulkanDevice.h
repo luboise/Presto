@@ -13,70 +13,67 @@
 #include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
 
 namespace Presto {
-    struct SwapchainSupportDetails {
-        VkSurfaceCapabilitiesKHR capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR> presentModes;
+struct SwapchainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
+class VulkanDevice : public Abstraction<VkDevice> {
+   public:
+    VulkanDevice(const VkPhysicalDevice&, const VkSurfaceKHR&);
+    ~VulkanDevice();
+
+    [[nodiscard]] const VkPhysicalDevice& getPhysicalDevice() const;
+
+    [[nodiscard]] const QueueFamilyIndices& getQueueFamilyIndices() const;
+
+    DescriptorPool* createDescriptorPool();
+    Buffer* createBuffer(Buffer::BUFFER_TYPE, VkDeviceSize);
+    CommandPool* createCommandPool();
+
+    VulkanSyncSet* createSyncSet();
+
+    [[nodiscard]] SwapchainSupportDetails getSwapchainSupportDetails() const;
+
+    static SwapchainSupportDetails querySwapchainSupport(VkPhysicalDevice,
+                                                         VkSurfaceKHR);
+
+    void submitToGraphicsQueue(
+        const std::vector<VkCommandBuffer>& buffers) const;
+
+    void submitToGraphicsQueue(const VkCommandBuffer buffer) const {
+        std::vector<VkCommandBuffer> vec = {buffer};
+        submitToGraphicsQueue(vec);
     };
 
-    class VulkanDevice : public Abstraction<VkDevice> {
-       public:
-        VulkanDevice(const VkPhysicalDevice&, const VkSurfaceKHR&);
-        ~VulkanDevice();
+    [[nodiscard]] VkQueue getGraphicsQueue() const { return _graphicsQueue; }
 
-        [[nodiscard]] const VkPhysicalDevice& getPhysicalDevice() const;
+    [[nodiscard]] VkQueue getPresentQueue() const { return _presentQueue; }
 
-        [[nodiscard]] const QueueFamilyIndices& getQueueFamilyIndices() const;
+   private:
+    QueueFamilyIndices _indices;
 
-        DescriptorPool* createDescriptorPool();
-        Buffer* createBuffer(Buffer::BUFFER_TYPE, VkDeviceSize);
-        CommandPool* createCommandPool();
+    VkPhysicalDevice _physicalDevice;
+    VkSurfaceKHR _surface;
 
-        VulkanSyncSet* createSyncSet();
+    void createLogicalDevice();
 
-        [[nodiscard]] SwapchainSupportDetails getSwapchainSupportDetails()
-            const;
+    void retrieveQueueHandles();
+    VkQueue _graphicsQueue;
+    VkQueue _presentQueue;
 
-        static SwapchainSupportDetails querySwapchainSupport(VkPhysicalDevice,
-                                                             VkSurfaceKHR);
+    std::vector<DescriptorSetLayout*> _descriptorSetLayouts;
 
-        void submitToGraphicsQueue(
-            const std::vector<VkCommandBuffer>& buffers) const;
+    std::vector<DescriptorPool*> _descriptorPools;
+    std::vector<Buffer*> _buffers;
 
-        void submitToGraphicsQueue(const VkCommandBuffer buffer) const {
-            std::vector<VkCommandBuffer> vec = {buffer};
-            submitToGraphicsQueue(vec);
-        };
+    std::vector<CommandPool*> _commandPools;
+    std::vector<VulkanSyncSet*> _syncSets;
 
-        [[nodiscard]] VkQueue getGraphicsQueue() const {
-            return _graphicsQueue;
-        }
+    void createSwapchain();
 
-        [[nodiscard]] VkQueue getPresentQueue() const { return _presentQueue; }
-
-       private:
-        QueueFamilyIndices _indices;
-
-        VkPhysicalDevice _physicalDevice;
-        VkSurfaceKHR _surface;
-
-        void createLogicalDevice();
-
-        void retrieveQueueHandles();
-        VkQueue _graphicsQueue;
-        VkQueue _presentQueue;
-
-        std::vector<DescriptorSetLayout*> _descriptorSetLayouts;
-
-        std::vector<DescriptorPool*> _descriptorPools;
-        std::vector<Buffer*> _buffers;
-
-        std::vector<CommandPool*> _commandPools;
-        std::vector<VulkanSyncSet*> _syncSets;
-
-        void createSwapchain();
-
-        static const VkDescriptorSetLayout allocateDescriptorSetLayout(
-            const VulkanDevice&);
-    };
+    static const VkDescriptorSetLayout allocateDescriptorSetLayout(
+        const VulkanDevice&);
+};
 }  // namespace Presto

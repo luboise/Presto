@@ -3,5 +3,5 @@
 #include "Presto/Modules/RenderingManager.h"
 
 namespace Presto {
-    void ImageAsset::load() { RenderingManager::get().loadImageOnGpu(*this); }
+void ImageAsset::load() { RenderingManager::get().loadImageOnGpu(*this); }
 }  // namespace Presto

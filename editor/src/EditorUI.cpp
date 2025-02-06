@@ -184,14 +184,14 @@ void EditorUI::drawMainEditor() {
     }
 
     /*
-ImGui::SetNextWindowDockID(
+  ImGui::SetNextWindowDockID(
     dockspace_id, redock_all ? ImGuiCond_Always : ImGuiCond_FirstUseEver);
-ImGuiWindowFlags window_flags =
+  ImGuiWindowFlags window_flags =
     (doc->Dirty ? ImGuiWindowFlags_UnsavedDocument : 0);
-bool visible = ImGui::Begin(doc->Name, &doc->Open, window_flags);
+  bool visible = ImGui::Begin(doc->Name, &doc->Open, window_flags);
 
-app.DisplayDocContextMenu(doc);
-if (visible) app.DisplayDocContents(doc);
+  app.DisplayDocContextMenu(doc);
+  if (visible) app.DisplayDocContents(doc);
 
     */
 

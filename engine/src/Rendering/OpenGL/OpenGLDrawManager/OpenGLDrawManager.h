@@ -1,71 +1,67 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <map>
+#include "OpenGLTexture.h"
 #include "Presto/Core/Constants.h"
 
-#include "OpenGLTexture.h"
 #include "Presto/Rendering/RenderTypes.h"
+
+#include "Rendering/OpenGL/OpenGLBuffer.h"
 #include "Rendering/OpenGL/OpenGLPipeline.h"
+#include "Rendering/OpenGL/OpenGLVAO.h"
+
+#include <GL/glew.h>
+#include <map>
 
 namespace Presto {
-    struct OpenGLPipelineProperties {
-        glm::vec4 colour;
-        OpenGLTexture texture;
-    };
+struct OpenGLPipelineProperties {
+    glm::vec4 colour;
+    OpenGLTexture texture;
+};
 
-    struct OpenGLMeshInfo {
-        GLuint vertex_buf{};
-        GLsizei vert_count{};
+struct OpenGLDrawBatch {};
 
-        GLuint index_buf{};
-        GLsizei index_count{};
+using draw_key = PR_NUMERIC_ID;
 
-        GLint first_index{};
+struct ImportedMesh;
 
-        GLuint shader_program{};
-        GLuint vao{};
+struct MeshContext {
+    std::unique_ptr<OpenGLBuffer> buffer;
+    std::map<renderer_pipeline_id_t, OpenGLVAO> vao_map;
+};
 
-        int draw_mode{};
-    };
+class OpenGLDrawManager {
+    // Materials
+    static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
 
-    struct OpenGLDrawBatch {};
+   public:
+    renderer_mesh_id_t createMeshContext(const ImportedMesh&);
+    MeshContext* getMeshContext(renderer_mesh_id_t);
+    void destroyMeshContext(renderer_mesh_id_t);
 
-    using draw_key = PR_NUMERIC_ID;
+    OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
 
-    class OpenGLDrawManager {
-        // Materials
-        static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
+    // TODO: Implement custom shaders/materials
+    /*
+     renderer_material_id_t addMaterial(const Presto::Image& image);
+     void removeMaterial(renderer_material_id_t);
+            */
 
-       public:
-        OpenGLMeshInfo* getMeshInfo(renderer_mesh_id_t);
-        renderer_mesh_id_t addMesh(const MeshData&);
-        void removeMesh(renderer_mesh_id_t);
+    void setPipeline(renderer_pipeline_id_t, OpenGLPipeline&&);
 
-        OpenGLPipeline* getMaterial(renderer_pipeline_id_t);
+    void setTexture(renderer_texture_id_t id, OpenGLTexture&& texture);
 
-        // TODO: Implement custom shaders/materials
-        /*
-         renderer_material_id_t addMaterial(const Presto::Image& image);
-         void removeMaterial(renderer_material_id_t);
-                */
+    OpenGLTexture* getTexture(renderer_texture_id_t);
+    renderer_texture_id_t addTexture(const Presto::Image& image);
+    void removeTexture(renderer_texture_id_t);
 
-        void setMaterial(renderer_pipeline_id_t, OpenGLPipeline&&);
+   private:
+    std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
+    std::map<renderer_pipeline_id_t, OpenGLPipeline> pipelineMap_;
+    std::map<renderer_texture_id_t, OpenGLTexture> textureMap_;
 
-        void setTexture(renderer_texture_id_t id, OpenGLTexture&& texture);
+    // TODO: Change this to a more robust system later
+    draw_key currentKey_ = PR_MINIMUM_MATERIAL_KEY;
 
-        OpenGLTexture* getTexture(renderer_texture_id_t);
-        renderer_texture_id_t addTexture(const Presto::Image& image);
-        void removeTexture(renderer_texture_id_t);
-
-       private:
-        std::map<renderer_mesh_id_t, OpenGLMeshInfo> meshMap_;
-        std::map<renderer_pipeline_id_t, OpenGLPipeline> materialMap_;
-        std::map<renderer_texture_id_t, OpenGLTexture> textureMap_;
-
-        // TODO: Change this to a more robust system later
-        draw_key currentKey_ = PR_MINIMUM_MATERIAL_KEY;
-
-        GLuint createShaderProgram(const char*);
-    };
+    GLuint createShaderProgram(const char*);
+};
 }  // namespace Presto

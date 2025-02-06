@@ -8,32 +8,32 @@
 using nlohmann::json;
 
 namespace Presto {
-    class SceneManager final : public Module<SceneManager> {
-        MODULE_FUNCTIONS(SceneManager);
+class SceneManager final : public Module<SceneManager> {
+    MODULE_FUNCTIONS(SceneManager);
 
-       public:
-        void update() override {};
+   public:
+    void update() override {};
 
-        Scene* newScene(std::string name);
+    Scene* newScene(std::string name);
 
-        [[nodiscard]] Scene* newSceneFromJson(json jsonData);
+    [[nodiscard]] Scene* newSceneFromJson(json jsonData);
 
-        Scene* LoadScene(const json& j);
-        void SwitchScene(const scene_name_t&);
-        void SwitchScene(Scene&);
+    Scene* LoadScene(const json& j);
+    void SwitchScene(const scene_name_t&);
+    void SwitchScene(Scene&);
 
-        Scene* getScene(const scene_name_t&);
+    Scene* getScene(const scene_name_t&);
 
-       private:
-        SceneManager();
-        ~SceneManager();
+   private:
+    SceneManager();
+    ~SceneManager();
 
-        // Returns the error as a string if an error occurs when validating the
-        // scene
-        static std::string validateSceneSyntax(const json& sceneData);
+    // Returns the error as a string if an error occurs when validating the
+    // scene
+    static std::string validateSceneSyntax(const json& sceneData);
 
-        Scene* currentScene_{nullptr};
-        std::map<scene_name_t, std::unique_ptr<Scene>> sceneMap_;
-    };
+    Scene* currentScene_{nullptr};
+    std::map<scene_name_t, std::unique_ptr<Scene>> sceneMap_;
+};
 
 }  // namespace Presto

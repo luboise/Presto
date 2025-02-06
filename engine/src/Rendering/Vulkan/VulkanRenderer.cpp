@@ -22,212 +22,207 @@
 #include "VulkanUtils/VulkanVertex.h"
 
 namespace Presto {
-    using namespace VulkanUtils;
+using namespace VulkanUtils;
 
-    void VulkanRenderer::addToRenderPool(draw_info_key renderable) {
-        // TODO: Make this layer agnostic
-        auto* pipeline = _drawManager->getLayer(MAIN_LAYER_NAME)->getPipeline();
+void VulkanRenderer::addToRenderPool(draw_info_key renderable) {
+    // TODO: Make this layer agnostic
+    auto* pipeline = _drawManager->getLayer(MAIN_LAYER_NAME)->getPipeline();
 
-        _bufferManager->loadRenderable(renderable, pipeline);
+    _bufferManager->loadRenderable(renderable, pipeline);
+}
+
+void VulkanRenderer::render(Renderable* const r) {
+    // Wait for previous frame (1 fence, wait all fences) then reset
+    // fence to unsignaled
+
+    const VulkanDrawInfo& info = _bufferManager->getDrawInfo(r);
+    _drawManager->draw(info);
+}
+
+void VulkanRenderer::nextFrame() {
+    // Update the camera, then send the draw commands
+
+    // TODO: Move this into a module in the renderer
+    // Update uniform buffers
+
+    auto current_frame = _drawManager->getCurrentFrame();
+
+    const auto& buffers = _drawManager->getLayer(MAIN_LAYER_NAME)
+                              ->getPipeline()
+                              ->getDescriptors()
+                              .getFrameSet(current_frame)
+                              .uniform_buffers;
+
+    ShaderMatrices mats{};
+
+    glm::mat4 model(1.0);
+    constexpr glm::float32 FOV_Y = 90;
+    auto extent = _swapchain->getExtent();
+
+    mats.view = _renderCamera->getViewMatrix() * model;
+    mats.projection =
+        RenderingUtils::getProjectionMatrix(FOV_Y, extent.width, extent.height);
+
+    for (const auto& buffer : buffers) {
+        buffer->write(sizeof(mats), &mats);
     }
 
-    void VulkanRenderer::render(Renderable* const r) {
-        // Wait for previous frame (1 fence, wait all fences) then reset
-        // fence to unsignaled
+    _drawManager->goToNextFrame();
+}
 
-        const VulkanDrawInfo& info = _bufferManager->getDrawInfo(r);
-        _drawManager->draw(info);
-    }
+VulkanRenderer::VulkanRenderer(GLFWAppWindow* window) {
+    this->setWindow(window);
 
-    void VulkanRenderer::nextFrame() {
-        // Update the camera, then send the draw commands
+    try {
+        this->initialiseSystems();
 
-        // TODO: Move this into a module in the renderer
-        // Update uniform buffers
+        // Create binding
+        VkDescriptorSetLayoutBinding globalBindingDetails{};
+        globalBindingDetails.binding = 0;
+        globalBindingDetails.descriptorCount = 1;
+        globalBindingDetails.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        globalBindingDetails.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-        auto current_frame = _drawManager->getCurrentFrame();
+        // Create binding
+        VkDescriptorSetLayoutBinding localBindingDetails{};
+        localBindingDetails.binding = 0;
+        localBindingDetails.descriptorCount = 1;
+        localBindingDetails.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        localBindingDetails.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-        const auto& buffers = _drawManager->getLayer(MAIN_LAYER_NAME)
-                                  ->getPipeline()
-                                  ->getDescriptors()
-                                  .getFrameSet(current_frame)
-                                  .uniform_buffers;
+        auto* global_layout = _descriptorManager->createDescriptorSetLayout(
+            {globalBindingDetails});
+        auto* local_layout = _descriptorManager->createDescriptorSetLayout(
+            {localBindingDetails});
 
-        ShaderMatrices mats{};
+        auto* global_group = _descriptorManager->createDescriptorGroup(
+            {global_layout, local_layout}, MAX_FRAMES_IN_FLIGHT,
+            *_bufferManager);
 
-        glm::mat4 model(1.0);
-        constexpr glm::float32 FOV_Y = 90;
-        auto extent = _swapchain->getExtent();
+        RenderContext* layer = _drawManager->addLayer(MAIN_LAYER_NAME);
 
-        mats.view = _renderCamera->getViewMatrix() * model;
-        mats.projection = RenderingUtils::getProjectionMatrix(
-            FOV_Y, extent.width, extent.height);
+        PipelineBuilder pipeline_builder =
+            _pipelineManager->getBuilder(*global_group);
 
-        for (const auto& buffer : buffers) {
-            buffer->write(sizeof(mats), &mats);
+        for (const auto& desc : VulkanVertex::getAttributeDescriptions()) {
+            pipeline_builder.addVertexAttributeDescription(desc);
         }
 
-        _drawManager->goToNextFrame();
+        pipeline_builder
+            .addVertexBindingDescription(VulkanVertex::getBindingDescription())
+            .setRenderContext(*layer)
+            .addShader(new VulkanShader(_device->handle(),
+                                        SHADER_MODULE_TYPE::FRAGMENT,
+                                        "Shaders/Core/basic_triangle_frag.spv"))
+            .addShader(
+                new VulkanShader(_device->handle(), SHADER_MODULE_TYPE::VERTEX,
+                                 "Shaders/Core/basic_triangle_vert.spv"));
+
+        layer->setPipeline(pipeline_builder.createPipeline());
+    } catch (const std::runtime_error& e) {
+        PR_CORE_ERROR("Unable to initialise Vulkan renderer. Runtime error: {}",
+                      e.what());
+    }
+}
+
+void VulkanRenderer::initialiseSystems() {
+    _instance = getNewVulkanInstance();
+    _surface = createSurface();
+
+    setupDebugMessenger(_instance, &_debugMessenger);
+
+    _physicalDevices = getPhysicalDevices(_instance, _surface);
+    if (_physicalDevices.empty() || _physicalDevices[0] == VK_NULL_HANDLE) {
+        throw std::runtime_error("No compatible Vulkan device was found.");
+    }
+    _physicalDevice = _physicalDevices[0];
+
+    this->_device = new VulkanDevice(_physicalDevice, _surface);
+    this->_swapchain = new Swapchain(_device, &_surface, _glfwWindow);
+
+    // Initialises all things to do with vertex/index buffers
+    this->_bufferManager = new BufferManager(_device);
+
+    // Handles descriptors
+    this->_descriptorManager = new DescriptorManager(*_device, *_bufferManager);
+
+    // Create draw manager with MAX_FRAMES_IN_FLIGHT contexts (render
+    // passes)
+    this->_drawManager = new DrawManager(*_swapchain, MAX_FRAMES_IN_FLIGHT);
+    this->_pipelineManager = new PipelineManager(_device);
+}
+
+VulkanRenderer::~VulkanRenderer() { this->VulkanRenderer::Shutdown(); }
+
+void VulkanRenderer::Shutdown() {
+    delete _drawManager;
+    delete _pipelineManager;
+    delete _bufferManager;
+    delete _descriptorManager;
+
+    delete _swapchain;
+    delete _device;
+
+    if (enableValidationLayers) {
+        DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
+        this->_debugMessenger = nullptr;
     }
 
-    VulkanRenderer::VulkanRenderer(GLFWAppWindow* window) {
-        this->setWindow(window);
+    vkDestroySurfaceKHR(_instance, _surface, nullptr);
+    vkDestroyInstance(_instance, nullptr);
+}
 
-        try {
-            this->initialiseSystems();
+bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device,
+                                      const VkSurfaceKHR& surface) {
+    auto indices = QueueFamilyIndices::findQueueFamilies(device, surface);
 
-            // Create binding
-            VkDescriptorSetLayoutBinding globalBindingDetails{};
-            globalBindingDetails.binding = 0;
-            globalBindingDetails.descriptorCount = 1;
-            globalBindingDetails.descriptorType =
-                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            globalBindingDetails.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    bool extensionsSupported = checkDeviceExtensionSupport(device);
 
-            // Create binding
-            VkDescriptorSetLayoutBinding localBindingDetails{};
-            localBindingDetails.binding = 0;
-            localBindingDetails.descriptorCount = 1;
-            localBindingDetails.descriptorType =
-                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            localBindingDetails.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    bool swapchainAdequate = false;
+    if (extensionsSupported) {
+        SwapchainSupportDetails swapChainSupport =
+            VulkanDevice::querySwapchainSupport(device, surface);
 
-            auto* global_layout = _descriptorManager->createDescriptorSetLayout(
-                {globalBindingDetails});
-            auto* local_layout = _descriptorManager->createDescriptorSetLayout(
-                {localBindingDetails});
-
-            auto* global_group = _descriptorManager->createDescriptorGroup(
-                {global_layout, local_layout}, MAX_FRAMES_IN_FLIGHT,
-                *_bufferManager);
-
-            RenderContext* layer = _drawManager->addLayer(MAIN_LAYER_NAME);
-
-            PipelineBuilder pipeline_builder =
-                _pipelineManager->getBuilder(*global_group);
-
-            for (const auto& desc : VulkanVertex::getAttributeDescriptions()) {
-                pipeline_builder.addVertexAttributeDescription(desc);
-            }
-
-            pipeline_builder
-                .addVertexBindingDescription(
-                    VulkanVertex::getBindingDescription())
-                .setRenderContext(*layer)
-                .addShader(new VulkanShader(
-                    _device->handle(), SHADER_MODULE_TYPE::FRAGMENT,
-                    "Shaders/Core/basic_triangle_frag.spv"))
-                .addShader(new VulkanShader(
-                    _device->handle(), SHADER_MODULE_TYPE::VERTEX,
-                    "Shaders/Core/basic_triangle_vert.spv"));
-
-            layer->setPipeline(pipeline_builder.createPipeline());
-        } catch (const std::runtime_error& e) {
-            PR_CORE_ERROR(
-                "Unable to initialise Vulkan renderer. Runtime error: {}",
-                e.what());
-        }
+        swapchainAdequate = !swapChainSupport.formats.empty() &&
+                            !swapChainSupport.presentModes.empty();
     }
 
-    void VulkanRenderer::initialiseSystems() {
-        _instance = getNewVulkanInstance();
-        _surface = createSurface();
+    return indices.isComplete() && extensionsSupported && swapchainAdequate;
+}
 
-        setupDebugMessenger(_instance, &_debugMessenger);
+std::vector<VkPhysicalDevice> VulkanRenderer::getPhysicalDevices(
+    const VkInstance& instance, const VkSurfaceKHR& surface) {
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-        _physicalDevices = getPhysicalDevices(_instance, _surface);
-        if (_physicalDevices.empty() || _physicalDevices[0] == VK_NULL_HANDLE) {
-            throw std::runtime_error("No compatible Vulkan device was found.");
-        }
-        _physicalDevice = _physicalDevices[0];
-
-        this->_device = new VulkanDevice(_physicalDevice, _surface);
-        this->_swapchain = new Swapchain(_device, &_surface, _glfwWindow);
-
-        // Initialises all things to do with vertex/index buffers
-        this->_bufferManager = new BufferManager(_device);
-
-        // Handles descriptors
-        this->_descriptorManager =
-            new DescriptorManager(*_device, *_bufferManager);
-
-        // Create draw manager with MAX_FRAMES_IN_FLIGHT contexts (render
-        // passes)
-        this->_drawManager = new DrawManager(*_swapchain, MAX_FRAMES_IN_FLIGHT);
-        this->_pipelineManager = new PipelineManager(_device);
+    if (deviceCount == 0) {
+        throw std::runtime_error(
+            "Unable to find a Vulkan compatible graphics "
+            "device.");
     }
 
-    VulkanRenderer::~VulkanRenderer() { this->VulkanRenderer::Shutdown(); }
+    std::vector<VkPhysicalDevice> allDevices(deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, allDevices.data());
 
-    void VulkanRenderer::Shutdown() {
-        delete _drawManager;
-        delete _pipelineManager;
-        delete _bufferManager;
-        delete _descriptorManager;
+    std::vector<VkPhysicalDevice> compatibleDevices;
 
-        delete _swapchain;
-        delete _device;
+    std::ranges::copy_if(allDevices, std::back_inserter(compatibleDevices),
+                         [surface](VkPhysicalDevice device) {
+                             return VulkanRenderer::isDeviceSuitable(device,
+                                                                     surface);
+                         });
 
-        if (enableValidationLayers) {
-            DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
-            this->_debugMessenger = nullptr;
-        }
+    return compatibleDevices;
+}
 
-        vkDestroySurfaceKHR(_instance, _surface, nullptr);
-        vkDestroyInstance(_instance, nullptr);
+VkSurfaceKHR VulkanRenderer::createSurface() const {
+    VkSurfaceKHR surface = nullptr;
+
+    if (glfwCreateWindowSurface(_instance, _glfwWindow->getWindowHandle(),
+                                nullptr, &surface) != VK_SUCCESS) {
+        throw std::runtime_error("Unable to create window surface.");
     }
-
-    bool VulkanRenderer::isDeviceSuitable(const VkPhysicalDevice& device,
-                                          const VkSurfaceKHR& surface) {
-        auto indices = QueueFamilyIndices::findQueueFamilies(device, surface);
-
-        bool extensionsSupported = checkDeviceExtensionSupport(device);
-
-        bool swapchainAdequate = false;
-        if (extensionsSupported) {
-            SwapchainSupportDetails swapChainSupport =
-                VulkanDevice::querySwapchainSupport(device, surface);
-
-            swapchainAdequate = !swapChainSupport.formats.empty() &&
-                                !swapChainSupport.presentModes.empty();
-        }
-
-        return indices.isComplete() && extensionsSupported && swapchainAdequate;
-    }
-
-    std::vector<VkPhysicalDevice> VulkanRenderer::getPhysicalDevices(
-        const VkInstance& instance, const VkSurfaceKHR& surface) {
-        uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-
-        if (deviceCount == 0) {
-            throw std::runtime_error(
-                "Unable to find a Vulkan compatible graphics "
-                "device.");
-        }
-
-        std::vector<VkPhysicalDevice> allDevices(deviceCount);
-        vkEnumeratePhysicalDevices(instance, &deviceCount, allDevices.data());
-
-        std::vector<VkPhysicalDevice> compatibleDevices;
-
-        std::ranges::copy_if(allDevices, std::back_inserter(compatibleDevices),
-                             [surface](VkPhysicalDevice device) {
-                                 return VulkanRenderer::isDeviceSuitable(
-                                     device, surface);
-                             });
-
-        return compatibleDevices;
-    }
-
-    VkSurfaceKHR VulkanRenderer::createSurface() const {
-        VkSurfaceKHR surface = nullptr;
-
-        if (glfwCreateWindowSurface(_instance, _glfwWindow->getWindowHandle(),
-                                    nullptr, &surface) != VK_SUCCESS) {
-            throw std::runtime_error("Unable to create window surface.");
-        }
-        return surface;
-    }
+    return surface;
+}
 
 }  // namespace Presto

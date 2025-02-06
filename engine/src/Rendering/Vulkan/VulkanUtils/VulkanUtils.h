@@ -5,69 +5,67 @@
 
 namespace Presto::VulkanUtils {
 
-    //////////////////////////////
-    // Initialisation Functions //
-    //////////////////////////////
+//////////////////////////////
+// Initialisation Functions //
+//////////////////////////////
 
-    VkInstance getNewVulkanInstance();
-    void initialiseVulkanExtensions();
+VkInstance getNewVulkanInstance();
+void initialiseVulkanExtensions();
 
-    //////////////////////////
-    // Validation Functions //
-    //////////////////////////
+//////////////////////////
+// Validation Functions //
+//////////////////////////
 
-    std::vector<const char*> getRequiredExtensions();
-    bool checkDeviceExtensionSupport(const VkPhysicalDevice& device);
+std::vector<const char*> getRequiredExtensions();
+bool checkDeviceExtensionSupport(const VkPhysicalDevice& device);
 
-    bool checkValidationLayerSupport();
+bool checkValidationLayerSupport();
 
-    void populateDebugMessengerCreateInfo(
-        VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+void populateDebugMessengerCreateInfo(
+    VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 
-    // Ping Vulkan for creation function
-    VkResult CreateDebugUtilsMessengerEXT(
-        VkInstance instance,
-        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-        const VkAllocationCallbacks* pAllocator,
-        VkDebugUtilsMessengerEXT* pDebugMessenger);
+// Ping Vulkan for creation function
+VkResult CreateDebugUtilsMessengerEXT(
+    VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+    const VkAllocationCallbacks* pAllocator,
+    VkDebugUtilsMessengerEXT* pDebugMessenger);
 
-    void DestroyDebugUtilsMessengerEXT(VkInstance instance,
-                                       VkDebugUtilsMessengerEXT debugMessenger,
-                                       const VkAllocationCallbacks* pAllocator);
+void DestroyDebugUtilsMessengerEXT(VkInstance instance,
+                                   VkDebugUtilsMessengerEXT debugMessenger,
+                                   const VkAllocationCallbacks* pAllocator);
 
-    // Debug callback function for Vulkan
-    VKAPI_ATTR VkBool32 VKAPI_CALL
-    debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                  VkDebugUtilsMessageTypeFlagsEXT messageType,
-                  const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                  void* pUserData);
+// Debug callback function for Vulkan
+VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageType,
+    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
 
-    void setupDebugMessenger(VkInstance, VkDebugUtilsMessengerEXT*);
+void setupDebugMessenger(VkInstance, VkDebugUtilsMessengerEXT*);
 
-    VkApplicationInfo makeApplicationInfo();
+VkApplicationInfo makeApplicationInfo();
 
-    uint32_t findMemoryType(VkPhysicalDevice, uint32_t, VkMemoryPropertyFlags);
+uint32_t findMemoryType(VkPhysicalDevice, uint32_t, VkMemoryPropertyFlags);
 
-    template <typename IN_T>
-    auto MapHandles(const std::vector<IN_T>& in) {
-        using OUT_T = decltype(std::declval<IN_T>().handle());
+template <typename IN_T>
+auto MapHandles(const std::vector<IN_T>& in) {
+    using OUT_T = decltype(std::declval<IN_T>().handle());
 
-        std::vector<OUT_T> out(in.size());
+    std::vector<OUT_T> out(in.size());
 
-        std::transform(in.begin(), in.end(), out.begin(),
-                       [](const auto& item) { return item.handle(); });
-        return std::move(out);
-    }
+    std::transform(in.begin(), in.end(), out.begin(),
+                   [](const auto& item) { return item.handle(); });
+    return std::move(out);
+}
 
-    template <typename IN_T>
-    auto MapHandles(const std::vector<IN_T*>& in) {
-        using OUT_T = decltype(std::declval<IN_T*>()->handle());
+template <typename IN_T>
+auto MapHandles(const std::vector<IN_T*>& in) {
+    using OUT_T = decltype(std::declval<IN_T*>()->handle());
 
-        std::vector<OUT_T> out(in.size());
+    std::vector<OUT_T> out(in.size());
 
-        std::transform(in.begin(), in.end(), out.begin(),
-                       [](const auto& item) { return item->handle(); });
-        return std::move(out);
-    }
+    std::transform(in.begin(), in.end(), out.begin(),
+                   [](const auto& item) { return item->handle(); });
+    return std::move(out);
+}
 
 }  // namespace Presto::VulkanUtils

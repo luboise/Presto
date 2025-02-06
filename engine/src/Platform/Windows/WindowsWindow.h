@@ -6,43 +6,43 @@
 #include "Presto/Window.h"
 
 namespace Presto {
-    class WindowsWindow : public Window {
-       public:
-        WindowsWindow(const WindowProperties& props);
-        virtual ~WindowsWindow();
+class WindowsWindow : public Window {
+   public:
+    WindowsWindow(const WindowProperties& props);
+    virtual ~WindowsWindow();
 
-        void RenderFrame() override;
+    void RenderFrame() override;
 
-        inline unsigned GetWidth() const override { return w_data.width; }
-        inline unsigned GetHeight() const override { return w_data.height; }
+    inline unsigned GetWidth() const override { return w_data.width; }
+    inline unsigned GetHeight() const override { return w_data.height; }
 
-        inline void SetCallbackFunction(const EventCallbackFn& fn) override {
-            w_data.event_callback = fn;
-        }
+    inline void SetCallbackFunction(const EventCallbackFn& fn) override {
+        w_data.event_callback = fn;
+    }
 
-        void SetVSync(bool vsync) override;
-        bool IsVSyncEnabled() override;
+    void SetVSync(bool vsync) override;
+    bool IsVSyncEnabled() override;
 
-       private:
-        double _glfwTime;
+   private:
+    double _glfwTime;
 
-        virtual void Init(const WindowProperties& props);
-        virtual void SetCallbacks();
-        virtual void Shutdown();
+    virtual void Init(const WindowProperties& props);
+    virtual void SetCallbacks();
+    virtual void Shutdown();
 
-        GLFWwindow* glfw_window;
+    GLFWwindow* glfw_window;
 
-        struct WindowData {
-            std::string title;
-            unsigned width;
-            unsigned height;
-            bool VSync;
+    struct WindowData {
+        std::string title;
+        unsigned width;
+        unsigned height;
+        bool VSync;
 
-            EventCallbackFn event_callback;
-            Renderer* pRenderer;
-        };
-
-        WindowData w_data;
+        EventCallbackFn event_callback;
+        Renderer* pRenderer;
     };
+
+    WindowData w_data;
+};
 
 }  // namespace Presto

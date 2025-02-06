@@ -4,39 +4,52 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include "glm/fwd.hpp"
 
 namespace fs = std::filesystem;
 
 namespace Presto {
-    using mat4 = glm::mat4;
-    using vec2 = glm::vec2;
-    using vec3 = glm::vec3;
+using mat4 = glm::mat4;
+using vec2 = glm::vec2;
+using vec3 = glm::vec3;
+using float32_t = glm::float32_t;
+using size_t = std::size_t;
 
-    struct Vertex {
-        vec3 position;
-        vec3 colour;
-        vec3 normal;
-        vec2 tex_coords;
-    };
+/*struct Vertex {*/
+/*    vec3 position;*/
+/*    vec3 colour;*/
+/*    vec3 normal;*/
+/*    vec2 tex_coords;*/
+/*};*/
 
-    using Index = uint32_t;
-
-    using VertexList = std::vector<Vertex>;
-    using IndexList = std::vector<Index>;
-
-    using PR_STRING_ID = std::string;
-
-    using AssetPath = fs::path;
-    using asset_name_t = PR_STRING_ID;
-
-    struct VisualExtents {
-        std::uint16_t width;
-        std::uint16_t height;
-    };
-
+class Vertex {
+   public:
     template <typename T>
-    using Ptr = std::shared_ptr<T>;
+    T getAttribute() const;
 
-    template <typename T>
-    using Ref = std::weak_ptr<T>;
+   private:
+};
+
+using ByteArray = std::vector<std::byte>;
+
+using Index = uint32_t;
+
+using VertexList = std::vector<Vertex>;
+using IndexList = std::vector<Index>;
+
+using PR_STRING_ID = std::string;
+
+using AssetPath = fs::path;
+using asset_name_t = PR_STRING_ID;
+
+struct VisualExtents {
+    std::uint16_t width;
+    std::uint16_t height;
+};
+
+template <typename T>
+using Ptr = std::shared_ptr<T>;
+
+template <typename T>
+using Ref = std::weak_ptr<T>;
 }  // namespace Presto

@@ -15,65 +15,62 @@
 #include <GLFW/glfw3.h>
 
 namespace Presto {
-    class GLFWAppWindow;
-    /*
-       The renderer.
-       */
+class GLFWAppWindow;
+/*
+   The renderer.
+   */
 
-    class VulkanRenderer final : public Renderer {
-       public:
-        explicit VulkanRenderer(GLFWAppWindow* window);
-        ~VulkanRenderer() override;
+class VulkanRenderer final : public Renderer {
+   public:
+    explicit VulkanRenderer(GLFWAppWindow* window);
+    ~VulkanRenderer() override;
 
-        void addToRenderPool(draw_key) override;
-        void render(draw_key) override;
-        void nextFrame() override;
+    void addToRenderPool(draw_key) override;
+    void render(draw_key) override;
+    void nextFrame() override;
 
-       private:
-        VulkanDevice* _device = nullptr;
+   private:
+    VulkanDevice* _device = nullptr;
 
-        DrawManager* _drawManager = nullptr;
-        PipelineManager* _pipelineManager = nullptr;
-        BufferManager* _bufferManager = nullptr;
-        DescriptorManager* _descriptorManager = nullptr;
+    DrawManager* _drawManager = nullptr;
+    PipelineManager* _pipelineManager = nullptr;
+    BufferManager* _bufferManager = nullptr;
+    DescriptorManager* _descriptorManager = nullptr;
 
-        void initialiseSystems();
-        void Shutdown();
+    void initialiseSystems();
+    void Shutdown();
 
-        DrawManager::VulkanDrawContext _drawContext{};
+    DrawManager::VulkanDrawContext _drawContext{};
 
-        void onFrameBufferResized() override {
-            this->_drawManager->queueReload();
-        }
+    void onFrameBufferResized() override { this->_drawManager->queueReload(); }
 
-        // Background members
-        std::vector<Pipeline*> _graphicsPipelines;
+    // Background members
+    std::vector<Pipeline*> _graphicsPipelines;
 
-        VkSurfaceKHR _surface{};
+    VkSurfaceKHR _surface{};
 
-        VkInstance _instance = VK_NULL_HANDLE;
+    VkInstance _instance = VK_NULL_HANDLE;
 
-        // Available graphics cards
-        std::vector<VkPhysicalDevice> _physicalDevices;
+    // Available graphics cards
+    std::vector<VkPhysicalDevice> _physicalDevices;
 
-        // The current physical device in use by the renderer
-        // (assumed to always be only 1)
-        VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+    // The current physical device in use by the renderer
+    // (assumed to always be only 1)
+    VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
 
-        VkDebugUtilsMessengerEXT _debugMessenger{};
+    VkDebugUtilsMessengerEXT _debugMessenger{};
 
-        Swapchain* _swapchain = nullptr;
+    Swapchain* _swapchain = nullptr;
 
-        static bool isDeviceSuitable(const VkPhysicalDevice&,
-                                     const VkSurfaceKHR&);
+    static bool isDeviceSuitable(const VkPhysicalDevice&, const VkSurfaceKHR&);
 
-        [[nodiscard]] VkSurfaceKHR createSurface() const;
+    [[nodiscard]] VkSurfaceKHR createSurface() const;
 
-        static std::vector<VkPhysicalDevice> getPhysicalDevices(
-            const VkInstance&, const VkSurfaceKHR&);
+    static std::vector<VkPhysicalDevice> getPhysicalDevices(
+        const VkInstance&, const VkSurfaceKHR&);
 
-        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags,
-                          VkMemoryPropertyFlags propFlags, VkBuffer& buffer,
-                          VkDeviceMemory& bufferMemory);
-    };
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags,
+                      VkMemoryPropertyFlags propFlags, VkBuffer& buffer,
+                      VkDeviceMemory& bufferMemory);
+};
 }  // namespace Presto

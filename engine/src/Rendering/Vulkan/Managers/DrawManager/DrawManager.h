@@ -12,100 +12,97 @@
 #include "RenderContext/RenderContext.h"
 
 namespace Presto {
-    class DescriptorPool;
-    class Swapchain;
-    class CommandBuffer;
+class DescriptorPool;
+class Swapchain;
+class CommandBuffer;
 
-    using RenderCtxKey = std::string;
-    using UniformList = std::vector<Buffer*>*;
+using RenderCtxKey = std::string;
+using UniformList = std::vector<Buffer*>*;
 
-    class DrawManager {
-       public:
-        struct VulkanDrawContext {
-            CommandBuffer* command_buffer;
-            VulkanSyncSet* sync_set;
-        };
+class DrawManager {
+   public:
+    struct VulkanDrawContext {
+        CommandBuffer* command_buffer;
+        VulkanSyncSet* sync_set;
+    };
 
-        DrawManager(Swapchain&, uint32_t);
+    DrawManager(Swapchain&, uint32_t);
 
-        [[nodiscard]] CommandPool* getCommandPool() const {
-            return _commandPool;
-        }
+    [[nodiscard]] CommandPool* getCommandPool() const { return _commandPool; }
 
-        PR_RESULT enableDrawing();
-        void draw(const VulkanDrawInfo&);
-        void disableDrawing();
-        void submitCommands();
+    PR_RESULT enableDrawing();
+    void draw(const VulkanDrawInfo&);
+    void disableDrawing();
+    void submitCommands();
 
-        // Adds a new layer and returns the number of the new layer
-        RenderContext* addLayer(const RenderCtxKey& layer_name);
+    // Adds a new layer and returns the number of the new layer
+    RenderContext* addLayer(const RenderCtxKey& layer_name);
 
-        void setActiveLayer(const RenderCtxKey& key) {
-            this->_currentRenderContext = _renderContexts[key];
-        }
+    void setActiveLayer(const RenderCtxKey& key) {
+        this->_currentRenderContext = _renderContexts[key];
+    }
 
-        // Gets the layer at a specific index
-        RenderContext* getLayer(const RenderCtxKey& key) {
-            return this->_renderContexts[key];
-        }
+    // Gets the layer at a specific index
+    RenderContext* getLayer(const RenderCtxKey& key) {
+        return this->_renderContexts[key];
+    }
 
-        void goToNextFrame();
+    void goToNextFrame();
 
-        inline void queueReload() { this->_reloadSwapchainOnNextFrame = true; }
+    inline void queueReload() { this->_reloadSwapchainOnNextFrame = true; }
 
-        [[nodiscard]] uint32_t getCurrentFrame() const {
-            return this->_currentFrame;
-        }
+    [[nodiscard]] uint32_t getCurrentFrame() const {
+        return this->_currentFrame;
+    }
 
-        /**
+    /**
 void AddToRenderPool(draw_info_key);
 void draw(draw_info_key);
 void nextFrame();
 **/
 
-        ~DrawManager();
+    ~DrawManager();
 
-       private:
-        Swapchain& _swapchain;
+   private:
+    Swapchain& _swapchain;
 
-        bool _startedDrawing = false;
-        uint32_t _currentImageIndex = 0;
+    bool _startedDrawing = false;
+    uint32_t _currentImageIndex = 0;
 
-        bool _reloadSwapchainOnNextFrame = false;
+    bool _reloadSwapchainOnNextFrame = false;
 
-        void destroyFramebuffers();
+    void destroyFramebuffers();
 
-        void reloadSwapchain();
+    void reloadSwapchain();
 
-        static VkRenderPass createRenderPass(const Swapchain&);
+    static VkRenderPass createRenderPass(const Swapchain&);
 
-        void createFramebuffers(const Swapchain& swapchain,
-                                const RenderPass& pass);
+    void createFramebuffers(const Swapchain& swapchain, const RenderPass& pass);
 
-        inline void advanceFrame() {
-            this->_currentFrame++;
-            this->_drawContext = getDrawContext();
-        };
-
-        [[nodiscard]] struct VulkanDrawContext getDrawContext();
-
-        CommandPool* _commandPool;
-
-        RenderContext* _currentRenderContext;
-
-        std::map<RenderCtxKey, RenderContext*> _renderContexts;
-
-        uint32_t _currentFrame = 0;
-        struct VulkanDrawContext _drawContext;
-
-        //        std::vector<VkDescriptorSetLayout> _descriptorSetLayouts;
-
-        std::vector<VkFramebuffer> _framebuffers;
-        std::vector<CommandBuffer*> _commandBuffers;
-
-        std::vector<VulkanSyncSet*> _syncSets;
-
-        // Global descriptor set and model descriptor set for each frame in
-        // flight
+    inline void advanceFrame() {
+        this->_currentFrame++;
+        this->_drawContext = getDrawContext();
     };
+
+    [[nodiscard]] struct VulkanDrawContext getDrawContext();
+
+    CommandPool* _commandPool;
+
+    RenderContext* _currentRenderContext;
+
+    std::map<RenderCtxKey, RenderContext*> _renderContexts;
+
+    uint32_t _currentFrame = 0;
+    struct VulkanDrawContext _drawContext;
+
+    //        std::vector<VkDescriptorSetLayout> _descriptorSetLayouts;
+
+    std::vector<VkFramebuffer> _framebuffers;
+    std::vector<CommandBuffer*> _commandBuffers;
+
+    std::vector<VulkanSyncSet*> _syncSets;
+
+    // Global descriptor set and model descriptor set for each frame in
+    // flight
+};
 }  // namespace Presto

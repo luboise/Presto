@@ -8,21 +8,21 @@
 using std::vector;
 
 namespace Presto {
-    class VulkanDevice;
+class VulkanDevice;
 
-    class PipelineLayout : public Abstraction<VkPipelineLayout> {
-       public:
-        explicit PipelineLayout(VulkanDevice*, const SetLayoutList&);
+class PipelineLayout : public Abstraction<VkPipelineLayout> {
+   public:
+    explicit PipelineLayout(VulkanDevice*, const SetLayoutList&);
 
-        ~PipelineLayout();
+    ~PipelineLayout();
 
-        [[nodiscard]] vector<VkDescriptorSetLayout> getDescriptorSetLayouts()
-            const {
-            return this->_descriptorSetLayouts;
-        }
+    [[nodiscard]] vector<VkDescriptorSetLayout> getDescriptorSetLayouts()
+        const {
+        return this->_descriptorSetLayouts;
+    }
 
-       private:
-        VulkanDevice* _device = nullptr;
-        SetLayoutList _descriptorSetLayouts;
-    };
+   private:
+    VulkanDevice* _device = nullptr;
+    SetLayoutList _descriptorSetLayouts;
+};
 }  // namespace Presto

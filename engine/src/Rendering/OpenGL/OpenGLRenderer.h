@@ -6,57 +6,62 @@
 #include "Presto/Rendering/Renderer.h"
 
 namespace Presto {
-    class GLFWAppWindow;
+class GLFWAppWindow;
+/*
+   The renderer.
+   */
+
+class OpenGLRenderer final : public Renderer {
+   public:
+    explicit OpenGLRenderer(GLFWAppWindow* window);
+
+    // Deleted functions
+    OpenGLRenderer(const OpenGLRenderer&) = delete;
+    OpenGLRenderer(OpenGLRenderer&&) = delete;
+    OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
+    OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
+
+    // Destructor
+    ~OpenGLRenderer() override;
+
+    renderer_mesh_id_t loadMesh(const ImportedMesh& mesh) override;
+    void unloadMesh(renderer_mesh_id_t id) override;
+
+    // Creates VAO for the mesh so that it can be rendered using that
+    // pipeline
+    void bindMeshToPipeline(renderer_mesh_id_t meshId,
+                            renderer_pipeline_id_t pipelineId) override;
+
     /*
-       The renderer.
-       */
+  renderer_material_id_t loadMaterial(MaterialData) override;
+  void unloadMaterial(renderer_material_id_t id) override;
+    */
 
-    class OpenGLRenderer final : public Renderer {
-       public:
-        explicit OpenGLRenderer(GLFWAppWindow* window);
+    renderer_texture_id_t loadTexture(Presto::Image image) override;
+    void unloadTexture(renderer_texture_id_t id) override;
 
-        // Deleted functions
-        OpenGLRenderer(const OpenGLRenderer&) = delete;
-        OpenGLRenderer(OpenGLRenderer&&) = delete;
-        OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
-        OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
+    void bindMaterial(const MaterialStructure& data) override;
+    void unbindMaterial() override;
 
-        // Destructor
-        ~OpenGLRenderer() override;
+    void render(renderer_mesh_id_t meshId) override;
 
-        renderer_mesh_id_t loadMesh(MeshData data) override;
-        void unloadMesh(renderer_mesh_id_t id) override;
+    void nextFrame() override;
 
-        /*
-renderer_material_id_t loadMaterial(MaterialData) override;
-void unloadMaterial(renderer_material_id_t id) override;
-        */
+   private:
+    OpenGLPipeline* currentPipeline_{nullptr};
 
-        renderer_texture_id_t loadTexture(Presto::Image image) override;
-        void unloadTexture(renderer_texture_id_t id) override;
+    void updateUniforms();
 
-        void bindMaterial(const MaterialData& data) override;
-        void unbindMaterial() override;
+    void draw(const MeshContext&);
 
-        void render(renderer_mesh_id_t meshId) override;
+    void onFrameBufferResized() override;
+    std::unique_ptr<OpenGLDrawManager> drawManager_;
 
-        void nextFrame() override;
+    void setupDebugLogging();
 
-       private:
-        OpenGLPipeline* currentPipeline_{nullptr};
-
-        void updateUniforms();
-
-        void draw(const OpenGLMeshInfo& meshInfo);
-
-        void onFrameBufferResized() override;
-        std::unique_ptr<OpenGLDrawManager> drawManager_;
-
-        void setupDebugLogging();
-
-        static void debugCallback(GLenum source, GLenum type, GLuint id,
-                                  GLenum severity, GLsizei length,
-                                  const GLchar* message, const void* userParam);
-    };
+    static void debugCallback(GLenum source, GLenum type, GLuint id,
+                              GLenum severity, GLsizei length,
+                              const GLchar* message, const void* userParam);
+};
 
 }  // namespace Presto

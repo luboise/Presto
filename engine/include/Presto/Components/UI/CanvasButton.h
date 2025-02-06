@@ -5,16 +5,16 @@
 #include "Presto/Components/UI/CanvasItem.h"
 
 namespace Presto {
-    class ImageAsset;
+class ImageAsset;
 
-    class PRESTO_API CanvasButton : public CanvasItem {
-       public:
-        explicit CanvasButton(CanvasPosition position);
+class PRESTO_API CanvasButton : public CanvasItem {
+   public:
+    explicit CanvasButton(CanvasPosition position);
 
-        void setImage(const ImagePtr&);
+    void setImage(const ImagePtr&);
 
-       private:
-        ImagePtr image_;
-    };
+   private:
+    ImagePtr image_;
+};
 
 }  // namespace Presto

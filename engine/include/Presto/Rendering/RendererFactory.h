@@ -4,5 +4,5 @@
 #include "Presto/Rendering/Renderer.h"
 
 namespace Presto {
-    Renderer* CreateRenderer(RENDER_LIBRARY lib, GLFWAppWindow* window);
+Renderer* CreateRenderer(RENDER_LIBRARY lib, GLFWAppWindow* window);
 }

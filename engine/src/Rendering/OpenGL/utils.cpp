@@ -1,38 +1,37 @@
 #include "utils.h"
 
 namespace Presto {
-    constexpr auto INFO_LOG_LENGTH = 512;
+constexpr auto INFO_LOG_LENGTH = 512;
 
-    bool OpenGLUtils::ShaderCompiledCorrectly(GLuint shader) {
-        GLint success = 0;
+bool OpenGLUtils::ShaderCompiledCorrectly(GLuint shader) {
+    GLint success = 0;
 
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
-        if (success == 0) {
-            std::array<char, INFO_LOG_LENGTH> infoLog{};
-            glGetShaderInfoLog(shader, INFO_LOG_LENGTH, nullptr,
-                               infoLog.data());
+    if (success == 0) {
+        std::array<char, INFO_LOG_LENGTH> infoLog{};
+        glGetShaderInfoLog(shader, INFO_LOG_LENGTH, nullptr, infoLog.data());
 
-            PR_CORE_ERROR("Shader failed to compile: {}", infoLog.data());
-        }
-
-        return success == GL_TRUE;
+        PR_CORE_ERROR("Shader failed to compile: {}", infoLog.data());
     }
 
-    bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
-        GLint success{};
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-        if (success == 0) {
-            GLint logLength = 0;
-            glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
+    return success == GL_TRUE;
+}
 
-            std::string message("", logLength);
-            glGetProgramInfoLog(shaderProgram, logLength, &logLength,
-                                message.data());
+bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
+    GLint success{};
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (success == 0) {
+        GLint logLength = 0;
+        glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 
-            PR_CORE_ERROR("Shader program failed to link: {}", message);
-        }
+        std::string message("", logLength);
+        glGetProgramInfoLog(shaderProgram, logLength, &logLength,
+                            message.data());
 
-        return success != 0;
-    };
+        PR_CORE_ERROR("Shader program failed to link: {}", message);
+    }
+
+    return success != 0;
+};
 }  // namespace Presto

@@ -8,31 +8,31 @@
 #include "Presto/Platform.h"
 
 namespace Presto {
-    class Entity;
+class Entity;
 
-    class PRESTO_API ConductorComponent : public Component {
-        friend class EntityManager;
-        friend class EventManager;
+class PRESTO_API ConductorComponent : public Component {
+    friend class EntityManager;
+    friend class EventManager;
 
-       private:
-        virtual void start() {};
-        virtual void update() {};
+   private:
+    virtual void start() {};
+    virtual void update() {};
 
-        virtual void onInput(KeyEvent& /*unused*/) { handlesInput_ = false; };
-        bool handlesInput_{true};
+    virtual void onInput(KeyEvent& /*unused*/) { handlesInput_ = false; };
+    bool handlesInput_{true};
 
-        void onEnterScene() override { this->start(); }
+    void onEnterScene() override { this->start(); }
 
-        bool registered_{false};
+    bool registered_{false};
 
-       protected:
-        Entity* entity{nullptr};
+   protected:
+    Entity* entity{nullptr};
 
-        // Conductor() = default;
+    // Conductor() = default;
 
-       public:
-        // ~Conductor() override = default;
-    };
+   public:
+    // ~Conductor() override = default;
+};
 
-    using Presto::ConductorComponent;
+using Presto::ConductorComponent;
 }  // namespace Presto

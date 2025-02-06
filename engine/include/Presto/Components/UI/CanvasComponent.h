@@ -5,16 +5,16 @@
 #include "Presto/Components/UI/CanvasGroup.h"
 
 namespace Presto {
-    class CanvasComponent : public Component {
-        friend class EntityManager;
+class CanvasComponent : public Component {
+    friend class EntityManager;
 
-       public:
-        // ~CanvasComponent() override;
-        CanvasGroup& addGroup(CanvasGroup = {});
+   public:
+    // ~CanvasComponent() override;
+    CanvasGroup& addGroup(CanvasGroup = {});
 
-       private:
-        CanvasComponent();
+   private:
+    CanvasComponent();
 
-        std::vector<CanvasGroup> groups_;
-    };
+    std::vector<CanvasGroup> groups_;
+};
 }  // namespace Presto

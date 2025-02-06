@@ -6,21 +6,21 @@
 #include "Swapchain.h"
 
 namespace Presto {
-    class RenderPass : public Abstraction<VkRenderPass> {
-       public:
-        static VkAttachmentDescription BasicColourAttachment;
+class RenderPass : public Abstraction<VkRenderPass> {
+   public:
+    static VkAttachmentDescription BasicColourAttachment;
 
-        RenderPass(const Swapchain& swapchain,
-                   std::vector<VkAttachmentDescription>& attachments);
+    RenderPass(const Swapchain& swapchain,
+               std::vector<VkAttachmentDescription>& attachments);
 
-        ~RenderPass();
+    ~RenderPass();
 
-        [[nodiscard]] VkRenderPassBeginInfo getBeginInfo(
-            VkFramebuffer framebuffer) const;
+    [[nodiscard]] VkRenderPassBeginInfo getBeginInfo(
+        VkFramebuffer framebuffer) const;
 
-        [[nodiscard]] const Swapchain& getSwapchain() const;
+    [[nodiscard]] const Swapchain& getSwapchain() const;
 
-       private:
-        const Swapchain& _swapchain;
-    };
+   private:
+    const Swapchain& _swapchain;
+};
 }  // namespace Presto

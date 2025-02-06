@@ -1,4 +1,4 @@
 #pragma once
 namespace Presto {
-    class PRESTO_API Texture {};
+class PRESTO_API Texture{};
 }  // namespace Presto

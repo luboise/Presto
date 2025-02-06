@@ -6,15 +6,15 @@
 using json = nlohmann::json;
 
 namespace Presto::Utils::File {
-    // static Mesh* LoadMesh(const std::string&);
+// static Mesh* LoadMesh(const std::string&);
 
-    const fs::path executableDirectory = std::filesystem::current_path();
+const fs::path executableDirectory = std::filesystem::current_path();
 
-    fs::path getFullPath(const AssetPath& path);
+fs::path getFullPath(const AssetPath& path);
 
-    std::string ReadFile(const fs::path& path);
-    std::vector<std::byte> ReadBinaryFile(const fs::path& path);
+std::string ReadFile(const fs::path& path);
+ByteArray ReadBinaryFile(const fs::path& path);
 
-    json GetJSON(const std::string& text);
-    json GetJSON(const fs::path& path);
+json GetJSON(const std::string& text);
+json GetJSON(const fs::path& path);
 }  // namespace Presto::Utils::File

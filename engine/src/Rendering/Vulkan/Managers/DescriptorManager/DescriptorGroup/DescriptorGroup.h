@@ -7,22 +7,22 @@
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 
 namespace Presto {
-    class BufferManager;
+class BufferManager;
 
-    class DescriptorGroup {
-       public:
-        DescriptorGroup(DescriptorPool&, BufferManager&,
-                        const std::vector<DescriptorSetLayout*>&, uint32_t);
-        ~DescriptorGroup();
+class DescriptorGroup {
+   public:
+    DescriptorGroup(DescriptorPool&, BufferManager&,
+                    const std::vector<DescriptorSetLayout*>&, uint32_t);
+    ~DescriptorGroup();
 
-        [[nodiscard]] const DescriptorFrameSet& getFrameSet(uint32_t) const;
-        [[nodiscard]] SetLayoutList getLayouts() const { return _setLayouts; }
+    [[nodiscard]] const DescriptorFrameSet& getFrameSet(uint32_t) const;
+    [[nodiscard]] SetLayoutList getLayouts() const { return _setLayouts; }
 
-       private:
-        DescriptorPool* _pool;
-        SetLayoutList _setLayouts;
+   private:
+    DescriptorPool* _pool;
+    SetLayoutList _setLayouts;
 
-        std::vector<DescriptorFrameSet> _frameSets;
-    };
+    std::vector<DescriptorFrameSet> _frameSets;
+};
 
 }  // namespace Presto

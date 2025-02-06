@@ -7,74 +7,74 @@
 #include "Presto/Assets/ModelAsset.h"
 
 namespace Presto {
-    class GLFWAppWindow;
-    class Renderer;
-    class CameraComponent;
+class GLFWAppWindow;
+class Renderer;
+class CameraComponent;
 
-    using layer_id_t = PR_NUMERIC_ID;
+using layer_id_t = PR_NUMERIC_ID;
 
-    class PRESTO_API RenderingManager final : public Module<RenderingManager> {
-        MODULE_FUNCTIONS(RenderingManager);
+class PRESTO_API RenderingManager final : public Module<RenderingManager> {
+    MODULE_FUNCTIONS(RenderingManager);
 
-        friend void ImageAsset::load();
-        friend void MaterialAsset::load();
+    friend void ImageAsset::load();
+    friend void MaterialAsset::load();
 
-       public:
-        static void init(CameraComponent& defaultCamera);
+   public:
+    static void init(CameraComponent& defaultCamera);
 
-        void update() override;
-        void clear();
+    void update() override;
+    void clear();
 
-        static void shutdown();
+    static void shutdown();
 
-        static void setRenderLibrary(RENDER_LIBRARY library);
-        static void setWindow(GLFWAppWindow* window);
+    static void setRenderLibrary(RENDER_LIBRARY library);
+    static void setWindow(GLFWAppWindow* window);
 
-        void setCamera(CameraComponent& newCam);
-        CameraComponent& getCamera() { return activeCamera_; };
+    void setCamera(CameraComponent& newCam);
+    CameraComponent& getCamera() { return activeCamera_; };
 
-        void loadMeshOnGpu(MeshAsset&);
-        void loadModelOnGpu(ModelAsset&);
+    void loadMeshOnGpu(MeshAsset&);
+    void loadModelOnGpu(ModelAsset&);
 
-        layer_id_t addLayer(size_t pos = -1);
-        void removeLayer(layer_id_t id);
+    layer_id_t addLayer(size_t pos = -1);
+    void removeLayer(layer_id_t id);
 
-        /*
+    /*
 void AddRenderable(layer_id_t layer_index, Renderable*);
 
 void RemoveRenderable(Renderable* ptr_renderable) {
-    _renderables.release(ptr_renderable);
+_renderables.release(ptr_renderable);
 };
-        */
+    */
 
-        // Mesh* NewMesh(const VertexList&, const IndexList&);
-        // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
+    // Mesh* NewMesh(const VertexList&, const IndexList&);
+    // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
-       private:
-        // Static vars
-        static RENDER_LIBRARY _library;
-        static GLFWAppWindow* _window;
+   private:
+    // Static vars
+    static RENDER_LIBRARY _library;
+    static GLFWAppWindow* _window;
 
-        // TODO: Make this take a reference instead and clean up the logic
-        void loadImageOnGpu(const ImagePtr&);
-        void loadImageOnGpu(ImageAsset&);
+    // TODO: Make this take a reference instead and clean up the logic
+    void loadImageOnGpu(const ImagePtr&);
+    void loadImageOnGpu(ImageAsset&);
 
-        void resizeFramebuffer() const;
+    void resizeFramebuffer() const;
 
-        // Member vars
-        CameraComponent& activeCamera_;
+    // Member vars
+    CameraComponent& activeCamera_;
 
-        explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
-                                  CameraComponent& defaultCamera);
+    explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
+                              CameraComponent& defaultCamera);
 
-        Renderer* renderer_;
+    Renderer* renderer_;
 
-        // std::vector<RenderLayer> _renderLayers;
+    // std::vector<RenderLayer> _renderLayers;
 
-        // Allocator<Mesh> _meshes;
-        // Allocator<Renderable> _renderables;
+    // Allocator<Mesh> _meshes;
+    // Allocator<Renderable> _renderables;
 
-        // bool hasLayer(layer_id_t index);
-        // RenderLayer& getLayer(layer_id_t id);
-    };
+    // bool hasLayer(layer_id_t index);
+    // RenderLayer& getLayer(layer_id_t id);
+};
 }  // namespace Presto

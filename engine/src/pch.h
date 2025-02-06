@@ -17,8 +17,8 @@
 #include <stdexcept>  // IWYU pragma: export
 
 #ifdef PR_PLATFORM_WINDOWS
-    #include <Windows.h>
-    #include <Xinput.h>
+#include <Windows.h>
+#include <Xinput.h>
 #endif
 
 #include "Presto/Platform.h"  // IWYU pragma: export

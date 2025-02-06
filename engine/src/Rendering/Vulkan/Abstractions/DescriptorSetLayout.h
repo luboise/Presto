@@ -5,24 +5,24 @@
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
 
 namespace Presto {
-    class VulkanDevice;
+class VulkanDevice;
 
-    using Binding = VkDescriptorSetLayoutBinding;
-    using BindingList = std::vector<Binding>;
+using Binding = VkDescriptorSetLayoutBinding;
+using BindingList = std::vector<Binding>;
 
-    class DescriptorSetLayout : public Abstraction<VkDescriptorSetLayout> {
-       public:
-        DescriptorSetLayout(const VulkanDevice&, const BindingList&);
+class DescriptorSetLayout : public Abstraction<VkDescriptorSetLayout> {
+   public:
+    DescriptorSetLayout(const VulkanDevice&, const BindingList&);
 
-        // The layout is deallocated when the descriptor pool is deallocated,
-        // but a destructor could be put here for individual destruction.
+    // The layout is deallocated when the descriptor pool is deallocated,
+    // but a destructor could be put here for individual destruction.
 
-        // TODO: Put an individual destructor here
-        ~DescriptorSetLayout();
+    // TODO: Put an individual destructor here
+    ~DescriptorSetLayout();
 
-        explicit operator VkDescriptorSetLayout() { return _handle; };
+    explicit operator VkDescriptorSetLayout() { return _handle; };
 
-       private:
-        const VulkanDevice& _device;
-    };
+   private:
+    const VulkanDevice& _device;
+};
 }  // namespace Presto

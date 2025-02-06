@@ -1,6 +1,14 @@
-BasedOnStyle: google
+Standard: Latest
+
+BasedOnStyle: Google
 IndentWidth: 4
-NamespaceIndentation: All
-IndentPPDirectives: BeforeHash
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+EmptyLineBeforeAccessModifier: Always
+
+# NamespaceIndentation: All
+#IndentPPDirectives: BeforeHash
 
 IncludeBlocks: Preserve

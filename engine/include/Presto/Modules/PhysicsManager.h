@@ -6,29 +6,29 @@
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
-    class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
-        MODULE_FUNCTIONS(PhysicsManager);
+class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
+    MODULE_FUNCTIONS(PhysicsManager);
 
-        friend void Entity::checkNewComponent(GenericComponentPtr);
+    friend void Entity::checkNewComponent(GenericComponentPtr);
 
-       public:
-        void update() override;
-        void clear();
+   public:
+    void update() override;
+    void clear();
 
-        void addPersistentForce(Force);
+    void addPersistentForce(Force);
 
-        struct PhysicsPairing {
-            Entity* entity;
-            ComponentPtr<RigidBodyComponent> body;
-        };
-
-       private:
-        explicit PhysicsManager() = default;
-        ~PhysicsManager();
-
-        void addPairing(const PhysicsPairing&);
-
-        std::vector<PhysicsPairing> pairings_;
-        std::vector<Force> persistentForces_;
+    struct PhysicsPairing {
+        Entity* entity;
+        ComponentPtr<RigidBodyComponent> body;
     };
+
+   private:
+    explicit PhysicsManager() = default;
+    ~PhysicsManager();
+
+    void addPairing(const PhysicsPairing&);
+
+    std::vector<PhysicsPairing> pairings_;
+    std::vector<Force> persistentForces_;
+};
 }  // namespace Presto
