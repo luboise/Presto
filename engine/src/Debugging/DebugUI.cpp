@@ -164,9 +164,9 @@ void DebugUI::draw() {
 }
 
 void DebugUI::drawMainEditor() {
-    auto *main_viewport = ImGui::GetMainViewport();
+    const auto* main_viewport = ImGui::GetMainViewport();
 
-    auto dock_flags{ImGuiDockNodeFlags_PassthruCentralNode |
+    constexpr auto dock_flags{ImGuiDockNodeFlags_PassthruCentralNode |
                     ImGuiDockNodeFlags_NoDockingInCentralNode |
                     ImGuiDockNodeFlags_NoDockingOverCentralNode};
 

@@ -16,7 +16,7 @@ class MeshAsset final : public Asset {
    public:
     explicit MeshAsset(ImportedMesh&&);
 
-    [[nodiscard]] constexpr AssetType getType() const override {
+    [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::MESH;
     };
 
@@ -41,6 +41,6 @@ class MeshAsset final : public Asset {
     void load() override;
 
     renderer_mesh_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
-    std::weak_ptr<MaterialAsset> defaultMaterial_;
+    Ref<MaterialAsset> defaultMaterial_;
 };
 }  // namespace Presto

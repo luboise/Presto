@@ -58,7 +58,7 @@ renderer_mesh_id_t OpenGLDrawManager::createMeshContext(
     MeshContext context(std::move(buffer));
 
     auto new_key{++currentKey_};
-    auto insertion{bufferMap_.emplace(new_key, buffer)};
+    const auto insertion{bufferMap_.emplace(new_key, buffer)};
 
     PR_CORE_ASSERT(insertion.second,
                    "Presto failed to insert RenderGroup into the render list.");

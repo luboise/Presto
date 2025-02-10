@@ -17,7 +17,7 @@ std::string File::ReadFile(const fs::path& path) {
     }
 
     // Get tellg position(EOF = filesize)
-    auto size = static_cast<size_t>(file.tellg());
+    const auto size = static_cast<size_t>(file.tellg());
     file.seekg(0);
 
     std::string buffer(size, ' ');
@@ -39,7 +39,7 @@ ByteArray File::ReadBinaryFile(const fs::path& path) {
     }
 
     // Get tellg position(EOF = filesize)
-    auto size = (file.tellg());
+    const auto size = (file.tellg());
     file.seekg(0);
 
     ByteArray buffer(size);

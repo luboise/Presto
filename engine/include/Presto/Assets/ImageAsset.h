@@ -20,7 +20,7 @@ class ImageAsset final : public Asset {
 
     ~ImageAsset() override = default;
 
-    [[nodiscard]] constexpr AssetType getType() const override {
+    [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::IMAGE;
     };
 

@@ -2,7 +2,7 @@
 
 namespace Presto {
 Force operator+(Force& left, Force& right) {
-    Force new_force{
+    const Force new_force{
         .velocity = left.velocity + right.velocity,
         .angular_velocity = left.angular_velocity + right.angular_velocity};
 

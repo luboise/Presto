@@ -15,6 +15,8 @@ class OpenGLRenderer final : public Renderer {
    public:
     explicit OpenGLRenderer(GLFWAppWindow* window);
 
+    PipelineBuilder getPipelineBuilder() override;
+
     // Deleted functions
     OpenGLRenderer(const OpenGLRenderer&) = delete;
     OpenGLRenderer(OpenGLRenderer&&) = delete;
@@ -31,6 +33,8 @@ class OpenGLRenderer final : public Renderer {
     // pipeline
     void bindMeshToPipeline(renderer_mesh_id_t meshId,
                             renderer_pipeline_id_t pipelineId) override;
+
+    void usePipeline(renderer_pipeline_id_t pipelineId) override;
 
     /*
   renderer_material_id_t loadMaterial(MaterialData) override;

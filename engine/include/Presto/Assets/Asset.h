@@ -2,8 +2,16 @@
 
 #include "Presto/Core/Concepts.h"
 
+#include "Presto/Core/Constants.h"
+
 namespace Presto {
-enum class AssetType : std::uint8_t { MESH, MODEL, MATERIAL, IMAGE };
+enum class AssetType : std::uint8_t {
+    MESH,
+    MODEL,
+    MATERIAL,
+    MATERIAL_INSTANCE,
+    IMAGE
+};
 
 class Asset {
     friend class AssetManager;
@@ -12,7 +20,7 @@ class Asset {
     explicit Asset(asset_name_t name = PR_ANY_NAME);
     virtual ~Asset();
 
-    [[nodiscard]] constexpr virtual AssetType getType() const = 0;
+    [[nodiscard]] constexpr virtual AssetType type() const = 0;
 
     void ensureLoaded();
 

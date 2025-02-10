@@ -30,8 +30,8 @@ class CameraComponent : public Component, LazyCalculator {
 
     // Sets the near and far planes of a perspective projection.
     // Requires near >= PR_MINIMUM_NEAR_DISTANCE, and far >= near
-    CameraComponent& setDistances(camera_distance_t near,
-                                  camera_distance_t far);
+    CameraComponent& setDistances(camera_distance_t newNear,
+                                  camera_distance_t newFar);
 
     [[nodiscard]] double getYaw() const;
     [[nodiscard]] double getPitch() const;

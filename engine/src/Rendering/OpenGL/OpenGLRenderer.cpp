@@ -225,32 +225,38 @@ draw_data.mat_props.texture.isLoaded(),
 };
 
 void OpenGLRenderer::bindMaterial(const MaterialStructure& data) {
-    auto id{data.materialType};
+    // TODO: Extract pipeline system to be used from outside of the renderer
+    /*
+        auto id{data.materialType};
 
-    OpenGLPipeline* pipeline{drawManager_->getPipeline(id)};
+        OpenGLPipeline* pipeline{drawManager_->getPipeline(id)};
 
-    PR_ASSERT(pipeline != nullptr,
-              "Unable to bind non-existant material from id {}.", id);
+        PR_ASSERT(pipeline != nullptr,
+                  "Unable to bind non-existant material from id {}.", id);
 
-    if (pipeline != currentPipeline_) {
-        currentPipeline_ = pipeline;
-        PR_CORE_TRACE("Switching to new pipeline {}", fmt::ptr(pipeline));
-    }
+        if (pipeline != currentPipeline_) {
+            currentPipeline_ = pipeline;
+            PR_CORE_TRACE("Switching to new pipeline {}", fmt::ptr(pipeline));
+        }
+            */
 
-    OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};
-    if (diffuse == nullptr) {
-        PR_WARN("No diffuse texture was available. Using default texture.");
-    } else {
-        diffuse = drawManager_->getTexture(PR_DEFAULT_TEXTURE);
+    PR_ASSERT(
+        currentPipeline_->accepts(data),
+        "Pipeline does not accept material structure in OpenGL renderer.");
 
-        // TODO: Move this to a place where its always checked instead of
-        // only when it's needed
-        PR_CORE_ASSERT(diffuse != nullptr,
-                       "The default texture could not be found.");
-    }
+    /*OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};*/
+    /*if (diffuse == nullptr) {*/
+    /*    PR_WARN("No diffuse texture was available. Using default texture.");*/
+    /*} else {*/
+    /*    diffuse = drawManager_->getTexture(PR_DEFAULT_TEXTURE);*/
+    /**/
+    /*    // TODO: Move this to a place where its always checked instead of*/
+    /*    // only when it's needed*/
+    /*    PR_CORE_ASSERT(diffuse != nullptr,*/
+    /*                   "The default texture could not be found.");*/
+    /*}*/
 
-    currentPipeline_->setDiffuse(diffuse);
-
+    currentPipeline_->setProperties(data);
     currentPipeline_->bind();
 
     setDirty();
@@ -270,10 +276,17 @@ void OpenGLRenderer::updateUniforms() {
     shader->setUniform("view", globalUniforms_.view);
     shader->setUniform("projection", globalUniforms_.projection);
     // TODO: Make this a one-off function call
-    shader->setUniform("sampler1", std::int8_t(0));
+    shader->setUniform("sampler1", static_cast<std::int8_t>(0));
 
     shader->setUniform("transform", objectUniforms_.transform);
 
     setDirty(false);
 };
+
+void OpenGLRenderer::usePipeline(renderer_pipeline_id_t pipelineId) {};
+
+PipelineBuilder OpenGLRenderer::getPipelineBuilder() {
+    return OpenGLPipelineBuilder(this)
+};
+
 }  // namespace Presto

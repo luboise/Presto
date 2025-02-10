@@ -6,8 +6,8 @@ glm::mat4 RenderingUtils::getProjectionMatrix(glm::float32 fovDeg,
                                               glm::float32 near,
                                               glm::float32 far) {
     float fovRad = glm::radians(fovDeg);
-    glm::mat4 projection = glm::perspectiveFov(fovRad, glm::float32(width),
-                                               glm::float32(height), near, far);
+    glm::mat4 projection = glm::perspectiveFov(fovRad, static_cast<glm::float32>(width),
+                                               static_cast<glm::float32>(height), near, far);
 
     return projection;
 }

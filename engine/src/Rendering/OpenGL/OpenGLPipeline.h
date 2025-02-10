@@ -3,39 +3,37 @@
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
 
-#include "OpenGLDrawManager/OpenGLTexture.h"
 #include "Rendering/OpenGL/OpenGLShader.h"
-
-#include "OpenGLTypes.h"
 
 namespace Presto {
 using ShaderPtr = OpenGLShader::opengl_shader_ptr_t;
 
-class OpenGLPipeline : public Pipeline {
+class OpenGLPipeline final : public Pipeline {
     friend class OpenGLRenderer;
     friend class OpenGLDrawManager;
 
-    explicit OpenGLPipeline(ShaderPtr& ptr);
-    explicit OpenGLPipeline(OpenGLShader&& s);
+    explicit OpenGLPipeline(GLuint vertexShader_, GLuint fragmentShader_);
+    ~OpenGLPipeline() override;
 
    public:
     void setProperty(std::string property, const void* value) override;
-    void setDiffuse(OpenGLTexture*);
+    /*void setDiffuse(OpenGLTexture*);*/
 
-    [[nodiscard]] const AttributeSet& getAttributes() const {
-        return attributeSet_;
-    };
+    // void setProperties(std::vector<MaterialProperty> inProperties) override;
+    void setProperties(const MaterialStructure& inStructure) override;
 
    private:
     void bind() override;
     void unbind() override;
 
-    OpenGLTexture* diffuseTexture_{nullptr};
-    renderer_pipeline_id_t id_{UNREGISTERED_RENDER_DATA_ID};
+    // ShaderPtr shader_;
+    // ShaderPtr& getShader();
 
-    AttributeSet attributeSet_;
+    GLuint shaderProgram_{0};
 
-    ShaderPtr shader_;
-    ShaderPtr& getShader();
+    [[nodiscard]] static std::vector<PipelineAttribute> getAttributesFromShader(
+        GLuint program);
+    [[nodiscard]] static std::vector<PipelineUniform> getuniformsFromShader(
+        GLuint program);
 };
 }  // namespace Presto

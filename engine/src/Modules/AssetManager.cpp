@@ -47,6 +47,10 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
         MaterialPtr new_material{
             createMaterial(material_name, imported_material)};
 
+        // TODO: Maybe make this load when an entity enters the
+        // scene, or at the end of every update loop
+        new_material->ensureLoaded();
+
         new_material_ptrs.push_back(new_material);
     }
 
@@ -121,13 +125,12 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     return new_model_ptrs;
 };
 
-MaterialPtr AssetManager::createMaterial(
-    const asset_name_t& customName, const ImportedMaterial& importedMaterial) {
-    auto new_material{
-        std::make_shared<MaterialAsset>(customName, importedMaterial)};
+MaterialPtr AssetManager::createMaterial(const asset_name_t& customName,
+                                         MaterialStructure inStructure) {
+    auto new_material{std::make_shared<MaterialAsset>(customName, inStructure)};
     new_material->name_ = customName;
 
-    auto key = new_material->name_;
+    const auto key = new_material->name_;
     assets_[AssetType::MATERIAL][key] = new_material;
 
     return new_material;
@@ -186,7 +189,7 @@ new_mr->vertices = default_cube.vertices;
 new_mr->indices = default_cube.indices;
     */
 
-    auto key = new_resource->name();
+    const auto key = new_resource->name();
 
     assets_[AssetType::IMAGE][key] = new_resource;
 
@@ -229,6 +232,15 @@ ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
     assets_[AssetType::IMAGE][customName] = new_image;
 
     return new_image;
+};
+
+MaterialInstancePtr AssetManager::createMaterialInstance(
+    const asset_name_t& customName, const MaterialPtr& material) {
+    auto new_instance{
+        std::make_shared<MaterialInstanceAsset>(customName, material)};
+    assets_[AssetType::MATERIAL_INSTANCE][customName] = new_instance;
+
+    return new_instance;
 };
 
 }  // namespace Presto

@@ -18,7 +18,7 @@ class ModelAsset final : public Asset {
 
     explicit ModelAsset(asset_name_t);
 
-    [[nodiscard]] constexpr AssetType getType() const override {
+    [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::MODEL;
     };
 

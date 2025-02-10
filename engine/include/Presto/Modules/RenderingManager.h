@@ -5,6 +5,7 @@
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
+#include "Presto/Rendering/PipelineBuilder.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -39,6 +40,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
 
+    PipelineBuilder getPipelineBuilder();
+
     /*
 void AddRenderable(layer_id_t layer_index, Renderable*);
 
@@ -67,7 +70,7 @@ _renderables.release(ptr_renderable);
     explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
                               CameraComponent& defaultCamera);
 
-    Renderer* renderer_;
+    Allocated<Renderer> renderer_;
 
     // std::vector<RenderLayer> _renderLayers;
 

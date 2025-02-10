@@ -35,8 +35,8 @@ EntityManager::~EntityManager() {
 
 void EntityManager::update() {
     // TODO: Move this somewhere cached instead
-    for (auto& entity : impl_->entity_map | std::views::values) {
-        for (auto& script : entity->getConductors()) {
+    for (const auto& entity : impl_->entity_map | std::views::values) {
+        for (const auto& script : entity->getConductors()) {
             script->update();
         }
     }
@@ -55,7 +55,7 @@ entity_ptr EntityManager::newEntity(const entity_name_t& name) {
         new Entity(new_id, name),
         [this](Entity* entity) { this->destroyEntity(entity); });
 
-    auto new_transform{newComponent<TransformComponent>()};
+    const auto new_transform{newComponent<TransformComponent>()};
     new_entity->setComponent(new_transform);
 
     entity_ptr handle{new_entity.get()};
@@ -139,7 +139,7 @@ entity_tag_id_t EntityManager::createTag(const entity_tag_name_t& tagName) {
     PR_ASSERT(getTagId(tagName) != INVALID_TAG_ID,
               "Multiple tags can't be created with the same name.");
 
-    auto new_tag_index = impl_->tag_map.size();
+    const auto new_tag_index = impl_->tag_map.size();
     impl_->tag_map.push_back(tagName);
 
     return static_cast<entity_tag_id_t>(new_tag_index);

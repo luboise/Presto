@@ -17,7 +17,7 @@ Entity::Entity(entity_id_t id, entity_name_t name)
 }
 
 void Entity::addTag(const entity_tag_name_t& tagName) {
-    entity_tag_id_t tag_id{EntityManager::get().getTagId(tagName)};
+    const entity_tag_id_t tag_id{EntityManager::get().getTagId(tagName)};
     PR_ASSERT(tag_id != INVALID_TAG_ID,
               std::format("Unable to get tag id for name {}. Has the tag "
                           "been created yet?",
@@ -34,7 +34,7 @@ Entity::ComponentMap& Entity::getComponents() { return components_; }
 
 void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
     // auto* conductor_ptr{dynamic_cast<ConductorComponent*>(componentPtr)};
-    auto conductor_ptr{
+    const auto conductor_ptr{
         std::dynamic_pointer_cast<ConductorComponent>(componentPtr)};
 
     if (conductor_ptr != nullptr) {

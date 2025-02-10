@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <utility>
 
 #include "Presto/Assets/MaterialAsset.h"
@@ -9,21 +10,18 @@
 namespace Presto {
 MaterialAsset::MaterialAsset(PR_STRING_ID name,
                              const ImportedMaterial& importedMaterial)
-    : Asset(std::move(name)) {}
-
-void MaterialAsset::setDiffuseTexture(ImagePtr image) {
-    diffuseImage_ = std::move(image);
-    diffuseImage_->ensureLoaded();
-}
+    : Asset(std::move(name)),
+      pipelineId_(importedMaterial.structure.materialType),
+      properties_(importedMaterial.structure.properties) {}
 
 ImagePtr MaterialAsset::getImage() const { return diffuseImage_; }
 
 MaterialStructure MaterialAsset::getStructure() const {
     MaterialStructure data{};
+
     data.materialType = PR_PIPELINE_DEFAULT_3D;
-    if (diffuseImage_ != nullptr) {
-        data.diffuseTexture = diffuseImage_->getRenderId();
-    }
+
+    data.properties = properties_;
 
     return data;
 }
@@ -31,4 +29,26 @@ MaterialStructure MaterialAsset::getStructure() const {
 void MaterialAsset::load() {
     RenderingManager::get().loadImageOnGpu(this->diffuseImage_);
 };
+
+MaterialProperty* MaterialAsset::getProperty(const PR_STRING_ID& name) {
+    if (const auto found{
+            std::ranges::find_if(properties_,
+                                 [name](const MaterialProperty& prop) {
+                                     return prop.name == name;
+                                 })};
+        found != properties_.end()) {
+        return &*found;
+    }
+
+    return nullptr;
+}
+
+bool MaterialAsset::operator==(renderer_pipeline_id_t id) const {
+    return pipelineId_ == id;
+}
+
+MaterialInstancePtr MaterialAsset::createInstance() const {
+
+};
+
 }  // namespace Presto

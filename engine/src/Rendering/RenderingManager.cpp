@@ -11,6 +11,8 @@
 #include "Presto/Rendering/RendererFactory.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
+#include "DefaultShaders.h"
+
 namespace Presto {
 RENDER_LIBRARY RenderingManager::_library = UNSET;
 GLFWAppWindow* RenderingManager::_window = nullptr;
@@ -19,11 +21,20 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    GLFWAppWindow* window,
                                    CameraComponent& defaultCamera)
     : activeCamera_(defaultCamera) {
-    auto* newrenderer_ = Presto::CreateRenderer(library, window);
-    renderer_ = newrenderer_;
+    Allocated<Renderer> new_renderer{Presto::CreateRenderer(library, window)};
+    renderer_ = std::move(new_renderer);
 
-    // Add default layer
-    // this->addLayer();
+    PipelineBuilder builder{renderer_->getPipelineBuilder()};
+
+    auto default_3d{
+        builder.setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
+            .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
+            .build()};
+
+    auto default_ui{
+        builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
+            .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
+            .build()};
 };
 
 void RenderingManager::loadMeshOnGpu(MeshAsset& mesh) {
@@ -94,8 +105,8 @@ for (const auto& ptr_renderable : layer._renderables) {
             {.transform = drawStruct.transform->getModelView()});
 
         for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
-            const auto& mesh{drawStruct.model->getMesh(i)};
-            const auto& material{drawStruct.model->getMaterial(i)};
+            const MeshPtr& mesh{drawStruct.model->getMesh(i)};
+            const MaterialPtr& material{drawStruct.model->getMaterial(i)};
 
             MaterialStructure mat_data{};
 

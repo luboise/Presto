@@ -8,9 +8,11 @@
 
 #include "Presto/Assets/Asset.h"
 
+#include "Presto/Assets/MaterialInstanceAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 
 #include "Presto/Core/Types.h"
+#include "Presto/Rendering/MaterialTypes.h"
 
 #include <map>
 
@@ -63,7 +65,23 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
                                const asset_name_t& customName);
 
     MaterialPtr createMaterial(const asset_name_t& customName,
-                               const ImportedMesh& importedMesh = {});
+                               MaterialStructure structure);
+
+    template <MaterialType T>
+        requires requires { typename MaterialTypeTraits<T>; } &&
+                 requires { typename MaterialTypeTraits<T>::property_list; }
+    MaterialTypeTraits<T>::property_list createMaterialInstance(
+        const asset_name_t& customName, const MaterialPtr& material);
+
+    template <>
+    MaterialTypeTraits<MaterialType::DEFAULT_3D> createMaterialInstance(
+        const asset_name_t& customName, const MaterialPtr& material) {
+        auto new_instance{
+            std::make_shared<MaterialInstanceAsset>(customName, material)};
+        assets_[AssetType::MATERIAL_INSTANCE][customName] = new_instance;
+
+        return new_instance;
+    };
 
     ImagePtr createImageAsset(const asset_name_t& customName,
                               const Presto::Image& image);
@@ -80,4 +98,10 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
 
     std::map<AssetType, std::map<asset_name_t, std::shared_ptr<Asset>>> assets_;
 };
+
+template <>
+MaterialTypeTraits<MaterialType::DEFAULT_3D>::property_list
+AssetManager::createMaterialInstance<MaterialType::DEFAULT_3D>(
+    const asset_name_t& customName, const MaterialPtr& material);
+
 }  // namespace Presto

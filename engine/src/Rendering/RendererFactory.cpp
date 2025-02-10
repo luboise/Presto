@@ -7,11 +7,11 @@
 
 using Presto::Renderer;
 
-Renderer* Presto::CreateRenderer(RENDER_LIBRARY lib, GLFWAppWindow* window) {
+Allocated<Renderer> Presto::CreateRenderer(RENDER_LIBRARY lib,
+                                           GLFWAppWindow* window) {
     switch (lib) {
         case OPENGL: {
-            auto* new_renderer{new OpenGLRenderer(window)};
-            return (Renderer*)new_renderer;
+            return std::make_unique<OpenGLRenderer>(window);
         }
             /*
 case VULKAN:

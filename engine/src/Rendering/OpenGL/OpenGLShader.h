@@ -9,10 +9,8 @@
 
 namespace Presto {
 class OpenGLShader final : public Shader {
-    static constexpr auto INVALID_SHADER_ID = 0;
-
    public:
-    using shader_property_key_t = std::string;
+    using shader_property_key_t = PR_STRING_ID;
 
     using opengl_shader_ptr_t = std::shared_ptr<OpenGLShader>;
 
@@ -23,15 +21,17 @@ class OpenGLShader final : public Shader {
     void setGlobalUniforms(GlobalUniforms uniforms) override;
     void setObjectUniforms(ObjectUniforms uniforms) override;
 
-    void setUniform(uniform_name_t property, std::uint8_t value) override;
+    void setUniform(uniform_name_t property, Presto::uint32_t value) override;
 
-    void setUniform(uniform_name_t property, int value) override;
-    void setUniform(uniform_name_t property, float value) override;
+    void setUniform(uniform_name_t property, Presto::int32_t value) override;
+    void setUniform(uniform_name_t property, Presto::float32_t value) override;
+
+    void setUniform(uniform_name_t property, Presto::vec2 value) override;
+    void setUniform(uniform_name_t property, Presto::vec3 value) override;
+    void setUniform(uniform_name_t property, Presto::vec4 value) override;
     void setUniform(uniform_name_t property, Presto::mat4 value) override;
 
     inline void setMat4(uniform_name_t property, float* value);
-
-    void setTexture(uniform_name_t property, Texture value) override;
 
     OpenGLShader& setShader(const AssetPath& shaderPath, ShaderStage type);
     OpenGLShader& setShader(const char* data, ShaderStage type);

@@ -4,16 +4,22 @@
 
 #include "Presto/Rendering/AttributeTypes.h"
 
-#include "Presto/Rendering/MaterialData.h"
+#include "Presto/Rendering/ErasedBytes.h"
 #include "Presto/Rendering/UniformTypes.h"
-#include "Presto/Rendering/VertexAttribute.h"
-#include "Rendering/ErasedBytes.h"
 
 namespace Presto {
-struct ImportedMesh {
-    ByteArray bytes;
 
-    AttributeSet attributes;
+struct ImportedMesh {
+    struct ImportedAttribute {
+        PR_STRING_ID name;
+
+        ShaderDataType type;
+        Presto::size_t count;
+
+        ByteArray data;
+    };
+
+    std::vector<ImportedAttribute> attributes;
 
     Presto::size_t material;
 
@@ -26,65 +32,90 @@ struct ImportedMesh {
 
 struct ImportedModel {
     PR_STRING_ID name;
+
     std::vector<ImportedMesh> meshes;
 };
 
+namespace DefaultAttributeName {
+constexpr auto POSITION = "a_position";
+constexpr auto NORMAL = "a_normal";
+constexpr auto TEXCOORDS = "a_texcoords";
+
+}  // namespace DefaultAttributeName
+
+namespace DefaultMaterialPropertyName {
+constexpr auto BASE_COLOUR = "u_baseColour";
+
+// Alias for American english speakers
+constexpr auto BASE_COLOR = BASE_COLOUR;
+
+constexpr auto DIFFUSE_TEXTURE = "u_diffuseTexture";
+
+};  // namespace DefaultMaterialPropertyName
+
 struct MaterialProperty {
     Presto::size_t binding;
-
     UniformVariableType type;
     PR_STRING_ID name;
 
     ErasedBytes data;
 
-    ByteArray data{ByteArray(4, std::byte{0})};
+    void writeFrom(const MaterialProperty& other);
 
-    template <typename T>
-    void setData(T newData) {
-        auto new_size{sizeof(newData)};
-
-        data.resize(new_size);
-        std::memcpy(data.data(), newData, new_size);
-    }
-
-    template <typename S>
-        requires std::ranges::range<S>
-    void setData(S newData) {
-        auto new_size{sizeof(newData.first()) * newData.size()};
-
-        std::memcpy(data.data(), newData.data(), new_size);
+    [[nodiscard]] bool compatibleWith(const MaterialProperty& other) const {
+        return MaterialProperty::compatible(*this, other);
     };
+
+    static bool compatible(const MaterialProperty&, const MaterialProperty&);
 };
 
-enum class MaterialType {
-    DEFAULT_3D,
-};
+namespace DefaultMaterialProperties {
+
+MaterialProperty BaseColour(Presto::vec4 colour) {
+    return {.binding = 0,
+            .type = UniformVariableType::VEC3,
+            .name = DefaultMaterialPropertyName::BASE_COLOUR,
+            .data = ErasedBytes{colour}};
+}
+MaterialProperty DiffuseTexture(
+    ImportTypeOf<UniformVariableType::IMAGE> index) {
+    return {.binding = 0,
+            .type = UniformVariableType::IMAGE,
+            .name = DefaultMaterialPropertyName::DIFFUSE_TEXTURE,
+            .data = ErasedBytes{index}};
+}
+
+};  // namespace DefaultMaterialProperties
 
 struct MaterialStructure {
     renderer_pipeline_id_t materialType{PR_PIPELINE_DEFAULT_3D};
     std::vector<MaterialProperty> properties;
+
+    [[nodiscard]] const MaterialProperty* getProperty(
+        const PR_STRING_ID& name) const;
+
+    [[nodiscard]] bool writeableFrom(const MaterialStructure&) const;
+
+    void merge(const MaterialStructure&);
 };
 
-struct ImportedMaterial {
-    const MaterialStructure& structure;
-
+struct PropertyList {
     std::vector<MaterialProperty> properties;
 };
 
-const MaterialStructure GLTFMaterialStructure{
-    .materialType = PR_PIPELINE_DEFAULT_3D,
-    .properties = {
-        {.binding = 0,
-         .type = UniformVariableType::FLOAT,
-         .name = "baseColour"},
-        {.binding = 1, .type = UniformVariableType::IMAGE, .name = "diffuse"},
-    }};
+struct ImportedMaterial {
+    PR_STRING_ID name;
+    MaterialStructure structure;
+};
+
+// TODO: Make this a proper struct with other properties
+using ImportedImage = Presto::Image;
 
 struct ImportedModelData {
     std::vector<ImportedModel> models;
 
     std::vector<ImportedMaterial> materials;
-    std::vector<Presto::Image> images;
+    std::vector<ImportedImage> images;
 };
 
 }  // namespace Presto

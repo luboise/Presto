@@ -2,6 +2,7 @@
 
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
+
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects/Component.h"
 
@@ -21,24 +22,24 @@ class PRESTO_API ModelComponent : public Component {
    public:
     ModelComponent() = delete;
 
-    inline MeshPtr getMesh(std::uint8_t index = 0) {
+    MeshPtr getMesh(std::uint8_t index = 0) {
         if (meshes_.size() == 0 || index >= meshes_.size()) {
             return nullptr;
         }
         return meshes_[index];
     }
 
-    [[nodiscard]] inline const std::vector<MeshPtr>& getMeshes() const {
+    [[nodiscard]] const std::vector<MeshPtr>& getMeshes() const {
         return meshes_;
     }
 
-    inline void setMesh(std::uint8_t index, const MeshPtr& mesh) {
+    void setMesh(std::uint8_t index, const MeshPtr& mesh) {
         meshes_[index] = mesh;
     }
 
     [[nodiscard]] PR_SIZE meshCount() const { return meshes_.size(); }
 
-    inline MaterialPtr getMaterial(std::size_t index) {
+    MaterialPtr getMaterial(std::size_t index) {
         return materialOverrides_[index];
     };
 

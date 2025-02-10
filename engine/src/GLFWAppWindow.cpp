@@ -40,7 +40,7 @@ void GLFWAppWindow::init(const WindowProperties& props) {
                  props.extents.width, props.extents.height);
 
     if (!s_GLFWInitialised) {
-        int success = glfwInit();
+        const int success = glfwInit();
 
         PR_CORE_ASSERT(success,
                        "Unable to initialise GLFW. Program cannot continue.");
@@ -97,7 +97,7 @@ void GLFWAppWindow::SetCallbacks() {
             WindowData& data{
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
 
-            Input::Key presto_key_code{getPrestoKeyCode(keycode)};
+            const Input::Key presto_key_code{getPrestoKeyCode(keycode)};
 
             // Skip unsupported keys
             if (presto_key_code == Input::Key::INVALID_KEY) {

@@ -9,9 +9,6 @@
 #include "Presto/Rendering/RenderTypes.h"
 
 namespace Presto {
-class MaterialInstanceAsset;
-using MaterialInstancePtr = Ptr<MaterialInstanceAsset>;
-
 class MaterialAsset final : public Asset {
    public:
     friend class RenderingManager;
@@ -26,15 +23,26 @@ class MaterialAsset final : public Asset {
 
     [[nodiscard]] MaterialStructure getStructure() const;
 
+    void setDiffuseTexture(ImagePtr image);
+
     [[nodiscard]] ImagePtr getImage() const;
-
-    // Checks if a material asset is equal to a specific pipeline
-    bool operator==(renderer_pipeline_id_t id) const;
-
-    [[nodiscard]] MaterialInstancePtr createInstance() const;
 
    private:
     void load() override;
+
+    template <typename T>
+    void setProperty(PR_STRING_ID name, T value) {
+        auto* property{getProperty(name)};
+        if (property == nullptr) {
+            PR_CORE_ERROR(
+                std::format("Property not found in material: {}", name));
+            return;
+        }
+
+        property->data.setData(value);
+    };
+
+    MaterialProperty* getProperty(const PR_STRING_ID& name);
 
     renderer_pipeline_id_t pipelineId_{PR_PIPELINE_DEFAULT_3D};
 

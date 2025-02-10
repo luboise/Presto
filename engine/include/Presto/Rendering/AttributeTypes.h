@@ -2,7 +2,24 @@
 
 namespace Presto {
 
-enum class ShaderDataType { INT, UINT, FLOAT, VEC2, VEC3, MAT4 };
+enum class ShaderDataType {
+    INT,
+    UINT,
+    FLOAT,
+    DOUBLE,
+
+    VEC2,
+    DVEC2,
+
+    VEC3,
+    DVEC3,
+
+    VEC4,
+    DVEC4,
+
+    MAT4,
+    DMAT4
+};
 using attribute_size_t = Presto::size_t;
 
 enum class ShaderDataSubType { INT, UINT, FLOAT };

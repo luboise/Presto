@@ -1,13 +1,26 @@
 #pragma once
 
 #include <type_traits>
+#include "Presto/Core/Types.h"
+
+#include "Presto/Rendering/UniformTypes.h"
+
 namespace Presto {
 class ErasedBytes {
    public:
+    ErasedBytes() { setData(Presto::float32_t{0}); };
+
     template <typename T>
-    ErasedBytes(T&& val) {
-        this->setData(val);
-    };
+    explicit ErasedBytes(T val) {
+        this->setData(std::forward<T>(val));
+    }
+
+    /*template <typename T>*/
+    /*    requires std::is_copy_constructible_v<T> &&
+     * std::is_copy_assignable_v<T>*/
+    /*explicit ErasedBytes(T val) {*/
+    /*    this->setData(std::forward<T>(val));*/
+    /*};*/
 
     template <typename T>
         requires std::is_copy_constructible_v<T>
@@ -15,15 +28,7 @@ class ErasedBytes {
         auto new_size{sizeof(newData)};
 
         data_.resize(new_size);
-        std::memcpy(data_.data(), newData, new_size);
-    }
-
-    template <typename T>
-        requires std::is_move_assignable_v<T>
-    void setData(T&& newData) {
-        data_ = std::move(newData);
-
-        std::memcpy(data_.data(), newData, new_size);
+        std::memcpy(data_.data(), &newData, new_size);
     }
 
     template <typename T>
@@ -35,7 +40,7 @@ class ErasedBytes {
     };
 
     template <typename T>
-    T getData() {
+    [[nodiscard]] T as() const {
         if (data_.size() != sizeof(T)) {
             // TODO: Get rid of this exception and do something more safe
             throw std::invalid_argument(
@@ -45,9 +50,15 @@ class ErasedBytes {
         return std::bit_cast<T>(data_);
     }
 
+    template <UniformVariableType T>
+    [[nodiscard]] typename UniformVariableTypeTraits<T>::type as() const {
+        using return_t = UniformVariableTypeTraits<T>::type;
+        return as<return_t>();
+    }
+
     std::span<std::byte> getData() { return data_; }
 
    private:
-    ByteArray data_{ByteArray(4, std::byte{0})};
+    ByteArray data_{4, std::byte{0}};
 };
 }  // namespace Presto

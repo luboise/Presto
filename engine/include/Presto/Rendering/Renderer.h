@@ -11,6 +11,8 @@ class Image;
 class MaterialStructure;
 struct ImportedMesh;
 
+class PipelineBuilder;
+
 class Renderer : protected LazyCalculator {
    public:
     Renderer() = default;
@@ -36,6 +38,8 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
     virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
     virtual void unloadTexture(renderer_texture_id_t id) = 0;
 
+    virtual void usePipeline(renderer_pipeline_id_t) = 0;
+
     virtual void bindMaterial(const MaterialStructure&) = 0;
     virtual void unbindMaterial() = 0;
 
@@ -50,6 +54,8 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
 
     void framebufferResized() { this->_framebufferResized = true; }
     virtual void onFrameBufferResized() = 0;
+
+    virtual PipelineBuilder getPipelineBuilder() = 0;
 
    protected:
     GLFWAppWindow* _glfwWindow{nullptr};
