@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Presto/Rendering/Pipeline.h"
-#include "Presto/Rendering/RenderTypes.h"
+#include <GL/glew.h>
+#include <map>
 
-#include "Rendering/OpenGL/OpenGLShader.h"
+#include "Presto/Rendering/Pipeline.h"
 
 namespace Presto {
-using ShaderPtr = OpenGLShader::opengl_shader_ptr_t;
 
 class OpenGLPipeline final : public Pipeline {
     friend class OpenGLRenderer;
     friend class OpenGLDrawManager;
+    friend class OpenGLPipelineBuilder;
 
     explicit OpenGLPipeline(GLuint vertexShader_, GLuint fragmentShader_);
     ~OpenGLPipeline() override;
@@ -22,18 +22,21 @@ class OpenGLPipeline final : public Pipeline {
     // void setProperties(std::vector<MaterialProperty> inProperties) override;
     void setProperties(const MaterialStructure& inStructure) override;
 
+    void setUniformBlock(PR_NUMERIC_ID name, UniformBuffer& buffer) override;
+
    private:
     void bind() override;
     void unbind() override;
 
-    // ShaderPtr shader_;
-    // ShaderPtr& getShader();
+    std::map<PR_NUMERIC_ID, GLint> bindingMap_;
 
     GLuint shaderProgram_{0};
 
     [[nodiscard]] static std::vector<PipelineAttribute> getAttributesFromShader(
         GLuint program);
-    [[nodiscard]] static std::vector<PipelineUniform> getuniformsFromShader(
+    [[nodiscard]] static std::vector<PipelineUniform> getUniformsFromShader(
         GLuint program);
+    [[nodiscard]] static std::vector<PipelineUniformBlock>
+    getUniformBlocksFromShader(GLuint program);
 };
 }  // namespace Presto

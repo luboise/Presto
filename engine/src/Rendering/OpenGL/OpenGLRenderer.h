@@ -10,12 +10,16 @@ class GLFWAppWindow;
 /*
    The renderer.
    */
+class OpenGLUniformBuffer;
 
 class OpenGLRenderer final : public Renderer {
    public:
     explicit OpenGLRenderer(GLFWAppWindow* window);
 
-    PipelineBuilder getPipelineBuilder() override;
+    Allocated<PipelineBuilder> getPipelineBuilder() override;
+
+    [[nodiscard]] std::vector<PipelineStructure> getPipelineStructures()
+        const override;
 
     // Deleted functions
     OpenGLRenderer(const OpenGLRenderer&) = delete;
@@ -53,6 +57,9 @@ class OpenGLRenderer final : public Renderer {
 
    private:
     OpenGLPipeline* currentPipeline_{nullptr};
+
+    Allocated<OpenGLUniformBuffer> globalUniformBuffer_;
+    Allocated<OpenGLUniformBuffer> objectUniformBuffer_;
 
     void updateUniforms();
 

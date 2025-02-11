@@ -6,13 +6,22 @@
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Modules/RenderingManager.h"
+#include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
-MaterialAsset::MaterialAsset(PR_STRING_ID name,
-                             const ImportedMaterial& importedMaterial)
-    : Asset(std::move(name)),
-      pipelineId_(importedMaterial.structure.materialType),
-      properties_(importedMaterial.structure.properties) {}
+MaterialAsset::MaterialAsset(PR_STRING_ID name, renderer_pipeline_id_t id)
+    : Asset(std::move(name)), pipelineId_(id) {
+    PipelineStructure* structure {
+        RenderingManager::get().getPipelineStructure(id);
+    };
+
+    PR_ASSERT(structure != nullptr,
+              std::format("A material must be made from an existing pipeline, "
+                          "and a pipeline with id {} does not exist.",
+                          id));
+
+    this->properties_ = structure->pipeline_id;
+}
 
 ImagePtr MaterialAsset::getImage() const { return diffuseImage_; }
 
@@ -43,9 +52,9 @@ MaterialProperty* MaterialAsset::getProperty(const PR_STRING_ID& name) {
     return nullptr;
 }
 
-bool MaterialAsset::operator==(renderer_pipeline_id_t id) const {
-    return pipelineId_ == id;
-}
+/*bool MaterialAsset::operator==(renderer_pipeline_id_t id) const {*/
+/*    return pipelineId_ == id;*/
+/*}*/
 
 MaterialInstancePtr MaterialAsset::createInstance() const {
 

@@ -4,10 +4,6 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/RenderTypes.h"
 
-#include "Modules/ModelLoader.h"
-
-#include "DefaultShaders.h"
-
 namespace Presto {
 MeshContext* OpenGLDrawManager::getMeshContext(renderer_mesh_id_t id) {
     auto mesh{bufferMap_.find(id)};
@@ -95,16 +91,22 @@ OpenGLPipeline* OpenGLDrawManager::getPipeline(renderer_pipeline_id_t id) {
     };
         */
 
-void OpenGLDrawManager::setPipeline(renderer_pipeline_id_t id,
-                                    OpenGLPipeline&& material) {
-    pipelineMap_.emplace(id, std::move(material));
-};
+PipelineStructure OpenGLDrawManager::addPipeline(OpenGLPipeline&& pipeline,
+                                                 renderer_pipeline_id_t id) {
+    if (id == ANY_PIPELINE) {
+        id = currentKey_++;
+    }
 
-void OpenGLDrawManager::setTexture(renderer_texture_id_t id,
-                                   OpenGLTexture&& texture) {
-    textureMap_.emplace(id, std::move(texture));
-};
+    PipelineStructure structure{pipeline.getStructure()};
 
+    if ()
+
+        // TODO: Make this only affect pipelines with the buffers
+        pipeline->setUniformBlock(0, *globalUniformBuffer_.get());
+    pipeline->setUniformBlock(1, *objectUniformBuffer_.get());
+
+    pipelineMap_.emplace(id, std::move(pipeline));
+};
 }  // namespace Presto
 
 /*

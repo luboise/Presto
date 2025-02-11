@@ -22,7 +22,7 @@ enum class ShaderDataType {
 };
 using attribute_size_t = Presto::size_t;
 
-enum class ShaderDataSubType { INT, UINT, FLOAT };
+enum class ShaderDataSubType { INT, UINT, FLOAT, DOUBLE };
 
 constexpr Presto::size_t shaderDataTypeSize(
     ShaderDataSubType subType) noexcept {
@@ -35,6 +35,9 @@ constexpr Presto::size_t shaderDataTypeSize(
 
         case ShaderDataSubType::FLOAT:
             return sizeof(Presto::float32_t);
+
+        case ShaderDataSubType::DOUBLE:
+            return sizeof(Presto::float64_t);
     }
 };
 
@@ -63,6 +66,7 @@ constexpr AttributeTypeDetails attributeDetails(ShaderDataType type) {
                 .sub_type = ShaderDataSubType::FLOAT,
                 .sub_type_size = shaderDataTypeSize(ShaderDataSubType::FLOAT),
                 .sub_type_count = 1};
+
         case ShaderDataType::VEC2:
             return {
                 .sub_type = ShaderDataSubType::FLOAT,
@@ -73,10 +77,40 @@ constexpr AttributeTypeDetails attributeDetails(ShaderDataType type) {
                 .sub_type = ShaderDataSubType::FLOAT,
                 .sub_type_size = shaderDataTypeSize(ShaderDataSubType::FLOAT),
                 .sub_type_count = 3};
+        case ShaderDataType::VEC4:
+            return {
+                .sub_type = ShaderDataSubType::FLOAT,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::FLOAT),
+                .sub_type_count = 4};
         case ShaderDataType::MAT4:
             return {
                 .sub_type = ShaderDataSubType::FLOAT,
                 .sub_type_size = shaderDataTypeSize(ShaderDataSubType::FLOAT),
+                .sub_type_count = 16};
+        case ShaderDataType::DOUBLE:
+            return {
+                .sub_type = ShaderDataSubType::DOUBLE,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::DOUBLE),
+                .sub_type_count = 1};
+        case ShaderDataType::DVEC2:
+            return {
+                .sub_type = ShaderDataSubType::DOUBLE,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::DOUBLE),
+                .sub_type_count = 2};
+        case ShaderDataType::DVEC3:
+            return {
+                .sub_type = ShaderDataSubType::DOUBLE,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::DOUBLE),
+                .sub_type_count = 3};
+        case ShaderDataType::DVEC4:
+            return {
+                .sub_type = ShaderDataSubType::DOUBLE,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::DOUBLE),
+                .sub_type_count = 4};
+        case ShaderDataType::DMAT4:
+            return {
+                .sub_type = ShaderDataSubType::DOUBLE,
+                .sub_type_size = shaderDataTypeSize(ShaderDataSubType::DOUBLE),
                 .sub_type_count = 16};
     }
 }

@@ -6,6 +6,7 @@
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 #include "Presto/Rendering/PipelineBuilder.h"
+#include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -30,6 +31,9 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     static void setRenderLibrary(RENDER_LIBRARY library);
     static void setWindow(GLFWAppWindow* window);
+
+    [[nodiscard]] PipelineStructure* getPipelineStructure(
+        renderer_pipeline_id_t) const;
 
     void setCamera(CameraComponent& newCam);
     CameraComponent& getCamera() { return activeCamera_; };

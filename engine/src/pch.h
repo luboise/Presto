@@ -4,6 +4,7 @@
 #include <algorithm>  // IWYU pragma: export
 #include <iostream>   // IWYU pragma: export
 #include <memory>     // IWYU pragma: export
+#include <numeric>    // IWYU pragma: export
 #include <ranges>     // IWYU pragma: export
 #include <utility>    // IWYU pragma: export
 

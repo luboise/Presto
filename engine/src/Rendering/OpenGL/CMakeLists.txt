@@ -4,6 +4,7 @@ target_sources(
           utils.cpp
           OpenGLBuffer.cpp
           OpenGLPipeline.cpp
-          OpenGLShader.cpp
+		  # OpenGLShader.cpp
+          OpenGLUniformBuffer.cpp
           OpenGLDrawManager/OpenGLDrawManager.cpp
           OpenGLDrawManager/OpenGLTexture.cpp)

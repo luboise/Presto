@@ -10,4 +10,5 @@ target_sources(
           RenderTypes.cpp
           VertexAttribute.cpp
           Shader.cpp
+          PipelineTypes.cpp
           PipelineBuilder.cpp)

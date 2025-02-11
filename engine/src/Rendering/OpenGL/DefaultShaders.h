@@ -11,19 +11,21 @@ layout(location = 1) in vec3 _colour;
 layout(location = 2) in vec3 _normal;
 layout(location = 3) in vec2 _tex_coords;
 
-// Global uniforms
-layout(location = 0) uniform mat4 view;
-layout(location = 1) uniform mat4 projection;
+layout(std140, binding = 0) uniform GlobalUniforms {
+    mat4 view;
+    mat4 projection;
+};
 
-// Object uniforms
-layout(location = 2) uniform mat4 transform;
+layout(std140, binding = 1) uniform ObjectUniforms {
+    mat4 model;
+};
 
 void main() {
-    gl_Position = projection * view * transform * vec4(_vp, 1.0);
+    gl_Position = projection * view * model * vec4(_vp, 1.0);
     colour = vec4(_colour, 1.0);
     tex_coords = _tex_coords;
 
-	mat3 rotationMatrix = transpose(inverse(mat3(transform)));
+	mat3 rotationMatrix = transpose(inverse(mat3(model)));
 	normal = normalize(rotationMatrix * _normal);
 }
 )";

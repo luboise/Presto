@@ -50,6 +50,8 @@ class ErasedBytes {
         return std::bit_cast<T>(data_);
     }
 
+    [[nodiscard]] ByteArray bytes() const { return this->data_; }
+
     template <UniformVariableType T>
     [[nodiscard]] typename UniformVariableTypeTraits<T>::type as() const {
         using return_t = UniformVariableTypeTraits<T>::type;

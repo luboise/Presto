@@ -14,7 +14,14 @@ class PipelineBuilder {
 
     virtual PipelineStructure build() = 0;
 
+    virtual ~PipelineBuilder() = default;
+
+    PipelineBuilder(const PipelineBuilder&) = delete;
+    PipelineBuilder(PipelineBuilder&&) = delete;
+    PipelineBuilder& operator=(const PipelineBuilder&) = delete;
+    PipelineBuilder& operator=(PipelineBuilder&&) = delete;
+
    protected:
-    PipelineBuilder();
+    PipelineBuilder() = default;
 };
 }  // namespace Presto

@@ -1,12 +1,15 @@
 #include "Presto/Rendering/PipelineBuilder.h"
 
-#include "Rendering/OpenGL/OpenGLRenderer.h"
-#include "Rendering/OpenGL/OpenGLShader.h"
+#include "Presto/Rendering/PipelineTypes.h"
+#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
+#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLTexture.h"
+
 #include "Rendering/OpenGL/utils.h"
 
 namespace Presto {
 class OpenGLPipelineBuilder final : public PipelineBuilder {
     friend class OpenGLRenderer;
+    friend class RenderingManager;
 
     static constexpr auto INVALID_SHADER_ID = 0;
 
@@ -22,7 +25,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
                                "Vertex shader failed to compile.");
 
-                vertexShader_ = vs;
+                vertexShader_ = ShaderAllocation{vs};
                 break;
             }
             case ShaderStage::FRAGMENT: {
@@ -34,7 +37,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
                                "Fragment shader failed to compile.");
 
-                fragmentShader_ = fs;
+                fragmentShader_ = ShaderAllocation{fs};
                 break;
             }
             default: {
@@ -46,26 +49,42 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
     };
 
     PipelineStructure build() override {
-        OpenGLShader shader{vertexShader_, fragmentShader_};
-
-        glDeleteShader(vertexShader_);
-        vertexShader_ = INVALID_SHADER_ID;
-
-        glDeleteShader(fragmentShader_);
-        fragmentShader_ = INVALID_SHADER_ID;
-
-        OpenGLPipeline pipeline{shader};
+        return this->build(OpenGLDrawManager::ANY_PIPELINE);
     };
 
    private:
-    OpenGLRenderer* renderer_{nullptr};
+    explicit OpenGLPipelineBuilder(OpenGLDrawManager* drawManager)
+        : drawManager_(drawManager) {};
 
-    GLuint vertexShader_{INVALID_SHADER_ID};
-    GLuint fragmentShader_{INVALID_SHADER_ID};
+    PipelineStructure build(renderer_pipeline_id_t id) {
+        PR_ASSERT(vertexShader_.id != 0,
+                  "Vertex shader was unassigned when building the pipeline.");
 
-    explicit OpenGLPipelineBuilder(OpenGLRenderer* renderer)
-        : renderer_(renderer), shaderProgram_(glCreateProgram()) {};
+        PR_ASSERT(fragmentShader_.id != 0,
+                  "Fragment shader was unassigned when building the pipeline.");
 
-    ~OpenGLPipelineBuilder() {}
+        OpenGLPipeline pipeline{vertexShader_.id, fragmentShader_.id};
+
+        return drawManager_->addPipeline(std::move(pipeline), id);
+    }
+
+    // OpenGLRenderer* renderer_{nullptr};
+
+    OpenGLDrawManager* drawManager_{nullptr};
+
+    struct ShaderAllocation {
+        GLuint id{0};
+
+        explicit ShaderAllocation(GLuint id);
+        ~ShaderAllocation() { glDeleteShader(id); }
+
+        ShaderAllocation(const ShaderAllocation&) = delete;
+        ShaderAllocation& operator=(const ShaderAllocation&) = delete;
+        ShaderAllocation(ShaderAllocation&&) = default;
+        ShaderAllocation& operator=(ShaderAllocation&&) = default;
+    };
+
+    ShaderAllocation vertexShader_{INVALID_SHADER_ID};
+    ShaderAllocation fragmentShader_{INVALID_SHADER_ID};
 };
 }  // namespace Presto

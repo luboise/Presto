@@ -66,4 +66,9 @@ bool MaterialProperty::compatible(const MaterialProperty& in,
     /*}*/
 };
 
+MaterialStructure MaterialStructure::from(const PipelineStructure& pipeline) {
+        :SDFHLKSDJFHKSLDFJDL //
+return {};
+};
+
 }  // namespace Presto

@@ -12,3 +12,11 @@ namespace Presto {
 
 class MaterialAsset;
 class MaterialInstanceProperty;
+
+class MaterialInstanceAsset {
+   public:
+
+   private:
+    std::vector<ImagePtr> images_;
+};
+}  // namespace Presto

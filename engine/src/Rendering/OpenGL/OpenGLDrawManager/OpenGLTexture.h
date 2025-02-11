@@ -7,45 +7,7 @@
 namespace Presto {
 class OpenGLTexture {
    public:
-    OpenGLTexture() = default;
-    OpenGLTexture& operator=(const OpenGLTexture&) = delete;
-    OpenGLTexture& operator=(OpenGLTexture&& other) noexcept {
-        imageWidth_ = other.imageWidth_;
-        imageHeight_ = other.imageHeight_;
-        textureId_ = other.textureId_;
-        samplerId_ = other.samplerId_;
-        other.imageWidth_ = 0;
-        other.imageHeight_ = 0;
-        other.textureId_ = 0;
-        other.samplerId_ = 0;
-
-        return *this;
-    }
-
     explicit OpenGLTexture(const Presto::Image& image) { load(image); };
-
-    OpenGLTexture(OpenGLTexture& other)
-        : imageWidth_(other.imageWidth_),
-          imageHeight_(other.imageHeight_),
-          textureId_(other.textureId_),
-          samplerId_(other.samplerId_) {
-        other.imageWidth_ = 0;
-        other.imageHeight_ = 0;
-        other.textureId_ = 0;
-        other.samplerId_ = 0;
-    };
-
-    OpenGLTexture(OpenGLTexture&& other) noexcept
-        : imageWidth_(other.imageWidth_),
-          imageHeight_(other.imageHeight_),
-          textureId_(other.textureId_),
-          samplerId_(other.samplerId_) {
-        other.imageWidth_ = 0;
-        other.imageHeight_ = 0;
-        other.textureId_ = 0;
-        other.samplerId_ = 0;
-    };
-
     ~OpenGLTexture();
 
     [[nodiscard]] bool isLoaded() const {
@@ -56,6 +18,12 @@ class OpenGLTexture {
     void unload();
 
     void bind(std::uint8_t slot) const;
+
+    OpenGLTexture& operator=(const OpenGLTexture&) = delete;
+    OpenGLTexture(OpenGLTexture& other);
+
+    OpenGLTexture& operator=(OpenGLTexture&& other) noexcept;
+    OpenGLTexture(OpenGLTexture&& other) noexcept;
 
    private:
     size_t imageWidth_{0};

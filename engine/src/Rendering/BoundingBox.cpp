@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Presto/Rendering/BoundingBox.h"
 
 using std::abs;
@@ -13,35 +15,25 @@ void BoundingBox::merge(const BoundingBox& other) {
     this->z_max = std::min(z_max, other.z_max);
 }
 
-double BoundingBox::getNormalisingFactor() {
+double BoundingBox::getNormalisingFactor() const {
     double new_val{0};
 
     double max{x_min};
 
     new_val = abs(x_max);
-    if (new_val > max) {
-        max = new_val;
-    }
+    max = std::max(new_val, max);
 
     new_val = abs(y_min);
-    if (new_val > max) {
-        max = new_val;
-    }
+    max = std::max(new_val, max);
 
     new_val = abs(y_max);
-    if (new_val > max) {
-        max = new_val;
-    }
+    max = std::max(new_val, max);
 
     new_val = abs(z_min);
-    if (new_val > max) {
-        max = new_val;
-    }
+    max = std::max(new_val, max);
 
     new_val = abs(z_max);
-    if (new_val > max) {
-        max = new_val;
-    }
+    max = std::max(new_val, max);
 
     if (max == 0) {
         return 0;

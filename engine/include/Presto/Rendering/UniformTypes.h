@@ -69,4 +69,22 @@ template <UniformVariableType T>
     requires requires { typename UniformVariableTypeTraits<T>; }
 using GPUTypeOf = UniformVariableTypeTraits<T>::GPUType;
 
+Presto::size_t SizeOfType(UniformVariableType type) noexcept {
+#define SWITCH_CASE(type) \
+    case type:            \
+        return sizeof(UniformVariableTypeTraits<type>::GPUType);
+
+    switch (type) {
+        SWITCH_CASE(UniformVariableType::INT);
+        SWITCH_CASE(UniformVariableType::UINT);
+        SWITCH_CASE(UniformVariableType::FLOAT);
+        SWITCH_CASE(UniformVariableType::VEC2);
+        SWITCH_CASE(UniformVariableType::VEC3);
+        SWITCH_CASE(UniformVariableType::VEC4);
+        SWITCH_CASE(UniformVariableType::MAT4);
+        SWITCH_CASE(UniformVariableType::IMAGE);
+    }
+#undef SWITCH_CASE
+};
+
 }  // namespace Presto

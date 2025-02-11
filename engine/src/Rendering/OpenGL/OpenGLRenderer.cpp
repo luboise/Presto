@@ -3,20 +3,24 @@
 #include "OpenGLDrawManager/OpenGLDrawManager.h"
 
 #include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MaterialData.h"
+
+#include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/Renderer.h"
-#include "Rendering/OpenGL/OpenGLPipeline.h"
-#include "Rendering/OpenGL/OpenGLVAO.h"
+
+#include "Rendering/DefaultTextures.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
-#include "OpenGLDrawManager/DefaultShaders.h"
+#include "OpenGLPipeline.h"
+#include "OpenGLPipelineBuilder.h"
+#include "OpenGLUniformBuffer.h"
+#include "OpenGLVAO.h"
+
+#include "DefaultShaders.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #include <glm/gtc/type_ptr.hpp>
-
-#include "Modules/ModelLoader.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -42,53 +46,30 @@ OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
 
     drawManager_ = std::make_unique<OpenGLDrawManager>();
 
-    ShaderPtr default_shader{std::make_shared<OpenGLShader>()};
-    default_shader->setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
-        .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
-        .linkShaderProgram();
+    OpenGLPipelineBuilder builder{drawManager_.get()};
 
-    ShaderPtr ui_shader{std::make_shared<OpenGLShader>()};
-    default_shader->setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
-        .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
-        .linkShaderProgram();
+    PipelineStructure default_3d;
+    PipelineStructure default_ui;
 
-    drawManager_->setPipeline(PR_PIPELINE_DEFAULT_3D,
-                              OpenGLPipeline{default_shader});
-    drawManager_->setPipeline(PR_PIPELINE_DEFAULT_UI,
-                              OpenGLPipeline{ui_shader});
+    builder.setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
+        .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
+    default_3d = builder.build(PR_PIPELINE_DEFAULT_3D);
+
+    builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
+        .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
+    default_ui = builder.build(PR_PIPELINE_DEFAULT_UI);
 
     drawManager_->setTexture(PR_DEFAULT_TEXTURE,
-                             OpenGLTexture{Presto::Image{.width = 2,
-                                                         .height = 2,
-                                                         .bytes = {
-                                                             0,
-                                                             0,
-                                                             0,
-                                                             255,
+                             OpenGLTexture(DEFAULT_TEXTURE));
 
-                                                             255,
-                                                             255,
-                                                             255,
-                                                             255,
+    auto global_uniforms_size{default_3d.uniform_blocks[0].size()};
+    globalUniformBuffer_ =
+        std::make_unique<OpenGLUniformBuffer>(global_uniforms_size);
 
-                                                             255,
-                                                             255,
-                                                             255,
-                                                             255,
+    auto object_uniforms_size{default_3d.uniform_blocks[1].size()};
 
-                                                             0,
-                                                             0,
-                                                             0,
-                                                             255,
-                                                         }}});
-
-    /*
-            constexpr auto POS_VECTOR_SIZE = 3;
-            constexpr auto TRIANGLE_POINT_COUNT = POS_VECTOR_SIZE * 3;
-
-            PointType triangle[] = {0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
-                                    0.0f, -0.5f, -0.5f, 0.0f};
-                                                                    */
+    objectUniformBuffer_ =
+        std::make_unique<OpenGLUniformBuffer>(object_uniforms_size);
 }
 
 void OpenGLRenderer::nextFrame() {
@@ -204,11 +185,13 @@ void OpenGLRenderer::draw(const MeshContext& context) {
         updateUniforms();
     }
 
-    auto vao_it{context.vao_map.find(currentPipeline_->id_)};
-    PR_ASSERT(vao_it != context.vao_map.end(),
-              std::format(
-                  "No VAO found for combination of MeshContext and pipeline {}",
-                  currentPipeline_->id_));
+    renderer_pipeline_id_t id{currentPipeline_->id()};
+
+    auto vao_it{context.vao_map.find(id)};
+    PR_ASSERT(
+        vao_it != context.vao_map.end(),
+        std::format(
+            "No VAO found for combination of MeshContext and pipeline {}", id));
 
     vao_it->second.bind();
 
@@ -271,22 +254,32 @@ void OpenGLRenderer::updateUniforms() {
     PR_CORE_ASSERT(currentPipeline_ != nullptr,
                    "Unable to setup uniforms on a null material.");
 
-    ShaderPtr shader{currentPipeline_->getShader()};
+    ByteArray bytes(sizeof(globalUniformBuffer_));
 
-    shader->setUniform("view", globalUniforms_.view);
-    shader->setUniform("projection", globalUniforms_.projection);
-    // TODO: Make this a one-off function call
-    shader->setUniform("sampler1", static_cast<std::int8_t>(0));
+    globalUniformBuffer_->write(bytes);
 
-    shader->setUniform("transform", objectUniforms_.transform);
+    bytes = ByteArray(sizeof(objectUniformBuffer_));
+
+    objectUniformBuffer_->write(bytes);
 
     setDirty(false);
 };
 
-void OpenGLRenderer::usePipeline(renderer_pipeline_id_t pipelineId) {};
+void OpenGLRenderer::usePipeline(renderer_pipeline_id_t pipelineId) {
+    OpenGLPipeline* pipeline{drawManager_->getPipeline(pipelineId)};
 
-PipelineBuilder OpenGLRenderer::getPipelineBuilder() {
-    return OpenGLPipelineBuilder(this)
+    PR_ASSERT(
+        pipeline != nullptr,
+        std::format("A non-existant pipeline {} can't be used.", pipelineId));
+
+    pipeline->bind();
 };
 
+Allocated<PipelineBuilder> OpenGLRenderer::getPipelineBuilder() {
+    return Allocated<PipelineBuilder>{
+        new OpenGLPipelineBuilder{this->drawManager_.get()}};
+}
+
+std::vector<PipelineStructure> OpenGLRenderer::getPipelineStructures() const {
+    for (const auto& x : drawManager_->getPipelines()};
 }  // namespace Presto

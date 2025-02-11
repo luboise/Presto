@@ -5,6 +5,7 @@
 #include "Presto/Rendering/AttributeTypes.h"
 
 #include "Presto/Rendering/ErasedBytes.h"
+#include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 
 namespace Presto {
@@ -88,7 +89,6 @@ MaterialProperty DiffuseTexture(
 };  // namespace DefaultMaterialProperties
 
 struct MaterialStructure {
-    renderer_pipeline_id_t materialType{PR_PIPELINE_DEFAULT_3D};
     std::vector<MaterialProperty> properties;
 
     [[nodiscard]] const MaterialProperty* getProperty(
@@ -97,6 +97,8 @@ struct MaterialStructure {
     [[nodiscard]] bool writeableFrom(const MaterialStructure&) const;
 
     void merge(const MaterialStructure&);
+
+    static MaterialStructure from(const PipelineStructure&);
 };
 
 struct PropertyList {
@@ -105,6 +107,7 @@ struct PropertyList {
 
 struct ImportedMaterial {
     PR_STRING_ID name;
+    renderer_pipeline_id_t materialType{PR_PIPELINE_DEFAULT_3D};
     MaterialStructure structure;
 };
 

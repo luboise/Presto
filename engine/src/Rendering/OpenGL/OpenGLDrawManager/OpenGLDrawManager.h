@@ -3,6 +3,7 @@
 #include "OpenGLTexture.h"
 #include "Presto/Core/Constants.h"
 
+#include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 
 #include "Rendering/OpenGL/OpenGLBuffer.h"
@@ -13,6 +14,7 @@
 #include <map>
 
 namespace Presto {
+
 struct OpenGLPipelineProperties {
     glm::vec4 colour;
     OpenGLTexture texture;
@@ -31,9 +33,13 @@ struct MeshContext {
 
 class OpenGLDrawManager {
     // Materials
+    friend class OpenGLRenderer;
+
     static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
 
    public:
+    static constexpr renderer_pipeline_id_t ANY_PIPELINE = -1;
+
     renderer_mesh_id_t createMeshContext(const ImportedMesh&);
     MeshContext* getMeshContext(renderer_mesh_id_t);
     void destroyMeshContext(renderer_mesh_id_t);
@@ -53,6 +59,9 @@ class OpenGLDrawManager {
     OpenGLTexture* getTexture(renderer_texture_id_t);
     renderer_texture_id_t addTexture(const Presto::Image& image);
     void removeTexture(renderer_texture_id_t);
+
+    PipelineStructure addPipeline(OpenGLPipeline&& pipeline,
+                                  renderer_pipeline_id_t id = ANY_PIPELINE);
 
    private:
     std::map<renderer_mesh_id_t, MeshContext> bufferMap_;

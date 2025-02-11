@@ -16,22 +16,20 @@ class MaterialAsset final : public Asset {
    public:
     friend class RenderingManager;
 
-    explicit MaterialAsset(PR_STRING_ID name,
-                           const ImportedMaterial& importedMaterial);
+    MaterialAsset(PR_STRING_ID name, renderer_pipeline_id_t id);
+
     ~MaterialAsset() override = default;
 
     [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::MATERIAL;
     };
 
+    [[nodiscard]] MaterialInstancePtr createInstance() const;
+
     [[nodiscard]] MaterialStructure getStructure() const;
 
-    [[nodiscard]] ImagePtr getImage() const;
-
     // Checks if a material asset is equal to a specific pipeline
-    bool operator==(renderer_pipeline_id_t id) const;
-
-    [[nodiscard]] MaterialInstancePtr createInstance() const;
+    /*bool operator==(renderer_pipeline_id_t id) const;*/
 
    private:
     void load() override;
@@ -39,8 +37,6 @@ class MaterialAsset final : public Asset {
     renderer_pipeline_id_t pipelineId_{PR_PIPELINE_DEFAULT_3D};
 
     std::vector<MaterialProperty> properties_;
-
-    ImagePtr diffuseImage_;
 };
 
 using MaterialPtr = AssetPtr<MaterialAsset>;

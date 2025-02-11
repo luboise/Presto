@@ -26,6 +26,6 @@ struct BoundingBox {
      * 0.3, the model will be scaled so that all values are between [-0.5,
      * 0.5].
      */
-    double getNormalisingFactor();
+    [[nodiscard]] double getNormalisingFactor() const;
 };
 }  // namespace Presto

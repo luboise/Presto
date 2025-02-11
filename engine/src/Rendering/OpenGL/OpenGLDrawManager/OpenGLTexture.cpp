@@ -51,4 +51,36 @@ void OpenGLTexture::bind(std::uint8_t slot) const {
 
     glBindSampler(slot, samplerId_);
 }
+OpenGLTexture& OpenGLTexture::operator=(OpenGLTexture&& other) noexcept {
+    imageWidth_ = other.imageWidth_;
+    imageHeight_ = other.imageHeight_;
+    textureId_ = other.textureId_;
+    samplerId_ = other.samplerId_;
+    other.imageWidth_ = 0;
+    other.imageHeight_ = 0;
+    other.textureId_ = 0;
+    other.samplerId_ = 0;
+
+    return *this;
+}
+OpenGLTexture::OpenGLTexture(OpenGLTexture& other)
+    : imageWidth_(other.imageWidth_),
+      imageHeight_(other.imageHeight_),
+      textureId_(other.textureId_),
+      samplerId_(other.samplerId_) {
+    other.imageWidth_ = 0;
+    other.imageHeight_ = 0;
+    other.textureId_ = 0;
+    other.samplerId_ = 0;
+};
+OpenGLTexture::OpenGLTexture(OpenGLTexture&& other) noexcept
+    : imageWidth_(other.imageWidth_),
+      imageHeight_(other.imageHeight_),
+      textureId_(other.textureId_),
+      samplerId_(other.samplerId_) {
+    other.imageWidth_ = 0;
+    other.imageHeight_ = 0;
+    other.textureId_ = 0;
+    other.samplerId_ = 0;
+};
 }  // namespace Presto

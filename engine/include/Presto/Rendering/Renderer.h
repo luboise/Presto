@@ -2,6 +2,7 @@
 
 #include "Presto/Mixins/LazyCalculator.h"
 
+#include "Presto/Rendering/PipelineTypes.h"
 #include "RenderTypes.h"  // IWYU pragma: export
 
 namespace Presto {
@@ -16,32 +17,36 @@ class PipelineBuilder;
 class Renderer : protected LazyCalculator {
    public:
     Renderer() = default;
-
     virtual ~Renderer() = default;
 
-    void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
+    // Returns a pipeline builder which creates a graphics Pipeline from shaders
+    // on the disk.
+    virtual Allocated<PipelineBuilder> getPipelineBuilder() = 0;
 
-    void setExtents(VisualExtents extents) { extents_ = extents; };
-    [[nodiscard]] VisualExtents getExtents() const { return extents_; }
-
+    // Loads an imported mesh into the renderer. It must be registered with a
+    // pipeline before it can be drawn.
     virtual renderer_mesh_id_t loadMesh(const ImportedMesh&) = 0;
     virtual void unloadMesh(renderer_mesh_id_t id) = 0;
 
     virtual void bindMeshToPipeline(renderer_mesh_id_t, renderer_pipeline_id_t);
 
+    virtual void usePipeline(renderer_pipeline_id_t) = 0;
+
+    virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
+    virtual void unloadTexture(renderer_texture_id_t id) = 0;
+
+    virtual void bindMaterial(const MaterialStructure&) = 0;
+    virtual void unbindMaterial() = 0;
+
+    void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
+
+    void setExtents(VisualExtents extents) { extents_ = extents; };
+    [[nodiscard]] VisualExtents getExtents() const { return extents_; }
     // TODO: Implement custom materials/shaders
     /*
 virtual renderer_material_id_t loadMaterial(MaterialData material) = 0;
 virtual void unloadMaterial(renderer_material_id_t id) = 0;
     */
-
-    virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
-    virtual void unloadTexture(renderer_texture_id_t id) = 0;
-
-    virtual void usePipeline(renderer_pipeline_id_t) = 0;
-
-    virtual void bindMaterial(const MaterialStructure&) = 0;
-    virtual void unbindMaterial() = 0;
 
     virtual void render(renderer_mesh_id_t meshId) = 0;
 
@@ -55,7 +60,8 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
     void framebufferResized() { this->_framebufferResized = true; }
     virtual void onFrameBufferResized() = 0;
 
-    virtual PipelineBuilder getPipelineBuilder() = 0;
+    [[nodiscard]] virtual std::vector<PipelineStructure> getPipelineStructures()
+        const = 0;
 
    protected:
     GLFWAppWindow* _glfwWindow{nullptr};

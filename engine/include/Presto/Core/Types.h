@@ -11,6 +11,8 @@ namespace fs = std::filesystem;
 namespace Presto {
 
 using float32_t = glm::float32_t;
+using float64_t = glm::float64_t;
+
 using size_t = std::size_t;
 
 using int8_t = std::int8_t;

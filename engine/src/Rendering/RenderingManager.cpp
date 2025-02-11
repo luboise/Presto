@@ -11,8 +11,6 @@
 #include "Presto/Rendering/RendererFactory.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
-#include "DefaultShaders.h"
-
 namespace Presto {
 RENDER_LIBRARY RenderingManager::_library = UNSET;
 GLFWAppWindow* RenderingManager::_window = nullptr;
@@ -23,18 +21,6 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
     : activeCamera_(defaultCamera) {
     Allocated<Renderer> new_renderer{Presto::CreateRenderer(library, window)};
     renderer_ = std::move(new_renderer);
-
-    PipelineBuilder builder{renderer_->getPipelineBuilder()};
-
-    auto default_3d{
-        builder.setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
-            .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
-            .build()};
-
-    auto default_ui{
-        builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
-            .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT)
-            .build()};
 };
 
 void RenderingManager::loadMeshOnGpu(MeshAsset& mesh) {
@@ -220,4 +206,23 @@ void RenderingManager::loadImageOnGpu(ImageAsset& image) {
     auto image_id{renderer_->loadTexture(image.getImage())};
     image.renderId_ = image_id;
 };
+
+PipelineStructure* RenderingManager::getPipelineStructure(
+    renderer_pipeline_id_t id) const {
+    auto structures{renderer_->getPipelineStructures()};
+
+    if (auto found{std::ranges::find_if(
+            structures,
+            [id](const PipelineStructure& structure) -> bool {
+                return structure.pipeline_id == id;
+            })};
+        found != structures.end()) {
+        return &*found;
+    };
+
+    return nullptr;
+
+    return;
+};
+
 }  // namespace Presto
