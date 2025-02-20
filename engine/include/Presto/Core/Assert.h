@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Logging.h"
+
 // Mandatory libraries
 // #include <cstdint>
 

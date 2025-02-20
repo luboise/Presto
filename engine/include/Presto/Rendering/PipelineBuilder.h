@@ -9,10 +9,10 @@ class PipelineBuilder {
     friend class Renderer;
 
    public:
-    PipelineBuilder& setShader(const AssetPath& shaderPath, ShaderStage type);
+    PipelineBuilder& setShader(const AssetArg& shaderPath, ShaderStage type);
     virtual PipelineBuilder& setShader(const char* data, ShaderStage type) = 0;
 
-    virtual PipelineStructure build() = 0;
+    virtual Allocated<PipelineStructure> build() = 0;
 
     virtual ~PipelineBuilder() = default;
 

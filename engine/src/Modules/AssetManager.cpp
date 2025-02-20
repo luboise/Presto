@@ -1,11 +1,19 @@
 #include "Presto/Modules/AssetManager.h"
 
+#include "Presto/Assets/Asset.h"
 #include "Presto/Assets/ImageAsset.h"
 
+#include "Presto/Assets/MaterialAsset.h"
+#include "Presto/Core/Constants.h"
 #include "Presto/Utils/File.h"
 // #include "Rendering/Meshes/Cube.h"
 
 #include "GLTFLoader.h"
+
+#include "Presto/Modules/RenderingManager.h"
+
+#include <stb_image.h>
+#include <memory>
 
 namespace Presto {
 // const fs::path executableDirectory =
@@ -15,12 +23,12 @@ namespace Presto {
 // directory which the program was called from
 
 std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
-    const AssetPath& filepath, const std::vector<asset_name_t>& customNames) {
-    std::string filename{filepath.stem().string()};
-    fs::path file_extension = filepath.extension();
+    const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
+    std::string filename{filepath.basename()};
+    fs::path file_extension{filepath.fileExtension()};
 
     std::vector<ModelPtr> new_model_ptrs;
-    std::vector<MaterialPtr> new_material_ptrs;
+    std::vector<MaterialDefinitionPtr> new_material_ptrs;
     std::vector<ImagePtr> new_image_ptrs;
 
     ImportedModelData imported_data;
@@ -44,7 +52,7 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
         const ImportedMaterial& imported_material{imported_data.materials[i]};
 
         auto material_name{std::format("{}_material_{}", filename, i)};
-        MaterialPtr new_material{
+        MaterialDefinitionPtr new_material{
             createMaterial(material_name, imported_material)};
 
         // TODO: Maybe make this load when an entity enters the
@@ -53,8 +61,6 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
 
         new_material_ptrs.push_back(new_material);
     }
-
-    new_material_ptrs.push_back();
 
     for (size_t i{0}; i < imported_data.models.size(); ++i) {
         const auto& model = imported_data.models[i];
@@ -66,7 +72,8 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
         for (const ImportedMesh& mesh : model.meshes) {
             // Turn the raw mesh data into a new mesh asset
             auto new_mesh_asset{std::make_shared<MeshAsset>(mesh)};
-            new_mesh_asset->setDefaultMaterial(new_materials[mesh.material]);
+            new_mesh_asset->setDefaultMaterial(
+                new_material_ptrs[mesh.material]);
 
             new_model->meshes_.push_back(new_mesh_asset);
         }
@@ -119,29 +126,45 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     }
 
     for (auto& mat : new_material_ptrs) {
-        assets_[AssetType::MATERIAL].emplace(mat->name_, std::move(mat));
+        assets_[AssetType::MATERIAL_DEFINITION].emplace(mat->name_,
+                                                        std::move(mat));
     }
 
     return new_model_ptrs;
 };
 
-MaterialPtr AssetManager::createMaterial(const asset_name_t& customName,
-                                         MaterialStructure inStructure) {
+MaterialDefinitionPtr AssetManager::createMaterial(
+    const asset_name_t& customName, pipeline_id_t id) {
+    PipelineStructure* structure{
+        RenderingManager::get().getPipelineStructure(id)};
+
+    if (structure == nullptr) {
+        PR_ERROR(
+            "Unable to create material {} from pipeline #{}, as its structure "
+            "was null. Skipping this material.");
+        return nullptr;
+    }
+
+    return createMaterial(customName, *structure);
+};
+
+MaterialDefinitionPtr AssetManager::createMaterial(
+    const asset_name_t& customName, const PipelineStructure& inStructure) {
     auto new_material{std::make_shared<MaterialAsset>(customName, inStructure)};
     new_material->name_ = customName;
 
     const auto key = new_material->name_;
-    assets_[AssetType::MATERIAL][key] = new_material;
+    assets_[AssetType::MATERIAL_DEFINITION][key] = new_material;
 
     return new_material;
 }
 
-ImagePtr AssetManager::loadImageFromDisk(const AssetPath& filepath,
+ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
                                          const asset_name_t& customName) {
-    fs::path filename{filepath.stem()};
-    fs::path file_extension = filepath.extension();
+    Presto::string base{filepath.basename()};
+    Presto::string ext{filepath.fileExtension()};
 
-    ByteArray data = Utils::File::ReadBinaryFile(filepath);
+    ByteArray data{Utils::File::ReadBinaryFile(filepath)};
 
     int x{};
     int y{};
@@ -152,12 +175,12 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetPath& filepath,
 
     unsigned char* casted_data{reinterpret_cast<unsigned char*>(data.data())};
 
-    auto* image_data =
-        stbi_load_from_memory(casted_data, static_cast<int>(data.size()), &x,
-                              &y, &channels, desired_channels);
+    auto* image_data{stbi_load_from_memory(casted_data,
+                                           static_cast<int>(data.size()), &x,
+                                           &y, &channels, desired_channels)};
 
     if (image_data == nullptr) {
-        PR_ERROR("Unable to load image from path {}", filepath.string());
+        PR_ERROR("Unable to load image from path {}", filepath.path().string());
         return nullptr;
     }
 
@@ -196,36 +219,6 @@ new_mr->indices = default_cube.indices;
     return new_resource;
 }
 
-/*
-ModelAsset* AssetManager::getMesh(const resource_name_t& key) const {
-if (auto found = meshAssets_.find(key);
-    found != meshAssets_.end()) {
-    return found->second.get();
-}
-
-return nullptr;
-}
-
-ImagePtr AssetManager::getImage(const resource_name_t& key) const {
-if (auto found = imageAssets_.find(key);
-    found != imageAssets_.end()) {
-    return found->second.get();
-}
-
-return nullptr;
-}
-
-MaterialAsset* AssetManager::getMaterial(
-const resource_name_t& key) const {
-if (auto found = materialAssets_.find(key);
-    found != materialAssets_.end()) {
-    return found->second.get();
-}
-
-return nullptr;
-}
-*/
-
 ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
                                         const Presto::Image& image) {
     auto new_image{std::make_shared<ImageAsset>(customName, image)};
@@ -234,13 +227,20 @@ ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
     return new_image;
 };
 
-MaterialInstancePtr AssetManager::createMaterialInstance(
-    const asset_name_t& customName, const MaterialPtr& material) {
-    auto new_instance{
-        std::make_shared<MaterialInstanceAsset>(customName, material)};
-    assets_[AssetType::MATERIAL_INSTANCE][customName] = new_instance;
+Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
+    const auto map{assets_[AssetType::MATERIAL_DEFINITION] |
+                   std::views::values};
 
-    return new_instance;
+    if (auto it{std::ranges::find_if(
+            map,
+            [id](const auto& y) -> bool {
+                return y->template as<MaterialAsset>()->pipelineId() == id;
+            })};
+        it != map.end()) {
+        return std::dynamic_pointer_cast<MaterialAsset>(it.base()->second);
+    }
+
+    return nullptr;
 };
 
 }  // namespace Presto

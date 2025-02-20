@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Presto/Assets/MaterialAsset.h"
-#include "Presto/Assets/ModelAsset.h"
-
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects/Component.h"
 
@@ -18,6 +15,8 @@ class PRESTO_API ModelComponent : public Component {
     // TODO: Make the render trigger when the entity enters the scene so
     // that this friend declaration isn't necessary
     friend class RenderingManager;
+
+    using material_override_t = MaterialPtr;
 
    public:
     ModelComponent() = delete;
@@ -39,11 +38,11 @@ class PRESTO_API ModelComponent : public Component {
 
     [[nodiscard]] PR_SIZE meshCount() const { return meshes_.size(); }
 
-    MaterialPtr getMaterial(std::size_t index) {
+    material_override_t getMaterial(std::size_t index) {
         return materialOverrides_[index];
     };
 
-    void setMaterial(std::uint8_t index, const MaterialPtr& resource) {
+    void setMaterial(std::uint8_t index, const material_override_t& resource) {
         materialOverrides_[index] = resource;
     };
 
@@ -53,6 +52,6 @@ class PRESTO_API ModelComponent : public Component {
     explicit ModelComponent(const ModelPtr&);
 
     std::vector<MeshPtr> meshes_;
-    std::vector<MaterialPtr> materialOverrides_;
+    std::vector<material_override_t> materialOverrides_;
 };
 }  // namespace Presto

@@ -1,6 +1,7 @@
 #include "GLTFLoader.h"
 #include <type_traits>
 
+#include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Types.h"
 #include "Presto/Rendering/AttributeTypes.h"
@@ -170,9 +171,9 @@ Presto::vec4 vec4FromVector(std::vector<T> vec) {
 }
 
 ImportedModelData GLTFLoader::load(
-    const AssetPath& filepath, const std::vector<asset_name_t>& customNames) {
-    fs::path filename{filepath.stem()};
-    fs::path file_extension = filepath.extension();
+    const AssetPath& path, const std::vector<asset_name_t>& customNames) {
+    FilePath filename{path.stem()};
+    FilePath file_extension = path.extension();
 
     ImportedModelData imports{};
 
@@ -188,9 +189,9 @@ ImportedModelData GLTFLoader::load(
 
     // TODO: Implement full path/cwd system for engine to find it at
     // runtime, or have the user change it (would help the editor)
-    // fs::path full_asset_path =
+    // FilePath full_asset_path =
     // Utils::File::getFullPath(filepath);
-    const fs::path& full_asset_path = filepath;
+    const FilePath& full_asset_path = path;
 
     bool ret{false};
 

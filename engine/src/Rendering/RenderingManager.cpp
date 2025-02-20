@@ -4,6 +4,7 @@
 #include "Presto/Components/CameraComponent.h"
 #include "Presto/Components/Renderable/ModelComponent.h"
 #include "Presto/Components/TransformComponent.h"
+#include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/Renderer.h"
 
 // #include "Rendering/Vulkan/VulkanRenderer.h"
@@ -11,9 +12,26 @@
 #include "Presto/Rendering/RendererFactory.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
+#include "Utils/IDGenerator.h"
+
+#include "Presto/Modules/AssetManager.h"
+
 namespace Presto {
+
+constexpr auto PR_MIN_USER_ID = 10;
+
 RENDER_LIBRARY RenderingManager::_library = UNSET;
 GLFWAppWindow* RenderingManager::_window = nullptr;
+
+struct RenderingManager::Impl {
+    IDGenerator<mesh_id_t> mesh_ids;
+    IDGenerator<material_id_t> material_ids;
+    IDGenerator<texture_id_t> texture_ids;
+
+    // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
+    std::map<renderer_pipeline_id_t, Pipeline> pipelines;
+    std::map<renderer_texture_id_t, Texture> textures;
+};
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    GLFWAppWindow* window,
@@ -21,18 +39,21 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
     : activeCamera_(defaultCamera) {
     Allocated<Renderer> new_renderer{Presto::CreateRenderer(library, window)};
     renderer_ = std::move(new_renderer);
+    impl_ = std::make_unique<Impl>();
 };
 
-void RenderingManager::loadMeshOnGpu(MeshAsset& mesh) {
-    auto new_id{renderer_->loadMesh(mesh.importedMesh_)};
-    mesh.renderId_ = new_id;
-};
+renderer_mesh_id_t RenderingManager::loadMesh(const ImportedMesh& mesh) {
+    auto new_id{impl_->mesh_ids.generate()};
 
-void RenderingManager::loadModelOnGpu(ModelAsset& model) {
-    for (MeshPtr& mesh : model.meshes_) {
-        mesh->ensureLoaded();
-    }
-}
+    MeshRegistrationData details{
+        .vertices =
+            renderer_->createBuffer(Buffer::BufferType::VERTEX, mesh.bytes),
+        .indices =
+            renderer_->createBuffer(Buffer::BufferType::INDEX, mesh.indices),
+    };
+
+    return new_id;
+};
 
 void RenderingManager::init(CameraComponent& defaultCamera) {
     PR_CORE_ASSERT(_library != UNSET,
@@ -92,7 +113,8 @@ for (const auto& ptr_renderable : layer._renderables) {
 
         for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
             const MeshPtr& mesh{drawStruct.model->getMesh(i)};
-            const MaterialPtr& material{drawStruct.model->getMaterial(i)};
+            const MaterialDefinitionPtr& material{
+                drawStruct.model->getMaterial(i)};
 
             MaterialStructure mat_data{};
 
@@ -203,7 +225,7 @@ void RenderingManager::loadImageOnGpu(ImageAsset& image) {
 
         return;
     }
-    auto image_id{renderer_->loadTexture(image.getImage())};
+    auto image_id{renderer_->createTexture(image.getImage())};
     image.renderId_ = image_id;
 };
 
@@ -217,12 +239,136 @@ PipelineStructure* RenderingManager::getPipelineStructure(
                 return structure.pipeline_id == id;
             })};
         found != structures.end()) {
-        return &*found;
+        return found.base();
     };
 
     return nullptr;
+};
 
-    return;
+Allocated<UniformBuffer> RenderingManager::createUniformBuffer(
+    Presto::size_t size) {
+    return renderer_->createUniformBuffer(size);
+};
+
+Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type) {
+    // TODO: Make this a constexpr
+    pipeline_id_t id{[type]() {
+        switch (type) {
+            case MaterialType::DEFAULT_3D:
+                return PR_PIPELINE_DEFAULT_3D;
+            case MaterialType::DEFAULT_UI:
+                return PR_PIPELINE_DEFAULT_UI;
+        }
+    }()};
+
+    auto definition{AssetManager::get().getMaterialDefinition(id)};
+    PR_CORE_ASSERT(
+        definition != nullptr,
+        "A default pipeline can't have a null shared pointer to it.");
+
+    return std::make_shared<MaterialInstance>(definition);
+};
+
+MeshContext* RenderingManager::getMeshContext(renderer_mesh_id_t id) {
+    auto mesh{bufferMap_.find(id)};
+
+    return (mesh == bufferMap_.end()) ? nullptr : &(mesh->second);
+}
+
+void RenderingManager::removeTexture(renderer_texture_id_t id) {
+    auto erased{textureMap_.erase(id)};
+    if (erased == 0) {
+        PR_CORE_WARN(
+            "A delete was requested for a non-existant texture with ID {} "
+            "in "
+            "the OpenGL Draw Manager.",
+            id);
+    }
+};
+
+void RenderingManager::destroyMeshContext(renderer_mesh_id_t id) {
+    auto erased{bufferMap_.erase(id)};
+    if (erased == 0) {
+        PR_CORE_WARN(
+            "A delete was requested for a non-existant mesh with ID {} in "
+            "the OpenGL Draw Manager.",
+            id);
+    }
+};
+
+OpenGLTexture* RenderingManager::getTexture(renderer_texture_id_t id) {
+    if (id == UNREGISTERED_RENDER_DATA_ID) {
+        PR_WARN(
+            "An unregistered texture has been requested in the draw "
+            "manager. Using the default texture.");
+
+        return &textureMap_[PR_DEFAULT_TEXTURE];
+    }
+
+    auto texture{textureMap_.find(id)};
+
+    return texture == textureMap_.end() ? nullptr : &(texture->second);
+};
+
+renderer_mesh_id_t RenderingManager::createMeshContext(
+    const ImportedMesh& mesh) {
+    auto buffer{std::make_unique<OpenGLBuffer>(mesh.attributes,
+                                               mesh.vertex_count, mesh.bytes,
+                                               mesh.indices, mesh.draw_mode)};
+    MeshContext context(std::move(buffer));
+
+    auto new_key{++currentKey_};
+    const auto insertion{bufferMap_.emplace(new_key, buffer)};
+
+    PR_CORE_ASSERT(insertion.second,
+                   "Presto failed to insert RenderGroup into the render list.");
+
+    PR_CORE_TRACE("Added new RenderGroup to the render list.");
+
+    return new_key;
+};
+
+renderer_texture_id_t RenderingManager::addTexture(const Presto::Image& image) {
+    OpenGLTexture tex{image};
+
+    auto new_key{++currentKey_};
+    textureMap_.emplace(new_key, std::move(tex));
+
+    return new_key;
+};
+
+OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id) {
+    auto pipeline{pipelineMap_.find(id)};
+
+    return (pipeline == pipelineMap_.end()) ? nullptr : &(pipeline->second);
+}
+
+/*
+    void RenderingManager::removeMaterial(renderer_material_id_t id) {
+        auto erased{materialMap_.erase(id)};
+        if (erased == 0) {
+            PR_CORE_WARN(
+                "A delete was requested for a non-existant material with ID
+   {} " "in " "the OpenGL Draw Manager.", id);
+        }
+    };
+        */
+
+PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
+                                                renderer_pipeline_id_t id) {
+    if (id == ANY_PIPELINE) {
+        id = currentKey_++;
+    }
+
+    PipelineStructure structure{pipeline.getStructure()};
+
+    if ()
+
+        // TODO: Make this only affect pipelines with the buffers
+        pipeline->setUniformBlock(0, *globalUniformBuffer_.get());
+    pipeline->setUniformBlock(1, *objectUniformBuffer_.get());
+
+    pipelineMap_.emplace(id, std::move(pipeline));
 };
 
 }  // namespace Presto

@@ -87,4 +87,25 @@ Presto::size_t SizeOfType(UniformVariableType type) noexcept {
 #undef SWITCH_CASE
 };
 
+struct UniformBinding {
+    enum : Presto::uint8_t { SINGLE, BLOCK };
+
+    PR_STRING_ID name;
+    UniformVariableType type;
+
+    union {
+        uint32_t location;
+        uint32_t offset;
+    };
+
+    [[nodiscard]] Presto::size_t size() const;
+};
+
+struct UniformBlock {
+    Presto::int8_t bind_point;
+    std::vector<UniformBinding> bindings;
+
+    [[nodiscard]] Presto::size_t size() const;
+};
+
 }  // namespace Presto

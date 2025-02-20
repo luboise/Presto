@@ -5,13 +5,7 @@
 #include "Presto/Core/Constants.h"
 
 namespace Presto {
-enum class AssetType : std::uint8_t {
-    MESH,
-    MODEL,
-    MATERIAL,
-    MATERIAL_INSTANCE,
-    IMAGE
-};
+enum class AssetType : std::uint8_t { MESH, MODEL, MATERIAL_DEFINITION, IMAGE };
 
 class Asset {
     friend class AssetManager;
@@ -32,6 +26,11 @@ class Asset {
     Subclass* as() {
         return dynamic_cast<Subclass*>(this);
     }
+
+    Asset(const Asset&) = delete;
+    Asset(Asset&&) = delete;
+    Asset& operator=(const Asset&) = delete;
+    Asset& operator=(Asset&&) = delete;
 
    private:
     virtual void load() = 0;

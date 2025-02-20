@@ -33,7 +33,7 @@ class OpenGLShader final : public Shader {
 
     inline void setMat4(uniform_name_t property, float* value);
 
-    OpenGLShader& setShader(const AssetPath& shaderPath, ShaderStage type);
+    OpenGLShader& setShader(const AssetArg& shaderPath, ShaderStage type);
     OpenGLShader& setShader(const char* data, ShaderStage type);
 
     void linkShaderProgram();

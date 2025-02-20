@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Presto/Assets/Asset.h"
-#include "Presto/Assets/MaterialAsset.h"
 
+#include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Rendering/BoundingBox.h"
 #include "Presto/Rendering/RenderTypes.h"
 
@@ -32,7 +32,7 @@ class MeshAsset final : public Asset {
         //        return importedMesh_.getBoundingBox();
     };  // namespace Presto
 
-    void setDefaultMaterial(const MaterialPtr&);
+    void setDefaultMaterial(const MaterialDefinitionPtr&);
 
    private:
     ImportedMesh importedMesh_;

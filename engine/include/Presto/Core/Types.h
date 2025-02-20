@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <variant>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -19,6 +20,7 @@ using int8_t = std::int8_t;
 using int32_t = std::int32_t;
 
 using uint8_t = std::uint8_t;
+using uint16_t = std::uint16_t;
 using uint32_t = std::uint32_t;
 
 using vec2 = glm::vec2;
@@ -26,6 +28,8 @@ using vec3 = glm::vec3;
 using vec4 = glm::vec4;
 
 using mat4 = glm::mat4;
+
+using string = std::string;
 
 /*struct Vertex {*/
 /*    vec3 position;*/
@@ -49,9 +53,10 @@ using Index = uint32_t;
 using VertexList = std::vector<Vertex>;
 using IndexList = std::vector<Index>;
 
-using PR_STRING_ID = std::string;
+using PR_STRING_ID = Presto::string;
 
-using AssetPath = fs::path;
+using FilePath = fs::path;
+
 using asset_name_t = PR_STRING_ID;
 
 struct VisualExtents {

@@ -25,6 +25,8 @@
 #include "Presto/Platform.h"  // IWYU pragma: export
 #include "Utils/Math.h"       // IWYU pragma: export
 
+#include "Presto/Assets/AssetPath.h"  // IWYU pragma: export
+
 #include "Presto/Core/Assert.h"     // IWYU pragma: export
 #include "Presto/Core/Constants.h"  // IWYU pragma: export
 #include "Presto/Core/Logging.h"    // IWYU pragma: export

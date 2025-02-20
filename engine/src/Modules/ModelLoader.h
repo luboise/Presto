@@ -10,7 +10,7 @@ class ModelLoader {
     virtual ~ModelLoader() = default;
 
     virtual ImportedModelData load(
-        const AssetPath& filepath,
+        const AssetArg& filepath,
         const std::vector<asset_name_t>& customNames) = 0;
 };
 

@@ -30,7 +30,6 @@ class OpenGLRenderer final : public Renderer {
     // Destructor
     ~OpenGLRenderer() override;
 
-    renderer_mesh_id_t loadMesh(const ImportedMesh& mesh) override;
     void unloadMesh(renderer_mesh_id_t id) override;
 
     // Creates VAO for the mesh so that it can be rendered using that
@@ -40,12 +39,15 @@ class OpenGLRenderer final : public Renderer {
 
     void usePipeline(renderer_pipeline_id_t pipelineId) override;
 
+    Allocated<Buffer> createBuffer(Buffer::BufferType type,
+                                   Presto::size_t size) override;
+
     /*
   renderer_material_id_t loadMaterial(MaterialData) override;
   void unloadMaterial(renderer_material_id_t id) override;
     */
 
-    renderer_texture_id_t loadTexture(Presto::Image image) override;
+    renderer_texture_id_t createTexture(Presto::Image image) override;
     void unloadTexture(renderer_texture_id_t id) override;
 
     void bindMaterial(const MaterialStructure& data) override;
@@ -54,6 +56,8 @@ class OpenGLRenderer final : public Renderer {
     void render(renderer_mesh_id_t meshId) override;
 
     void nextFrame() override;
+
+    Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size) override;
 
    private:
     OpenGLPipeline* currentPipeline_{nullptr};

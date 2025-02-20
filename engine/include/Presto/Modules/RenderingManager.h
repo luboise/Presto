@@ -1,17 +1,26 @@
 #pragma once
 
+#include <map>
 #include "Module.h"
 
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
-#include "Presto/Assets/ModelAsset.h"
+#include "Presto/Core/Types.h"
 #include "Presto/Rendering/PipelineBuilder.h"
 #include "Presto/Rendering/PipelineTypes.h"
+#include "Presto/Rendering/RenderTypes.h"
+#include "Rendering/Buffer.h"
 
 namespace Presto {
 class GLFWAppWindow;
 class Renderer;
 class CameraComponent;
+class UniformBuffer;
+
+class Pipeline;
+class Texture;
+
+struct ImportedMesh;
 
 using layer_id_t = PR_NUMERIC_ID;
 
@@ -21,7 +30,19 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     friend void ImageAsset::load();
     friend void MaterialAsset::load();
 
+    using mesh_id_t = Presto::uint16_t;      // 65,000 unique meshes
+    using material_id_t = Presto::uint16_t;  // 65,000 unique meshes
+    using texture_id_t = Presto::uint32_t;   // 2 billion unique textures
+
+    struct MeshRegistrationData {
+        mesh_id_t id;
+        Allocated<Buffer> vertices;
+        Allocated<Buffer> indices;
+    };
+
    public:
+    static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
+
     static void init(CameraComponent& defaultCamera);
 
     void update() override;
@@ -38,13 +59,20 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     void setCamera(CameraComponent& newCam);
     CameraComponent& getCamera() { return activeCamera_; };
 
-    void loadMeshOnGpu(MeshAsset&);
-    void loadModelOnGpu(ModelAsset&);
+    /**
+     * Loads an imported mesh into the renderer. It must be registered with a
+     * pipeline before it can be drawn.
+     */
+    renderer_mesh_id_t loadMesh(const ImportedMesh& mesh);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
 
     PipelineBuilder getPipelineBuilder();
+
+    Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size);
+
+    Ptr<MaterialInstance> createMaterial(MaterialType type);
 
     /*
 void AddRenderable(layer_id_t layer_index, Renderable*);
@@ -76,12 +104,37 @@ _renderables.release(ptr_renderable);
 
     Allocated<Renderer> renderer_;
 
-    // std::vector<RenderLayer> _renderLayers;
+    std::map<renderer_mesh_id_t, Allocated<MeshRegistrationData>>
+        meshRegistrations_;
 
-    // Allocator<Mesh> _meshes;
-    // Allocator<Renderable> _renderables;
+    struct Impl;
 
-    // bool hasLayer(layer_id_t index);
-    // RenderLayer& getLayer(layer_id_t id);
+    Allocated<Impl> impl_;
+
+   public:
+    static constexpr renderer_pipeline_id_t ANY_PIPELINE = -1;
+
+    renderer_mesh_id_t createMeshContext(const ImportedMesh&);
+    MeshContext* getMeshContext(renderer_mesh_id_t);
+    void destroyMeshContext(renderer_mesh_id_t);
+
+    OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
+
+    // TODO: Implement custom shaders/materials
+    /*
+     renderer_material_id_t addMaterial(const Presto::Image& image);
+     void removeMaterial(renderer_material_id_t);
+            */
+
+   private:
+    void setPipeline(renderer_pipeline_id_t, Pipeline pipeline);
+    void setTexture(renderer_texture_id_t id, Texture texture);
+
+    Texture* getTexture(renderer_texture_id_t);
+    renderer_texture_id_t addTexture(const Presto::Image& image);
+    void removeTexture(renderer_texture_id_t);
+
+    PipelineStructure addPipeline(Pipeline&& pipeline,
+                                  renderer_pipeline_id_t id = ANY_PIPELINE);
 };
 }  // namespace Presto

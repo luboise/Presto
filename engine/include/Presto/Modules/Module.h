@@ -1,12 +1,17 @@
 #pragma once
 
 // #include "Presto/Core.h"
+#include <format>
+
+#include <functional>
 #include <memory>
 #include <type_traits>
 
+#include "Presto/Core/Assert.h"
 #include "Presto/Platform.h"
 
 #define MODULE_FUNCTIONS(Type)                                    \
+                                                                  \
    private:                                                       \
     friend class Module<Type>;                                    \
                                                                   \
@@ -15,10 +20,10 @@
         return #Type;                                             \
     }                                                             \
                                                                   \
-    Type(const Type &) = delete;                                  \
-    Type(Type &&) = delete;                                       \
-    Type &operator=(const Type &) = delete;                       \
-    Type &operator=(Type &&) = delete;                            \
+    Type(const Type&) = delete;                                   \
+    Type(Type&&) = delete;                                        \
+    Type& operator=(const Type&) = delete;                        \
+    Type& operator=(Type&&) = delete;                             \
                                                                   \
    private:                                                       \
     friend class Application
@@ -42,7 +47,25 @@ class PRESTO_API Module {
    public:
     friend class Application;
 
-    static T &get() {
+    /**
+     * Returns a reference to the current instance of a given module.
+     *
+     * Examples:
+     * ImportedMesh meshData{...}; // Existing imported mesh data
+     *
+     * RenderingManager::get().loadMesh(meshData);
+     *
+     * const auto& rm{RenderingManager::get()}; Valid usage.
+     * auto& rm{RenderingManager::get()}; Valid usage.
+     * auto rm{RenderingManager::get()}; INVALID usage.
+     *
+     * rm.loadMesh(meshData);
+     *
+     * @brief Gets a reference to the current instance of a given manager.
+     * @warning The base Module class has its copy and move constructors
+     * deleted, meaning that only references can be retrieved from get().
+     */
+    static T& get() {
         INTERNAL_MODULE_STATIC_ASSERTION();
         PR_CORE_ASSERT(T::initialised(),
                        std::format("Attempted to get uninitialised module: {}",
@@ -53,24 +76,24 @@ class PRESTO_API Module {
 
     static bool initialised() { return instance_ != nullptr; }
 
-    Module(const Module &) = delete;
-    Module(Module &&) = delete;
-    Module &operator=(const Module &) = delete;
-    Module &operator=(Module &&) = delete;
+    Module(const Module&) = delete;
+    Module(Module&&) = delete;
+    Module& operator=(const Module&) = delete;
+    Module& operator=(Module&&) = delete;
 
    protected:
-    using ModulePointer = std::unique_ptr<T, std::function<void(T *)>>;
+    using ModulePointer = std::unique_ptr<T, std::function<void(T*)>>;
 
     static ModulePointer instance_;
     Module() = default;
-    ~Module() = default;
+    virtual ~Module() = default;
 
    private:
     virtual void update() = 0;
     virtual void onInit() {};
 
     template <typename... Args>
-    static void init(Args &&...args) {
+    static void init(Args&&... args) {
         INTERNAL_MODULE_STATIC_ASSERTION();
 
         PR_ASSERT("Module {} must only be initialised once.",
@@ -78,8 +101,9 @@ class PRESTO_API Module {
 
         PR_CORE_INFO("Initialising {}.", T::getModuleName());
 
+        // Necessary, since the constructor is private
         instance_ = ModulePointer{new T(std::forward<Args>(args)...),
-                                  [](T *ptr) { delete ptr; }};
+                                  [](T* ptr) { delete ptr; }};
     };
 
     static void shutdown() {

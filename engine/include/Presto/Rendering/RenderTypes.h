@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Presto/Core/Constants.h"
+#include "Presto/Core/Types.h"
+
 #include "Presto/Rendering/BoundingBox.h"
 
 namespace Presto {

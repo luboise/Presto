@@ -3,7 +3,9 @@
 #include "Presto/Mixins/LazyCalculator.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
+#include "Presto/Rendering/Texture.h"
 #include "RenderTypes.h"  // IWYU pragma: export
+#include "Rendering/Buffer.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -14,26 +16,35 @@ struct ImportedMesh;
 
 class PipelineBuilder;
 
+class UniformBuffer;
+
 class Renderer : protected LazyCalculator {
    public:
     Renderer() = default;
     virtual ~Renderer() = default;
 
-    // Returns a pipeline builder which creates a graphics Pipeline from shaders
-    // on the disk.
+    /**
+     * Returns a builder that can be used to create new graphics
+     * pipelines. The builder is determined by the renderer implementation, and
+     * is assumed to be able to create new graphics pipelines by its own means.
+     *
+     * @brief Returns a builder used to create new graphics pipelines.
+     * @return The new PipelineBuilder object.
+     */
     virtual Allocated<PipelineBuilder> getPipelineBuilder() = 0;
 
-    // Loads an imported mesh into the renderer. It must be registered with a
-    // pipeline before it can be drawn.
-    virtual renderer_mesh_id_t loadMesh(const ImportedMesh&) = 0;
+    virtual Allocated<Texture> createTexture(Presto::Image image) = 0;
+    virtual Allocated<Buffer> createBuffer(Buffer::BufferType type,
+                                           Presto::size_t size) = 0;
+
+    virtual Allocated<UniformBuffer> createUniformBuffer(
+        Presto::size_t size) = 0;
+
     virtual void unloadMesh(renderer_mesh_id_t id) = 0;
 
     virtual void bindMeshToPipeline(renderer_mesh_id_t, renderer_pipeline_id_t);
 
     virtual void usePipeline(renderer_pipeline_id_t) = 0;
-
-    virtual renderer_texture_id_t loadTexture(Presto::Image image) = 0;
-    virtual void unloadTexture(renderer_texture_id_t id) = 0;
 
     virtual void bindMaterial(const MaterialStructure&) = 0;
     virtual void unbindMaterial() = 0;

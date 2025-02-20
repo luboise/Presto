@@ -5,7 +5,7 @@
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 
-using Presto::Renderer;
+using Presto::Renderer, Presto::Allocated;
 
 Allocated<Renderer> Presto::CreateRenderer(RENDER_LIBRARY lib,
                                            GLFWAppWindow* window) {

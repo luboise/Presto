@@ -9,35 +9,28 @@
 #include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
-MaterialAsset::MaterialAsset(PR_STRING_ID name, renderer_pipeline_id_t id)
-    : Asset(std::move(name)), pipelineId_(id) {
-    PipelineStructure* structure {
-        RenderingManager::get().getPipelineStructure(id);
-    };
+MaterialAsset::MaterialAsset(PR_STRING_ID name, const PipelineStructure& ps)
+    : Asset(std::move(name)), pipelineId_(ps.pipeline_id) {
+    auto& rm{RenderingManager::get()};
 
-    PR_ASSERT(structure != nullptr,
-              std::format("A material must be made from an existing pipeline, "
-                          "and a pipeline with id {} does not exist.",
-                          id));
+    MaterialStructure ms{materialStructureFromPipeline(ps)};
 
-    this->properties_ = structure->pipeline_id;
+    // TODO: Put validation checks here before appending the structure
+    this->structure_ = ms;
+
+    // Allocate a buffer for each uniform block (needed for hotswap)
+    for (const auto& uniform_block : ms.blocks) {
+        auto buffer{rm.createUniformBuffer(uniform_block.size())};
+    }
+
+    std::vector<MaterialProperty> properties;
+
+    this->properties_ = properties;
 }
 
-ImagePtr MaterialAsset::getImage() const { return diffuseImage_; }
+MaterialStructure MaterialAsset::getStructure() const { return structure_; }
 
-MaterialStructure MaterialAsset::getStructure() const {
-    MaterialStructure data{};
-
-    data.materialType = PR_PIPELINE_DEFAULT_3D;
-
-    data.properties = properties_;
-
-    return data;
-}
-
-void MaterialAsset::load() {
-    RenderingManager::get().loadImageOnGpu(this->diffuseImage_);
-};
+void MaterialAsset::load() { static_assert(false); };
 
 MaterialProperty* MaterialAsset::getProperty(const PR_STRING_ID& name) {
     if (const auto found{
@@ -52,12 +45,16 @@ MaterialProperty* MaterialAsset::getProperty(const PR_STRING_ID& name) {
     return nullptr;
 }
 
-/*bool MaterialAsset::operator==(renderer_pipeline_id_t id) const {*/
-/*    return pipelineId_ == id;*/
-/*}*/
-
-MaterialInstancePtr MaterialAsset::createInstance() const {
-
+MaterialStructure MaterialAsset::materialStructureFromPipeline(
+    const PipelineStructure& ps) {
+    static_assert(false);
+    MaterialStructure ms{};
+    return ms;
 };
 
+Ptr<MaterialInstance> MaterialAsset::createInstance() {
+    return std::make_shared<MaterialInstance>(shared_from_this());
+};
+
+pipeline_id_t MaterialAsset::pipelineId() const { return pipelineId_; }
 }  // namespace Presto

@@ -5,7 +5,7 @@ namespace Presto {
 class GLTFLoader : public ModelLoader {
    public:
     ImportedModelData load(
-        const AssetPath& filepath,
+        const AssetArg& filepath,
         const std::vector<asset_name_t>& customNames) override;
 };
 

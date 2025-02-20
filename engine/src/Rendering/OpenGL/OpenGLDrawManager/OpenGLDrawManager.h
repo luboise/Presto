@@ -3,6 +3,7 @@
 #include "OpenGLTexture.h"
 #include "Presto/Core/Constants.h"
 
+#include "Presto/Core/Types.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 
@@ -27,7 +28,7 @@ using draw_key = PR_NUMERIC_ID;
 struct ImportedMesh;
 
 struct MeshContext {
-    std::unique_ptr<OpenGLBuffer> buffer;
+    Allocated<OpenGLBuffer> buffer;
     std::map<renderer_pipeline_id_t, OpenGLVAO> vao_map;
 };
 
@@ -67,10 +68,5 @@ class OpenGLDrawManager {
     std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
     std::map<renderer_pipeline_id_t, OpenGLPipeline> pipelineMap_;
     std::map<renderer_texture_id_t, OpenGLTexture> textureMap_;
-
-    // TODO: Change this to a more robust system later
-    draw_key currentKey_ = PR_MINIMUM_MATERIAL_KEY;
-
-    GLuint createShaderProgram(const char*);
 };
 }  // namespace Presto

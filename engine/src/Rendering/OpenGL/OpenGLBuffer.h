@@ -5,6 +5,7 @@
 #include "Presto/Core/Types.h"
 
 #include "OpenGLTypes.h"
+#include "Rendering/Buffer.h"
 
 namespace Presto {
 
@@ -26,35 +27,40 @@ struct OpenGLBufferArgs {
     AttributeSet attributes;
 };
 
-class OpenGLBuffer {
+class OpenGLBuffer final : public Buffer {
     using HandleType = GLuint;
 
    public:
-    OpenGLBuffer(AttributeSet attributes, std::size_t vertexCount,
-                 ByteArray vertexBytes, IndexList indices,
-                 std::int32_t drawMode);
-    ~OpenGLBuffer();
+    /*OpenGLBuffer(AttributeSet attributes, std::size_t vertexCount,*/
+    /*             ByteArray vertexBytes, IndexList indices,*/
+    /*             std::int32_t drawMode);*/
+    /**/
 
-    [[nodiscard]] const OpenGLBufferDetails& getBufferDetails() const {
-        return data_;
-    }
+    OpenGLBuffer(BufferType type, Presto::size_t size);
+    OpenGLBuffer(BufferType type, const ByteArray& data);
 
-    [[nodiscard]] const AttributeSet& getAttributes() const {
-        return data_.attributes;
-    }
+    ~OpenGLBuffer() override;
 
-    void bind();
+    /*[[nodiscard]] const OpenGLBufferDetails& getBufferDetails() const {*/
+    /*    return data_;*/
+    /*}*/
 
-    OpenGLBuffer& operator=(OpenGLBuffer&&) = default;
-    OpenGLBuffer(OpenGLBuffer&&) = delete;
+    /*[[nodiscard]] const AttributeSet& getAttributes() const {*/
+    /*    return data_.attributes;*/
+    /*}*/
 
-    OpenGLBuffer(const OpenGLBuffer&) = delete;
-    OpenGLBuffer& operator=(const OpenGLBuffer&) = delete;
+    void bind() override;
+
+    void write(const ByteArray& data, Presto::size_t offset = 0) override;
 
    private:
     // Vertex, then Index
-    std::array<HandleType, 2> handles_{0};
+    // std::array<HandleType, 2> handles_{0};
 
-    OpenGLBufferDetails data_;
+    HandleType buffer_{};
+    Presto::int32_t openGlBufferType_;
+
+    // OpenGLBufferDetails data_;
 };
+
 }  // namespace Presto

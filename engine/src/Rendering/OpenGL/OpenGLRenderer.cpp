@@ -121,10 +121,6 @@ void OpenGLRenderer::onFrameBufferResized() {
                static_cast<GLsizei>(extents.height));
 }
 
-renderer_mesh_id_t OpenGLRenderer::loadMesh(const ImportedMesh& mesh) {
-    return this->drawManager_->createMeshContext(mesh);
-};
-
 void OpenGLRenderer::unloadMesh(renderer_mesh_id_t id) {
     this->drawManager_->destroyMeshContext(id);
 };
@@ -152,7 +148,7 @@ void OpenGLRenderer::bindMeshToPipeline(renderer_mesh_id_t meshId,
                              OpenGLVAO(*context->buffer, *pipeline));
 };
 
-renderer_texture_id_t OpenGLRenderer::loadTexture(Presto::Image image) {
+renderer_texture_id_t OpenGLRenderer::createTexture(Presto::Image image) {
     return drawManager_->addTexture(image);
 };
 
@@ -281,5 +277,18 @@ Allocated<PipelineBuilder> OpenGLRenderer::getPipelineBuilder() {
 }
 
 std::vector<PipelineStructure> OpenGLRenderer::getPipelineStructures() const {
-    for (const auto& x : drawManager_->getPipelines()};
+    for (const auto& x : drawManager_->getPipelines()) {
+    }
+};
+
+Allocated<UniformBuffer> OpenGLRenderer::createUniformBuffer(
+    Presto::size_t size) {
+    auto buffer{std::make_unique<OpenGLUniformBuffer>(size)};
+    return std::move(buffer);
+};
+
+Allocated<Buffer> OpenGLRenderer::createBuffer(Buffer::BufferType type,
+                                               Presto::size_t size) {
+    return std::make_unique<OpenGLBuffer>(type, size);
+};
 }  // namespace Presto

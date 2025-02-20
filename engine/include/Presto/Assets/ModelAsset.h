@@ -9,6 +9,7 @@
 #include "Presto/Rendering/BoundingBox.h"
 
 namespace Presto {
+
 class ModelAsset final : public Asset {
     friend class AssetManager;
     friend class RenderingManager;

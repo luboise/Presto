@@ -3,12 +3,14 @@
 #include <GL/glew.h>
 
 #include "Presto/Assets/Image.h"
+#include "Presto/Rendering/Texture.h"
 
 namespace Presto {
-class OpenGLTexture {
+class OpenGLTexture : public Texture {
    public:
     explicit OpenGLTexture(const Presto::Image& image) { load(image); };
-    ~OpenGLTexture();
+
+    ~OpenGLTexture() override;
 
     [[nodiscard]] bool isLoaded() const {
         return textureId_ != 0 && samplerId_ != 0;
@@ -17,7 +19,7 @@ class OpenGLTexture {
     void load(const Presto::Image& image);
     void unload();
 
-    void bind(std::uint8_t slot) const;
+    void bind(std::uint8_t slot) override;
 
     OpenGLTexture& operator=(const OpenGLTexture&) = delete;
     OpenGLTexture(OpenGLTexture& other);

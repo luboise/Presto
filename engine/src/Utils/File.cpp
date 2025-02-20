@@ -2,10 +2,8 @@
 
 #include "Presto/Core/Types.h"
 
-#include "nlohmann/json_fwd.hpp"
-
 namespace Presto::Utils {
-std::string File::ReadFile(const fs::path& path) {
+std::string File::ReadFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(path);
     PR_CORE_TRACE("Reading file at path {}", path.generic_string());
@@ -27,7 +25,7 @@ std::string File::ReadFile(const fs::path& path) {
     return buffer;
 }
 
-ByteArray File::ReadBinaryFile(const fs::path& path) {
+ByteArray File::ReadBinaryFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(filename);
     PR_CORE_TRACE(path.generic_string());
@@ -50,6 +48,7 @@ ByteArray File::ReadBinaryFile(const fs::path& path) {
     return buffer;
 };
 
+// TODO: Implement proper error handling
 json File::GetJSON(const std::string& text) {
     try {
         return json::parse(text);
@@ -62,7 +61,7 @@ json File::GetJSON(const fs::path& path) {
     return File::GetJSON(File::ReadFile(path));
 }
 
-fs::path File::getFullPath(const AssetPath& path) {
+fs::path File::getFullPath(const Presto::string& path) {
     return executableDirectory / path;
 };
 }  // namespace Presto::Utils

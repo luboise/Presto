@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+
 #include "Presto/Core/Types.h"
 
 using json = nlohmann::json;
@@ -8,12 +9,12 @@ using json = nlohmann::json;
 namespace Presto::Utils::File {
 // static Mesh* LoadMesh(const std::string&);
 
-const fs::path executableDirectory = std::filesystem::current_path();
+const FilePath executableDirectory{std::filesystem::current_path()};
 
-fs::path getFullPath(const AssetPath& path);
+FilePath getFullPath(const Presto::string& path);
 
-std::string ReadFile(const fs::path& path);
-ByteArray ReadBinaryFile(const fs::path& path);
+std::string ReadFile(const FilePath& path);
+ByteArray ReadBinaryFile(const FilePath& path);
 
 json GetJSON(const std::string& text);
 json GetJSON(const fs::path& path);

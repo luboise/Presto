@@ -11,4 +11,7 @@ target_sources(
           VertexAttribute.cpp
           Shader.cpp
           PipelineTypes.cpp
-          PipelineBuilder.cpp)
+          PipelineBuilder.cpp
+          UniformTypes.cpp
+          # Materials
+          MaterialInstance.cpp)

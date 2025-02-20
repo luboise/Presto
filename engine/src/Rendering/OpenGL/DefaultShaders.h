@@ -20,6 +20,12 @@ layout(std140, binding = 1) uniform ObjectUniforms {
     mat4 model;
 };
 
+layout(std140, binding = 2) uniform PBROptions {
+	vec4 colour;
+	float metallic;
+	float roughness;
+};
+
 void main() {
     gl_Position = projection * view * model * vec4(_vp, 1.0);
     colour = vec4(_colour, 1.0);
