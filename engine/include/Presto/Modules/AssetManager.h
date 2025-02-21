@@ -7,6 +7,7 @@
 
 #include "Presto/Assets/Asset.h"
 
+#include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 
@@ -64,33 +65,6 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
 
     ImagePtr loadImageFromDisk(const AssetArg& path,
                                const asset_name_t& customName);
-
-    MaterialDefinitionPtr createMaterial(const asset_name_t& customName,
-                                         const PipelineStructure& structure);
-
-    MaterialDefinitionPtr createMaterial(const asset_name_t& customName,
-                                         pipeline_id_t id);
-
-    MaterialDefinitionPtr createMaterial(MaterialType type);
-
-    /**/
-    /*template <MaterialType T>*/
-    /*    requires requires { typename MaterialTypeTraits<T>; } &&*/
-    /*             requires { typename MaterialTypeTraits<T>::property_list; }*/
-    /*MaterialTypeTraits<T>::property_list createMaterialInstance(*/
-    /*    const asset_name_t& customName, const MaterialPtr& material);*/
-    /**/
-    /**/
-    /*template <>*/
-    /*MaterialTypeTraits<MaterialType::DEFAULT_3D> createMaterialInstance(*/
-    /*    const asset_name_t& customName, const MaterialPtr& material) {*/
-    /*    auto new_instance{*/
-    /*        std::make_shared<MaterialInstanceAsset>(customName, material)};*/
-    /*    assets_[AssetType::MATERIAL_INSTANCE][customName] = new_instance;*/
-    /**/
-    /*    return new_instance;*/
-    /*};*/
-    /**/
 
     ImagePtr createImageAsset(const asset_name_t& customName,
                               const Presto::Image& image);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+
 #include "Presto/Assets/Asset.h"
 
 #include "Presto/Assets/ImageAsset.h"

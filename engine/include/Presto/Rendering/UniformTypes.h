@@ -88,9 +88,11 @@ Presto::size_t SizeOfType(UniformVariableType type) noexcept {
 };
 
 struct UniformBinding {
+    using name_t = PR_STRING_ID;
+
     enum : Presto::uint8_t { SINGLE, BLOCK };
 
-    PR_STRING_ID name;
+    name_t name;
     UniformVariableType type;
 
     union {

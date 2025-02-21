@@ -113,13 +113,12 @@ for (const auto& ptr_renderable : layer._renderables) {
 
         for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
             const MeshPtr& mesh{drawStruct.model->getMesh(i)};
-            const MaterialDefinitionPtr& material{
-                drawStruct.model->getMaterial(i)};
+            const MaterialPtr& material{drawStruct.model->getMaterial(i)};
 
             MaterialStructure mat_data{};
 
             if (material != nullptr) {
-                mat_data = material->getStructure();
+                mat_data = material.lock();
             } else if (!mesh->defaultMaterial_.expired()) {
                 mat_data = mesh->defaultMaterial_.lock()->getStructure();
             }
@@ -134,8 +133,6 @@ for (const auto& ptr_renderable : layer._renderables) {
     // TODO: Refactor this to cache in the RenderingManager if the
     // performance impact is too much
 }
-
-void RenderingManager::shutdown() {}
 
 /*
 layer_id_t RenderingManager::addLayer(size_t pos) {
@@ -250,7 +247,8 @@ Allocated<UniformBuffer> RenderingManager::createUniformBuffer(
     return renderer_->createUniformBuffer(size);
 };
 
-Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type) {
+Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
+                                                       Presto::string name) {
     // TODO: Make this a constexpr
     pipeline_id_t id{[type]() {
         switch (type) {
@@ -369,6 +367,10 @@ PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
     pipeline->setUniformBlock(1, *objectUniformBuffer_.get());
 
     pipelineMap_.emplace(id, std::move(pipeline));
+};
+
+Ptr<Texture> RenderingManager::createTexture(ImagePtr& imagePtr) {
+    auto image{image->getImage()};
 };
 
 }  // namespace Presto

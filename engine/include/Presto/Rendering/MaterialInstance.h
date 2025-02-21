@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Types.h"
+
 namespace Presto {
 
 class MaterialAsset;
@@ -9,6 +11,8 @@ class MaterialInstance {
 
    public:
     explicit MaterialInstance(const Ptr<MaterialAsset>&);
+
+    MaterialInstance& setProperty(Presto::string name, Presto::vec3 data);
 
    private:
     Ref<MaterialAsset> definition_;

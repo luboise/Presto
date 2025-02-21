@@ -133,6 +133,7 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     return new_model_ptrs;
 };
 
+/*
 MaterialDefinitionPtr AssetManager::createMaterial(
     const asset_name_t& customName, pipeline_id_t id) {
     PipelineStructure* structure{
@@ -158,6 +159,7 @@ MaterialDefinitionPtr AssetManager::createMaterial(
 
     return new_material;
 }
+*/
 
 ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
                                          const asset_name_t& customName) {

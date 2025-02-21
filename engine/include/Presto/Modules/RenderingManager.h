@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+
 #include "Module.h"
 
 #include "Presto/Assets/ImageAsset.h"
@@ -9,12 +10,13 @@
 #include "Presto/Rendering/PipelineBuilder.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
-#include "Rendering/Buffer.h"
 
 namespace Presto {
 class GLFWAppWindow;
 class Renderer;
 class CameraComponent;
+
+class Buffer;
 class UniformBuffer;
 
 class Pipeline;
@@ -48,8 +50,6 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     void update() override;
     void clear();
 
-    static void shutdown();
-
     static void setRenderLibrary(RENDER_LIBRARY library);
     static void setWindow(GLFWAppWindow* window);
 
@@ -72,7 +72,10 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size);
 
-    Ptr<MaterialInstance> createMaterial(MaterialType type);
+    Ptr<MaterialInstance> createMaterial(MaterialType type,
+                                         Presto::string name);
+
+    [[nodiscard]] Ptr<Texture> createTexture(ImagePtr&);
 
     /*
 void AddRenderable(layer_id_t layer_index, Renderable*);
@@ -85,6 +88,25 @@ _renderables.release(ptr_renderable);
     // Mesh* NewMesh(const VertexList&, const IndexList&);
     // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
+    static constexpr renderer_pipeline_id_t ANY_PIPELINE = -1;
+
+    renderer_mesh_id_t createMeshContext(const ImportedMesh&);
+
+    /*
+MeshContext* getMeshContext(renderer_mesh_id_t);
+void destroyMeshContext(renderer_mesh_id_t);
+    */
+
+    /*
+OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
+    */
+
+    // TODO: Implement custom shaders/materials
+    /*
+     renderer_material_id_t addMaterial(const Presto::Image& image);
+     void removeMaterial(renderer_material_id_t);
+            */
+
    private:
     // Static vars
     static RENDER_LIBRARY _library;
@@ -95,6 +117,16 @@ _renderables.release(ptr_renderable);
     void loadImageOnGpu(ImageAsset&);
 
     void resizeFramebuffer() const;
+
+    void setPipeline(renderer_pipeline_id_t, Pipeline pipeline);
+    void setTexture(renderer_texture_id_t id, Texture texture);
+
+    Texture* getTexture(renderer_texture_id_t);
+    renderer_texture_id_t addTexture(const Presto::Image& image);
+    void removeTexture(renderer_texture_id_t);
+
+    PipelineStructure addPipeline(Pipeline&& pipeline,
+                                  renderer_pipeline_id_t id = ANY_PIPELINE);
 
     // Member vars
     CameraComponent& activeCamera_;
@@ -110,31 +142,5 @@ _renderables.release(ptr_renderable);
     struct Impl;
 
     Allocated<Impl> impl_;
-
-   public:
-    static constexpr renderer_pipeline_id_t ANY_PIPELINE = -1;
-
-    renderer_mesh_id_t createMeshContext(const ImportedMesh&);
-    MeshContext* getMeshContext(renderer_mesh_id_t);
-    void destroyMeshContext(renderer_mesh_id_t);
-
-    OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
-
-    // TODO: Implement custom shaders/materials
-    /*
-     renderer_material_id_t addMaterial(const Presto::Image& image);
-     void removeMaterial(renderer_material_id_t);
-            */
-
-   private:
-    void setPipeline(renderer_pipeline_id_t, Pipeline pipeline);
-    void setTexture(renderer_texture_id_t id, Texture texture);
-
-    Texture* getTexture(renderer_texture_id_t);
-    renderer_texture_id_t addTexture(const Presto::Image& image);
-    void removeTexture(renderer_texture_id_t);
-
-    PipelineStructure addPipeline(Pipeline&& pipeline,
-                                  renderer_pipeline_id_t id = ANY_PIPELINE);
 };
 }  // namespace Presto

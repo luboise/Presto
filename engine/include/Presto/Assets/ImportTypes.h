@@ -40,6 +40,7 @@ struct ImportedModel {
 };
 
 namespace DefaultAttributeName {
+
 constexpr auto POSITION = "a_position";
 constexpr auto NORMAL = "a_normal";
 constexpr auto TEXCOORDS = "a_texcoords";
@@ -47,8 +48,8 @@ constexpr auto TEXCOORDS = "a_texcoords";
 }  // namespace DefaultAttributeName
 
 namespace DefaultMaterialPropertyName {
-constexpr auto BASE_COLOUR = "u_baseColour";
 
+constexpr auto BASE_COLOUR = "u_baseColour";
 // Alias for American english speakers
 constexpr auto BASE_COLOR = BASE_COLOUR;
 

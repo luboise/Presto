@@ -1,6 +1,9 @@
 CompileFlags:
   Add: [-Wall, -Werror]
 
+CompileFlags:
+  Remove: [-include-pch] # Prevents preloading PCH in clangd diagnostics
+
 Diagnostics:
   UnusedIncludes: Strict
   ClangTidy:

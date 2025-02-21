@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Presto/Core/Types.h"
+
 namespace Presto {
 
 class PRESTO_API Texture {

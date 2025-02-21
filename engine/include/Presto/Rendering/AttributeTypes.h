@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core/Types.h"
+
 namespace Presto {
 
 enum class ShaderDataType {
@@ -20,6 +22,7 @@ enum class ShaderDataType {
     MAT4,
     DMAT4
 };
+
 using attribute_size_t = Presto::size_t;
 
 enum class ShaderDataSubType { INT, UINT, FLOAT, DOUBLE };

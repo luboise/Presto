@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Assets/ModelAsset.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects/Component.h"
 
