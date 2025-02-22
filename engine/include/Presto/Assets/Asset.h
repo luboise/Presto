@@ -16,7 +16,7 @@ class Asset {
 
     [[nodiscard]] constexpr virtual AssetType type() const = 0;
 
-    void ensureLoaded();
+    bool ensureLoaded();
 
     [[nodiscard]] bool loaded() const { return loaded_; }
 
@@ -33,7 +33,7 @@ class Asset {
     Asset& operator=(Asset&&) = delete;
 
    private:
-    virtual void load() = 0;
+    [[nodiscard]] virtual bool load() = 0;
 
     asset_name_t name_;
 

@@ -9,7 +9,7 @@ namespace Presto {
 };
 
 [[nodiscard]] Presto::size_t UniformBinding::size() const {
-    return SizeOfType(this->type);
+    return SizeOfType(this->data_type);
 };
 
 }  // namespace Presto

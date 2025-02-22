@@ -308,6 +308,7 @@ OpenGLTexture* RenderingManager::getTexture(renderer_texture_id_t id) {
     return texture == textureMap_.end() ? nullptr : &(texture->second);
 };
 
+/*
 renderer_mesh_id_t RenderingManager::createMeshContext(
     const ImportedMesh& mesh) {
     auto buffer{std::make_unique<OpenGLBuffer>(mesh.attributes,
@@ -325,6 +326,7 @@ renderer_mesh_id_t RenderingManager::createMeshContext(
 
     return new_key;
 };
+*/
 
 renderer_texture_id_t RenderingManager::addTexture(const Presto::Image& image) {
     OpenGLTexture tex{image};
@@ -369,7 +371,7 @@ PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
     pipelineMap_.emplace(id, std::move(pipeline));
 };
 
-Ptr<Texture> RenderingManager::createTexture(ImagePtr& imagePtr) {
+Ptr<Texture> RenderingManager::createTexture(TextureType type) {
     auto image{image->getImage()};
 };
 

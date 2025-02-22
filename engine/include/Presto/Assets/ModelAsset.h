@@ -28,7 +28,7 @@ class ModelAsset final : public Asset {
     BoundingBox getBoundingBox();
 
    private:
-    void load() override;
+    bool load() override;
 
     // std::vector<MeshData>
 

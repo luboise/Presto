@@ -12,25 +12,33 @@
 
 namespace Presto {
 
+struct ImportedMeshAttribute {
+    PR_STRING_ID name;
+
+    ShaderDataType type;
+    Presto::size_t count;
+
+    ByteArray data;
+};
+
+using AttributeList = std::vector<ImportedMeshAttribute>;
+
+static constexpr Presto::uint8_t PR_NO_MATERIAL_INDEX = -1;
+
 struct ImportedMesh {
-    struct ImportedAttribute {
-        PR_STRING_ID name;
+    AttributeList attributes;
 
-        ShaderDataType type;
-        Presto::size_t count;
-
-        ByteArray data;
-    };
-
-    std::vector<ImportedAttribute> attributes;
-
-    Presto::size_t material;
+    Presto::uint8_t material_index{PR_NO_MATERIAL_INDEX};
 
     Presto::size_t vertex_count;
     IndexList indices;
 
     // TODO: Make this a Presto type that can map to multiple graphics APIs
     std::int32_t draw_mode;
+
+    [[nodiscard]] bool hasMaterial() const {
+        return material_index != PR_NO_MATERIAL_INDEX;
+    };
 };
 
 struct ImportedModel {
@@ -57,20 +65,30 @@ constexpr auto DIFFUSE_TEXTURE = "u_diffuseTexture";
 
 };  // namespace DefaultMaterialPropertyName
 
-struct ImportedMaterial {
-    PR_STRING_ID name;
-    renderer_pipeline_id_t materialType{PR_PIPELINE_DEFAULT_3D};
-    MaterialStructure structure;
+struct ImportedMaterialProperty {
+    uniform_name_t name;
+
+    UniformVariableType data_type;
+    ErasedBytes data;
 };
 
-// TODO: Make this a proper struct with other properties
-using ImportedImage = Presto::Image;
+struct ImportedMaterial {
+    PR_STRING_ID name;
+    renderer_pipeline_id_t material_type{PR_PIPELINE_DEFAULT_3D};
+
+    std::vector<ImportedMaterialProperty> values;
+};
+
+struct ImportedTexture {
+    Presto::string name;
+    Presto::Image image;
+};
 
 struct ImportedModelData {
     std::vector<ImportedModel> models;
 
     std::vector<ImportedMaterial> materials;
-    std::vector<ImportedImage> images;
+    std::vector<ImportedTexture> textures;
 };
 
 }  // namespace Presto

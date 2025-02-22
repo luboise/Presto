@@ -2,7 +2,7 @@
 
 namespace Presto {
 
-enum class UniformVariableType {
+enum class UniformVariableType : uint8_t {
     INT,
     UINT,
     FLOAT,
@@ -10,7 +10,7 @@ enum class UniformVariableType {
     VEC3,
     VEC4,
     MAT4,
-    IMAGE,
+    TEXTURE,
 };
 
 template <UniformVariableType T>
@@ -49,7 +49,7 @@ struct UniformVariableTypeTraits<UniformVariableType::VEC4> {
     using GPUType = ImportType;
 };
 template <>
-struct UniformVariableTypeTraits<UniformVariableType::IMAGE> {
+struct UniformVariableTypeTraits<UniformVariableType::TEXTURE> {
     // Imported as index into the array of imported textures
     using ImportType = Presto::uint8_t;
     using GPUType = Presto::int32_t;
@@ -82,18 +82,20 @@ Presto::size_t SizeOfType(UniformVariableType type) noexcept {
         SWITCH_CASE(UniformVariableType::VEC3);
         SWITCH_CASE(UniformVariableType::VEC4);
         SWITCH_CASE(UniformVariableType::MAT4);
-        SWITCH_CASE(UniformVariableType::IMAGE);
+        SWITCH_CASE(UniformVariableType::TEXTURE);
     }
 #undef SWITCH_CASE
 };
 
-struct UniformBinding {
-    using name_t = PR_STRING_ID;
+using uniform_name_t = PR_STRING_ID;
 
+struct UniformBinding {
     enum : Presto::uint8_t { SINGLE, BLOCK };
 
-    name_t name;
-    UniformVariableType type;
+    Presto::uint8_t bind_type;
+
+    uniform_name_t name;
+    UniformVariableType data_type;
 
     union {
         uint32_t location;
@@ -104,6 +106,8 @@ struct UniformBinding {
 };
 
 struct UniformBlock {
+    uniform_name_t name;
+
     Presto::int8_t bind_point;
     std::vector<UniformBinding> bindings;
 

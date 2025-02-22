@@ -42,7 +42,7 @@ class MaterialAsset final :
     [[nodiscard]] pipeline_id_t pipelineId() const;
 
    private:
-    void load() override;
+    bool load() override;
 
     pipeline_id_t pipelineId_{PR_PIPELINE_DEFAULT_3D};
 

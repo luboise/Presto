@@ -86,8 +86,8 @@ PR_STRING_ID tinygltfNameToPrestoName(const PR_STRING_ID& name) {
     return name;
 }
 
-ImportedAttribute getDataFromAccessor(const tinygltf::Model& model,
-                                      size_t accessorIndex) {
+ImportedMeshAttribute getDataFromAccessor(const tinygltf::Model& model,
+                                          size_t accessorIndex) {
     const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
     ShaderDataType type{tinygltfToPrestoType(accessor)};
 
@@ -103,7 +103,7 @@ ImportedAttribute getDataFromAccessor(const tinygltf::Model& model,
     std::memcpy(ret_buffer.data(), buffer.data.data() + accessor_offset,
                 bv.byteLength);
 
-    ImportedAttribute ret{
+    ImportedMeshAttribute ret{
         .name = accessor.name,
         .type = type,
         .count = accessor.count,
@@ -236,11 +236,11 @@ ImportedModelData GLTFLoader::load(
             std::memcpy(image.bytes.data(), image_data.image.data(),
                         image.bytes.size());
 
-            if (imports.images.size() <= (index - 1U)) {
-                imports.images.resize(index);
+            if (imports.textures.size() <= (index - 1U)) {
+                imports.textures.resize(index);
             }
 
-            imports.images[index] = image;
+            imports.textures[index] = image;
         }
     }
 
@@ -260,9 +260,9 @@ ImportedModelData GLTFLoader::load(
             new_submesh.indices = getDataFromAccessor2<RawMeshData::IndexType>(
                 model, mesh.indices);
 
-            new_submesh.material = mesh.material;
+            new_submesh.material_index = mesh.material;
 
-            std::vector<ImportedAttribute> imported_attributes;
+            std::vector<ImportedMeshAttribute> imported_attributes;
 
             for (const auto& [attribute, accessor_index] : mesh.attributes) {
                 auto accessor{model.accessors[accessor_index]};

@@ -58,12 +58,12 @@ return in.type == out.type && in.name == out.name;
 /*    case UniformVariableType::INT:*/
 /*    case UniformVariableType::UINT:*/
 /*    case UniformVariableType::FLOAT:*/
-/*        return in.type == UniformVariableType::IMAGE;*/
+/*        return in.type == UniformVariableType::TEXTURE;*/
 /**/
 /*    case UniformVariableType::VEC2:*/
 /*    case UniformVariableType::VEC3:*/
 /*    case UniformVariableType::MAT4:*/
-/*    case UniformVariableType::IMAGE:*/
+/*    case UniformVariableType::TEXTURE:*/
 /*}*/
 };
 

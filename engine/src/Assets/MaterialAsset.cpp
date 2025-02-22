@@ -30,7 +30,10 @@ MaterialAsset::MaterialAsset(PR_STRING_ID name, const PipelineStructure& ps)
 
 MaterialStructure MaterialAsset::getStructure() const { return structure_; }
 
-void MaterialAsset::load() { static_assert(false); };
+bool MaterialAsset::load() {
+    static_assert(false);
+    return true;
+};
 
 MaterialProperty* MaterialAsset::getProperty(const PR_STRING_ID& name) {
     if (const auto found{

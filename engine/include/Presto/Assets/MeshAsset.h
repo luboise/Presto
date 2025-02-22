@@ -14,31 +14,28 @@ class MeshAsset final : public Asset {
     friend class RenderingManager;
 
    public:
-    explicit MeshAsset(ImportedMesh&&);
+    explicit MeshAsset();
 
     [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::MESH;
     };
 
-    // TODO: Adapt to imported mesh
-    [[nodiscard]] BoundingBox getBoundingBox() const {
-        return {.x_min = -1,
-                .x_max = 1,
-                .y_min = -1,
-                .y_max = 1,
-                .z_min = -1,
-                .z_max = 1};
+    MeshAsset& setVertices(const AttributeList& attributes);
+    MeshAsset& setIndices(const IndexList& attributes);
 
-        //        return importedMesh_.getBoundingBox();
-    };  // namespace Presto
+    MeshAsset& setDefaultMaterial(const MaterialPtr&);
 
-    void setDefaultMaterial(const MaterialDefinitionPtr&);
+    // TODO: Adapt to imported mesh so it doesn't have to be calculated
+    [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Presto
 
    private:
-    ImportedMesh importedMesh_;
-    BoundingBox box_;
+    struct Impl;
 
-    void load() override;
+    Allocated<Impl> impl_;
+
+    bool load() override;
+
+    [[nodiscard]] bool modifiable() const;
 
     renderer_mesh_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
     Ref<MaterialAsset> defaultMaterial_;

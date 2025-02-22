@@ -10,6 +10,7 @@
 #include "Presto/Rendering/PipelineBuilder.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Rendering/Texture.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -29,8 +30,8 @@ using layer_id_t = PR_NUMERIC_ID;
 class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
 
-    friend void ImageAsset::load();
-    friend void MaterialAsset::load();
+    friend bool ImageAsset::load();
+    friend bool MaterialAsset::load();
 
     using mesh_id_t = Presto::uint16_t;      // 65,000 unique meshes
     using material_id_t = Presto::uint16_t;  // 65,000 unique meshes
@@ -72,10 +73,10 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size);
 
-    Ptr<MaterialInstance> createMaterial(MaterialType type,
-                                         Presto::string name);
+    [[nodiscard]] Ptr<MaterialInstance> createMaterial(MaterialType type,
+                                                       Presto::string name);
 
-    [[nodiscard]] Ptr<Texture> createTexture(ImagePtr&);
+    [[nodiscard]] Ptr<Texture> createTexture(TextureType type);
 
     /*
 void AddRenderable(layer_id_t layer_index, Renderable*);

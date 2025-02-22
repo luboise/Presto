@@ -3,11 +3,17 @@
 #include "Presto/Assets/Asset.h"
 
 namespace Presto {
-void Asset::ensureLoaded() {
+bool Asset::ensureLoaded() {
     if (!loaded_) {
-        this->load();
-        loaded_ = true;
+        loaded_ = this->load();
+
+        if (!loaded_) {
+            PR_ERROR("Unable to load asset \"{}\" of type {}", this->name(),
+                     static_cast<Presto::uint8_t>(this->type()));
+        }
     }
+
+    return loaded_;
 };
 
 Asset::Asset(PR_STRING_ID name) : name_(std::move(name)) {};
