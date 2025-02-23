@@ -3,9 +3,12 @@
 #include "Presto/Mixins/LazyCalculator.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
-#include "Presto/Rendering/Texture.h"
-#include "RenderTypes.h"  // IWYU pragma: export
+#include "Presto/Rendering/RenderTypes.h"  // IWYU pragma: export
+#include "Presto/Rendering/Textures.h"
+
 #include "Rendering/Buffer.h"
+
+#include "TextureFactory.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -20,7 +23,9 @@ class UniformBuffer;
 
 class Renderer : protected LazyCalculator {
    public:
-    Renderer() = default;
+    static Allocated<Renderer> create(RENDER_LIBRARY lib,
+                                      GLFWAppWindow* window);
+
     virtual ~Renderer() = default;
 
     /**
@@ -32,8 +37,9 @@ class Renderer : protected LazyCalculator {
      * @return The new PipelineBuilder object.
      */
     virtual Allocated<PipelineBuilder> getPipelineBuilder() = 0;
+    virtual Allocated<TextureFactory> getTextureFactory() = 0;
+    // virtual Allocated<Texture> createTexture(Presto::Image image) = 0;
 
-    virtual Allocated<Texture> createTexture(Presto::Image image) = 0;
     virtual Allocated<Buffer> createBuffer(Buffer::BufferType type,
                                            Presto::size_t size) = 0;
 
@@ -75,6 +81,8 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
         const = 0;
 
    protected:
+    Renderer() = default;
+
     GLFWAppWindow* _glfwWindow{nullptr};
 
     GlobalUniforms globalUniforms_{};

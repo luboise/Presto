@@ -8,17 +8,4 @@
 using Presto::Renderer, Presto::Allocated;
 
 Allocated<Renderer> Presto::CreateRenderer(RENDER_LIBRARY lib,
-                                           GLFWAppWindow* window) {
-    switch (lib) {
-        case OPENGL: {
-            return std::make_unique<OpenGLRenderer>(window);
-        }
-            /*
-case VULKAN:
-_renderer = new VulkanRenderer(window);
-break;
-            */
-        default:
-            throw std::runtime_error("Invalid render library specified.");
-    }
-}
+                                           GLFWAppWindow* window) {}

@@ -16,6 +16,8 @@
 #include "OpenGLUniformBuffer.h"
 #include "OpenGLVAO.h"
 
+#include "OpenGLTextureFactory.h"
+
 #include "DefaultShaders.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
@@ -148,9 +150,11 @@ void OpenGLRenderer::bindMeshToPipeline(renderer_mesh_id_t meshId,
                              OpenGLVAO(*context->buffer, *pipeline));
 };
 
+/*
 renderer_texture_id_t OpenGLRenderer::createTexture(Presto::Image image) {
     return drawManager_->addTexture(image);
 };
+*/
 
 void OpenGLRenderer::unloadTexture(renderer_texture_id_t id) {
     drawManager_->removeTexture(id);
@@ -291,4 +295,10 @@ Allocated<Buffer> OpenGLRenderer::createBuffer(Buffer::BufferType type,
                                                Presto::size_t size) {
     return std::make_unique<OpenGLBuffer>(type, size);
 };
+
+Allocated<TextureFactory> OpenGLRenderer::getTextureFactory() {
+    auto factory{std::make_unique<OpenGLTextureFactory>()};
+    return factory;
+};
+
 }  // namespace Presto

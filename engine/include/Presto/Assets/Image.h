@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <vector>
 
 #include "Presto/Core/Types.h"
 
@@ -9,7 +8,7 @@ namespace Presto {
 struct Image {
     std::size_t width;
     std::size_t height;
-    std::vector<Presto::uint8_t> bytes;
+    ByteArray bytes;
 
     static constexpr auto PIXEL_BYTE_LENGTH = 4;
 

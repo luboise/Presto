@@ -14,7 +14,7 @@
 
 #include "Presto/Modules/RenderingManager.h"
 
-#include "Presto/Rendering/Texture.h"
+#include "Presto/Rendering/Textures.h"
 
 #include <stb_image.h>
 #include <memory>
@@ -189,7 +189,7 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
                             const auto& image_ptr{
                                 createImageAsset(tex.name, tex.image)};
 
-                            new_texture_ptrs[texture_index] = {
+                            new_texture_ptrs[texture_index] =
                                 RenderingManager::get().createTexture(
                                     image_ptr);
                         }

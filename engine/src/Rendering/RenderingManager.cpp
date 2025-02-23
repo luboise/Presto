@@ -1,15 +1,16 @@
 #include "Presto/Modules/RenderingManager.h"
+#include "Presto/Components/Renderable/ModelComponent.h"
+#include "Presto/Core/Types.h"
+
 #include "Presto/Modules/EntityManager.h"
 
 #include "Presto/Components/CameraComponent.h"
-#include "Presto/Components/Renderable/ModelComponent.h"
 #include "Presto/Components/TransformComponent.h"
 #include "Presto/Rendering/Pipeline.h"
-#include "Presto/Rendering/Renderer.h"
+#include "Rendering/Renderer.h"
 
 // #include "Rendering/Vulkan/VulkanRenderer.h"
 
-#include "Presto/Rendering/RendererFactory.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 
 #include "Utils/IDGenerator.h"
@@ -30,26 +31,37 @@ struct RenderingManager::Impl {
 
     // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
     std::map<renderer_pipeline_id_t, Pipeline> pipelines;
-    std::map<renderer_texture_id_t, Texture> textures;
+    std::map<texture_id_t, Texture> textures;
+
+    Allocated<TextureFactory> textureFactory_;
 };
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    GLFWAppWindow* window,
                                    CameraComponent& defaultCamera)
     : activeCamera_(defaultCamera) {
-    Allocated<Renderer> new_renderer{Presto::CreateRenderer(library, window)};
-    renderer_ = std::move(new_renderer);
+    Allocated<Renderer> renderer_ = Renderer::create(library, window);
     impl_ = std::make_unique<Impl>();
+
+    impl_->textureFactory_ = renderer_->getTextureFactory();
 };
 
 renderer_mesh_id_t RenderingManager::loadMesh(const ImportedMesh& mesh) {
     auto new_id{impl_->mesh_ids.generate()};
 
+    auto vertices{mesh.attributes};
+    Presto::size_t buffer_size{vertices.size()};
+
+    static_assert(
+        false,
+        "Fix this to actually make the vertices and then get the proper size.");
+
     MeshRegistrationData details{
+        .id = new_id,
         .vertices =
-            renderer_->createBuffer(Buffer::BufferType::VERTEX, mesh.bytes),
-        .indices =
-            renderer_->createBuffer(Buffer::BufferType::INDEX, mesh.indices),
+            renderer_->createBuffer(Buffer::BufferType::VERTEX, buffer_size),
+        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
+                                           mesh.indices.size() * sizeof(Index)),
     };
 
     return new_id;
@@ -67,16 +79,28 @@ void RenderingManager::init(CameraComponent& defaultCamera) {
         RenderingManager::_library, RenderingManager::_window, defaultCamera));
 }
 
-void RenderingManager::update() {
-    /*
-for (auto& layer : _renderLayers) {
-for (const auto& ptr_renderable : layer._renderables) {
-    renderer_->render(ptr_renderable,
-                      currentCamera_->getViewMatrix());
-}
-}
-    */
+[[nodiscard]] Ptr<Texture2D> RenderingManager::createTexture2D(
+    const ImagePtr& image_ptr) {
+    auto image{image_ptr->getImage()};
 
+    // TODO: Add width/height validation here
+    Ptr<Texture2D> new_texture{createTexture2D(image.width, image.height)};
+    new_texture->write(image.bytes);
+
+    return new_texture;
+};
+
+Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
+                                                 Presto::size_t height) {
+    texture_id_t new_id{impl_->texture_ids.generate()};
+    Ptr<Texture2D> new_texture{impl_->textureFactory_->new2D(width, height)};
+
+    impl_->textures.emplace(new_id, new_texture);
+
+    return new_texture;
+};
+
+void RenderingManager::update() {
     struct DrawStruct {
         ComponentPtr<ModelComponent> model;
         ComponentPtr<TransformComponent> transform;
@@ -98,14 +122,6 @@ for (const auto& ptr_renderable : layer._renderables) {
                                drawStruct.model->meshCount() > 0 &&
                                drawStruct.transform != nullptr;
                     })};
-
-    /*
-            for (const auto&& [model_ptr, transform_ptr] : mesh_draws) {
-                for (size_t i = 0; i < model_ptr->size(); i++) {
-                    model_ptr->getModelAsset()->ensureLoaded();
-                }
-            }
-                    */
 
     std::ranges::for_each(mesh_draws, [this](const DrawStruct& drawStruct) {
         renderer_->setObjectData(
@@ -134,55 +150,8 @@ for (const auto& ptr_renderable : layer._renderables) {
     // performance impact is too much
 }
 
-/*
-layer_id_t RenderingManager::addLayer(size_t pos) {
-if (pos == (size_t)-1) {
-    pos = _renderLayers.size();
-} else {
-    PR_ASSERT(pos < _renderLayers.size(),
-              "Invalid position given for new layer \"{}\".", pos);
-}
-
-_renderLayers.insert(_renderLayers.begin() + pos, RenderLayer());
-return pos;
-}
-
-void RenderingManager::removeLayer(layer_id_t id) {
-PR_CORE_ASSERT(hasLayer(id),
-               "Attempted to remove layer with invalid index {}."
-               "\tMax allowed index: {}",
-               id, _renderLayers.size() - 1);
-_renderLayers.erase(_renderLayers.begin() + id);
-}
-bool RenderingManager::hasLayer(layer_id_t index) {
-return (index < _renderLayers.size());
-}
-
-RenderLayer& RenderingManager::getLayer(layer_id_t id) {
-PR_CORE_ASSERT(_renderLayers.size() > 0,
-               "Attempted to get layer {} but there are no layers.",
-               id);
-
-PR_CORE_ASSERT(
-    hasLayer(id),
-    "Attempted to get layer with invalid index {}. Expected [0,{}]", id,
-    _renderLayers.size() - 1);
-
-return _renderLayers[id];
-}
-*/
-
 void RenderingManager::clear() { renderer_->nextFrame(); }
 
-/*
-    Mesh* RenderingManager::NewMesh(const VertexList& vertices,
-                                    const IndexList& indices) {
-        auto* mesh{new Mesh(_meshes.getNextId(), vertices, indices)};
-        _meshes.add(mesh);
-
-        return mesh;
-    }
-*/
 void RenderingManager::setRenderLibrary(RENDER_LIBRARY library) {
     PR_CORE_ASSERT(!RenderingManager::initialised(),
                    "Unable to set render library while the renderer is "
@@ -267,6 +236,14 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
     return std::make_shared<MaterialInstance>(definition);
 };
 
+Ptr<MaterialInstance> RenderingManager::getMaterial(
+    const Presto::string& name) {
+    // TODO: Implement
+
+    return nullptr;
+};
+
+/*
 MeshContext* RenderingManager::getMeshContext(renderer_mesh_id_t id) {
     auto mesh{bufferMap_.find(id)};
 
@@ -308,7 +285,6 @@ OpenGLTexture* RenderingManager::getTexture(renderer_texture_id_t id) {
     return texture == textureMap_.end() ? nullptr : &(texture->second);
 };
 
-/*
 renderer_mesh_id_t RenderingManager::createMeshContext(
     const ImportedMesh& mesh) {
     auto buffer{std::make_unique<OpenGLBuffer>(mesh.attributes,
@@ -326,7 +302,6 @@ renderer_mesh_id_t RenderingManager::createMeshContext(
 
     return new_key;
 };
-*/
 
 renderer_texture_id_t RenderingManager::addTexture(const Presto::Image& image) {
     OpenGLTexture tex{image};
@@ -342,18 +317,9 @@ OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id) {
 
     return (pipeline == pipelineMap_.end()) ? nullptr : &(pipeline->second);
 }
+*/
 
 /*
-    void RenderingManager::removeMaterial(renderer_material_id_t id) {
-        auto erased{materialMap_.erase(id)};
-        if (erased == 0) {
-            PR_CORE_WARN(
-                "A delete was requested for a non-existant material with ID
-   {} " "in " "the OpenGL Draw Manager.", id);
-        }
-    };
-        */
-
 PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
                                                 renderer_pipeline_id_t id) {
     if (id == ANY_PIPELINE) {
@@ -370,9 +336,6 @@ PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
 
     pipelineMap_.emplace(id, std::move(pipeline));
 };
-
-Ptr<Texture> RenderingManager::createTexture(TextureType type) {
-    auto image{image->getImage()};
-};
+*/
 
 }  // namespace Presto

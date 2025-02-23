@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Presto/Assets/ImportTypes.h"
+#include "Presto/Rendering/MaterialTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/VertexAttribute.h"
-#include "Texture.h"
 
 namespace Presto {
 

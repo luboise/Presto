@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Presto/Rendering/RenderTypes.h"
-#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
+// #include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
 
-#include "Presto/Rendering/Renderer.h"
+#include "Rendering/Renderer.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -18,17 +18,15 @@ class OpenGLRenderer final : public Renderer {
 
     Allocated<PipelineBuilder> getPipelineBuilder() override;
 
-    [[nodiscard]] std::vector<PipelineStructure> getPipelineStructures()
-        const override;
-
-    // Deleted functions
-    OpenGLRenderer(const OpenGLRenderer&) = delete;
-    OpenGLRenderer(OpenGLRenderer&&) = delete;
-    OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
-    OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
+    /*
+[[nodiscard]] std::vector<PipelineStructure> getPipelineStructures()
+    const override;
+            */
 
     // Destructor
     ~OpenGLRenderer() override;
+
+    Allocated<TextureFactory> getTextureFactory() override;
 
     void unloadMesh(renderer_mesh_id_t id) override;
 
@@ -47,7 +45,8 @@ class OpenGLRenderer final : public Renderer {
   void unloadMaterial(renderer_material_id_t id) override;
     */
 
-    renderer_texture_id_t createTexture(Presto::Image image) override;
+    // renderer_texture_id_t createTexture(Presto::Image image) override;
+
     void unloadTexture(renderer_texture_id_t id) override;
 
     void bindMaterial(const MaterialStructure& data) override;
@@ -58,6 +57,12 @@ class OpenGLRenderer final : public Renderer {
     void nextFrame() override;
 
     Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size) override;
+
+    // Deleted functions
+    OpenGLRenderer(const OpenGLRenderer&) = delete;
+    OpenGLRenderer(OpenGLRenderer&&) = delete;
+    OpenGLRenderer& operator=(const OpenGLRenderer&) = delete;
+    OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
 
    private:
     OpenGLPipeline* currentPipeline_{nullptr};

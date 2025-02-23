@@ -1,8 +1,6 @@
 #include "Presto/Rendering/PipelineBuilder.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
-#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
-#include "Rendering/OpenGL/OpenGLDrawManager/OpenGLTexture.h"
 
 #include "Rendering/OpenGL/utils.h"
 
@@ -48,9 +46,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
         return *this;
     };
 
-    PipelineStructure build() override {
-        return this->build(OpenGLDrawManager::ANY_PIPELINE);
-    };
+    PipelineStructure build() override { return this->build(ANY_PIPELINE); };
 
    private:
     explicit OpenGLPipelineBuilder(OpenGLDrawManager* drawManager)

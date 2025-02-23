@@ -7,6 +7,7 @@
 namespace Presto {
 
 class MaterialAsset;
+class Texture;
 
 class MaterialInstance {
     friend class MaterialAsset;
@@ -16,6 +17,7 @@ class MaterialInstance {
 
     MaterialInstance& setProperty(Presto::string name, Presto::vec3 data);
     MaterialInstance& setProperty(Presto::string name, ErasedBytes data);
+    MaterialInstance& setProperty(Presto::string name, Ptr<Texture> data);
 
    private:
     Ref<MaterialAsset> definition_;

@@ -6,5 +6,5 @@ namespace Presto {
 class Renderer;
 class GLFWAppWindow;
 
-Allocated<Renderer> CreateRenderer(RENDER_LIBRARY lib, GLFWAppWindow* window);
+Allocated<Renderer> CreateRenderer();
 }  // namespace Presto
