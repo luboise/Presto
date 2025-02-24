@@ -14,10 +14,13 @@ void ModelComponent::onEnterScene() {
         mesh->ensureLoaded();
     }
 
-    for (auto& material : materialOverrides_) {
-        if (material != nullptr) {
-            material->ensureLoaded();
-        }
+    // This might be needed later if selective material usage is implemented
+    /*
+for (auto& material : materialOverrides_) {
+    if (material != nullptr) {
+        material->ensureLoaded();
     }
+}
+    */
 };
 }  // namespace Presto
