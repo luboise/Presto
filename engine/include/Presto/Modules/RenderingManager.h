@@ -70,7 +70,7 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
 
-    PipelineBuilder getPipelineBuilder();
+    PipelineBuilder& getPipelineBuilder();
 
     Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size);
 
@@ -146,7 +146,6 @@ OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
         meshRegistrations_;
 
     struct Impl;
-
     Allocated<Impl> impl_;
 };
 

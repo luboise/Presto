@@ -83,6 +83,9 @@ Presto::size_t SizeOfType(UniformVariableType type) noexcept {
         SWITCH_CASE(UniformVariableType::VEC4);
         SWITCH_CASE(UniformVariableType::MAT4);
         SWITCH_CASE(UniformVariableType::TEXTURE);
+        default: {
+            return 0;
+        }
     }
 #undef SWITCH_CASE
 };

@@ -139,6 +139,28 @@ return new_model_ptrs;
 }
 */
 
+MaterialPtr AssetManager::createMaterialFromImport(
+    const ImportedMaterial& imported_material,
+    std::vector<TexturePtr>& texturePtrs) {
+    MaterialPtr material{RenderingManager::get().createMaterial(
+        MaterialType::DEFAULT_3D, imported_material.name)};
+
+    for (const auto& value : imported_material.values) {
+        if (value.data_type == UniformVariableType::TEXTURE) {
+            auto texture_index{
+                value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
+
+            material->setProperty(value.name, texturePtrs[texture_index]);
+        }
+
+        else {
+            material->setProperty(value.name, value.data);
+        }
+    }
+
+    return material;
+};
+
 std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
     std::string filename{filepath.basename()};
@@ -159,8 +181,37 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     std::vector<MaterialPtr> new_material_ptrs(imported_data.materials.size());
     std::vector<TexturePtr> new_texture_ptrs(imported_data.textures.size());
 
-    for (const auto& imported_model : imported_data.models) {
-        ModelPtr model{std::make_shared<ModelAsset>(imported_model.name)};
+    // Turn the textures into assets
+    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
+        ImportedTexture& texture{imported_data.textures[i]};
+        if (texture.name.empty()) {
+            continue;
+        }
+
+        // TODO: Make this cache images that it gets from the import rather than
+        // create a new asset for each one
+        const auto& image_ptr{createImageAsset(texture.name, texture.image)};
+
+        new_texture_ptrs[i] =
+            RenderingManager::get().createTexture2D(image_ptr);
+    }
+
+    // Turn the materials into assets
+    for (std::size_t i{0}; i < new_material_ptrs.size(); ++i) {
+        new_material_ptrs[i] = createMaterialFromImport(
+            imported_data.materials[i], new_texture_ptrs);
+    }
+
+    // Turns the models into model assets (and subsequently their underlying
+    // meshes)
+
+    for (size_t i{0}; i < imported_data.models.size(); ++i) {
+        const auto& imported_model = imported_data.models[i];
+
+        auto new_name{i >= (customNames.size() - 1) ? customNames[i]
+                                                    : imported_model.name};
+
+        ModelPtr model{std::make_shared<ModelAsset>(new_name)};
 
         for (const auto& imported_mesh : imported_model.meshes) {
             MeshPtr mesh{std::make_shared<MeshAsset>()};
@@ -171,126 +222,20 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
             // Make sure the material is loaded
             if (imported_mesh.hasMaterial() &&
                 new_material_ptrs[imported_mesh.material_index] == nullptr) {
-                const auto& imported_material =
-                    imported_data.materials[imported_mesh.material_index];
-
-                MaterialPtr material{RenderingManager::get().createMaterial(
-                    MaterialType::DEFAULT_3D, imported_material.name)};
-
-                for (const auto& value : imported_material.values) {
-                    if (value.data_type == UniformVariableType::TEXTURE) {
-                        auto texture_index{value.data.as<
-                            ImportTypeOf<UniformVariableType::TEXTURE>>()};
-
-                        if (new_texture_ptrs[texture_index] == nullptr) {
-                            const ImportedTexture& tex{
-                                imported_data.textures[texture_index]};
-
-                            const auto& image_ptr{
-                                createImageAsset(tex.name, tex.image)};
-
-                            new_texture_ptrs[texture_index] =
-                                RenderingManager::get().createTexture(
-                                    image_ptr);
-                        }
-                    }
-
-                    const ImagePtr& image_ptr = new_image_ptrs[];
-
-                    RenderingManager::get().createTexture(image_ptr);
-
-                    material->setTexture(value.name, );
-                }
-                material->setProperty(value.name, value.data);
+                mesh->setDefaultMaterial(
+                    new_material_ptrs[imported_mesh.material_index]);
             }
+            model->meshes_.push_back(mesh);
         }
 
-        mesh->setDefaultMaterial(
-            new_material_ptrs[imported_mesh.material_index]);
-    }
-}
-
-for (size_t i = 0; i < imported_data.textures.size(); i++) {
-    ImagePtr image{createImageAsset(std::format("{}_image_{}", filename, i),
-                                    imported_data.textures[i])};
-    new_texture_ptrs.push_back(image);
-}
-
-for (size_t i = 0; i < imported_data.materials.size(); i++) {
-    const ImportedMaterial& imported_material{imported_data.materials[i]};
-
-    auto material_name{std::format("{}_material_{}", filename, i)};
-    MaterialDefinitionPtr new_material{
-        createMaterial(material_name, imported_material)};
-
-    // TODO: Maybe make this load when an entity enters the
-    // scene, or at the end of every update loop
-    new_material->ensureLoaded();
-
-    new_material_ptrs.push_back(new_material);
-}
-
-for (size_t i{0}; i < imported_data.models.size(); ++i) {
-    const auto& model = imported_data.models[i];
-    auto new_name{i >= (customNames.size() - 1) ? customNames[i] : model.name};
-
-    auto new_model{std::make_shared<ModelAsset>(new_name)};
-
-    for (const ImportedMesh& mesh : model.meshes) {
-        // Turn the raw mesh data into a new mesh asset
-        auto new_mesh_asset{std::make_shared<MeshAsset>(mesh)};
-        new_mesh_asset->setDefaultMaterial(
-            new_material_ptrs[mesh.material_index]);
-
-        new_model->meshes_.push_back(new_mesh_asset);
+        assets_[AssetType::MODEL][new_name] = model;
+        new_model_ptrs.push_back(model);
     }
 
-    new_model->name_ = new_name;
-
-    assets_[AssetType::MODEL][new_name] = new_model;
-
-    new_model_ptrs.push_back(new_model);
-}
-
-// TODO: Implement full path/cwd system for engine to find it at
-// runtime, or have the user change it (would help the editor)
-// fs::path full_asset_path = Utils::File::getFullPath(filepath);
-
-for (ImportedMaterial& material : imported_data.materials) {
-    new_material_ptrs.push_back(std::make_shared<MaterialAsset>(material.name));
-    auto new_material{this->createMaterial(material.name)};
-
-    new_material->name_ = material.name;
-
-    auto texture_index = material.pbrMetallicRoughness.baseColorTexture.index;
-
-    if (texture_index != -1) {
-        const auto& texture = model.textures[texture_index];
-        const auto& image_data = imported_data.textures[texture.source];
-
-        Presto::Image image{.width = static_cast<size_t>(image_data.width),
-                            .height = static_cast<size_t>(image_data.height)};
-
-        image.bytes.resize(image.size());
-
-        std::memcpy(image.bytes.data(), image_data.image.data(),
-                    image.bytes.size());
-
-        ImagePtr image_resource{createImageAsset(texture.name, image)};
-
-        new_material->setDiffuseTexture(image_resource);
-
-        // TODO: Maybe make this load when an entity enters the
-        // scene, or at the end of every update loop
-        new_material->ensureLoaded();
-    }
-}
-
-for (auto& mat : new_material_ptrs) {
-    assets_[AssetType::MATERIAL_DEFINITION].emplace(mat->name_, std::move(mat));
-}
-
-return new_model_ptrs;
+    // TODO: Implement full path/cwd system for engine to find it at
+    // runtime, or have the user change it (would help the editor)
+    // fs::path full_asset_path = Utils::File::getFullPath(filepath);
+    return new_model_ptrs;
 };  // namespace Presto
 
 /*
@@ -301,18 +246,18 @@ MaterialDefinitionPtr AssetManager::createMaterial(
 
     if (structure == nullptr) {
         PR_ERROR(
-            "Unable to create material {} from pipeline #{}, as its structure "
-            "was null. Skipping this material.");
-        return nullptr;
+            "Unable to create material {} from pipeline #{}, as its
+structure " "was null. Skipping this material."); return nullptr;
     }
 
     return createMaterial(customName, *structure);
 };
 
 MaterialDefinitionPtr AssetManager::createMaterial(
-    const asset_name_t& customName, const PipelineStructure& inStructure) {
-    auto new_material{std::make_shared<MaterialAsset>(customName, inStructure)};
-    new_material->name_ = customName;
+    const asset_name_t& customName, const PipelineStructure&
+inStructure) { auto
+new_material{std::make_shared<MaterialAsset>(customName, inStructure)};
+new_material->name_ = customName;
 
     const auto key = new_material->name_;
     assets_[AssetType::MATERIAL_DEFINITION][key] = new_material;
@@ -323,9 +268,6 @@ MaterialDefinitionPtr AssetManager::createMaterial(
 
 ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
                                          const asset_name_t& customName) {
-    Presto::string base{filepath.basename()};
-    Presto::string ext{filepath.fileExtension()};
-
     ByteArray data{Utils::File::ReadBinaryFile(filepath)};
 
     int x{};
@@ -335,6 +277,7 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
     // 4 desired channels because we want all images to be RGBA format
     constexpr int desired_channels = 4;
 
+    // TODO: Remove the reinterpret casts from this function
     unsigned char* casted_data{reinterpret_cast<unsigned char*>(data.data())};
 
     auto* image_data{stbi_load_from_memory(casted_data,
@@ -353,9 +296,10 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
     new_image.bytes.resize(new_image.size());
 
     // Get the image data
-    std::span<unsigned char> src_span(image_data, new_image.bytes.size());
+    std::span<std::byte> src_span(reinterpret_cast<std::byte*>(image_data),
+                                  new_image.bytes.size());
 
-    new_image.bytes = std::vector<uint8_t>(src_span.begin(), src_span.end());
+    new_image.bytes = std::vector<std::byte>(src_span.begin(), src_span.end());
 
     stbi_image_free(image_data);
 

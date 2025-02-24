@@ -74,7 +74,7 @@ struct ImportedMaterialProperty {
 
 struct ImportedMaterial {
     PR_STRING_ID name;
-    renderer_pipeline_id_t material_type{PR_PIPELINE_DEFAULT_3D};
+    MaterialType material_type{MaterialType::DEFAULT_3D};
 
     std::vector<ImportedMaterialProperty> values;
 };

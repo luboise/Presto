@@ -1,17 +1,17 @@
 #include "GLTFLoader.h"
+#include <set>
 #include <type_traits>
 
 #include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Types.h"
 #include "Presto/Rendering/AttributeTypes.h"
+#include "Presto/Rendering/UniformTypes.h"
 #include "tiny_gltf.h"
 
 // NOT NEEDED SINCE TINY_GLTF USES IT
 // #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-#include "Presto/Assets/ModelAsset.h"
 
 namespace Presto {
 
@@ -170,16 +170,61 @@ Presto::vec4 vec4FromVector(std::vector<T> vec) {
     };
 }
 
+ImportedMaterial importMaterialFromGLTF(const tinygltf::Material& material,
+                                        std::set<int>& texturesToLoad) {
+    ImportedMaterial imported;
+
+    const auto& pbr{material.pbrMetallicRoughness};
+
+    tinygltf::PbrMetallicRoughness basePbr{};
+
+    if (pbr.baseColorFactor != basePbr.baseColorFactor) {
+        imported.values.push_back(ImportedMaterialProperty{
+            .name = DefaultMaterialPropertyName::BASE_COLOUR,
+            .data_type = UniformVariableType::VEC4,
+            .data = ErasedBytes{pbr.baseColorFactor}});
+    }
+
+    if (auto index{pbr.baseColorTexture.index}; index != -1) {
+        texturesToLoad.emplace(index);
+
+        imported.values.push_back(ImportedMaterialProperty{
+            .name = DefaultMaterialPropertyName::DIFFUSE_TEXTURE,
+            .data_type = UniformVariableType::TEXTURE,
+            .data = ErasedBytes{index}});
+    }
+
+    return imported;
+}
+
+ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
+                                      const int index) {
+    PR_CORE_ASSERT(model.images.size() >= index + 1U,
+                   "Invalid GLTF processing has occurred, even though it "
+                   "should have been validated.");
+    const auto& image_data = model.images[index];
+
+    Presto::Image image{.width = static_cast<size_t>(image_data.width),
+                        .height = static_cast<size_t>(image_data.height),
+                        .bytes{}};
+
+    image.bytes.resize(image.size());
+    std::memcpy(image.bytes.data(), image_data.image.data(),
+                image.bytes.size());
+
+    return {.name = image_data.uri, .image = std::move(image)};
+}
+
 ImportedModelData GLTFLoader::load(
     const AssetPath& path, const std::vector<asset_name_t>& customNames) {
-    FilePath filename{path.stem()};
-    FilePath file_extension = path.extension();
+    FilePath filename{path.basename()};
+    FilePath file_extension = path.fileExtension();
 
-    ImportedModelData imports{};
+    ImportedModelData imported_data{};
 
     if (file_extension != ".gltf" && file_extension != ".glb") {
         // TODO: Make this return an error or print it instead
-        return imports;
+        return imported_data;
     }
 
     tinygltf::TinyGLTF loader;
@@ -204,43 +249,18 @@ ImportedModelData GLTFLoader::load(
     PR_CORE_ASSERT(
         ret, std::string("Failed to read asset ") + full_asset_path.string());
 
-    Presto::size_t binding{0};
+    std::set<int> textureIndices;
 
-    for (auto& material : model.materials) {
-        MaterialStructure structure;
+    for (tinygltf::Material& material : model.materials) {
+        imported_data.materials.push_back(
+            importMaterialFromGLTF(material, textureIndices));
+    }
 
-        ImportedMaterial new_material{.name = material.name,
-                                      .structure = std::move(structure)};
+    if (textureIndices.size() > 0) {
+        imported_data.textures.resize(std::ranges::max(textureIndices) - 1);
 
-        Presto::vec4 val =
-            vec4FromVector(material.pbrMetallicRoughness.baseColorFactor);
-
-        structure.properties.push_back(
-            DefaultMaterialProperties::BaseColour(val));
-
-        if (auto index{material.pbrMetallicRoughness.baseColorTexture.index};
-            index != -1) {
-            structure.properties.push_back(
-                DefaultMaterialProperties::DiffuseTexture(index));
-
-            const auto& texture = model.textures[index];
-            const auto& image_data = model.images[texture.source];
-
-            Presto::Image image{
-                .width = static_cast<size_t>(image_data.width),
-                .height = static_cast<size_t>(image_data.height),
-                .bytes{}};
-
-            image.bytes.resize(image.size());
-
-            std::memcpy(image.bytes.data(), image_data.image.data(),
-                        image.bytes.size());
-
-            if (imports.textures.size() <= (index - 1U)) {
-                imports.textures.resize(index);
-            }
-
-            imports.textures[index] = image;
+        for (const auto& index : textureIndices) {
+            imported_data.textures[index] = importTextureFromGLTF(model, index);
         }
     }
 
@@ -277,10 +297,10 @@ ImportedModelData GLTFLoader::load(
             new_model.meshes.push_back(new_submesh);
         }
 
-        imports.models.push_back(new_model);
+        imported_data.models.push_back(new_model);
     }
 
-    return imports;
+    return imported_data;
 };
 
 }  // namespace Presto

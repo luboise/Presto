@@ -1,12 +1,11 @@
 #include "OpenGLRenderer.h"
 
-#include "OpenGLDrawManager/OpenGLDrawManager.h"
-
 #include "Presto/Core/Constants.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
-#include "Presto/Rendering/Renderer.h"
+
+#include "Rendering/Renderer.h"
 
 #include "Rendering/DefaultTextures.h"
 #include "Rendering/Utils/RenderingUtils.h"
@@ -45,8 +44,6 @@ OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
     glDepthFunc(GL_LESS);  // Smaller = closer
 
     setupDebugLogging();
-
-    drawManager_ = std::make_unique<OpenGLDrawManager>();
 
     OpenGLPipelineBuilder builder{drawManager_.get()};
 

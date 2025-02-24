@@ -56,4 +56,9 @@ class MaterialAsset final :
 
 using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
 
+MaterialInstance& MaterialInstance::setProperty(Presto::string name,
+                                                Ptr<Texture> data) {
+
+};
+
 }  // namespace Presto

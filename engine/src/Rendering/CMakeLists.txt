@@ -6,7 +6,6 @@ target_sources(
   PRIVATE BoundingBox.cpp
           Renderer.cpp
           Utils/RenderingUtils.cpp
-          RendererFactory.cpp
           RenderTypes.cpp
           VertexAttribute.cpp
           Shader.cpp

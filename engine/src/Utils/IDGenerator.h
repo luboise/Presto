@@ -1,4 +1,7 @@
+#pragma once
+
 #include <concepts>
+#include <queue>
 #include <type_traits>
 #include <unordered_set>
 
@@ -22,21 +25,32 @@ class IDGenerator {
      * @param threshold  The threshold for reserved IDs. IDs under this
      * threshold must be reserved using @fn reserve.
      */
-    explicit IDGenerator(T threshold = 1) : currentId_(minGeneratedThreshold_) {
+    explicit IDGenerator(T threshold = 1) {
         PR_CORE_ASSERT(threshold > 0,
                        "IDGenerator can't be instantiated with a value of 0, "
                        "as this is reserved for INVALID_ID");
         minGeneratedThreshold_ = threshold;
+        currentId_ = minGeneratedThreshold_;
     }
 
     ~IDGenerator() = default;
 
     /**
      * @brief	Reserves an unused ID and returns it. This should generally be
-     *used rather than reserve.
+     * used rather than reserve. If available, this function will prefer keys
+     * that have just been released rather than new ones.
      * @return	The newly reserved ID.
      */
-    T generate() { return currentId_++; };
+    T generate() {
+        if (!releasedIds_.empty()) {
+            auto key{std::move(releasedIds_.front())};
+            releasedIds_.pop();
+
+            return key;
+        }
+
+        return currentId_++;
+    };
 
     /**
      *@brief	Attempts to reserve a specific below the minimum generated
@@ -57,6 +71,19 @@ class IDGenerator {
         return ids_.contains(id);
     }
 
+    /**
+     * @brief	 Unreserves an ID so that it can be reused.
+     */
+    bool release(T id) {
+        bool didErase{ids_.erase(id)};
+
+        if (didErase && id >= minGeneratedThreshold_) {
+            releasedIds_.push(id);
+        }
+
+        return didErase;
+    }
+
     IDGenerator(const IDGenerator&) = delete;
     IDGenerator(IDGenerator&&) = delete;
     IDGenerator& operator=(const IDGenerator&) = delete;
@@ -68,6 +95,7 @@ class IDGenerator {
     T currentId_{1};
 
     std::unordered_set<T> ids_;
+    std::queue<T> releasedIds_;
 
     // TODO: Implement freeing IDs, as well as a queue of freedIds_
     // std::queue<T> freedIds_;

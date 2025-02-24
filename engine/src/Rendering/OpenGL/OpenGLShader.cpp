@@ -2,7 +2,7 @@
 #include "Presto/Utils/File.h"
 #include "Rendering/OpenGL/utils.h"
 
-#include "OpenGLDrawManager/DefaultShaders.h"
+#include "DefaultShaders.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace Presto {

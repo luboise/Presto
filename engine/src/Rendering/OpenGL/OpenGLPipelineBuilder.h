@@ -1,11 +1,13 @@
 #include "Presto/Rendering/PipelineBuilder.h"
+#include "Rendering/PipelineBuilderImpl.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
 
+#include "Rendering/OpenGL/OpenGLPipeline.h"
 #include "Rendering/OpenGL/utils.h"
 
 namespace Presto {
-class OpenGLPipelineBuilder final : public PipelineBuilder {
+class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     friend class OpenGLRenderer;
     friend class RenderingManager;
 
@@ -49,8 +51,10 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
     PipelineStructure build() override { return this->build(ANY_PIPELINE); };
 
    private:
-    explicit OpenGLPipelineBuilder(OpenGLDrawManager* drawManager)
-        : drawManager_(drawManager) {};
+    explicit OpenGLPipelineBuilder(
+        std::vector<Allocated<Pipeline>>& pipelines) {
+        setPipelineList(pipelines);
+    };
 
     PipelineStructure build(renderer_pipeline_id_t id) {
         PR_ASSERT(vertexShader_.id != 0,
@@ -59,9 +63,13 @@ class OpenGLPipelineBuilder final : public PipelineBuilder {
         PR_ASSERT(fragmentShader_.id != 0,
                   "Fragment shader was unassigned when building the pipeline.");
 
-        OpenGLPipeline pipeline{vertexShader_.id, fragmentShader_.id};
+        Allocated<OpenGLPipeline> pipeline{
+            new OpenGLPipeline(vertexShader_.id, fragmentShader_.id)};
+        auto structure{pipeline->getStructure()};
 
-        return drawManager_->addPipeline(std::move(pipeline), id);
+        if (this->addPipeline(<Pipeline> pipeline))
+
+            return drawManager_->addPipeline(std::move(pipeline), id);
     }
 
     // OpenGLRenderer* renderer_{nullptr};

@@ -17,6 +17,8 @@
 
 #include "Presto/Modules/AssetManager.h"
 
+#include "Memory/AllocatorTypes.h"
+
 namespace Presto {
 
 constexpr auto PR_MIN_USER_ID = 10;
@@ -30,10 +32,13 @@ struct RenderingManager::Impl {
     IDGenerator<texture_id_t> texture_ids;
 
     // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
-    std::map<renderer_pipeline_id_t, Pipeline> pipelines;
+
+    pipeline_allocator_t pipelines;
+
     std::map<texture_id_t, Texture> textures;
 
     Allocated<TextureFactory> textureFactory_;
+    Allocated<PipelineBuilder> pipelineBuilder_;
 };
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
@@ -241,6 +246,15 @@ Ptr<MaterialInstance> RenderingManager::getMaterial(
     // TODO: Implement
 
     return nullptr;
+};
+
+PipelineBuilder& RenderingManager::getPipelineBuilder() {
+    PR_CORE_ASSERT(
+        impl_->pipelineBuilder_ != nullptr,
+        "The application must be initialised in order to get the pipeline "
+        "builder.");
+
+    return *impl_->pipelineBuilder_;
 };
 
 /*

@@ -10,8 +10,6 @@
 #include "Presto/Runtime/Events/KeyEvents.h"
 #include "Presto/Runtime/Events/MouseEvents.h"
 
-#include "Presto/Rendering/Renderer.h"
-
 namespace Presto {
 bool GLFWAppWindow::s_GLFWInitialised = false;
 
@@ -92,7 +90,7 @@ void GLFWAppWindow::SetCallbacks() {
 
     glfwSetKeyCallback(
         static_cast<GLFWwindow*>(this->windowPtr_),
-        [](GLFWwindow* window, int keycode, int scancode, int action,
+        [](GLFWwindow* window, int keycode, int /*scancode*/, int action,
            int /*mods*/) {
             WindowData& data{
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};

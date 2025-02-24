@@ -6,9 +6,11 @@
 
 namespace Presto {
 struct Image {
+    using image_data_t = ByteArray;
+
     std::size_t width;
     std::size_t height;
-    ByteArray bytes;
+    image_data_t bytes;
 
     static constexpr auto PIXEL_BYTE_LENGTH = 4;
 

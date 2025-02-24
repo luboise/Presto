@@ -82,6 +82,9 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     ~AssetManager() override = default;
 
     std::map<AssetType, std::map<asset_name_t, std::shared_ptr<Asset>>> assets_;
+
+    MaterialPtr createMaterialFromImport(const ImportedMaterial&,
+                                         std::vector<Ptr<Texture>>&);
 };
 
 /**/
