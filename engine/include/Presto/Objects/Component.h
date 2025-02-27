@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Presto/Core/Constants.h"
 #include "Presto/Platform.h"
+
+#include "Presto/Types/ComponentTypes.h"
 
 namespace Presto {
 // using component_class_t = std::uint32_t;
@@ -11,23 +12,10 @@ using class_id_t = size_t;
 template <typename T>
 const class_id_t ClassID = typeid(T).hash_code();
 
-using component_id_t = PR_NUMERIC_ID;
-
-class Component;
-
-template <typename T>
-concept ComponentType = std::derived_from<T, Component>;
-
-template <ComponentType T>
-using ComponentPtr = Ptr<T>;
-
-template <ComponentType T>
-using ComponentRef = Ref<T>;
-
 class PRESTO_API Component {
     using ComponentIDBit = std::uint32_t;
 
-    friend class EntityManager;
+    friend class EntityManagerImpl;
 
     static constexpr auto UNASSIGNED_ID{static_cast<component_id_t>(-1)};
 

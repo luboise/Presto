@@ -1,4 +1,4 @@
-#include "Presto/Modules/AssetManager.h"
+#include "Modules/AssetManager.h"
 
 #include "Presto/Assets/Asset.h"
 #include "Presto/Assets/ImageAsset.h"
@@ -12,9 +12,7 @@
 
 #include "GLTFLoader.h"
 
-#include "Presto/Modules/RenderingManager.h"
-
-#include "Presto/Rendering/Textures.h"
+#include "Modules/RenderingManager.h"
 
 #include <stb_image.h>
 #include <memory>
@@ -212,6 +210,13 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
                                                     : imported_model.name};
 
         ModelPtr model{std::make_shared<ModelAsset>(new_name)};
+
+        const auto* pipeline_structure{
+            RenderingManager::get().getPipelineStructure(
+                PR_PIPELINE_DEFAULT_3D)};
+        PR_CORE_ASSERT(pipeline_structure != nullptr,
+                       "The pipeline structure of the default pipelines must "
+                       "not be nullptr.");
 
         for (const auto& imported_mesh : imported_model.meshes) {
             MeshPtr mesh{std::make_shared<MeshAsset>()};

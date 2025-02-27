@@ -44,5 +44,4 @@ class ImageAsset final : public Asset {
     renderer_texture_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
 };
 
-using ImagePtr = AssetPtr<ImageAsset>;
 }  // namespace Presto

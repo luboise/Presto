@@ -1,6 +1,6 @@
 #include "Presto/Objects/Figure.h"
 
-#include "Presto/Modules/EntityManager.h"
+#include "Modules/EntityManagerImpl.h"
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {
@@ -10,12 +10,12 @@ Figure::Figure(figure_size_t size) {
         std::format("Figure entity count is out of valid range [1, {}]",
                     PRESTO_FIGURE_MAX_ENTITY_COUNT));
 
-    entities_ = EntityManager::get().newEntities(size);
+    entities_ = EntityManagerImpl::get().newEntities(size);
 }
 
 Figure::~Figure() {
     for (auto* ptr : entities_) {
-        EntityManager::get().destroyEntity(ptr);
+        EntityManagerImpl::get().destroyEntity(ptr);
     }
 }
 

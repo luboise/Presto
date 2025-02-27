@@ -1,11 +1,11 @@
 #include "Presto/Runtime/Application.h"
-#include "Modules/EventManager.h"
-#include "Presto/Components/CameraComponent.h"
+
+#include "Managers.h"
+
 #include "Presto/Events.h"
-#include "Presto/Managers.h"
-#include "Presto/Modules/SceneManager.h"
+#include "Presto/Objects/Components/CameraComponent.h"
 #include "Presto/Runtime.h"
-#include "Presto/Runtime/GLFWAppWindow.h"
+
 #include "Utils/DebugTimer.h"
 
 #ifdef PR_DEBUG_BUILD
@@ -29,16 +29,17 @@ Application::Application() {
     RenderingManager::setWindow(window);
     RenderingManager::setWindow(window);
 
-    EntityManager::init();
+    EntityManagerImpl::init();
 
-    auto default_camera{EntityManager::get().newComponent<CameraComponent>()};
+    auto default_camera{
+        EntityManagerImpl::get().newComponent<CameraComponent>()};
 
     default_camera->setFOV(DEFAULT_FOV);
 
     RenderingManager::init(*default_camera);
 
     AssetManager::init();
-    SceneManager::init();
+    // SceneManager::init();
     EventManager::init();
     PhysicsManager::init();
     Time::init();
@@ -51,9 +52,9 @@ Application::~Application() { /*this->app_window->Shutdown();*/
 
     PhysicsManager::shutdown();
     EventManager::shutdown();
-    SceneManager::shutdown();
+    // SceneManager::shutdown();
     AssetManager::shutdown();
-    EntityManager::shutdown();
+    EntityManagerImpl::shutdown();
     RenderingManager::shutdown();
 
     this->appWindow_->shutdown();
@@ -68,7 +69,7 @@ void Application::run() {
     DebugTimer garbage_collection_timer("Garbage Collection");
 
     RenderingManager& rendering = RenderingManager::get();
-    EntityManager& entities = EntityManager::get();
+    EntityManagerImpl& entities = EntityManagerImpl::get();
     PhysicsManager& physics = PhysicsManager::get();
 
     while (running_) {

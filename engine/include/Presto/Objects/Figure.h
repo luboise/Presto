@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include "Presto/Core/Constants.h"
+
 namespace Presto {
 class Entity;
 

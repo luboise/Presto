@@ -1,6 +1,6 @@
 #include "Presto/Assets/ImageAsset.h"
 
-#include "Presto/Modules/RenderingManager.h"
+#include "Modules/RenderingManager.h"
 
 namespace Presto {
 bool ImageAsset::load() {

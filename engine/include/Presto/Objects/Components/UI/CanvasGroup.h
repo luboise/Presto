@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Components/UI/CanvasItem.h"
+#include "CanvasItem.h"
 
 namespace Presto {
 class PRESTO_API CanvasGroup {

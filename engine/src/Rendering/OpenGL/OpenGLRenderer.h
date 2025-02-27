@@ -40,14 +40,8 @@ class OpenGLRenderer final : public Renderer {
     Allocated<Buffer> createBuffer(Buffer::BufferType type,
                                    Presto::size_t size) override;
 
-    /*
-  renderer_material_id_t loadMaterial(MaterialData) override;
-  void unloadMaterial(renderer_material_id_t id) override;
-    */
-
     // renderer_texture_id_t createTexture(Presto::Image image) override;
-
-    void unloadTexture(renderer_texture_id_t id) override;
+    // void unloadTexture(renderer_texture_id_t id) override;
 
     void bindMaterial(const MaterialStructure& data) override;
     void unbindMaterial() override;

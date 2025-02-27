@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AttributeTypes.h"
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include <map>
 

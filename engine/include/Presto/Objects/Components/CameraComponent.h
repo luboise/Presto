@@ -2,7 +2,7 @@
 
 #include "Presto/Objects/Component.h"
 
-#include "Presto/Mixins/LazyCalculator.h"
+#include "Presto/Utils/LazyCalculator.h"
 
 namespace Presto {
 enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
@@ -11,7 +11,7 @@ class CameraComponent : public Component, LazyCalculator {
     using camera_fov_t = double;
     using camera_distance_t = double;
 
-    friend class EntityManager;
+    friend class EntityManagerImpl;
 
    public:
     [[nodiscard]] Presto::mat4 getViewMatrix();

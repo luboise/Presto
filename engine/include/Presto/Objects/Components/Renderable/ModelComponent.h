@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Presto/Assets/ModelAsset.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects/Component.h"
+#include "Presto/Types/AssetTypes.h"
 
 namespace Presto {
 struct RenderGroup;
@@ -11,7 +11,7 @@ using mesh_id_t = PR_NUMERIC_ID;
 
 class PRESTO_API ModelComponent : public Component {
     // friend class RenderingManager;
-    friend class EntityManager;
+    friend class EntityManagerImpl;
 
     // TODO: Make the render trigger when the entity enters the scene so
     // that this friend declaration isn't necessary

@@ -9,7 +9,7 @@
 
 namespace Presto {
 template <Scalable T>
-class TimedInterpolator : private Interpolator<T> {
+class PRESTO_API TimedInterpolator : private Interpolator<T> {
    public:
     TimedInterpolator() = default;
 

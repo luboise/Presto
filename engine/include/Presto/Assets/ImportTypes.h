@@ -2,17 +2,19 @@
 
 #include "Presto/Assets/Image.h"
 
-#include "Presto/Core/Types.h"
 #include "Presto/Rendering/AttributeTypes.h"
+#include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Rendering/ErasedBytes.h"
-#include "Presto/Rendering/MaterialTypes.h"
-#include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
+#include "Presto/Types/MaterialTypes.h"
 
 namespace Presto {
 
-struct ImportedMeshAttribute {
+class ErasedBytes;
+
+struct ImportedVertexAttribute {
     PR_STRING_ID name;
 
     ShaderDataType type;
@@ -21,12 +23,12 @@ struct ImportedMeshAttribute {
     ByteArray data;
 };
 
-using AttributeList = std::vector<ImportedMeshAttribute>;
+using ImportedAttributeList = std::vector<ImportedVertexAttribute>;
 
 static constexpr Presto::uint8_t PR_NO_MATERIAL_INDEX = -1;
 
 struct ImportedMesh {
-    AttributeList attributes;
+    ImportedAttributeList attributes;
 
     Presto::uint8_t material_index{PR_NO_MATERIAL_INDEX};
 

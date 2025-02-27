@@ -1,20 +1,21 @@
-#include "Presto/Modules/EntityManager.h"
 #include <queue>
 
-#include "Presto/Components/TransformComponent.h"
+#include "Modules/EntityManagerImpl.h"
+
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Component.h"
+#include "Presto/Objects/Components/TransformComponent.h"
 #include "Presto/Objects/Entity.h"
 #include "Presto/Objects/Figure.h"
 #include "Presto/Runtime/Events/ObjectEvents.h"
 
 namespace Presto {
 // Static member declarations
-// std::vector<entity_ptr> EntityManager::entities_;
-// entity_id_t EntityManager::_currentId = 0;
-// std::map<entity_id_t, entity_ptr> EntityManager::entityMap_;
+// std::vector<entity_ptr> EntityManagerImpl::entities_;
+// entity_id_t EntityManagerImpl::_currentId = 0;
+// std::map<entity_id_t, entity_ptr> EntityManagerImpl::entityMap_;
 
-struct EntityManager::Impl {
+struct EntityManagerImpl::Impl {
     std::map<entity_id_t, entity_unique_ptr> entity_map;
 
     std::vector<entity_tag_name_t> tag_map;
@@ -24,16 +25,18 @@ struct EntityManager::Impl {
     std::queue<entity_unique_ptr> entity_queue;
 };
 
-EntityManager::EntityManager() : impl_(new Impl()) {};
+EntityManager& EntityManager::Get() { return EntityManagerImpl::get(); }
 
-EntityManager::~EntityManager() {
+EntityManagerImpl::EntityManagerImpl() : impl_(new Impl()) {};
+
+EntityManagerImpl::~EntityManagerImpl() {
     this->componentDatabase_.clear();
     this->impl_->entity_map.clear();
     this->impl_->tag_map.clear();
     delete impl_;
 };
 
-void EntityManager::update() {
+void EntityManagerImpl::update() {
     // TODO: Move this somewhere cached instead
     for (const auto& entity : impl_->entity_map | std::views::values) {
         for (const auto& script : entity->getConductors()) {
@@ -43,8 +46,8 @@ void EntityManager::update() {
 }
 
 // Methods
-entity_ptr EntityManager::newEntity(const entity_name_t& name) {
-    entity_id_t new_id = EntityManager::reserveId();
+entity_ptr EntityManagerImpl::newEntity(const entity_name_t& name) {
+    entity_id_t new_id = EntityManagerImpl::reserveId();
 
     PR_CORE_ASSERT(
         std::ranges::none_of(impl_->entity_map | std::views::keys,
@@ -68,7 +71,7 @@ entity_ptr EntityManager::newEntity(const entity_name_t& name) {
     return handle;
 }
 
-void EntityManager::destroyEntity(entity_ptr entity) {
+void EntityManagerImpl::destroyEntity(entity_ptr entity) {
     // // Remove from map
     // impl_->entity_map.erase(entity->id_);
 
@@ -79,12 +82,12 @@ void EntityManager::destroyEntity(entity_ptr entity) {
     Presto::ObjectDestroyedEvent(static_cast<void*>(entity));
 }
 
-entity_id_t EntityManager::reserveId() { return impl_->current_id++; }
+entity_id_t EntityManagerImpl::reserveId() { return impl_->current_id++; }
 
 // TODO: Implement this to clean up dangling entities/components
-void EntityManager::collectGarbage() {};
+void EntityManagerImpl::collectGarbage() {};
 
-std::vector<entity_ptr> EntityManager::findAll() {
+std::vector<entity_ptr> EntityManagerImpl::findAll() {
     std::vector<entity_ptr> entities(impl_->entity_map.size());
     int i = 0;
 
@@ -96,20 +99,20 @@ std::vector<entity_ptr> EntityManager::findAll() {
     return entities;
 };
 
-std::vector<entity_ptr> EntityManager::findWhere(auto filter) {
+std::vector<entity_ptr> EntityManagerImpl::findWhere(auto filter) {
     return impl_->entity_map | std::views::values | std::views::filter(filter);
 }
 
-// MapFilterView<EntityManager::ComponentMap>
-ComponentSearchResults EntityManager::findComponentsWhere(
+// MapFilterView<EntityManagerImpl::ComponentMap>
+ComponentSearchResults EntityManagerImpl::findComponentsWhere(
     const ComponentFilter& filter) {
     return componentDatabase_ | std::views::values | std::views::join |
            std::views::filter(filter);
 }
 
 /*
-    MapFilterView<EntityManager::ComponentMap>
-    EntityManager::findComponentsByType(CheckedComponentBits bits) {
+    MapFilterView<EntityManagerImpl::ComponentMap>
+    EntityManagerImpl::findComponentsByType(CheckedComponentBits bits) {
         return components_ | std::views::values |
                std::views::filter([](auto& component) {
                    return component->hasBits(bits);
@@ -118,7 +121,7 @@ ComponentSearchResults EntityManager::findComponentsWhere(
 };
                            */
 
-entity_tag_id_t EntityManager::getTagId(
+entity_tag_id_t EntityManagerImpl::getTagId(
     const entity_tag_name_t& tagName) const {
     for (entity_tag_id_t i = 0;
          i < static_cast<entity_tag_id_t>(impl_->tag_map.size()); i++) {
@@ -130,7 +133,7 @@ entity_tag_id_t EntityManager::getTagId(
     return INVALID_TAG_ID;
 };
 
-entity_tag_id_t EntityManager::createTag(const entity_tag_name_t& tagName) {
+entity_tag_id_t EntityManagerImpl::createTag(const entity_tag_name_t& tagName) {
     PR_ASSERT(impl_->tag_map.size() < MAX_TAG_COUNT,
               std::format("Creating a new tag exceeds the maximum number "
                           "of tags allowed ({}).",
@@ -145,12 +148,12 @@ entity_tag_id_t EntityManager::createTag(const entity_tag_name_t& tagName) {
     return static_cast<entity_tag_id_t>(new_tag_index);
 };
 
-bool EntityManager::exists(entity_id_t id) const {
+bool EntityManagerImpl::exists(entity_id_t id) const {
     return std::ranges::none_of(impl_->entity_map | std::views::keys,
                                 [id](auto& key) { return key == id; });
 };
 
-std::vector<Entity*> EntityManager::newEntities(PR_SIZE count) {
+std::vector<Entity*> EntityManagerImpl::newEntities(PR_SIZE count) {
     PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
                    "Invalid entity count construction requested.");
     std::vector<Entity*> entities(count);
@@ -162,7 +165,7 @@ std::vector<Entity*> EntityManager::newEntities(PR_SIZE count) {
     return entities;
 };
 
-void EntityManager::instantiateEntities() {
+void EntityManagerImpl::instantiateEntities() {
     entity_unique_ptr entity{};
     while (!impl_->entity_queue.empty()) {
         entity = std::move(impl_->entity_queue.front());

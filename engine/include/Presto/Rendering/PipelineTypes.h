@@ -13,6 +13,8 @@ struct PipelineAttribute {
 
     ShaderDataType type;
     PR_STRING_ID name;
+
+    [[nodiscard]] Presto::size_t size() const;
 };
 
 struct PipelineUniform {

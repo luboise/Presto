@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "Presto/Rendering/MaterialInstance.h"
 
 namespace Presto {
@@ -10,12 +12,26 @@ MaterialInstance::MaterialInstance(const Ptr<MaterialAsset>& definition)
 }
 
 MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                Presto::vec3 data) {};
+                                                Presto::vec3 data) {
+    return *this;
+};
 
 MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                ErasedBytes data) {};
+                                                ErasedBytes data) {
+    return *this;
+};
 
 MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                Ptr<Texture> data) {};
+                                                Ptr<Texture> data) {
+    return *this;
+};
 
+MaterialInstance& MaterialInstance::setName(Presto::string newName) {
+    this->name_ = std::move(newName);
+    return *this;
+};
+
+const MaterialStructure& MaterialInstance::getStructure() const {
+    return definition_->getStructure();
+};
 }  // namespace Presto

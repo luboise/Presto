@@ -58,7 +58,8 @@ using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
 
 MaterialInstance& MaterialInstance::setProperty(Presto::string name,
                                                 Ptr<Texture> data) {
-
+    return *this;
+    static_assert(false, "Implement this");
 };
 
 }  // namespace Presto

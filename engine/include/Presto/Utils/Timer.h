@@ -5,7 +5,7 @@
 #include "Presto/Runtime/Time.h"
 
 namespace Presto {
-class Timer {
+class PRESTO_API Timer {
    public:
     Timer() = default;
 

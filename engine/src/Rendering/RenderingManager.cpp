@@ -1,11 +1,13 @@
-#include "Presto/Modules/RenderingManager.h"
-#include "Presto/Components/Renderable/ModelComponent.h"
-#include "Presto/Core/Types.h"
+#include <ranges>
 
-#include "Presto/Modules/EntityManager.h"
+#include "Modules/RenderingManager.h"
 
-#include "Presto/Components/CameraComponent.h"
-#include "Presto/Components/TransformComponent.h"
+#include "Presto/Types/CoreTypes.h"
+
+#include "Presto/Objects/Components.h"
+
+#include "Modules/EntityManagerImpl.h"
+
 #include "Presto/Rendering/Pipeline.h"
 #include "Rendering/Renderer.h"
 
@@ -15,7 +17,7 @@
 
 #include "Utils/IDGenerator.h"
 
-#include "Presto/Modules/AssetManager.h"
+#include "Modules/AssetManager.h"
 
 #include "Memory/AllocatorTypes.h"
 
@@ -36,6 +38,8 @@ struct RenderingManager::Impl {
     pipeline_allocator_t pipelines;
 
     std::map<texture_id_t, Texture> textures;
+    std::map<renderer_mesh_id_t, Allocated<MeshRegistrationData>>
+        meshRegistrations_;
 
     Allocated<TextureFactory> textureFactory_;
     Allocated<PipelineBuilder> pipelineBuilder_;
@@ -114,7 +118,7 @@ void RenderingManager::update() {
     // Update the global uniforms to the current camera
     renderer_->setCameraData(activeCamera_);
 
-    auto& em{EntityManager::get()};
+    auto& em{EntityManagerImpl::get()};
 
     auto mesh_draws{em.findAll() |
                     std::views::transform([](entity_ptr entity) -> DrawStruct {
@@ -136,13 +140,9 @@ void RenderingManager::update() {
             const MeshPtr& mesh{drawStruct.model->getMesh(i)};
             const MaterialPtr& material{drawStruct.model->getMaterial(i)};
 
-            MaterialStructure mat_data{};
-
-            if (material != nullptr) {
-                mat_data = material.lock();
-            } else if (!mesh->defaultMaterial_.expired()) {
-                mat_data = mesh->defaultMaterial_.lock()->getStructure();
-            }
+            const MaterialStructure& mat_data{
+                (material != nullptr) ? material->getStructure()
+                                      : mesh->defaultMaterial_->getStructure()};
 
             renderer_->bindMaterial(mat_data);
 
@@ -200,18 +200,20 @@ void RenderingManager::loadImageOnGpu(ImageAsset& image) {
     image.renderId_ = image_id;
 };
 
-PipelineStructure* RenderingManager::getPipelineStructure(
+const PipelineStructure* RenderingManager::getPipelineStructure(
     renderer_pipeline_id_t id) const {
-    auto structures{renderer_->getPipelineStructures()};
-
-    if (auto found{std::ranges::find_if(
-            structures,
-            [id](const PipelineStructure& structure) -> bool {
-                return structure.pipeline_id == id;
+    auto transform_view{
+        impl_->pipelines | std::views::values |
+        std::views::transform(
+            [](const Allocated<Pipeline>& val) -> const PipelineStructure& {
+                return val->getStructure();
             })};
-        found != structures.end()) {
-        return found.base();
-    };
+
+    for (const auto& view : transform_view) {
+        if (view.pipeline_id == id) {
+            return &view;
+        }
+    }
 
     return nullptr;
 };
@@ -249,10 +251,10 @@ Ptr<MaterialInstance> RenderingManager::getMaterial(
 };
 
 PipelineBuilder& RenderingManager::getPipelineBuilder() {
-    PR_CORE_ASSERT(
-        impl_->pipelineBuilder_ != nullptr,
-        "The application must be initialised in order to get the pipeline "
-        "builder.");
+    PR_CORE_ASSERT(impl_->pipelineBuilder_ != nullptr,
+                   "The application must be initialised in order to "
+                   "get the pipeline "
+                   "builder.");
 
     return *impl_->pipelineBuilder_;
 };
@@ -268,10 +270,8 @@ void RenderingManager::removeTexture(renderer_texture_id_t id) {
     auto erased{textureMap_.erase(id)};
     if (erased == 0) {
         PR_CORE_WARN(
-            "A delete was requested for a non-existant texture with ID {} "
-            "in "
-            "the OpenGL Draw Manager.",
-            id);
+            "A delete was requested for a non-existant texture with ID
+{} " "in " "the OpenGL Draw Manager.", id);
     }
 };
 
@@ -279,9 +279,8 @@ void RenderingManager::destroyMeshContext(renderer_mesh_id_t id) {
     auto erased{bufferMap_.erase(id)};
     if (erased == 0) {
         PR_CORE_WARN(
-            "A delete was requested for a non-existant mesh with ID {} in "
-            "the OpenGL Draw Manager.",
-            id);
+            "A delete was requested for a non-existant mesh with ID {}
+in " "the OpenGL Draw Manager.", id);
     }
 };
 
@@ -302,23 +301,24 @@ OpenGLTexture* RenderingManager::getTexture(renderer_texture_id_t id) {
 renderer_mesh_id_t RenderingManager::createMeshContext(
     const ImportedMesh& mesh) {
     auto buffer{std::make_unique<OpenGLBuffer>(mesh.attributes,
-                                               mesh.vertex_count, mesh.bytes,
-                                               mesh.indices, mesh.draw_mode)};
-    MeshContext context(std::move(buffer));
+                                               mesh.vertex_count,
+mesh.bytes, mesh.indices, mesh.draw_mode)}; MeshContext
+context(std::move(buffer));
 
     auto new_key{++currentKey_};
     const auto insertion{bufferMap_.emplace(new_key, buffer)};
 
     PR_CORE_ASSERT(insertion.second,
-                   "Presto failed to insert RenderGroup into the render list.");
+                   "Presto failed to insert RenderGroup into the render
+list.");
 
     PR_CORE_TRACE("Added new RenderGroup to the render list.");
 
     return new_key;
 };
 
-renderer_texture_id_t RenderingManager::addTexture(const Presto::Image& image) {
-    OpenGLTexture tex{image};
+renderer_texture_id_t RenderingManager::addTexture(const Presto::Image&
+image) { OpenGLTexture tex{image};
 
     auto new_key{++currentKey_};
     textureMap_.emplace(new_key, std::move(tex));
@@ -326,18 +326,18 @@ renderer_texture_id_t RenderingManager::addTexture(const Presto::Image& image) {
     return new_key;
 };
 
-OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id) {
-    auto pipeline{pipelineMap_.find(id)};
+OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id)
+{ auto pipeline{pipelineMap_.find(id)};
 
-    return (pipeline == pipelineMap_.end()) ? nullptr : &(pipeline->second);
+    return (pipeline == pipelineMap_.end()) ? nullptr :
+&(pipeline->second);
 }
 */
 
 /*
-PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&& pipeline,
-                                                renderer_pipeline_id_t id) {
-    if (id == ANY_PIPELINE) {
-        id = currentKey_++;
+PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&&
+pipeline, renderer_pipeline_id_t id) { if (id == ANY_PIPELINE) { id =
+currentKey_++;
     }
 
     PipelineStructure structure{pipeline.getStructure()};

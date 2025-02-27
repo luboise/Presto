@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 
@@ -23,7 +23,9 @@ constexpr PR_BIT_TYPE AS_BIT(std::uint8_t x) { return 1U << x; }
 constexpr double PR_MINIMUM_NEAR_DISTANCE{0.1};
 
 // Pipelines
+using mesh_id_t = Presto::uint32_t;
 using pipeline_id_t = Presto::uint16_t;
+
 constexpr pipeline_id_t PR_PIPELINE_DEFAULT_3D = 0;
 constexpr pipeline_id_t PR_PIPELINE_DEFAULT_UI = 1;
 

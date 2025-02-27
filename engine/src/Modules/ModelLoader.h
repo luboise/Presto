@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Presto/Assets/ImportTypes.h"
-#include "Presto/Core/Types.h"
+
+#include "Presto/Types/AssetTypes.h"
 
 namespace Presto {
 

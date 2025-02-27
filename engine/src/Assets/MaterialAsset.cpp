@@ -3,9 +3,9 @@
 
 #include "Presto/Assets/MaterialAsset.h"
 
+#include "Modules/RenderingManager.h"
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
-#include "Presto/Modules/RenderingManager.h"
 #include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {

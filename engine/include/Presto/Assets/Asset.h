@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Presto/Core/Concepts.h"
+#include "Presto/Types/AssetTypes.h"
 
+#include "Presto/Core/Concepts.h"
 #include "Presto/Core/Constants.h"
 
 namespace Presto {
-enum class AssetType : std::uint8_t { MESH, MODEL, MATERIAL_DEFINITION, IMAGE };
 
 class Asset {
     friend class AssetManager;
@@ -40,6 +40,4 @@ class Asset {
     bool loaded_{false};
 };
 
-template <DerivedFrom<Asset> T>
-using AssetPtr = Ptr<T>;
 }  // namespace Presto

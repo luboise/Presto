@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Rendering/BoundingBox.h"
 
@@ -31,6 +31,13 @@ constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
 using renderer_mesh_id_t = PR_NUMERIC_ID;
 using renderer_texture_id_t = PR_NUMERIC_ID;
 
+using Index = uint32_t;
+
+class Vertex;
+
+using VertexList = std::vector<Vertex>;
+using IndexList = std::vector<Index>;
+
 struct RawMeshData {
     using PositionType = vec3;
     using NormalType = vec3;
@@ -47,6 +54,21 @@ struct RawMeshData {
     int draw_mode{};
 };
 
+/*struct Vertex {*/
+/*    vec3 position;*/
+/*    vec3 colour;*/
+/*    vec3 normal;*/
+/*    vec2 tex_coords;*/
+/*};*/
+
+class Vertex {
+   public:
+    template <typename T>
+    T getAttribute() const;
+
+   private:
+};
+
 struct MeshData {
     int draw_mode;
     VertexList vertices;
@@ -57,5 +79,16 @@ struct MeshData {
 };
 
 enum class ShaderStage { VERTEX, FRAGMENT };
+
+// TODO: Make this more robust and give it more values, such as attributes. At
+// the moment, the attributes can be retrieved using the pipeline handle using
+// getPipelineStructure(id)
+struct ProcessedVertexData {
+    pipeline_id_t pipeline_id;
+
+    // AttributeSet attributes;
+    Presto::size_t vertex_count;
+    ByteArray data;
+};
 
 }  // namespace Presto

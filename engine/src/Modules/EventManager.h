@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Modules/Module.h"
+#include "Modules/Module.h"
 
 #include "Presto/Objects/Entity.h"
 
@@ -32,6 +32,7 @@ class PRESTO_API EventManager final : public Module<EventManager> {
     void onKeyEvent(KeyEvent& event);
 
    protected:
+
    private:
     EventManager() = default;
     ~EventManager() = default;

@@ -1,13 +1,17 @@
 #include "Presto/Assets/MeshAsset.h"
 
-#include "Modules/ModelLoader.h"
-#include "Presto/Core/Types.h"
-#include "Presto/Modules/RenderingManager.h"
+#include "Modules/RenderingManager.h"
+#include "Presto/Core/Constants.h"
+#include "Presto/Types/CoreTypes.h"
+
+#include "Rendering/VertexProcessing.h"
 
 namespace Presto {
 
 struct MeshAsset::Impl {
     BoundingBox box;
+
+    ProcessedVertexData vertex_data;
 
     ByteArray vertices;
     Presto::size_t vertex_count{0};
@@ -32,10 +36,18 @@ MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
 
 BoundingBox MeshAsset::getBoundingBox() const { return impl_->box; };
 
-MeshAsset& MeshAsset::setVertices(const AttributeList& attributes) {
+MeshAsset& MeshAsset::setVertices(const ImportedAttributeList& attributes) {
     if (!modifiable()) {
         return *this;
     }
+
+    const PipelineStructure* ps{
+        RenderingManager::get().getPipelineStructure(PR_PIPELINE_DEFAULT_3D)};
+
+    auto processed{processVertices(attributes, ps->attributes)};
+
+    // TODO: Put checks here to make sure the processed vertices are well formed
+    this->impl_->vertex_data = std::move(processed);
 
     // TODO: Implement actual bounding box
     impl_->box = {.x_min = -1,

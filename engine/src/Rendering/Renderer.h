@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Presto/Mixins/LazyCalculator.h"
+#include "Presto/Utils/LazyCalculator.h"
 
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"  // IWYU pragma: export
-#include "Presto/Rendering/Textures.h"
+#include "Presto/Rendering/TextureTypes.h"
 
 #include "Rendering/Buffer.h"
 
@@ -77,8 +77,9 @@ virtual void unloadMaterial(renderer_material_id_t id) = 0;
     void framebufferResized() { this->_framebufferResized = true; }
     virtual void onFrameBufferResized() = 0;
 
-    [[nodiscard]] virtual std::vector<PipelineStructure> getPipelineStructures()
-        const = 0;
+    /* [[nodiscard]] virtual std::vector<PipelineStructure>
+       getPipelineStructures() const = 0;
+                 */
 
    protected:
     Renderer() = default;

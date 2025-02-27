@@ -1,12 +1,11 @@
 #include "Presto/Objects/Entity.h"
 #include <memory>
 
-#include "Presto/Components/ConductorComponent.h"
-
 #include "Modules/EventManager.h"
-#include "Presto/Components/Physics/RigidBodyComponent.h"
-#include "Presto/Modules/EntityManager.h"
-#include "Presto/Modules/PhysicsManager.h"
+#include "Modules/PhysicsManager.h"
+#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
+
+#include "Modules/EntityManagerImpl.h"
 
 using Presto::ObjectCreatedEvent;
 
@@ -17,7 +16,7 @@ Entity::Entity(entity_id_t id, entity_name_t name)
 }
 
 void Entity::addTag(const entity_tag_name_t& tagName) {
-    const entity_tag_id_t tag_id{EntityManager::get().getTagId(tagName)};
+    const entity_tag_id_t tag_id{EntityManagerImpl::get().getTagId(tagName)};
     PR_ASSERT(tag_id != INVALID_TAG_ID,
               std::format("Unable to get tag id for name {}. Has the tag "
                           "been created yet?",

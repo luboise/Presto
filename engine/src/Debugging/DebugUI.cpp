@@ -1,8 +1,8 @@
 #include "Debugging/ComponentBits.h"
-#include "Presto/Components/Renderable/ModelComponent.h"
-#include "Presto/Components/TransformComponent.h"
-#include "Presto/Modules/EntityManager.h"
-#include "Presto/Objects/Component.h"
+#include "Modules/EntityManagerImpl.h"
+
+#include "Presto/Objects/Components.h"
+
 #include "Presto/Objects/Entity.h"
 #include "Presto/Runtime/Window.h"
 
@@ -16,18 +16,18 @@
 
 namespace Presto {
 
-void DebugUI::initialise(Presto::Window *windowPtr,
+void DebugUI::initialise(Presto::Window* windowPtr,
                          std::function<void()> exitCallback) {
     DebugUI::exitCallback_ = std::move(exitCallback);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |=
         ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
-    auto *window{static_cast<GLFWwindow *>(windowPtr->getWindowPtr())};
+    auto* window{static_cast<GLFWwindow*>(windowPtr->getWindowPtr())};
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -167,8 +167,8 @@ void DebugUI::drawMainEditor() {
     const auto* main_viewport = ImGui::GetMainViewport();
 
     constexpr auto dock_flags{ImGuiDockNodeFlags_PassthruCentralNode |
-                    ImGuiDockNodeFlags_NoDockingInCentralNode |
-                    ImGuiDockNodeFlags_NoDockingOverCentralNode};
+                              ImGuiDockNodeFlags_NoDockingInCentralNode |
+                              ImGuiDockNodeFlags_NoDockingOverCentralNode};
 
     // Create a DockSpace node where any window can be docked
     ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
@@ -240,7 +240,7 @@ void DebugUI::drawMainEditor() {
                 ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDocking |
                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_AlwaysAutoResize)) {
-        auto *central_node = ImGui::DockBuilderGetCentralNode(dockspace_id);
+        auto* central_node = ImGui::DockBuilderGetCentralNode(dockspace_id);
 
         ImGui::SetWindowPos(central_node->Pos);
         ImGui::SetWindowSize(central_node->Size);
@@ -313,9 +313,9 @@ void DebugUI::drawEntityBrowser() {
         ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
                                  ImGuiTreeNodeFlags_Leaf};
 
-        std::vector<entity_ptr> entities{EntityManager::get().findAll()};
+        std::vector<entity_ptr> entities{EntityManagerImpl::get().findAll()};
 
-        for (const auto &entity_ptr : entities) {
+        for (const auto& entity_ptr : entities) {
             entity_id_t id{entity_ptr->getId()};
             {
                 std::string label{
@@ -352,8 +352,8 @@ void DebugUI::drawComponentBrowser() {
 
         auto bits{DebugUI::componentBits_};
 
-        auto components{EntityManager::get().findComponentsWhere(
-            [bits](const GenericComponentPtr &component) {
+        auto components{EntityManagerImpl::get().findComponentsWhere(
+            [bits](const GenericComponentPtr& component) {
                 if (bits == -1U) {
                     return true;
                 }
@@ -370,7 +370,7 @@ void DebugUI::drawComponentBrowser() {
                 return false;
             })};
 
-        for (const GenericComponentPtr &component : components) {
+        for (const GenericComponentPtr& component : components) {
             auto id{component->getId()};
             {
                 std::string label{std::format("({}) Component", id)};
@@ -393,7 +393,7 @@ void DebugUI::drawComponentBrowser() {
         ImGui::TableNextColumn();
         ImGui::Text("Filters");
 
-        auto make_checkbox{[bits](const char *label, CheckedComponentBit bit) {
+        auto make_checkbox{[bits](const char* label, CheckedComponentBit bit) {
             bool enabled{static_cast<bool>(bits & bit)};
             if (ImGui::Checkbox(label, &enabled)) {
                 DebugUI::componentBits_ = DebugUI::componentBits_ ^ bit;

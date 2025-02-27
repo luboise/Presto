@@ -137,10 +137,16 @@ class Allocator {
         this->release(*found.first);
     }
 
+    // Iterators
+    auto begin() { return entries_.begin(); }
+    auto end() { return entries_.end(); }
+    auto begin() const { return entries_.begin(); }
+    auto end() const { return entries_.end(); }
+
    private:
     // const bool _useNestedID;
 
-    std::map<K, V> entries_;
+    std::map<K, Allocated<V>> entries_;
     IDGenerator<K> idGenerator_;
 
     return_t put(K key, Allocated<V> val) {

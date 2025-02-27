@@ -2,11 +2,11 @@
 
 #include "Presto/Objects/Component.h"
 
-#include "Presto/Components/UI/CanvasGroup.h"
+#include "CanvasGroup.h"
 
 namespace Presto {
 class CanvasComponent : public Component {
-    friend class EntityManager;
+    friend class EntityManagerImpl;
 
    public:
     // ~CanvasComponent() override;

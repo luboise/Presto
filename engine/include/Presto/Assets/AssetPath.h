@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 
@@ -27,7 +27,5 @@ class AssetPath {
    private:
     FilePath path_;
 };
-
-using AssetArg = AssetPath;
 
 }  // namespace Presto

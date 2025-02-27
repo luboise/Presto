@@ -2,7 +2,7 @@
 
 #include "Module.h"
 
-#include "Presto/Components/Physics/RigidBodyComponent.h"
+#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
 #include "Presto/Objects/Entity.h"
 
 namespace Presto {

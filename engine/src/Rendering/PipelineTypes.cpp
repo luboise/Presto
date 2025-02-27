@@ -13,4 +13,8 @@ Presto::size_t PipelineUniformBlock::size() const {
 
 Presto::size_t PipelineUniform::size() const { return SizeOfType(this->type); };
 
+Presto::size_t PipelineAttribute::size() const {
+    return attributeTypeDetailsOf(this->type).size();
+};
+
 }  // namespace Presto

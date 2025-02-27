@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include "Asset.h"
 
@@ -15,8 +15,6 @@ class ModelAsset final : public Asset {
     friend class RenderingManager;
 
    public:
-    using MeshPtr = AssetPtr<MeshAsset>;
-
     explicit ModelAsset(asset_name_t);
 
     [[nodiscard]] constexpr AssetType type() const override {
@@ -37,6 +35,4 @@ class ModelAsset final : public Asset {
     std::vector<MeshPtr> meshes_;
 };
 
-using MeshPtr = ModelAsset::MeshPtr;
-using ModelPtr = AssetPtr<ModelAsset>;
 }  // namespace Presto

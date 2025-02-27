@@ -1,8 +1,8 @@
-#include "Presto/Modules/SceneManager.h"
+#include "Modules/SceneManager.h"
 #include "Presto/Components/Renderable/ModelComponent.h"
 
-#include "Presto/Modules/AssetManager.h"
-#include "Presto/Modules/EntityManager.h"
+#include "Modules/AssetManager.h"
+#include "Modules/EntityManager.h"
 
 namespace Presto {
 constexpr auto TYPE_KEY = "type";

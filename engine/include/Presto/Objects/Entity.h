@@ -2,10 +2,10 @@
 
 #include "Component.h"
 
-#include "Presto/Components/ConductorComponent.h"
+#include "Presto/Objects/Components/ConductorComponent.h"
 
 #include <map>
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 // Forward declaration
@@ -22,7 +22,7 @@ using entity_tag_map = std::array<bool, MAX_TAG_COUNT>;
 constexpr entity_tag_id_t INVALID_TAG_ID = -1;
 
 class PRESTO_API Entity {
-    friend class EntityManager;
+    friend class EntityManagerImpl;
     friend class EventManager;
 
    public:

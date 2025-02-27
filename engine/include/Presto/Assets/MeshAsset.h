@@ -2,7 +2,6 @@
 
 #include "Presto/Assets/Asset.h"
 
-#include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Rendering/BoundingBox.h"
 #include "Presto/Rendering/RenderTypes.h"
 
@@ -20,7 +19,7 @@ class MeshAsset final : public Asset {
         return AssetType::MESH;
     };
 
-    MeshAsset& setVertices(const AttributeList& attributes);
+    MeshAsset& setVertices(const ImportedAttributeList& attributes);
     MeshAsset& setIndices(const IndexList& attributes);
 
     MeshAsset& setDefaultMaterial(const MaterialPtr&);
@@ -38,6 +37,6 @@ class MeshAsset final : public Asset {
     [[nodiscard]] bool modifiable() const;
 
     renderer_mesh_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
-    Ref<MaterialAsset> defaultMaterial_;
+    MaterialPtr defaultMaterial_;
 };
 }  // namespace Presto

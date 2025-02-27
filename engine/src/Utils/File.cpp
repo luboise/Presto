@@ -1,6 +1,6 @@
 #include "Presto/Utils/File.h"
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto::Utils {
 std::string File::ReadFile(const FilePath& path) {

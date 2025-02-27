@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 
@@ -32,8 +32,6 @@ class PRESTO_API Texture {
    private:
     texture_id_t id_{};
 };
-
-using TexturePtr = Ptr<Texture>;
 
 class Texture2D : public Texture {
    public:

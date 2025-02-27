@@ -2,7 +2,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 using json = nlohmann::json;
 

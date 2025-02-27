@@ -11,7 +11,7 @@ namespace Presto {
 class Entity;
 
 class PRESTO_API ConductorComponent : public Component {
-    friend class EntityManager;
+    friend class EntityManagerImpl;
     friend class EventManager;
 
    private:

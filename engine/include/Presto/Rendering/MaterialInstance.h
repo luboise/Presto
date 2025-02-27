@@ -1,28 +1,30 @@
 #pragma once
 
-#include "Presto/Core/Types.h"
-
-#include "Presto/Rendering/ErasedBytes.h"
+#include "Presto/Types/AssetTypes.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 
-class MaterialAsset;
-class Texture;
+class ErasedBytes;
+struct MaterialStructure;
 
 class MaterialInstance {
     friend class MaterialAsset;
 
    public:
-    explicit MaterialInstance(const Ptr<MaterialAsset>&);
+    explicit MaterialInstance(const MaterialDefinitionPtr&);
+
+    MaterialInstance& setName(Presto::string newName);
 
     MaterialInstance& setProperty(Presto::string name, Presto::vec3 data);
     MaterialInstance& setProperty(Presto::string name, ErasedBytes data);
-    MaterialInstance& setProperty(Presto::string name, Ptr<Texture> data);
+    MaterialInstance& setProperty(Presto::string name, TexturePtr data);
+
+    [[nodiscard]] const MaterialStructure& getStructure() const;
 
    private:
-    Ref<MaterialAsset> definition_;
+    MaterialPtr definition_;
+    Presto::string name_;
 };
-
-using MaterialPtr = Ptr<MaterialInstance>;
 
 }  // namespace Presto

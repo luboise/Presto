@@ -1,8 +1,8 @@
 #include "MasterpieceManager.h"
 #include "EditorUI.h"
 
-#include "Presto/Modules/AssetManager.h"
-#include "Presto/Modules/SceneManager.h"
+#include "Modules/AssetManager.h"
+#include "Modules/SceneManager.h"
 #include "Presto/Utils/File.h"
 
 void MasterpieceManager::Init() {

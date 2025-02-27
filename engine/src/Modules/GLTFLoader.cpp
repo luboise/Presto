@@ -4,9 +4,9 @@
 
 #include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/ImportTypes.h"
-#include "Presto/Core/Types.h"
 #include "Presto/Rendering/AttributeTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
+#include "Presto/Types/CoreTypes.h"
 #include "tiny_gltf.h"
 
 // NOT NEEDED SINCE TINY_GLTF USES IT
@@ -86,8 +86,8 @@ PR_STRING_ID tinygltfNameToPrestoName(const PR_STRING_ID& name) {
     return name;
 }
 
-ImportedMeshAttribute getDataFromAccessor(const tinygltf::Model& model,
-                                          size_t accessorIndex) {
+ImportedVertexAttribute getDataFromAccessor(const tinygltf::Model& model,
+                                            size_t accessorIndex) {
     const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
     ShaderDataType type{tinygltfToPrestoType(accessor)};
 
@@ -103,7 +103,7 @@ ImportedMeshAttribute getDataFromAccessor(const tinygltf::Model& model,
     std::memcpy(ret_buffer.data(), buffer.data.data() + accessor_offset,
                 bv.byteLength);
 
-    ImportedMeshAttribute ret{
+    ImportedVertexAttribute ret{
         .name = accessor.name,
         .type = type,
         .count = accessor.count,
@@ -282,7 +282,7 @@ ImportedModelData GLTFLoader::load(
 
             new_submesh.material_index = mesh.material;
 
-            std::vector<ImportedMeshAttribute> imported_attributes;
+            std::vector<ImportedVertexAttribute> imported_attributes;
 
             for (const auto& [attribute, accessor_index] : mesh.attributes) {
                 auto accessor{model.accessors[accessor_index]};

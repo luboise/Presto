@@ -30,45 +30,15 @@ using mat4 = glm::mat4;
 
 using string = std::string;
 
-/*struct Vertex {*/
-/*    vec3 position;*/
-/*    vec3 colour;*/
-/*    vec3 normal;*/
-/*    vec2 tex_coords;*/
-/*};*/
-
-class Vertex {
-   public:
-    template <typename T>
-    T getAttribute() const;
-
-   private:
-};
-
 using ByteArray = std::vector<std::byte>;
-
-using Index = uint32_t;
-
-using VertexList = std::vector<Vertex>;
-using IndexList = std::vector<Index>;
 
 using PR_STRING_ID = Presto::string;
 
 using FilePath = fs::path;
-
-using asset_name_t = PR_STRING_ID;
 
 struct VisualExtents {
     std::uint16_t width;
     std::uint16_t height;
 };
 
-template <typename T>
-using Allocated = std::unique_ptr<T>;
-
-template <typename T>
-using Ptr = std::shared_ptr<T>;
-
-template <typename T>
-using Ref = std::weak_ptr<T>;
 }  // namespace Presto

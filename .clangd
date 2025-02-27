@@ -1,5 +1,6 @@
 CompileFlags:
-  Add: [-Wall, -Werror]
+  # Add: [-Wall, -Werror]
+  Add: [-Werror]
   Remove: [-include-pch] # Prevents preloading PCH in clangd diagnostics
 
 Diagnostics:

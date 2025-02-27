@@ -1,16 +1,18 @@
-#include "Assets.h"
-#include "Components.h"
+namespace Presto {
 
-using Presto::ImagePtr;
-using Presto::MaterialPtr;
-using Presto::MeshPtr;
-using Presto::ModelPtr;
+class CameraComponent;
+class ConductorComponent;
+class ModelComponent;
+class RigidBodyComponent;
+class TransformComponent;
+class CanvasComponent;
+
+}  // namespace Presto
 
 // Components
 using Camera = Presto::CameraComponent;
 using Conductor = Presto::ConductorComponent;
 using Model = Presto::ModelComponent;
 using RigidBody = Presto::RigidBodyComponent;
-using Sprite = Presto::SpriteComponent;
 using Transform = Presto::TransformComponent;
 using Canvas = Presto::CanvasComponent;

@@ -1,4 +1,4 @@
-#include "Presto/Rendering/Textures.h"
+#include "Presto/Rendering/TextureTypes.h"
 
 namespace Presto {
 

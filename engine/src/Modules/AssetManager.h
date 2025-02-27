@@ -7,11 +7,11 @@
 
 #include "Presto/Assets/Asset.h"
 
-#include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/AssetTypes.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include <map>
 
@@ -70,7 +70,8 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
                               const Presto::Image& image);
 
     template <AssetType Type>
-    [[nodiscard]] AssetTraits<Type>::ResourcePtr find(const asset_name_t& key) {
+    [[nodiscard]] auto find(const asset_name_t& key)
+        -> AssetTraits<Type>::ResourcePtr {
         using ReturnType = typename AssetTraits<Type>::ResourceT;
         return std::dynamic_pointer_cast<ReturnType>(assets_[Type][key]);
     };

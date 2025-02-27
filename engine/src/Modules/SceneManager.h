@@ -2,7 +2,7 @@
 
 #include "Presto/Objects/Scene.h"
 
-#include "Presto/Modules/Module.h"
+#include "Modules/Module.h"
 
 #include <nlohmann/json.hpp>
 using nlohmann::json;

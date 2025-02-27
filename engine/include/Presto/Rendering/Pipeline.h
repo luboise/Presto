@@ -1,8 +1,6 @@
 #pragma once
 
-#include <utility>
-
-#include "Presto/Assets/ImportTypes.h"
+#include "Presto/Rendering/MaterialTypes.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 
@@ -15,7 +13,7 @@ class Pipeline {
     virtual void bind() = 0;
     virtual void unbind() = 0;
 
-    [[nodiscard]] virtual PipelineStructure getStructure() const {
+    [[nodiscard]] virtual const PipelineStructure& getStructure() const {
         return pipelineStructure_;
     };
 

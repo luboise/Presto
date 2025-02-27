@@ -12,7 +12,7 @@ using mesh_id_t = PR_NUMERIC_ID;
 
 class PRESTO_API SpriteComponent : public Component {
     // friend class RenderingManager;
-    friend class EntityManager;
+    friend class EntityManagerImpl;
 
    public:
     [[nodiscard]] bool hasAsset() const;

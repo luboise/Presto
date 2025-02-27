@@ -1,9 +1,10 @@
 #pragma once
 
 #include <cstring>
+#include <span>
 #include <type_traits>
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Rendering/UniformTypes.h"
 

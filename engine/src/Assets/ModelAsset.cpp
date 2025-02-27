@@ -2,7 +2,7 @@
 
 #include "Presto/Assets/ModelAsset.h"
 
-#include "Presto/Modules/RenderingManager.h"
+#include "Modules/RenderingManager.h"
 
 namespace Presto {
 bool ModelAsset::load() {

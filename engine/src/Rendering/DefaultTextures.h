@@ -2,16 +2,19 @@
 
 namespace Presto {
 
-const std::vector<Presto::size_t> default_texture_bytes{
-    0,   0,   0,   255,  // black
-    255, 255, 255, 255,  // white
-    255, 255, 255, 255,  // white
-    0,   0,   0,   255   // white
-};
+#define BLACK_PIXEL std::byte{0}, std::byte{0}, std::byte{0}, std::byte{255}
+#define WHITE_PIXEL \
+    std::byte{255}, std::byte{255}, std::byte{255}, std::byte{255}
+
+const ByteArray default_texture_bytes{BLACK_PIXEL, WHITE_PIXEL, WHITE_PIXEL,
+                                      BLACK_PIXEL};
 
 static const Presto::Image DEFAULT_TEXTURE{
     .width = 2,
     .height = 2,
     .bytes{default_texture_bytes.begin(), default_texture_bytes.end()}};
+
+#undef BLACK_PIXEL
+#undef WHITE_PIXEL
 
 }  // namespace Presto

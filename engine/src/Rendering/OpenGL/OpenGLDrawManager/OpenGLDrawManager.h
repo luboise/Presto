@@ -3,9 +3,9 @@
 #include "OpenGLTexture.h"
 #include "Presto/Core/Constants.h"
 
-#include "Presto/Core/Types.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Types/CoreTypes.h"
 
 #include "Rendering/OpenGL/OpenGLBuffer.h"
 #include "Rendering/OpenGL/OpenGLPipeline.h"

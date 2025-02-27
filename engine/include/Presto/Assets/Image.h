@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "Presto/Core/Types.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 struct Image {

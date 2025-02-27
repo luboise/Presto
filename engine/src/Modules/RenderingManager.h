@@ -6,12 +6,13 @@
 
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
-#include "Presto/Core/Types.h"
 #include "Presto/Rendering/PipelineBuilder.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Types/CoreTypes.h"
 
-#include "Presto/Rendering/Textures.h"
+#include "Presto/Rendering/TextureTypes.h"
+#include "Presto/Types/MaterialTypes.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -38,12 +39,6 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     using material_id_t = Presto::uint16_t;  // 65,000 unique meshes
     using texture_id_t = Presto::uint32_t;   // 2 billion unique textures
 
-    struct MeshRegistrationData {
-        mesh_id_t id;
-        Allocated<Buffer> vertices;
-        Allocated<Buffer> indices;
-    };
-
    public:
     static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
 
@@ -55,7 +50,7 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     static void setRenderLibrary(RENDER_LIBRARY library);
     static void setWindow(GLFWAppWindow* window);
 
-    [[nodiscard]] PipelineStructure* getPipelineStructure(
+    [[nodiscard]] const PipelineStructure* getPipelineStructure(
         renderer_pipeline_id_t) const;
 
     void setCamera(CameraComponent& newCam);
@@ -141,9 +136,6 @@ OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
                               CameraComponent& defaultCamera);
 
     Allocated<Renderer> renderer_;
-
-    std::map<renderer_mesh_id_t, Allocated<MeshRegistrationData>>
-        meshRegistrations_;
 
     struct Impl;
     Allocated<Impl> impl_;

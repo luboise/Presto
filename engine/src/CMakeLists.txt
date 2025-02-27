@@ -1,6 +1,8 @@
 target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE
                           ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
 
+add_subdirectory(API)
+
 add_subdirectory(Assets)
 add_subdirectory(Common)
 add_subdirectory(Components)
@@ -22,6 +24,7 @@ target_sources(
           Rendering/RenderingManager.cpp
           Runtime/Time.cpp
           Logging.cpp
+          Objects.cpp
           pch.cpp
           GLFWAppWindow.cpp)
 
