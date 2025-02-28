@@ -1,5 +1,5 @@
 #include "Presto/Rendering/RenderLayer.h"
-#include "Presto/Components/Renderable.h"
+#include "Presto/Objects/Components/Renderable.h"
 
 namespace Presto {
 RenderLayer::RenderLayer() {}

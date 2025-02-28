@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core.h"
+
 #include "Events.h"  //IWYU pragma: export
 
 #include "Runtime/Application.h"    // IWYU pragma: export

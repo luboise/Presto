@@ -1,4 +1,4 @@
-#include "Presto/Components/Renderable/ModelComponent.h"
+#include "Presto/Objects/Components/Renderable/ModelComponent.h"
 
 namespace Presto {
 

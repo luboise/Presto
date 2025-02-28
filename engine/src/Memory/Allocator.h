@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <concepts>
 #include <map>
+#include <ranges>
 #include <type_traits>
 
 namespace Presto {
@@ -21,6 +22,17 @@ class Allocator {
 
    public:
     Allocator() = default;
+
+    /**
+     * @brief  Search for a value by key
+     */
+    [[nodiscard]] V* find(K key) {
+        if (auto found{entries_.find(key)}; found != entries_.end()) {
+            return (*found).second.get();
+        }
+
+        return nullptr;
+    }
 
     return_t alloc()
         requires std::default_initializable<V>
@@ -54,10 +66,10 @@ class Allocator {
                        "must be unique, and {} wasn't.",
                        new_id);
 
-        put(new_id, std::move(ptr));
+        return put(new_id, std::move(ptr));
     }
 
-    return_t alloc(Allocated<V> allocation) {
+    return_t alloc(Allocated<V> allocation, K key = 0) {
         if (allocation == nullptr) {
             PR_CORE_ERROR(
                 "An allocator can't allocate from a null pointer. Skipping "
@@ -66,7 +78,7 @@ class Allocator {
         }
 
         if (std::ranges::any_of(entries_ | std::views::values,
-                                [allocation](const Allocated<V>& val) -> bool {
+                                [&allocation](const Allocated<V>& val) -> bool {
                                     return val == allocation;
                                 })) {
             PR_CORE_ERROR(
@@ -75,13 +87,23 @@ class Allocator {
             return BAD_INSERTION();
         };
 
-        V new_id{idGenerator_.generate()};
+        K new_id{};
+
+        if (key == 0) {
+            new_id = idGenerator_.generate();
+        } else {
+            if (!idGenerator_.reserve(key)) {
+                return BAD_INSERTION();
+            }
+            new_id = key;
+        }
+
         PR_CORE_ASSERT(!entries_.contains(new_id),
                        "Keys that an Allocator receives from an IDGenerator "
                        "must be unique, and {} wasn't.",
                        new_id);
 
-        put(new_id, std::move(allocation));
+        return put(new_id, std::move(allocation));
     }
 
     return_t alloc(V&& new_value)
@@ -149,13 +171,13 @@ class Allocator {
     std::map<K, Allocated<V>> entries_;
     IDGenerator<K> idGenerator_;
 
-    return_t put(K key, Allocated<V> val) {
+    [[nodiscard]] return_t put(K key, Allocated<V> val) {
         auto [it, emplaced]{entries_.emplace(key, std::move(val))};
         if (!emplaced) {
             return BAD_INSERTION();
         }
 
-        return *emplaced;
+        return {it->first, it->second.get()};
     }
 };
 

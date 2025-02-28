@@ -1,4 +1,4 @@
-#include "Presto/Components/TransformComponent.h"
+#include "Presto/Objects/Components/TransformComponent.h"
 
 namespace Presto {
 mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,

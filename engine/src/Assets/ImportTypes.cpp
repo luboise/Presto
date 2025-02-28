@@ -4,19 +4,20 @@ namespace Presto {
 
 /*
 
-void MaterialStructure::merge(const MaterialStructure& inStructure) {
+void UniformStructure::merge(const UniformStructure& inStructure) {
 std::ranges::for_each(this->properties, [&inStructure](
                                         MaterialProperty& property) {
 const auto* in_property{inStructure.getProperty(property.name)};
 PR_ASSERT(in_property != nullptr,
-          "Incompatible MaterialStructure objects are being merged. "
+          "Incompatible UniformStructure objects are being merged. "
           "Compatibility should be checked first using writeableFrom");
 
 property = *in_property;
 });
 };
 
-const MaterialProperty* MaterialStructure::getProperty(
+
+const MaterialProperty* UniformStructure::getProperty(
 const PR_STRING_ID& name) const {
 if (const auto property{
     std::ranges::find_if(this->properties,
@@ -30,8 +31,8 @@ return &*property;
 return nullptr;
 };
 
-bool MaterialStructure::writeableFrom(
-const MaterialStructure& inStructure) const {
+bool UniformStructure::writeableFrom(
+const UniformStructure& inStructure) const {
 return std::ranges::all_of(
 this->properties, [&inStructure](const auto& out_property) -> bool {
     const MaterialProperty* in_property{
@@ -52,26 +53,27 @@ this->data = other.data;
 bool MaterialProperty::compatible(const MaterialProperty& in,
                           const MaterialProperty& out) {
 return in.type == out.type && in.name == out.name;
+*/
 
-/*switch (out.type) {*/
-/*        // In these cases, the in and out types must match*/
-/*    case UniformVariableType::INT:*/
-/*    case UniformVariableType::UINT:*/
-/*    case UniformVariableType::FLOAT:*/
-/*        return in.type == UniformVariableType::TEXTURE;*/
-/**/
-/*    case UniformVariableType::VEC2:*/
-/*    case UniformVariableType::VEC3:*/
-/*    case UniformVariableType::MAT4:*/
-/*    case UniformVariableType::TEXTURE:*/
-/*}*/
-};
+/*
+switch (out.type) {
+// In these cases, the in and out types must match
+case UniformVariableType::INT:
+case UniformVariableType::UINT:
+case UniformVariableType::FLOAT:
+return in.type == UniformVariableType::TEXTURE;
 
-MaterialStructure MaterialStructure::from(const PipelineStructure& pipeline) {
-        :SDFHLKSDJFHKSLDFJDL //
+case UniformVariableType::VEC2:
+case UniformVariableType::VEC3:
+case UniformVariableType::MAT4:
+case UniformVariableType::TEXTURE:
+}
+*/
+
+/*
+UniformStructure UniformStructure::from(const PipelineStructure& pipeline) {
 return {};
 };
-
 */
 
 }  // namespace Presto

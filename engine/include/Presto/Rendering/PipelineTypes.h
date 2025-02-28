@@ -14,6 +14,8 @@ struct PipelineAttribute {
     ShaderDataType type;
     PR_STRING_ID name;
 
+    Presto::size_t offset;
+
     [[nodiscard]] Presto::size_t size() const;
 };
 
@@ -36,7 +38,7 @@ struct PipelineUniformBlock {
 };
 
 struct PipelineStructure {
-    renderer_pipeline_id_t pipeline_id;
+    pipeline_id_t pipeline_id;
 
     bool uses_global_uniforms;
     bool uses_object_uniforms;
@@ -44,6 +46,8 @@ struct PipelineStructure {
     std::vector<PipelineAttribute> attributes;
     std::vector<PipelineUniform> uniforms;
     std::vector<PipelineUniformBlock> uniform_blocks;
+
+    [[nodiscard]] Presto::size_t stride() const;
 };
 
 }  // namespace Presto

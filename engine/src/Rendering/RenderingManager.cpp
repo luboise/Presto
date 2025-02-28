@@ -1,7 +1,9 @@
+#include <memory>
 #include <ranges>
 
 #include "Modules/RenderingManager.h"
 
+#include "Presto/Core/Constants.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Objects/Components.h"
@@ -29,17 +31,15 @@ RENDER_LIBRARY RenderingManager::_library = UNSET;
 GLFWAppWindow* RenderingManager::_window = nullptr;
 
 struct RenderingManager::Impl {
-    IDGenerator<mesh_id_t> mesh_ids;
     IDGenerator<material_id_t> material_ids;
     IDGenerator<texture_id_t> texture_ids;
 
     // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
 
     pipeline_allocator_t pipelines;
+    mesh_allocator_t mesh_registrations;
 
-    std::map<texture_id_t, Texture> textures;
-    std::map<renderer_mesh_id_t, Allocated<MeshRegistrationData>>
-        meshRegistrations_;
+    std::map<texture_id_t, Ptr<Texture>> textures;
 
     Allocated<TextureFactory> textureFactory_;
     Allocated<PipelineBuilder> pipelineBuilder_;
@@ -50,30 +50,51 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    CameraComponent& defaultCamera)
     : activeCamera_(defaultCamera) {
     Allocated<Renderer> renderer_ = Renderer::create(library, window);
+
     impl_ = std::make_unique<Impl>();
 
     impl_->textureFactory_ = renderer_->getTextureFactory();
+
+    auto default_pipelines{renderer_->createDefaultPipelines()};
+    for (auto& default_pipeline : default_pipelines) {
+        impl_->pipelines.alloc(std::move(default_pipeline.second),
+                               default_pipeline.first);
+    }
 };
 
-renderer_mesh_id_t RenderingManager::loadMesh(const ImportedMesh& mesh) {
-    auto new_id{impl_->mesh_ids.generate()};
+RenderingManager::~RenderingManager() = default;
 
-    auto vertices{mesh.attributes};
-    Presto::size_t buffer_size{vertices.size()};
+mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData) {
+    auto& vertex_bytes{meshData.vertex_data.data};
+    Presto::size_t vertex_buffer_size{vertex_bytes.size()};
+    Presto::size_t index_buffer_size{meshData.indices.size() * sizeof(Index)};
 
-    static_assert(
-        false,
-        "Fix this to actually make the vertices and then get the proper size.");
-
-    MeshRegistrationData details{
-        .id = new_id,
-        .vertices =
-            renderer_->createBuffer(Buffer::BufferType::VERTEX, buffer_size),
+    auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
+        .render_manager_id{},
+        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
+                                            vertex_buffer_size),
         .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
-                                           mesh.indices.size() * sizeof(Index)),
-    };
+                                           index_buffer_size),
+    })};
 
-    return new_id;
+    details->vertices->write(meshData.vertex_data.data);
+
+    // TODO: Add more write functions here that are optimised for different data
+    // types instead of using ErasedBytes
+    details->indices->write(ErasedBytes{meshData.indices}.getData());
+
+    bool success{renderer_->createMeshContext(*details)};
+
+    if (!success) {
+        PR_ERROR("Unable to create mesh context in renderer.");
+        return -1;
+    }
+    auto pair{impl_->mesh_registrations.alloc(std::move(details))};
+
+    mesh_registration_id_t registration_id{pair.first};
+    pair.second->render_manager_id = registration_id;
+
+    return registration_id;
 };
 
 void RenderingManager::init(CameraComponent& defaultCamera) {
@@ -104,7 +125,8 @@ Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
     texture_id_t new_id{impl_->texture_ids.generate()};
     Ptr<Texture2D> new_texture{impl_->textureFactory_->new2D(width, height)};
 
-    impl_->textures.emplace(new_id, new_texture);
+    impl_->textures.emplace(new_id,
+                            std::static_pointer_cast<Texture>(new_texture));
 
     return new_texture;
 };
@@ -138,16 +160,24 @@ void RenderingManager::update() {
 
         for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
             const MeshPtr& mesh{drawStruct.model->getMesh(i)};
+
             const MaterialPtr& material{drawStruct.model->getMaterial(i)};
 
-            const MaterialStructure& mat_data{
-                (material != nullptr) ? material->getStructure()
-                                      : mesh->defaultMaterial_->getStructure()};
+            const auto pipeline_id{material->getPipelineId()};
+            auto* pipeline{impl_->pipelines.find(pipeline_id)};
+            PR_ASSERT(pipeline != nullptr,
+                      "Meshes on the draw list can't be drawn to a nullptr "
+                      "pipeline.");
+            pipeline->bind();
 
-            renderer_->bindMaterial(mat_data);
+            material->bind();
 
-            auto mesh_id{mesh->renderId_};
-            renderer_->render(mesh_id);
+            auto* data{impl_->mesh_registrations.find(mesh->registrationId_)};
+            PR_CORE_ASSERT(
+                data != nullptr,
+                "Mesh registrations can't be null at the draw phase.");
+
+            renderer_->render(*data);
         }
     });
 
@@ -181,23 +211,6 @@ void RenderingManager::setCamera(CameraComponent& newCam) {
 
 void RenderingManager::resizeFramebuffer() const {
     renderer_->onFrameBufferResized();
-};
-
-void RenderingManager::loadImageOnGpu(const ImagePtr& image) {
-    image->ensureLoaded();
-};
-
-void RenderingManager::loadImageOnGpu(ImageAsset& image) {
-    if (image.loaded()) {
-        PR_CORE_WARN(
-            "Attempted redundant load of image resource {}. Skipping this "
-            "load.",
-            image.renderId_);
-
-        return;
-    }
-    auto image_id{renderer_->createTexture(image.getImage())};
-    image.renderId_ = image_id;
 };
 
 const PipelineStructure* RenderingManager::getPipelineStructure(
@@ -336,7 +349,7 @@ OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id)
 
 /*
 PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&&
-pipeline, renderer_pipeline_id_t id) { if (id == ANY_PIPELINE) { id =
+pipeline, renderer_pipeline_id_t id) { if (id == PR_ANY_PIPELINE) { id =
 currentKey_++;
     }
 
@@ -349,6 +362,21 @@ currentKey_++;
     pipeline->setUniformBlock(1, *objectUniformBuffer_.get());
 
     pipelineMap_.emplace(id, std::move(pipeline));
+};
+*/
+
+/*
+void RenderingManager::loadImageOnGpu(ImageAsset& image) {
+    if (image.loaded()) {
+        PR_CORE_WARN(
+            "Attempted redundant load of image resource {}. Skipping this "
+            "load.",
+            image.renderId_);
+
+        return;
+    }
+    auto image_id{renderer_->createTexture(image.getImage())};
+    image.renderId_ = image_id;
 };
 */
 

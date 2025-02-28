@@ -1,7 +1,9 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <ranges>
+
 #include "Presto/Objects/Component.h"
 
 namespace Presto {
@@ -9,7 +11,7 @@ using namespace std::ranges;
 using namespace std::views;
 
 template <typename V>
-using Filter = std::function<bool(V &)>;
+using Filter = std::function<bool(V&)>;
 
 /** A template for results from filtering a map. Used when querying for
  * entities and components to provide a non-owning view.
@@ -38,12 +40,12 @@ using FilterView = std::ranges::filter_view<
         std::ranges::ref_view<std::map<K, V, std::less<K>,
                                        std::allocator<std::pair<const K, V>>>>,
         1>>,
-    std::function<bool(V &)>>;
+    std::function<bool(V&)>>;
 
 template <MapLike M>
 using MapFilterView = FilterView<typename M::key_type, typename M::mapped_type>;
 
-using ComponentFilter = std::function<bool(const GenericComponentPtr &)>;
+using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
 
 using ComponentList = std::vector<GenericComponentPtr>;
 using ComponentDatabase = std::map<class_id_t, ComponentList>;

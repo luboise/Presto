@@ -1,4 +1,4 @@
-#include "Presto/Components/UI/CanvasItem.h"
+#include "Presto/Objects/Components/UI/CanvasItem.h"
 
 namespace Presto {
 [[nodiscard]] CanvasPosition CanvasPosition::clamped() const {

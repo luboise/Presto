@@ -5,7 +5,6 @@
 
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MaterialTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 #include "Presto/Utils/File.h"
 // #include "Rendering/Meshes/Cube.h"

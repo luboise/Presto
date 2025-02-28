@@ -1,4 +1,4 @@
-#include "Presto/Components/Renderable/SpriteComponent.h"
+#include "Presto/Objects/Components/Renderable/SpriteComponent.h"
 
 namespace Presto {
 SpriteComponent::SpriteComponent(const ImagePtr& asset) {

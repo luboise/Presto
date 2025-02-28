@@ -6,5 +6,4 @@ target_sources(
           ModelAsset.cpp
           MaterialAsset.cpp
           MaterialInstanceAsset.cpp
-          ImageAsset.cpp
-          ImportTypes.cpp)
+          ImageAsset.cpp)

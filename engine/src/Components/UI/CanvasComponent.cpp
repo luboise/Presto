@@ -1,4 +1,4 @@
-#include "Presto/Components/UI/CanvasComponent.h"
+#include "Presto/Objects/Components/UI/CanvasComponent.h"
 
 namespace Presto {
 CanvasGroup& CanvasComponent::addGroup(CanvasGroup group) {

@@ -1,6 +1,6 @@
 #include "Rendering/Vulkan/Managers/BufferManager/BufferManager.h"
 
-#include "Presto/Components/Renderable.h"
+#include "Presto/Objects/Components/Renderable.h"
 #include "Rendering/Vulkan/Abstractions/Buffer.h"
 #include "Rendering/Vulkan/Abstractions/Pipeline.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"

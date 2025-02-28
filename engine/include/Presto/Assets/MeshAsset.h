@@ -1,6 +1,9 @@
 #pragma once
 
+#include "Presto/Aliases/Handles.h"
 #include "Presto/Assets/Asset.h"
+
+#include "Presto/Core/Constants.h"
 
 #include "Presto/Rendering/BoundingBox.h"
 #include "Presto/Rendering/RenderTypes.h"
@@ -14,13 +17,16 @@ class MeshAsset final : public Asset {
 
    public:
     explicit MeshAsset();
+    ~MeshAsset() override;
 
     [[nodiscard]] constexpr AssetType type() const override {
         return AssetType::MESH;
     };
 
     MeshAsset& setVertices(const ImportedAttributeList& attributes);
-    MeshAsset& setIndices(const IndexList& attributes);
+    MeshAsset& setIndices(IndexList attributes);
+
+    MeshAsset& setDrawMode(MeshDrawMode mode);
 
     MeshAsset& setDefaultMaterial(const MaterialPtr&);
 
@@ -36,7 +42,7 @@ class MeshAsset final : public Asset {
 
     [[nodiscard]] bool modifiable() const;
 
-    renderer_mesh_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
+    mesh_registration_id_t registrationId_{PR_UNREGISTERED};
     MaterialPtr defaultMaterial_;
 };
 }  // namespace Presto

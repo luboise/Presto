@@ -1,8 +1,8 @@
 #include "Modules/SceneManager.h"
-#include "Presto/Components/Renderable/ModelComponent.h"
+#include "Presto/Objects/Components/Renderable/ModelComponent.h"
 
 #include "Modules/AssetManager.h"
-#include "Modules/EntityManager.h"
+#include "Modules/EntityManagerImpl.h"
 
 namespace Presto {
 constexpr auto TYPE_KEY = "type";
@@ -73,7 +73,8 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
     for (const auto& object : jsonData[OBJECTS_KEY]) {
         if (object[TYPE_KEY] == ENTITY_KEY) {
             auto entity_name = object[NAME_KEY];
-            entity_ptr new_entity = EntityManager::get().newEntity(entity_name);
+            entity_ptr new_entity =
+                EntityManagerImpl::get().newEntity(entity_name);
 
             const auto& components = object[COMPONENTS_KEY];
 
@@ -91,7 +92,8 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
                     }
 
                     ComponentPtr new_mesh_component{
-                        EntityManager::get().newComponent<ModelComponent>(mr)};
+                        EntityManagerImpl::get().newComponent<ModelComponent>(
+                            mr)};
 
                     new_entity->setComponent(new_mesh_component);
                 }

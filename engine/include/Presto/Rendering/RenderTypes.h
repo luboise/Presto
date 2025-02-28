@@ -3,8 +3,6 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Types/CoreTypes.h"
 
-#include "Presto/Rendering/BoundingBox.h"
-
 namespace Presto {
 
 struct GlobalUniforms {
@@ -26,7 +24,8 @@ struct DrawInfo {
     uint32_t index_offset = 0;
 };
 
-constexpr PR_NUMERIC_ID UNREGISTERED_RENDER_DATA_ID = -1;
+constexpr pipeline_id_t PR_ANY_PIPELINE = -1;
+constexpr mesh_registration_id_t PR_UNREGISTERED{-1U};
 
 using renderer_mesh_id_t = PR_NUMERIC_ID;
 using renderer_texture_id_t = PR_NUMERIC_ID;
@@ -69,16 +68,15 @@ class Vertex {
    private:
 };
 
-struct MeshData {
-    int draw_mode;
-    VertexList vertices;
-    IndexList indices;
-
-    static MeshData from(const RawMeshData&);
-    [[nodiscard]] BoundingBox getBoundingBox() const;
-};
-
 enum class ShaderStage { VERTEX, FRAGMENT };
+
+enum class MeshDrawMode : Presto::uint8_t {
+    POINTS,
+    LINES,
+    LINE_STRIP,
+    TRIANGLES,
+    TRIANGLE_STRIP
+};
 
 // TODO: Make this more robust and give it more values, such as attributes. At
 // the moment, the attributes can be retrieved using the pipeline handle using
@@ -89,6 +87,13 @@ struct ProcessedVertexData {
     // AttributeSet attributes;
     Presto::size_t vertex_count;
     ByteArray data;
+};
+
+struct MeshData {
+    MeshDrawMode draw_mode;
+    ProcessedVertexData vertex_data;
+    IndexList indices;
+    // [[nodiscard]] BoundingBox getBoundingBox() const;
 };
 
 }  // namespace Presto

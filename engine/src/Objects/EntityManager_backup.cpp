@@ -1,9 +1,9 @@
-#include "Modules/EntityManager.h"
 #include <queue>
+#include "Modules/EntityManager.h"
 
-#include "Presto/Components/TransformComponent.h"
 #include "Presto/Core/Assert.h"
 #include "Presto/Objects/Component.h"
+#include "Presto/Objects/Components/TransformComponent.h"
 #include "Presto/Objects/Entity.h"
 #include "Presto/Objects/Figure.h"
 #include "Presto/Runtime/Events/ObjectEvents.h"

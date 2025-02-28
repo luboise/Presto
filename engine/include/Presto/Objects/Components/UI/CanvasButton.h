@@ -2,7 +2,7 @@
 
 #include "Presto/Assets/ImageAsset.h"
 
-#include "Presto/Components/UI/CanvasItem.h"
+#include "Presto/Objects/Components/UI/CanvasItem.h"
 
 namespace Presto {
 class ImageAsset;

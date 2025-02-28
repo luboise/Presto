@@ -27,39 +27,31 @@ class MaterialAsset final :
         return AssetType::MATERIAL_DEFINITION;
     };
 
-    // [[nodiscard]] MaterialInstancePtr createInstance() const;
+    /**
+     * @brief  Retrieves the uniform layout of the MaterialAsset. This is
+     * currently only used when creating a new MaterialInstance.
+     */
+    [[nodiscard]] UniformLayout uniformLayout() const;
 
-    [[nodiscard]] MaterialStructure getStructure() const;
-
-    // Checks if a material asset is equal to a specific pipeline
-    /*bool operator==(renderer_pipeline_id_t id) const;*/
-
-    static MaterialStructure materialStructureFromPipeline(
+    static UniformLayout createLayoutFromPipelineStructure(
         const PipelineStructure&);
 
     Ptr<MaterialInstance> createInstance();
 
-    [[nodiscard]] pipeline_id_t pipelineId() const;
+    [[nodiscard]] pipeline_id_t pipelineId() const { return pipelineId_; };
 
    private:
     bool load() override;
 
     pipeline_id_t pipelineId_{PR_PIPELINE_DEFAULT_3D};
-
-    MaterialStructure structure_;
+    UniformLayout uniformLayout_;
 
     // PipelineStructure structure_{};
 
     std::vector<MaterialInstance> instances_;
-    std::vector<MaterialProperty> properties_;
+    // std::vector<MaterialProperty> properties_;
 };
 
 using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
-
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                Ptr<Texture> data) {
-    return *this;
-    static_assert(false, "Implement this");
-};
 
 }  // namespace Presto

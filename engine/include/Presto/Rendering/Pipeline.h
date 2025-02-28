@@ -20,31 +20,26 @@ class Pipeline {
     virtual void setProperty(std::string property, const void* value) = 0;
 
     /*virtual void setProperties(std::vector<MaterialProperty>) = 0;*/
-    virtual void setProperties(const MaterialStructure&) = 0;
+    // virtual void setProperties(const UniformLayout&) = 0;
 
-    [[nodiscard]] bool accepts(const MaterialStructure&) const;
+    // [[nodiscard]] bool accepts(const UniformLayout&) const;
 
-    [[nodiscard]] std::vector<PipelineAttribute> getAttributes() const {
+    [[nodiscard]] const std::vector<PipelineAttribute>& getAttributes() const {
         return pipelineStructure_.attributes;
     };
 
     virtual void setUniformBlock(PR_NUMERIC_ID name, UniformBuffer& buffer) = 0;
 
-    [[nodiscard]] const MaterialStructure& getUniformLayout() const {
-        return materialStructure_;
-    }
-
     [[nodiscard]] renderer_pipeline_id_t id() const { return this->id_; }
 
-   protected:
     virtual ~Pipeline() = default;
 
+   protected:
     void setId(renderer_pipeline_id_t id) { this->id_ = id; }
 
-    MaterialStructure materialStructure_;
     PipelineStructure pipelineStructure_;
 
    private:
-    renderer_pipeline_id_t id_{UNREGISTERED_RENDER_DATA_ID};
+    pipeline_id_t id_{PR_ANY_PIPELINE};
 };
 }  // namespace Presto

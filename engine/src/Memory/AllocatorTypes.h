@@ -6,6 +6,7 @@
 namespace Presto {
 
 using pipeline_allocator_t = Allocator<pipeline_id_t, Pipeline>;
-using mesh_allocator_t = Allocator<mesh_id_t, MeshRegistrationData>;
+using mesh_allocator_t =
+    Allocator<mesh_registration_id_t, MeshRegistrationData>;
 
 }  // namespace Presto

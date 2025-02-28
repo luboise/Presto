@@ -69,7 +69,7 @@ template <UniformVariableType T>
     requires requires { typename UniformVariableTypeTraits<T>; }
 using GPUTypeOf = UniformVariableTypeTraits<T>::GPUType;
 
-Presto::size_t SizeOfType(UniformVariableType type) noexcept {
+constexpr Presto::size_t SizeOfType(UniformVariableType type) noexcept {
 #define SWITCH_CASE(type) \
     case type:            \
         return sizeof(UniformVariableTypeTraits<type>::GPUType);
@@ -101,8 +101,8 @@ struct UniformBinding {
     UniformVariableType data_type;
 
     union {
-        uint32_t location;
-        uint32_t offset;
+        Presto::uint32_t location;
+        Presto::uint32_t offset;
     };
 
     [[nodiscard]] Presto::size_t size() const;

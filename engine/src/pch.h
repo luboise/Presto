@@ -30,5 +30,3 @@
 #include "Presto/Core/Assert.h"     // IWYU pragma: export
 #include "Presto/Core/Constants.h"  // IWYU pragma: export
 #include "Presto/Core/Logging.h"    // IWYU pragma: export
-
-#include "Presto/Aliases/Handles.h"  // IWYU pragma: export

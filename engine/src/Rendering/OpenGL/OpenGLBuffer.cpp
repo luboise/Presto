@@ -43,7 +43,7 @@ namespace Presto {
 
 void OpenGLBuffer::bind() { glBindBuffer(openGlBufferType_, buffer_); }
 
-OpenGLBuffer::OpenGLBuffer(BufferType type, const ByteArray& data)
+OpenGLBuffer::OpenGLBuffer(BufferType type, ByteArray& data)
     : OpenGLBuffer(type, data.size()) {
     this->write(data, 0);
 };
@@ -78,30 +78,21 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, Presto::size_t size)
 
 OpenGLBuffer::~OpenGLBuffer() { glDeleteBuffers(1, &buffer_); };
 
-void OpenGLBuffer::write(const ByteArray& data, Presto::size_t offset) {
+void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
     if (offset >= data.size()) {
         PR_ERROR(
-            "Offset {} is out of range for OpenGLBuffer of size {}. Skipping "
+            "Offset {} is out of range for input data of size {}. Skipping "
             "this write.",
-            offset, this->size());
+            offset, data.size());
 
         return;
     }
 
-    Presto::size_t write_size{std::min(data.size(), this->size() - offset)};
-
-    if (write_size != data.size()) {
-        PR_WARN(
-            "Requested write to OpenGLBuffer of size {} exceeds the boundaries "
-            "of "
-            "the buffer by {} bytes. Writing only up until the end of the "
-            "buffer.",
-            data.size(), data.size() - write_size);
-    }
+    auto write_size{getWriteSize(data.size(), offset)};
 
     this->bind();
     glBufferSubData(openGlBufferType_, static_cast<GLintptr>(offset),
-                    static_cast<GLsizeiptr>(data.size()), data.data());
+                    static_cast<GLsizeiptr>(write_size), data.data());
 }
 
 }  // namespace Presto

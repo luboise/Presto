@@ -37,7 +37,7 @@ class OpenGLBuffer final : public Buffer {
     /**/
 
     OpenGLBuffer(BufferType type, Presto::size_t size);
-    OpenGLBuffer(BufferType type, const ByteArray& data);
+    OpenGLBuffer(BufferType type, ByteArray& data);
 
     ~OpenGLBuffer() override;
 
@@ -51,7 +51,7 @@ class OpenGLBuffer final : public Buffer {
 
     void bind() override;
 
-    void write(const ByteArray& data, Presto::size_t offset = 0) override;
+    void write(buffer_write_t data, Presto::size_t offset = 0) override;
 
    private:
     // Vertex, then Index

@@ -17,4 +17,12 @@ Presto::size_t PipelineAttribute::size() const {
     return attributeTypeDetailsOf(this->type).size();
 };
 
+Presto::size_t PipelineStructure::stride() const {
+    return std::accumulate(this->attributes.begin(), this->attributes.end(),
+                           Presto::size_t{0},
+                           [](auto sum, const PipelineAttribute& attrib) {
+                               return sum + attrib.size();
+                           });
+};
+
 }  // namespace Presto

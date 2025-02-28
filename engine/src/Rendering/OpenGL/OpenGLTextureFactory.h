@@ -8,9 +8,9 @@ class OpenGLTextureFactory final : public TextureFactory {
    public:
     OpenGLTextureFactory() = default;
 
-    [[nodiscard]] Allocated<Texture2D> new2D(
+    [[nodiscard]] FactoryOutputType<Texture2D> new2D(
         texture_extents_t width, texture_extents_t height) override {
-        return std::make_unique<OpenGLTexture2D>(
+        return std::make_shared<OpenGLTexture2D>(
             static_cast<opengl_dim_t>(width),
             static_cast<opengl_dim_t>(height));
     };

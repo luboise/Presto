@@ -19,5 +19,6 @@ Diagnostics:
       - modernize-use-trailing-return-type
       - readability-identifier-length
       - cppcoreguidelines-avoid-magic-numbers
+      - cppcoreguidelines-pro-type-union-access
       - readability-magic-numbers
       - bugprone-easily-swappable-parameters

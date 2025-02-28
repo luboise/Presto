@@ -1,4 +1,4 @@
-#include "Presto/Components/Physics/RigidBodyComponent.h"
+#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
 
 namespace Presto {
 [[nodiscard]] Force RigidBodyComponent::calculateMovement() const {

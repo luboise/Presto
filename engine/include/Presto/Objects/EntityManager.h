@@ -2,7 +2,6 @@
 
 #include "Presto/Core/ViewHandling.h"
 #include "Presto/Objects/Component.h"
-#include "Presto/Objects/Components/Renderable/ModelComponent.h"
 #include "Presto/Objects/Entity.h"
 
 #include "Presto/Objects/Figure.h"
@@ -35,17 +34,9 @@ class PRESTO_API EntityManager {
                                                    [](auto&) { return true; });
 
     template <ComponentType T>
-    std::vector<ComponentPtr<T>>& findComponentsByType() = delete;
-
-    template <>
-    std::vector<ComponentPtr<ModelComponent>>&
-    findComponentsByType<ModelComponent>();
-
-    /*
-{
-    return *getComponentList<T>();
-}
-    */
+    std::vector<ComponentPtr<T>>& findComponentsByType() {
+        return *getComponentList<T>();
+    }
 
     template <ComponentType T>
     std::vector<T>* getComponents() {}
@@ -129,4 +120,5 @@ return entityMap_[new_id].get();
 
     // ComponentMap components_;
 };
+
 }  // namespace Presto

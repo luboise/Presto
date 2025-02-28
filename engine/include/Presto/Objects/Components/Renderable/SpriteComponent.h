@@ -8,7 +8,7 @@
 namespace Presto {
 struct RenderGroup;
 
-using mesh_id_t = PR_NUMERIC_ID;
+using mesh_registration_id_t = PR_NUMERIC_ID;
 
 class PRESTO_API SpriteComponent : public Component {
     // friend class RenderingManager;

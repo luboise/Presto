@@ -1,3 +1,5 @@
+#include "Presto/Core.h"
+
 #include "Utils/File.h"  // IWYU pragma: export
 
 #include "Utils/Interpolator.h"       // IWYU pragma: export

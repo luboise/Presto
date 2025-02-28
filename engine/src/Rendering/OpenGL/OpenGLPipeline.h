@@ -17,7 +17,7 @@ class OpenGLPipeline final : public Pipeline {
 
    public:
     void setProperty(std::string property, const void* value) override;
-    void setProperties(const MaterialStructure& inStructure) override;
+    // void setProperties(const UniformLayout& inStructure) override;
 
     void setUniformBlock(PR_NUMERIC_ID name, UniformBuffer& buffer) override;
 

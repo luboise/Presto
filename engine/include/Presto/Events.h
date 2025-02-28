@@ -1,3 +1,5 @@
+#include "Presto/Core.h"
+
 #include "Runtime/Events/ApplicationEvents.h"  // IWYU pragma: export
 #include "Runtime/Events/Event.h"              // IWYU pragma: export
 #include "Runtime/Events/KeyEvents.h"          // IWYU pragma: export

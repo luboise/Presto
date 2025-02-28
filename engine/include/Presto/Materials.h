@@ -1,6 +1,7 @@
-#include "Presto/Types/MaterialTypes.h"
+#include "Presto/Core.h"
 
 #include "Presto/Rendering/MaterialInstance.h"  // IWYU pragma: export
+#include "Presto/Types/MaterialTypes.h"
 
 namespace Presto {
 

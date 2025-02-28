@@ -4,9 +4,7 @@
 
 namespace Presto {
 
-struct PBRMaterial {};
-
-struct MaterialStructure {
+struct UniformLayout {
     std::vector<UniformBinding> bindings;
     std::vector<UniformBlock> blocks;
 };
@@ -26,18 +24,18 @@ struct MaterialBlockProperty;
 struct PipelineStructure;
 
 /*
-struct MaterialStructure {
+struct UniformStructure {
     std::vector<MaterialProperty> properties;
     ErasedBytes data;
 
     [[nodiscard]] const MaterialProperty* getProperty(
         const PR_STRING_ID& name) const;
 
-    [[nodiscard]] bool writeableFrom(const MaterialStructure&) const;
+    [[nodiscard]] bool writeableFrom(const UniformStructure&) const;
 
-    void merge(const MaterialStructure&);
+    void merge(const UniformStructure&);
 
-    static MaterialStructure from(const PipelineStructure&);
+    static UniformStructure from(const PipelineStructure&);
 
     void writeFrom(const MaterialProperty& other);
 

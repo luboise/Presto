@@ -1,7 +1,8 @@
 #include "EventManager.h"
+
 #include <memory>
 
-#include "Presto/Components/ConductorComponent.h"
+#include "Presto/Objects/Components/ConductorComponent.h"
 
 #include "Presto/Objects.h"
 

@@ -5,6 +5,7 @@
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 
+#include "Rendering/OpenGL/OpenGLBuffer.h"
 #include "Rendering/Renderer.h"
 
 #include "Rendering/DefaultTextures.h"
@@ -40,36 +41,41 @@ OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
         throw std::runtime_error("Unable to initialise GLEW.");
     }
 
+    setupDebugLogging();
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);  // Smaller = closer
 
-    setupDebugLogging();
+    globalUniformBuffer_ =
+        std::make_unique<OpenGLUniformBuffer>(sizeof(GlobalUniforms));
 
-    OpenGLPipelineBuilder builder{drawManager_.get()};
+    objectUniformBuffer_ =
+        std::make_unique<OpenGLUniformBuffer>(sizeof(ObjectUniforms));
+}
+
+Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
+    AllocatedPipelineList pipelines(2);
+
+    OpenGLPipelineBuilder builder{};
 
     PipelineStructure default_3d;
     PipelineStructure default_ui;
 
     builder.setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
         .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
-    default_3d = builder.build(PR_PIPELINE_DEFAULT_3D);
+    pipelines[0] = {PR_PIPELINE_DEFAULT_3D, builder.build()};
 
     builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
         .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
-    default_ui = builder.build(PR_PIPELINE_DEFAULT_UI);
 
-    drawManager_->setTexture(PR_DEFAULT_TEXTURE,
-                             OpenGLTexture(DEFAULT_TEXTURE));
+    pipelines[1] = {PR_PIPELINE_DEFAULT_UI, builder.build()};
 
-    auto global_uniforms_size{default_3d.uniform_blocks[0].size()};
-    globalUniformBuffer_ =
-        std::make_unique<OpenGLUniformBuffer>(global_uniforms_size);
+    return pipelines;
 
-    auto object_uniforms_size{default_3d.uniform_blocks[1].size()};
-
-    objectUniformBuffer_ =
-        std::make_unique<OpenGLUniformBuffer>(object_uniforms_size);
-}
+    // TODO: Implement default texture in the RenderingManager
+    // drawManager_->setTexture(PR_DEFAULT_TEXTURE,
+    // OpenGLTexture(DEFAULT_TEXTURE));
+};  // namespace Presto
 
 void OpenGLRenderer::nextFrame() {
     glfwSwapBuffers(static_cast<GLFWwindow*>(_glfwWindow->getWindowHandle()));
@@ -120,131 +126,30 @@ void OpenGLRenderer::onFrameBufferResized() {
                static_cast<GLsizei>(extents.height));
 }
 
-void OpenGLRenderer::unloadMesh(renderer_mesh_id_t id) {
-    this->drawManager_->destroyMeshContext(id);
-};
-
-void OpenGLRenderer::bindMeshToPipeline(renderer_mesh_id_t meshId,
-                                        renderer_pipeline_id_t pipelineId) {
-    MeshContext* context{drawManager_->getMeshContext(meshId)};
-    PR_ASSERT(context != nullptr,
-              "Unable to associate null mesh context with a pipeline.");
-
-    if (auto vao{context->vao_map.find(pipelineId)};
-        vao != context->vao_map.end()) {
-        PR_WARN(
-            "An attempt was made to re-bind mesh context {} to pipeline {}. "
-            "Skipping this request.",
-            meshId, pipelineId);
-        return;
-    }
-
-    OpenGLPipeline* pipeline{drawManager_->getPipeline(pipelineId)};
-    PR_ASSERT(context != nullptr,
-              "Unable to associate a mesh context with a null pipeline.");
-
-    context->vao_map.emplace(pipelineId,
-                             OpenGLVAO(*context->buffer, *pipeline));
-};
-
-/*
-renderer_texture_id_t OpenGLRenderer::createTexture(Presto::Image image) {
-    return drawManager_->addTexture(image);
-};
-*/
-
-void OpenGLRenderer::unloadTexture(renderer_texture_id_t id) {
-    drawManager_->removeTexture(id);
-};
-
-void OpenGLRenderer::render(renderer_mesh_id_t meshId) {
+void OpenGLRenderer::render(MeshRegistrationData& data) {
     PR_CORE_ASSERT(currentPipeline_ != nullptr,
                    "OpenGL is unable to render with no pipeline set.");
 
-    // Get the relevant mesh
-    MeshContext* mesh_context{drawManager_->getMeshContext(meshId)};
+    OpenGLMeshContext* context{contexts_.find(data.context_id)};
+    if (context == nullptr) {
+        PR_CORE_ERROR(
+            "Unable to find OpenGL context for registered data with context id "
+            "{}. "
+            "Skipping this draw.",
+            data.context_id);
+        return;
+    }
 
-    PR_ASSERT(mesh_context != nullptr,
-              "OpenGL render function received null mesh context.");
-
-    // Get the VAO based on the current pipeline
-
-    // auto* albedo{drawManager_->getTexture(imageId)};
-
-    // Render
-    this->draw(*mesh_context);
-};
-
-void OpenGLRenderer::draw(const MeshContext& context) {
     // If the uniforms have been updated or the material has been updated,
     // update the values
     if (this->isDirty()) {
         updateUniforms();
     }
 
-    renderer_pipeline_id_t id{currentPipeline_->id()};
+    context->vao.bind();
 
-    auto vao_it{context.vao_map.find(id)};
-    PR_ASSERT(
-        vao_it != context.vao_map.end(),
-        std::format(
-            "No VAO found for combination of MeshContext and pipeline {}", id));
-
-    vao_it->second.bind();
-
-    const auto& details{context.buffer->getBufferDetails()};
-
-    glDrawElements(details.draw_mode, details.index_count, GL_UNSIGNED_INT,
+    glDrawElements(context->draw_mode, context->index_count, GL_UNSIGNED_INT,
                    nullptr);
-
-    /*
-PR_CORE_ASSERT(
-draw_data.mat_props.texture.isLoaded(),
-"Draw data is used without being loaded in OpenGL Renderer.");
-    */
-};
-
-void OpenGLRenderer::bindMaterial(const MaterialStructure& data) {
-    // TODO: Extract pipeline system to be used from outside of the renderer
-    /*
-        auto id{data.materialType};
-
-        OpenGLPipeline* pipeline{drawManager_->getPipeline(id)};
-
-        PR_ASSERT(pipeline != nullptr,
-                  "Unable to bind non-existant material from id {}.", id);
-
-        if (pipeline != currentPipeline_) {
-            currentPipeline_ = pipeline;
-            PR_CORE_TRACE("Switching to new pipeline {}", fmt::ptr(pipeline));
-        }
-            */
-
-    PR_ASSERT(
-        currentPipeline_->accepts(data),
-        "Pipeline does not accept material structure in OpenGL renderer.");
-
-    /*OpenGLTexture* diffuse{drawManager_->getTexture(data.diffuseTexture)};*/
-    /*if (diffuse == nullptr) {*/
-    /*    PR_WARN("No diffuse texture was available. Using default texture.");*/
-    /*} else {*/
-    /*    diffuse = drawManager_->getTexture(PR_DEFAULT_TEXTURE);*/
-    /**/
-    /*    // TODO: Move this to a place where its always checked instead of*/
-    /*    // only when it's needed*/
-    /*    PR_CORE_ASSERT(diffuse != nullptr,*/
-    /*                   "The default texture could not be found.");*/
-    /*}*/
-
-    currentPipeline_->setProperties(data);
-    currentPipeline_->bind();
-
-    setDirty();
-};
-
-void OpenGLRenderer::unbindMaterial() {
-    currentPipeline_->unbind();
-    currentPipeline_ = nullptr;
 };
 
 void OpenGLRenderer::updateUniforms() {
@@ -262,30 +167,14 @@ void OpenGLRenderer::updateUniforms() {
     setDirty(false);
 };
 
-void OpenGLRenderer::usePipeline(renderer_pipeline_id_t pipelineId) {
-    OpenGLPipeline* pipeline{drawManager_->getPipeline(pipelineId)};
-
-    PR_ASSERT(
-        pipeline != nullptr,
-        std::format("A non-existant pipeline {} can't be used.", pipelineId));
-
-    pipeline->bind();
-};
-
 Allocated<PipelineBuilder> OpenGLRenderer::getPipelineBuilder() {
-    return Allocated<PipelineBuilder>{
-        new OpenGLPipelineBuilder{this->drawManager_.get()}};
+    return Allocated<PipelineBuilder>{new OpenGLPipelineBuilder{}};
 }
-
-std::vector<PipelineStructure> OpenGLRenderer::getPipelineStructures() const {
-    for (const auto& x : drawManager_->getPipelines()) {
-    }
-};
 
 Allocated<UniformBuffer> OpenGLRenderer::createUniformBuffer(
     Presto::size_t size) {
     auto buffer{std::make_unique<OpenGLUniformBuffer>(size)};
-    return std::move(buffer);
+    return buffer;
 };
 
 Allocated<Buffer> OpenGLRenderer::createBuffer(Buffer::BufferType type,
@@ -298,4 +187,31 @@ Allocated<TextureFactory> OpenGLRenderer::getTextureFactory() {
     return factory;
 };
 
+bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration) {
+    if (registration.context_id != PR_UNREGISTERED) {
+        PR_CORE_WARN(
+            "Attempted to create a mesh context for registration {}, which "
+            "already has a mesh context of id {}. Skipping this request.",
+            registration.render_manager_id, registration.context_id);
+        return false;
+    }
+
+    OpenGLVAO vao{dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
+                  dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
+                  *currentPipeline_};
+
+    Allocated<OpenGLMeshContext> new_context{
+        std::make_unique<OpenGLMeshContext>()};
+
+    auto allocation{contexts_.alloc(std::move(new_context))};
+
+    if (allocation.second == nullptr) {
+        PR_ERROR("Unable to create Mesh Context in OpenGLRenderer.");
+        return false;
+    }
+
+    registration.context_id = allocation.first;
+
+    return true;
+};
 }  // namespace Presto

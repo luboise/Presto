@@ -1,22 +1,23 @@
 #pragma once
 
+#include <map>
 #include "Presto/Utils/LazyCalculator.h"
 
-#include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"  // IWYU pragma: export
-#include "Presto/Rendering/TextureTypes.h"
 
 #include "Rendering/Buffer.h"
 
+#include "Rendering/MeshRegistrationData.h"
 #include "TextureFactory.h"
 
 namespace Presto {
 class GLFWAppWindow;
 class CameraComponent;
 class Image;
-class MaterialStructure;
+class UniformLayout;
 struct ImportedMesh;
 
+class Pipeline;
 class PipelineBuilder;
 
 class UniformBuffer;
@@ -42,30 +43,20 @@ class Renderer : protected LazyCalculator {
 
     virtual Allocated<Buffer> createBuffer(Buffer::BufferType type,
                                            Presto::size_t size) = 0;
-
     virtual Allocated<UniformBuffer> createUniformBuffer(
         Presto::size_t size) = 0;
 
-    virtual void unloadMesh(renderer_mesh_id_t id) = 0;
+    using AllocatedPipelineList =
+        std::vector<std::pair<pipeline_id_t, Allocated<Pipeline>>>;
+    virtual AllocatedPipelineList createDefaultPipelines() = 0;
 
-    virtual void bindMeshToPipeline(renderer_mesh_id_t, renderer_pipeline_id_t);
-
-    virtual void usePipeline(renderer_pipeline_id_t) = 0;
-
-    virtual void bindMaterial(const MaterialStructure&) = 0;
-    virtual void unbindMaterial() = 0;
+    virtual bool createMeshContext(MeshRegistrationData&) = 0;
+    virtual void render(MeshRegistrationData&) = 0;
 
     void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
     void setExtents(VisualExtents extents) { extents_ = extents; };
     [[nodiscard]] VisualExtents getExtents() const { return extents_; }
-    // TODO: Implement custom materials/shaders
-    /*
-virtual renderer_material_id_t loadMaterial(MaterialData material) = 0;
-virtual void unloadMaterial(renderer_material_id_t id) = 0;
-    */
-
-    virtual void render(renderer_mesh_id_t meshId) = 0;
 
     virtual void nextFrame() = 0;
 

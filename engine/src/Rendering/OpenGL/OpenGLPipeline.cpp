@@ -52,7 +52,8 @@ void OpenGLPipeline::setProperty(std::string /*property*/,
 /*    diffuseTexture_ = image;*/
 /*};*/
 
-void OpenGLPipeline::setProperties(const MaterialStructure& inStructure) {
+/*
+void OpenGLPipeline::setProperties(const UniformLayout& inStructure) {
     Presto::size_t uniform_byte_sum{
         std::accumulate(pipelineStructure_.uniforms.begin(),
                         pipelineStructure_.uniforms.end(), Presto::size_t{0},
@@ -82,6 +83,7 @@ void OpenGLPipeline::setProperties(const MaterialStructure& inStructure) {
                     bytes.size());
     }
 }
+*/
 
 OpenGLPipeline::~OpenGLPipeline() { glDeleteProgram(shaderProgram_); };
 ;

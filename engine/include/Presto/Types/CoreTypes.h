@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include "glm/fwd.hpp"
 
+#include "HandleTypes.h"  // IWYU pragma: export
+
 namespace fs = std::filesystem;
 
 namespace Presto {

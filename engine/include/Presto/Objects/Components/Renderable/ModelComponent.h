@@ -1,13 +1,16 @@
 #pragma once
 
+#include "Presto/Aliases/Handles.h"
+
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects/Component.h"
-#include "Presto/Types/AssetTypes.h"
+
+#include "Presto/Assets/ModelAsset.h"  // IWYU pragma: export
 
 namespace Presto {
 struct RenderGroup;
 
-using mesh_id_t = PR_NUMERIC_ID;
+using mesh_registration_id_t = PR_NUMERIC_ID;
 
 class PRESTO_API ModelComponent : public Component {
     // friend class RenderingManager;
@@ -39,7 +42,7 @@ class PRESTO_API ModelComponent : public Component {
 
     [[nodiscard]] PR_SIZE meshCount() const { return meshes_.size(); }
 
-    material_override_t getMaterial(std::size_t index) {
+    material_override_t& getMaterial(std::size_t index) {
         return materialOverrides_[index];
     };
 

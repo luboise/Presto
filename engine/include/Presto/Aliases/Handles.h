@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Presto/Aliases/HandleTypes.h"
+#include "Presto/Types/HandleTypes.h"
+
 namespace Presto {
 
 class MaterialInstance;

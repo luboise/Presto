@@ -54,7 +54,8 @@ struct AttributeTypeDetails {
     }
 };
 
-constexpr AttributeTypeDetails attributeTypeDetailsOf(ShaderDataType type) {
+constexpr AttributeTypeDetails attributeTypeDetailsOf(
+    ShaderDataType type) noexcept {
     switch (type) {
         case ShaderDataType::INT:
             return {

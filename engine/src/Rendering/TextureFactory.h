@@ -3,13 +3,13 @@
 namespace Presto {
 
 class TextureFactory {
-    template <typename T>
-    using FactoryOutputType = Ptr<T>;
-
    protected:
     using texture_extents_t = Presto::size_t;
 
    public:
+    template <typename T>
+    using FactoryOutputType = Ptr<T>;
+
     virtual ~TextureFactory() = default;
 
     [[nodiscard]] virtual FactoryOutputType<Texture2D> new2D(

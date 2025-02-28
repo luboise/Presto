@@ -1,39 +1,53 @@
+#include <algorithm>
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
 
 [[nodiscard]] ProcessedVertexData processVertices(
-    const ImportedAttributeList& importedAttributes,
-    const std::vector<PipelineAttribute>& pipelineAttributes) {
+    const ImportedAttributeList& inputAttributes,
+    const PipelineStructure& pipelineStructure) {
     ProcessedVertexData processed_data{};
-    /*
-MeshData mesh_data;
 
-mesh_data.indices.resize(rawData.indices.size());
+    // Get the minimum vertex count of all attributes
+    Presto::size_t vertex_count{std::ranges::min(
+        inputAttributes |
+        std::views::transform([](const ImportedVertexAttribute& val)
+                                  -> Presto::size_t { return val.count; }))};
 
-std::ranges::transform(rawData.indices.begin(), rawData.indices.end(),
-                       mesh_data.indices.begin(),
-                       [](auto val) { return static_cast<Index>(val); });
+    Presto::size_t out_stride{pipelineStructure.stride()};
 
-mesh_data.vertices.resize(
-    std::min({rawData.positions.size(), rawData.normals.size(),
-              rawData.tex_coords.size()}));
+    const auto out_size{out_stride * vertex_count};
+    processed_data.data.resize(out_size);
 
-for (std::size_t i = 0; i < mesh_data.vertices.size(); i++) {
-    Vertex v = {.position = rawData.positions[i],
-                // Default colour of white
-                .colour = {1, 1, 1},
-                .normal = rawData.normals[i],
-                .tex_coords = rawData.tex_coords[i]};
-    mesh_data.vertices[i] = v;
-}
+    // Get the desired attribute from the input list
+    for (const PipelineAttribute& out_a : pipelineStructure.attributes) {
+        const auto& in_a{std::ranges::find_if(
+            inputAttributes, [out_a](const ImportedVertexAttribute& val) {
+                return val.name == out_a.name;
+            })};
+        if (in_a == inputAttributes.end()) {
+            PR_ERROR(
+                "Unable to find attribute {} in imported input attributes. "
+                "Leaving these values as 0 and continuing with vertex "
+                "processing.",
+                out_a.name);
+            continue;
+        }
 
-mesh_data.draw_mode = rawData.draw_mode;
-// data.material = rawData.defaultMaterial_;
-    */
+        Presto::size_t out_stride{in_a->dataSize()};
+        Presto::size_t in_stride{in_a->dataSize()};
 
-    static_assert(false, "Implement process vertices");
+        Presto::size_t out_offset{out_a.offset};
+
+        for (Presto::size_t i{0}; i < vertex_count; i++) {
+            std::memcpy(&processed_data.data[out_offset + (i * out_stride)],
+                        &in_a->data[i * in_stride], in_stride);
+        }
+    }
+
+    processed_data.vertex_count = vertex_count;
+
     return processed_data;
 }
 

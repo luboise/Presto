@@ -1,6 +1,6 @@
 #include "Modules/PhysicsManager.h"
 
-#include "Presto/Components/TransformComponent.h"
+#include "Presto/Objects/Components/TransformComponent.h"
 
 #include "Presto/Runtime/Time.h"
 

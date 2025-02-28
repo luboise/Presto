@@ -24,6 +24,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
                 return ShaderDataType::DVEC2;
             }
+            break;
         }
         case TINYGLTF_TYPE_VEC3: {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) {
@@ -32,6 +33,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
                 return ShaderDataType::DVEC3;
             }
+            break;
         }
         case TINYGLTF_TYPE_VEC4: {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) {
@@ -40,6 +42,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
                 return ShaderDataType::DVEC4;
             }
+            break;
         }
         case TINYGLTF_TYPE_MAT4: {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_FLOAT) {
@@ -48,6 +51,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
             if (accessor.componentType == TINYGLTF_COMPONENT_TYPE_DOUBLE) {
                 return ShaderDataType::DMAT4;
             }
+            break;
         }
         case TINYGLTF_TYPE_SCALAR: {
             switch (accessor.componentType) {
@@ -59,17 +63,15 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
                     return ShaderDataType::INT;
                 case (TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT):
                     return ShaderDataType::UINT;
-                default: {
-                    PR_ASSERT(false, "Invalid data type import attempted.");
-                    return ShaderDataType::FLOAT;
-                }
+                default:
+                    break;
             }
-        }
-        default: {
-            PR_ASSERT(false, "Invalid data type import attempted.");
-            return ShaderDataType::FLOAT;
+            break;
         }
     }
+
+    PR_ASSERT(false, "Invalid data type import attempted.");
+    return ShaderDataType::FLOAT;
 };
 
 PR_STRING_ID tinygltfNameToPrestoName(const PR_STRING_ID& name) {

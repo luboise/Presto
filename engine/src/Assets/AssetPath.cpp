@@ -16,17 +16,15 @@ Presto::string AssetPath::basename() const { return path_.stem(); }
 
 const FilePath& AssetPath::path() const { return path_; }
 
-AssetPath::operator const FilePath&() const { return this->path(); }
-AssetPath::operator FilePath() const { return this->path(); };
-
 bool AssetPath::valid() const {
     return fs::exists(path_) && fs::is_regular_file(path_);
 };
 
 Presto::string AssetPath::fileExtension() const { return path_.extension(); };
 
-AssetPath::operator Presto::string() const { return path_.string(); };
+AssetPath::operator const FilePath&() const { return this->path(); }
+AssetPath::operator FilePath() const { return this->path(); };
 
 Presto::string AssetPath::string() const { return path_.string(); }
-explicit AssetPath::operator Presto::string() const { return string(); };
+AssetPath::operator Presto::string() const { return string(); };
 }  // namespace Presto

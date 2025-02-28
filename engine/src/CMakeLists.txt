@@ -24,7 +24,6 @@ target_sources(
           Rendering/RenderingManager.cpp
           Runtime/Time.cpp
           Logging.cpp
-          Objects.cpp
           pch.cpp
           GLFWAppWindow.cpp)
 

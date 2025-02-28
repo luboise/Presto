@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Presto/Core.h"
+
 /*
 #include "Presto/Assets/ImageAsset.h"     // IWYU pragma: export
 #include "Presto/Assets/MaterialAsset.h"  // IWYU pragma: export

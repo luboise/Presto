@@ -1,21 +1,22 @@
 #pragma once
 
+#include "Presto/Core/Logging.h"
+#include "Presto/Rendering/UniformTypes.h"
+#include "Presto/Types/CoreTypes.h"
+
+#include <array>
 #include <cstring>
 #include <span>
 #include <type_traits>
 
-#include "Presto/Types/CoreTypes.h"
-
-#include "Presto/Rendering/UniformTypes.h"
-
 namespace Presto {
 class ErasedBytes {
    public:
-    ErasedBytes() { setData(Presto::float32_t{0}); };
+    ErasedBytes() { reset(Presto::float32_t{0}); };
 
     template <typename T>
     explicit ErasedBytes(T val) {
-        this->setData(std::forward<T>(val));
+        this->reset(std::forward<T>(val));
     }
 
     /*template <typename T>*/
@@ -25,21 +26,56 @@ class ErasedBytes {
     /*    this->setData(std::forward<T>(val));*/
     /*};*/
 
-    template <typename T>
-        requires std::is_copy_constructible_v<T>
-    void setData(T newData) {
-        auto new_size{sizeof(newData)};
+    [[nodiscard]] Presto::size_t size() const { return data_.size(); }
 
+    template <typename T>
+        requires std::is_copy_constructible_v<T> && (!std::ranges::range<T>)
+    void reset(T newData) {
+        auto new_size{sizeof(newData)};
         data_.resize(new_size);
-        std::memcpy(data_.data(), &newData, new_size);
+
+        this->forceWrite(newData);
     }
 
     template <typename T>
         requires std::ranges::range<T>
-    void setData(T newData) {
-        auto new_size{sizeof(newData.first()) * newData.size()};
+    void reset(T newData) {
+        auto new_size{sizeof(T) * newData.size()};
+        data_.resize(new_size);
 
-        std::memcpy(data_.data(), newData.data(), new_size);
+        this->forceWrite(newData);
+    };
+
+    template <typename T>
+        requires std::is_copy_constructible_v<T>
+    void write(T& newData) {
+        auto data_size{sizeof(newData)};
+
+        if (data_size != data_.size()) {
+            PR_ERROR(
+                "Mismatch between current size of ErasedBytes ({}) and size of "
+                "input data {}. Skipping this write.",
+                data_.size(), data_size);
+            return;
+        }
+
+        this->forceWrite(newData);
+    };
+
+    template <typename T>
+        requires std::ranges::range<T>
+    void write(T& newData) {
+        auto data_size{sizeof(newData.first()) * newData.size()};
+
+        if (data_size != data_.size()) {
+            PR_ERROR(
+                "Mismatch between current size of ErasedBytes ({}) and size of "
+                "input data {}. Skipping this write.",
+                data_.size(), data_size);
+            return;
+        }
+
+        this->forceWrite(newData);
     };
 
     template <typename T>
@@ -50,7 +86,10 @@ class ErasedBytes {
                 "Size of vector does not match size of target type.");
         }
 
-        return std::bit_cast<T>(data_);
+        std::array<std::byte, sizeof(T)> byte_array;
+        std::ranges::copy_n(data_.begin(), 4, byte_array.begin());
+
+        return std::bit_cast<T>(byte_array);
     }
 
     [[nodiscard]] ByteArray bytes() const { return this->data_; }
@@ -65,5 +104,20 @@ class ErasedBytes {
 
    private:
     ByteArray data_{4, std::byte{0}};
+
+    /**
+     * @brief  Write without checking the size of the data.
+     */
+    template <typename T>
+        requires std::is_copy_constructible_v<T> && (!std::ranges::range<T>)
+    void forceWrite(T newData) {
+        std::memcpy(data_.data(), &newData, data_.size());
+    }
+
+    template <typename T>
+        requires std::ranges::range<T>
+    void forceWrite(T& newData) {
+        std::memcpy(data_.data(), newData.data(), data_.size());
+    };
 };
 }  // namespace Presto

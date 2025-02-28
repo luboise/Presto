@@ -21,6 +21,10 @@ struct ImportedVertexAttribute {
     Presto::size_t count;
 
     ByteArray data;
+
+    [[nodiscard]] Presto::size_t dataSize() const {
+        return attributeTypeDetailsOf(type).size();
+    };
 };
 
 using ImportedAttributeList = std::vector<ImportedVertexAttribute>;

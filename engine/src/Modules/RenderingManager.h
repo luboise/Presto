@@ -35,13 +35,12 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     friend bool ImageAsset::load();
     friend bool MaterialAsset::load();
 
-    using mesh_id_t = Presto::uint16_t;      // 65,000 unique meshes
-    using material_id_t = Presto::uint16_t;  // 65,000 unique meshes
-    using texture_id_t = Presto::uint32_t;   // 2 billion unique textures
-
    public:
+    ~RenderingManager() override;
+
     static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
 
+    // TODO: Get rid of this and move it into the constructor
     static void init(CameraComponent& defaultCamera);
 
     void update() override;
@@ -57,10 +56,10 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     CameraComponent& getCamera() { return activeCamera_; };
 
     /**
-     * Loads an imported mesh into the renderer. It must be registered with a
-     * pipeline before it can be drawn.
+     * Loads an imported mesh into the renderer, and registers it with its
+     * pipeline.
      */
-    renderer_mesh_id_t loadMesh(const ImportedMesh& mesh);
+    mesh_registration_id_t loadMesh(MeshData meshData);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
@@ -89,10 +88,6 @@ _renderables.release(ptr_renderable);
     // Mesh* NewMesh(const VertexList&, const IndexList&);
     // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
 
-    static constexpr renderer_pipeline_id_t ANY_PIPELINE = -1;
-
-    renderer_mesh_id_t createMeshContext(const ImportedMesh&);
-
     /*
 MeshContext* getMeshContext(renderer_mesh_id_t);
 void destroyMeshContext(renderer_mesh_id_t);
@@ -113,9 +108,11 @@ OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
     static RENDER_LIBRARY _library;
     static GLFWAppWindow* _window;
 
-    // TODO: Make this take a reference instead and clean up the logic
-    void loadImageOnGpu(const ImagePtr&);
-    void loadImageOnGpu(ImageAsset&);
+    /*
+// TODO: Make this take a reference instead and clean up the logic
+void loadImageOnGpu(const ImagePtr&);
+void loadImageOnGpu(ImageAsset&);
+    */
 
     void resizeFramebuffer() const;
 
@@ -127,7 +124,7 @@ OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
     void removeTexture(renderer_texture_id_t);
 
     PipelineStructure addPipeline(Pipeline&& pipeline,
-                                  renderer_pipeline_id_t id = ANY_PIPELINE);
+                                  renderer_pipeline_id_t id = PR_ANY_PIPELINE);
 
     // Member vars
     CameraComponent& activeCamera_;

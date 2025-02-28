@@ -1,4 +1,4 @@
-#include "Presto/Components/CameraComponent.h"
+#include "Presto/Objects/Components/CameraComponent.h"
 
 #include "Presto/Core/Constants.h"
 

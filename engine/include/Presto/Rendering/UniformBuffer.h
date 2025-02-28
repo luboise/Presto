@@ -4,7 +4,8 @@ namespace Presto {
 
 class UniformBuffer {
    public:
-    virtual void write(const ByteArray& bytes, Presto::size_t offset = 0) = 0;
+    virtual void write(const std::span<std::byte>& bytes,
+                       Presto::size_t offset = 0) = 0;
 
     virtual void bind(Presto::size_t index) = 0;
     virtual void unbind() = 0;
@@ -16,9 +17,10 @@ class UniformBuffer {
     UniformBuffer& operator=(const UniformBuffer&) = delete;
     UniformBuffer& operator=(UniformBuffer&&) = delete;
 
+    virtual ~UniformBuffer() = default;
+
    protected:
     explicit UniformBuffer(Presto::size_t size) : size_(size) {};
-    ~UniformBuffer();
 
    private:
     Presto::size_t size_;

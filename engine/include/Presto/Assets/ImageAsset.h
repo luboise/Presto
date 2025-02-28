@@ -41,7 +41,7 @@ class ImageAsset final : public Asset {
     bool load() override;
 
     Presto::Image image_;
-    renderer_texture_id_t renderId_{UNREGISTERED_RENDER_DATA_ID};
+    renderer_texture_id_t renderId_{PR_UNREGISTERED};
 };
 
 }  // namespace Presto

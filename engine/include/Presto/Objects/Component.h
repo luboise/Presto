@@ -15,6 +15,7 @@ const class_id_t ClassID = typeid(T).hash_code();
 class PRESTO_API Component {
     using ComponentIDBit = std::uint32_t;
 
+    friend class EntityManager;
     friend class EntityManagerImpl;
 
     static constexpr auto UNASSIGNED_ID{static_cast<component_id_t>(-1)};
