@@ -2,14 +2,14 @@ constexpr auto DEFAULT_VERTEX_SHADER = R"(
 
 #version 430
 
-layout(location = 0) out vec2 tex_coords;
-layout(location = 1) out vec4 colour;
-layout(location = 2) out vec3 normal;
+layout(location = 0) in vec3 a_vertexPosition;
+layout(location = 1) in vec3 a_colour;
+layout(location = 2) in vec3 a_normal;
+layout(location = 3) in vec2 a_texcoords;
 
-layout(location = 0) in vec3 _vp;
-layout(location = 1) in vec3 _colour;
-layout(location = 2) in vec3 _normal;
-layout(location = 3) in vec2 _tex_coords;
+layout(location = 0) out vec4 colour;
+layout(location = 1) out vec3 normal;
+layout(location = 2) out vec2 tex_coords;
 
 layout(std140, binding = 0) uniform GlobalUniforms {
     mat4 view;
@@ -21,18 +21,18 @@ layout(std140, binding = 1) uniform ObjectUniforms {
 };
 
 layout(std140, binding = 2) uniform PBROptions {
-	vec4 colour;
-	float metallic;
-	float roughness;
+	vec4 u_baseColour;
+	float u_metallic;
+	float u_roughness;
 };
 
 void main() {
-    gl_Position = projection * view * model * vec4(_vp, 1.0);
-    colour = vec4(_colour, 1.0);
-    tex_coords = _tex_coords;
+    gl_Position = projection * view * model * vec4(a_vertexPosition, 1.0);
+    colour = vec4(a_colour, 1.0);
+    tex_coords = a_texcoords;
 
 	mat3 rotationMatrix = transpose(inverse(mat3(model)));
-	normal = normalize(rotationMatrix * _normal);
+	normal = normalize(rotationMatrix * a_normal);
 }
 )";
 
@@ -41,11 +41,11 @@ constexpr auto DEFAULT_FRAGMENT_SHADER = R"(
 
 out vec4 colour;
 
-layout(location = 0) in vec2 _tex_coords;
-layout(location = 1) in vec4 _colour;
-layout(location = 2) in vec3 _normal;
+layout(location = 0) in vec4 _colour;
+layout(location = 1) in vec3 _normal;
+layout(location = 2) in vec2 _tex_coords;
 
-layout(location = 3) uniform sampler2D sampler1;
+layout(location = 4) uniform sampler2D sampler1;
 
 void main() {
 	vec3 the_sun = vec3(-20, 20, 0);

@@ -337,6 +337,16 @@ ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
     return new_image;
 };
 
+MaterialDefinitionPtr AssetManager::createMaterialDefinition(
+    Presto::string name, const PipelineStructure& structure) {
+    MaterialDefinitionPtr new_definition{
+        std::make_shared<MaterialAsset>(name, structure)};
+
+    assets_[AssetType::MATERIAL_DEFINITION][name] = new_definition;
+
+    return new_definition;
+}
+
 Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
     const auto map{assets_[AssetType::MATERIAL_DEFINITION] |
                    std::views::values};

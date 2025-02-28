@@ -87,7 +87,7 @@ class ErasedBytes {
         }
 
         std::array<std::byte, sizeof(T)> byte_array;
-        std::ranges::copy_n(data_.begin(), 4, byte_array.begin());
+        std::ranges::copy_n(data_.begin(), sizeof(T), byte_array.begin());
 
         return std::bit_cast<T>(byte_array);
     }

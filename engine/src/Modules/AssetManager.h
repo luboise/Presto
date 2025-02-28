@@ -78,6 +78,9 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
 
     Ptr<MaterialAsset> getMaterialDefinition(pipeline_id_t id);
 
+    MaterialDefinitionPtr createMaterialDefinition(
+        Presto::string name, const PipelineStructure& structure);
+
    private:
     AssetManager() = default;
     ~AssetManager() override = default;

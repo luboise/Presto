@@ -9,6 +9,8 @@ OpenGLUniformBuffer::~OpenGLUniformBuffer() { glDeleteBuffers(1, &buffer_); };
 OpenGLUniformBuffer::OpenGLUniformBuffer(Presto::size_t bufferSize)
     : UniformBuffer(bufferSize) {
     glGenBuffers(1, &buffer_);
+    glBindBuffer(GL_UNIFORM_BUFFER, buffer_);
+
     glBufferData(GL_UNIFORM_BUFFER, static_cast<GLsizeiptr>(this->size()),
                  nullptr, GL_DYNAMIC_DRAW);
 };

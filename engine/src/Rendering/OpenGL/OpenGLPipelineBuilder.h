@@ -24,7 +24,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
                                "Vertex shader failed to compile.");
 
-                vertexShader_ = ShaderAllocation{vs};
+                vertexShader_.id = vs;
                 break;
             }
             case ShaderStage::FRAGMENT: {
@@ -36,7 +36,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
                 PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
                                "Fragment shader failed to compile.");
 
-                fragmentShader_ = ShaderAllocation{fs};
+                fragmentShader_.id = fs;
                 break;
             }
             default: {
@@ -48,10 +48,10 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     };
 
     Allocated<Pipeline> build() override {
-        PR_ASSERT(vertexShader_.id != 0,
+        PR_ASSERT(vertexShader_.id != INVALID_SHADER_ID,
                   "Vertex shader was unassigned when building the pipeline.");
 
-        PR_ASSERT(fragmentShader_.id != 0,
+        PR_ASSERT(fragmentShader_.id != INVALID_SHADER_ID,
                   "Fragment shader was unassigned when building the pipeline.");
 
         Allocated<Pipeline> pipeline{

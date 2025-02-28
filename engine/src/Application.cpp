@@ -22,6 +22,9 @@ Application::Application() {
     appWindow_->setCallbackFunction(
         [this](auto& e) -> void { this->onEvent(e); });
 
+    AssetManager::init();
+    // AssetManager must be initialised before RenderingManager
+
     RenderingManager::setRenderLibrary(OPENGL);
 
     GLFWAppWindow* window{dynamic_cast<GLFWAppWindow*>(appWindow_.get())};
@@ -38,7 +41,6 @@ Application::Application() {
 
     RenderingManager::init(*default_camera);
 
-    AssetManager::init();
     // SceneManager::init();
     EventManager::init();
     PhysicsManager::init();

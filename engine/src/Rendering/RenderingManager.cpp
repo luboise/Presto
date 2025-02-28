@@ -61,6 +61,9 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     auto default_pipelines{renderer_->createDefaultPipelines()};
     for (auto& default_pipeline : default_pipelines) {
+        AssetManager::get().createMaterialDefinition(
+            "Pipeline", default_pipeline.second->getStructure());
+
         impl_->pipelines.alloc(std::move(default_pipeline.second),
                                default_pipeline.first);
     }

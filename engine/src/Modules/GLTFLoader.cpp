@@ -193,7 +193,9 @@ ImportedMaterial importMaterialFromGLTF(const tinygltf::Material& material,
         imported.values.push_back(ImportedMaterialProperty{
             .name = DefaultMaterialPropertyName::DIFFUSE_TEXTURE,
             .data_type = UniformVariableType::TEXTURE,
-            .data = ErasedBytes{index}});
+            .data = ErasedBytes{
+                static_cast<ImportTypeOf<UniformVariableType::TEXTURE>>(
+                    index)}});
     }
 
     return imported;
@@ -259,7 +261,7 @@ ImportedModelData GLTFLoader::load(
     }
 
     if (textureIndices.size() > 0) {
-        imported_data.textures.resize(std::ranges::max(textureIndices) - 1);
+        imported_data.textures.resize(std::ranges::max(textureIndices) + 1);
 
         for (const auto& index : textureIndices) {
             imported_data.textures[index] = importTextureFromGLTF(model, index);

@@ -54,7 +54,7 @@ OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
 }
 
 Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
-    AllocatedPipelineList pipelines(2);
+    AllocatedPipelineList pipelines(1);
 
     OpenGLPipelineBuilder builder{};
 
@@ -65,10 +65,12 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
     pipelines[0] = {PR_PIPELINE_DEFAULT_3D, builder.build()};
 
-    builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
-        .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
+    /*
+builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
+    .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
 
-    pipelines[1] = {PR_PIPELINE_DEFAULT_UI, builder.build()};
+pipelines[1] = {PR_PIPELINE_DEFAULT_UI, builder.build()};
+    */
 
     return pipelines;
 

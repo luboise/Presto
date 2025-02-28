@@ -19,7 +19,7 @@ class MaterialAsset final :
    public:
     friend class RenderingManager;
 
-    MaterialAsset(PR_STRING_ID name, const PipelineStructure&);
+    MaterialAsset(Presto::string name, const PipelineStructure& structure);
 
     ~MaterialAsset() override = default;
 

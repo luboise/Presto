@@ -6,7 +6,7 @@
 #include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
-MaterialAsset::MaterialAsset(PR_STRING_ID name, const PipelineStructure& ps)
+MaterialAsset::MaterialAsset(Presto::string name, const PipelineStructure& ps)
     : Asset(std::move(name)), pipelineId_(ps.pipeline_id) {
     UniformLayout layout{createLayoutFromPipelineStructure(ps)};
 
