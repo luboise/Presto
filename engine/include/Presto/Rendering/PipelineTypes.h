@@ -21,7 +21,7 @@ struct PipelineAttribute {
 
 struct PipelineUniform {
     PR_NUMERIC_ID location;
-    UniformVariableType type;
+    UniformVariableType data_type;
     PR_STRING_ID name;
 
     Presto::size_t offset;
@@ -30,7 +30,7 @@ struct PipelineUniform {
 };
 
 struct PipelineUniformBlock {
-    PR_NUMERIC_ID binding;
+    Presto::uint8_t binding;
     PR_STRING_ID name;
     std::vector<PipelineUniform> uniforms;
 

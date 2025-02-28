@@ -12,9 +12,11 @@
 namespace Presto {
 
 class ErasedBytes;
-struct UniformLayout;
 
+struct UniformLayout;
 struct UniformBinding;
+
+class Pipeline;
 
 class MaterialInstance {
     friend class MaterialAsset;
@@ -80,7 +82,7 @@ MaterialInstance& setProperty(Presto::string name, TexturePtr data);
     [[nodiscard]] pipeline_id_t getPipelineId() const;
 
    private:
-    void bind();
+    void bindTo(Pipeline&) const;
 
     struct PropertyDetails {
         UniformBinding binding;

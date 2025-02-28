@@ -4,6 +4,7 @@
 #include <map>
 
 #include "Presto/Rendering/Pipeline.h"
+#include "Presto/Rendering/UniformTypes.h"
 
 namespace Presto {
 
@@ -16,16 +17,31 @@ class OpenGLPipeline final : public Pipeline {
     ~OpenGLPipeline() override;
 
    public:
-    void setProperty(std::string property, const void* value) override;
+    uniform_index_t getIndex(uniform_name_t name) override;
+
+    void setUniform(uniform_index_t index, Presto::uint32_t value) override;
+
+    void setUniform(uniform_index_t index, Presto::int32_t value) override;
+    void setUniform(uniform_index_t index, Presto::float32_t value) override;
+
+    void setUniform(uniform_index_t index, Presto::vec2 value) override;
+    void setUniform(uniform_index_t index, Presto::vec3 value) override;
+    void setUniform(uniform_index_t index, Presto::vec4 value) override;
+    void setUniform(uniform_index_t index, Presto::mat4 value) override;
+
     // void setProperties(const UniformLayout& inStructure) override;
 
-    void setUniformBlock(PR_NUMERIC_ID name, UniformBuffer& buffer) override;
+    void setUniformBlock(uniform_index_t index, UniformBuffer& buffer) override;
 
    private:
     void bind() override;
     void unbind() override;
 
-    std::map<PR_NUMERIC_ID, GLint> bindingMap_;
+    // Map which converts the name of a uniform to its external index
+    std::map<uniform_name_t, uniform_index_t> nameToIndex_;
+
+    // Map which converts the name of a uniform to its external index
+    std::map<uniform_index_t, GLint> indexToBinding_;
 
     GLuint shaderProgram_{0};
 

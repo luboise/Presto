@@ -1,5 +1,7 @@
+#include <algorithm>
 #include <memory>
 #include <ranges>
+#include <utility>
 
 #include "Modules/RenderingManager.h"
 
@@ -25,7 +27,7 @@
 
 namespace Presto {
 
-constexpr auto PR_MIN_USER_ID = 10;
+// constexpr auto PR_MIN_USER_PIPELINE_ID = 10;
 
 RENDER_LIBRARY RenderingManager::_library = UNSET;
 GLFWAppWindow* RenderingManager::_window = nullptr;
@@ -33,6 +35,8 @@ GLFWAppWindow* RenderingManager::_window = nullptr;
 struct RenderingManager::Impl {
     IDGenerator<material_id_t> material_ids;
     IDGenerator<texture_id_t> texture_ids;
+
+    std::vector<MaterialPtr> materials;
 
     // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
 
@@ -169,8 +173,7 @@ void RenderingManager::update() {
                       "Meshes on the draw list can't be drawn to a nullptr "
                       "pipeline.");
             pipeline->bind();
-
-            material->bind();
+            material->bindTo(*pipeline);
 
             auto* data{impl_->mesh_registrations.find(mesh->registrationId_)};
             PR_CORE_ASSERT(
@@ -253,12 +256,22 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
         definition != nullptr,
         "A default pipeline can't have a null shared pointer to it.");
 
-    return std::make_shared<MaterialInstance>(definition);
+    auto new_instance{std::make_shared<MaterialInstance>(definition)};
+    new_instance->setName(std::move(name));
+
+    impl_->materials.push_back(new_instance);
+
+    return new_instance;
 };
 
 Ptr<MaterialInstance> RenderingManager::getMaterial(
     const Presto::string& name) {
-    // TODO: Implement
+    if (auto found{std::ranges::find_if(
+            impl_->materials,
+            [name](const MaterialPtr& val) { return val->name() == name; })};
+        found != impl_->materials.end()) {
+        return *found;
+    }
 
     return nullptr;
 };
@@ -369,9 +382,8 @@ currentKey_++;
 void RenderingManager::loadImageOnGpu(ImageAsset& image) {
     if (image.loaded()) {
         PR_CORE_WARN(
-            "Attempted redundant load of image resource {}. Skipping this "
-            "load.",
-            image.renderId_);
+            "Attempted redundant load of image resource {}. Skipping
+this " "load.", image.renderId_);
 
         return;
     }

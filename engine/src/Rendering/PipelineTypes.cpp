@@ -11,7 +11,9 @@ Presto::size_t PipelineUniformBlock::size() const {
         [](auto sum, const auto& uniform) { return sum + uniform.size(); });
 };
 
-Presto::size_t PipelineUniform::size() const { return SizeOfType(this->type); };
+Presto::size_t PipelineUniform::size() const {
+    return SizeOfType(this->data_type);
+};
 
 Presto::size_t PipelineAttribute::size() const {
     return attributeTypeDetailsOf(this->type).size();

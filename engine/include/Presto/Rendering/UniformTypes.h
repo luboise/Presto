@@ -92,13 +92,15 @@ constexpr Presto::size_t SizeOfType(UniformVariableType type) noexcept {
 
 using uniform_name_t = PR_STRING_ID;
 
+using uniform_index_t = Presto::uint8_t;
+constexpr uniform_index_t PR_INVALID_UNIFORM = -1;
+
 struct UniformBinding {
     enum : Presto::uint8_t { SINGLE, BLOCK };
 
     Presto::uint8_t bind_type;
-
-    uniform_name_t name;
     UniformVariableType data_type;
+    uniform_name_t name;
 
     union {
         Presto::uint32_t location;
@@ -109,9 +111,9 @@ struct UniformBinding {
 };
 
 struct UniformBlock {
+    uniform_index_t bind_point;
     uniform_name_t name;
 
-    Presto::int8_t bind_point;
     std::vector<UniformBinding> bindings;
 
     [[nodiscard]] Presto::size_t size() const;

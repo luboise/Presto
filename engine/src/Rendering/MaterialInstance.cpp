@@ -7,12 +7,25 @@
 #include "Presto/Rendering/ErasedBytes.h"
 #include "Presto/Rendering/MaterialTypes.h"
 
+#include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/UniformBuffer.h"
 #include "Presto/Rendering/UniformTypes.h"
 
 #include "Presto/Rendering/MaterialInstance.h"
 
 namespace Presto {
+
+struct UniformBufferExtra {
+    Presto::uint8_t bind_point;
+    Allocated<UniformBuffer> buffer;
+};
+
+struct UniformBindingExtra {
+    Presto::uint8_t location;
+
+    UniformVariableType data_type;
+    ErasedBytes data;
+};
 
 struct MaterialInstance::Impl {
     MaterialDefinitionPtr definition;
@@ -22,8 +35,8 @@ struct MaterialInstance::Impl {
 
     std::map<Presto::string, PropertyDetails> property_lookup;
 
-    std::vector<Allocated<UniformBuffer>> uniform_buffers;
-    std::vector<ErasedBytes> uniform_variable_data_stores;
+    std::vector<UniformBufferExtra> uniform_buffers;
+    std::vector<UniformBindingExtra> uniform_bindings;
 };
 
 MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
@@ -38,7 +51,9 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
     for (Presto::size_t i = 0; i < impl_->structure.blocks.size(); i++) {
         const UniformBlock& block{impl_->structure.blocks[i]};
 
-        impl_->uniform_buffers[i] = rm.createUniformBuffer(block.size());
+        impl_->uniform_buffers[i] = {
+            .bind_point = block.bind_point,
+            .buffer = rm.createUniformBuffer(block.size())};
 
         for (const UniformBinding& binding : block.bindings) {
             impl_->property_lookup[binding.name] = {
@@ -48,15 +63,18 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
         }
     }
 
-    impl_->uniform_variable_data_stores.resize(
-        impl_->structure.bindings.size());
-    for (Presto::size_t i = 0; i < impl_->structure.bindings.size(); i++) {
+    Presto::size_t naked_binding_count{impl_->structure.bindings.size()};
+
+    impl_->uniform_bindings.resize(naked_binding_count);
+    for (Presto::size_t i = 0; i < naked_binding_count; i++) {
         const UniformBinding& binding{impl_->structure.bindings[i]};
         impl_->property_lookup[binding.name] = {.binding = binding,
                                                 .data_index = i};
 
-        impl_->uniform_variable_data_stores[i] =
-            ErasedBytes{ByteArray(binding.size())};
+        impl_->uniform_bindings[i] = {
+            .location = static_cast<Presto::uint8_t>(binding.location),
+            .data_type = binding.data_type,
+            .data = ErasedBytes{ByteArray(binding.size())}};
     }
 }
 
@@ -84,15 +102,41 @@ pipeline_id_t MaterialInstance::getPipelineId() const {
     return this->impl_->definition->pipelineId();
 };
 
-void MaterialInstance::bind() {
+Presto::string MaterialInstance::name() const { return impl_->name; };
+
+void MaterialInstance::bindTo(Pipeline& pipeline) const {
     // Bind each block
-    for (const auto& buffer : impl_->property_lookup) {
-        static_assert(false, "Implement this");
+    for (const UniformBufferExtra& buffer_details : impl_->uniform_buffers) {
+        pipeline.setUniformBlock(buffer_details.bind_point,
+                                 *buffer_details.buffer);
     }
     // Bind each singular uniform
-};
 
-Presto::string MaterialInstance::name() const { return impl_->name; };
+    for (const UniformBindingExtra& binding : impl_->uniform_bindings) {
+#define SWITCH_CASE(type)                                          \
+    case type:                                                     \
+        pipeline.setUniform(binding.location,                      \
+                            binding.data.as<GPUTypeOf<(type)>>()); \
+        break
+
+        switch (binding.data_type) {
+            SWITCH_CASE(UniformVariableType::INT);
+            SWITCH_CASE(UniformVariableType::UINT);
+            SWITCH_CASE(UniformVariableType::FLOAT);
+            SWITCH_CASE(UniformVariableType::VEC2);
+            SWITCH_CASE(UniformVariableType::VEC3);
+            SWITCH_CASE(UniformVariableType::VEC4);
+            SWITCH_CASE(UniformVariableType::MAT4);
+            SWITCH_CASE(UniformVariableType::TEXTURE);
+            default:
+                PR_ERROR(
+                    "Unable to determine type of binding data. Skipping this "
+                    "write.");
+                break;
+        }
+#undef SWITCH_CASE
+    }
+};
 
 /*
 MaterialInstance& MaterialInstance::setProperty(Presto::string name,
