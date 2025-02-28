@@ -1,7 +1,6 @@
 #include "OpenGLPipeline.h"
 #include <GL/glext.h>
 #include <algorithm>
-#include <numeric>
 
 #include "Presto/Rendering/UniformTypes.h"
 #include "Rendering/OpenGL/utils.h"
@@ -9,6 +8,8 @@
 
 #include "Presto/Rendering/UniformBuffer.h"
 #include "glm/gtc/type_ptr.hpp"
+
+#include "Introspection.h"
 
 namespace Presto {
 using Presto::UniformVariableType;
@@ -22,10 +23,12 @@ OpenGLPipeline::OpenGLPipeline(GLuint vertexShader_, GLuint fragmentShader_)
     PR_ASSERT(OpenGLUtils::ShaderProgramLinkedCorrectly(shaderProgram_),
               "Shader program failed to link.");
 
-    pipelineStructure_.attributes = getAttributesFromShader(shaderProgram_);
-    pipelineStructure_.uniforms = getUniformsFromShader(shaderProgram_);
+    pipelineStructure_.attributes =
+        Introspection::getAttributesFromShader(shaderProgram_);
+    pipelineStructure_.uniforms =
+        Introspection::getUniformsFromShader(shaderProgram_);
     pipelineStructure_.uniform_blocks =
-        getUniformBlocksFromShader(shaderProgram_);
+        Introspection::getUniformBlocksFromShader(shaderProgram_);
 
     pipelineStructure_.uses_global_uniforms =
         std::ranges::any_of(pipelineStructure_.uniform_blocks,

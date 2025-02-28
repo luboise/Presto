@@ -182,4 +182,9 @@ void EntityManagerImpl::instantiateEntities() {
         impl_->entity_map.emplace(entity->id_, std::move(entity));
     };
 }
+
+entity_id_t EntityManager::reserveId() {
+    return EntityManagerImpl::get().reserveId();
+};
+
 }  // namespace Presto

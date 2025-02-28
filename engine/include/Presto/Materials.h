@@ -6,6 +6,6 @@
 namespace Presto {
 
 MaterialPtr NewMaterial(MaterialType type, Presto::string name = "");
-MaterialPtr FindMaterial(Presto::string name);
+MaterialPtr FindMaterial(const Presto::string& name);
 
 }  // namespace Presto

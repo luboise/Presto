@@ -264,7 +264,7 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
     return new_instance;
 };
 
-Ptr<MaterialInstance> RenderingManager::getMaterial(
+Ptr<MaterialInstance> RenderingManager::findMaterial(
     const Presto::string& name) {
     if (auto found{std::ranges::find_if(
             impl_->materials,

@@ -70,7 +70,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     [[nodiscard]] Ptr<MaterialInstance> createMaterial(MaterialType type,
                                                        Presto::string name);
-    [[nodiscard]] Ptr<MaterialInstance> getMaterial(const Presto::string& name);
+    [[nodiscard]] Ptr<MaterialInstance> findMaterial(
+        const Presto::string& name);
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(const ImagePtr& image_ptr);
 

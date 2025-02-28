@@ -94,6 +94,14 @@ MaterialInstance& MaterialInstance::setName(Presto::string newName) {
     return *this;
 };
 
+ErasedBytes& MaterialInstance::getUniformDataStore(Presto::size_t index) {
+    return impl_->uniform_bindings[index].data;
+};
+
+UniformBuffer& MaterialInstance::getUniformBuffer(Presto::size_t index) {
+    return *impl_->uniform_buffers[index].buffer;
+};
+
 const UniformLayout& MaterialInstance::getUniformStructure() const {
     return this->impl_->structure;
 };
@@ -138,41 +146,4 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
     }
 };
 
-/*
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                Presto::vec3 data) {
-    PropertyDetails* details{getBinding(name)};
-
-    if (details == nullptr) {
-        PR_WARN(
-            "Unable to find \"{}\" in MaterialInstance of pipeline {}. "
-            "Skipping this write.",
-            name, this->getPipelineId());
-        return *this;
-    }
-
-    if (sizeof(data) != details->binding.size()) {
-        PR_ERROR(
-            "The size of data being written to material property {} must be of "
-            "size {}. Received size {}.",
-            name, details->binding.size(), sizeof(data));
-        return *this;
-    }
-
-    if (details->binding.bind_type == UniformBinding::SINGLE) {
-        impl_->uniform_variable_data_stores[details->data_index].write(data);
-    }
-    return *this;
-};
-
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                ErasedBytes data) {
-    return *this;
-};
-
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
-                                                Ptr<Texture> data) {
-    return *this;
-};
-*/
 }  // namespace Presto

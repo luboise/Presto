@@ -14,6 +14,7 @@ using mesh_registration_id_t = PR_NUMERIC_ID;
 
 class PRESTO_API ModelComponent : public Component {
     // friend class RenderingManager;
+    friend class EntityManager;
     friend class EntityManagerImpl;
 
     // TODO: Make the render trigger when the entity enters the scene so

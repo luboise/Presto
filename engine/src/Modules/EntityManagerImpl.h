@@ -77,24 +77,7 @@ return entityMap_[new_id].get();
 };
     */
 
-    // TODO: Consider making this private. It's not a huge deal either
-    // way, and people can just choose which one they use.
-    template <typename T, typename... Args>
-    // TODO: Fix this concept
-    // requires std::constructible_from<T, Args...>
-    ComponentPtr<T> newComponent(Args&&... args) {
-        std::vector<ComponentPtr<T>>* list{getComponentList<T>()};
-
-        // std::unique_ptr<Component> new_component{new T};
-        ComponentPtr<T> new_component{new T(std::forward<Args>(args)...)};
-
-        component_id_t new_id{reserveId()};
-        new_component->id_ = new_id;
-
-        auto& emplaced{list->emplace_back(new_component)};
-
-        return std::dynamic_pointer_cast<T>(emplaced);
-    };
+    entity_id_t reserveId();
 
    protected:
     EntityManagerImpl();
@@ -118,7 +101,6 @@ return entityMap_[new_id].get();
     }
 
     void destroyEntity(entity_ptr entity);
-    entity_id_t reserveId();
 
     using entity_unique_ptr =
         std::unique_ptr<Entity, std::function<void(Entity*)>>;

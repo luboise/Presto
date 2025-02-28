@@ -44,12 +44,6 @@ class OpenGLPipeline final : public Pipeline {
     std::map<uniform_index_t, GLint> indexToBinding_;
 
     GLuint shaderProgram_{0};
-
-    [[nodiscard]] static std::vector<PipelineAttribute> getAttributesFromShader(
-        GLuint program);
-    [[nodiscard]] static std::vector<PipelineUniform> getUniformsFromShader(
-        GLuint program);
-    [[nodiscard]] static std::vector<PipelineUniformBlock>
-    getUniformBlocksFromShader(GLuint program);
 };
+
 }  // namespace Presto

@@ -23,6 +23,7 @@ target_sources(
           # Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
           Runtime/Time.cpp
+          Materials.cpp
           Logging.cpp
           pch.cpp
           GLFWAppWindow.cpp)

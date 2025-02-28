@@ -68,7 +68,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     struct ShaderAllocation {
         GLuint id{0};
 
-        explicit ShaderAllocation(GLuint id);
+        explicit ShaderAllocation(GLuint id) : id(id) {};
         ~ShaderAllocation() { glDeleteShader(id); }
 
         ShaderAllocation(const ShaderAllocation&) = delete;

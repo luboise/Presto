@@ -10,8 +10,6 @@ namespace Presto {
 class PRESTO_API EntityManager {
     friend class Application;
 
-    // friend class Module<EntityManager>;
-
     friend Figure::~Figure();
 
     using EntityMap = std::map<entity_id_t, entity_ptr>;
@@ -114,9 +112,6 @@ return entityMap_[new_id].get();
         std::unique_ptr<Entity, std::function<void(Entity*)>>;
 
     ComponentDatabase componentDatabase_;
-
-    struct Impl;
-    Impl* impl_;
 
     // ComponentMap components_;
 };
