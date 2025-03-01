@@ -48,14 +48,27 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     };
 
     Allocated<Pipeline> build() override {
-        PR_ASSERT(vertexShader_.id != INVALID_SHADER_ID,
-                  "Vertex shader was unassigned when building the pipeline.");
-
-        PR_ASSERT(fragmentShader_.id != INVALID_SHADER_ID,
-                  "Fragment shader was unassigned when building the pipeline.");
+        if (id() == PR_PIPELINE_NONE) {
+            PR_ERROR(
+                "A pipeline can't be build using an id of "
+                "PR_PIPELINE_NONE. Unable to build pipeline.");
+            return nullptr;
+        }
+        if (vertexShader_.id == INVALID_SHADER_ID) {
+            PR_ERROR(
+                "Vertex shader was unassigned when building the pipeline. "
+                "Unable to build pipeline.");
+            return nullptr;
+        }
+        if (fragmentShader_.id == INVALID_SHADER_ID) {
+            PR_ERROR(
+                "Fragment shader was unassigned when building the "
+                "pipeline. Unable to build pipeline.");
+            return nullptr;
+        }
 
         Allocated<Pipeline> pipeline{
-            new OpenGLPipeline(vertexShader_.id, fragmentShader_.id)};
+            new OpenGLPipeline(id(), vertexShader_.id, fragmentShader_.id)};
 
         return pipeline;
     };

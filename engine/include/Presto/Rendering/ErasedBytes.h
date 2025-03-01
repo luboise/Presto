@@ -46,6 +46,13 @@ class ErasedBytes {
         this->forceWrite(newData);
     };
 
+    // TODO: Double check memory semantics here
+    template <typename T>
+        requires std::is_copy_constructible_v<T>
+    void write(T&& newData) {
+        this->write(std::forward<const T&>(newData));
+    };
+
     template <typename T>
         requires std::is_copy_constructible_v<T>
     void write(T& newData) {

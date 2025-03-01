@@ -9,6 +9,7 @@ target_sources(
           RenderTypes.cpp
           VertexAttribute.cpp
           Shader.cpp
+          Pipeline.cpp
           PipelineTypes.cpp
           PipelineBuilder.cpp
           UniformTypes.cpp

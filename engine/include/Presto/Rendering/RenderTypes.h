@@ -24,12 +24,6 @@ struct DrawInfo {
     uint32_t index_offset = 0;
 };
 
-constexpr pipeline_id_t PR_ANY_PIPELINE = -1;
-constexpr mesh_registration_id_t PR_UNREGISTERED{-1U};
-
-using renderer_mesh_id_t = PR_NUMERIC_ID;
-using renderer_texture_id_t = PR_NUMERIC_ID;
-
 using Index = uint32_t;
 
 class Vertex;

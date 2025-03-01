@@ -85,6 +85,7 @@ bool MeshAsset::modifiable() const {
 
 MeshAsset& MeshAsset::setIndices(IndexList indices) {
     this->impl_->indices = std::move(indices);
+    return *this;
 };
 
 }  // namespace Presto

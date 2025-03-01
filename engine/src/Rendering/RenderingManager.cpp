@@ -6,6 +6,7 @@
 #include "Modules/RenderingManager.h"
 
 #include "Presto/Core/Constants.h"
+#include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Objects/Components.h"
@@ -38,8 +39,6 @@ struct RenderingManager::Impl {
 
     std::vector<MaterialPtr> materials;
 
-    // std::map<renderer_mesh_id_t, MeshContext> bufferMap_;
-
     pipeline_allocator_t pipelines;
     mesh_allocator_t mesh_registrations;
 
@@ -47,31 +46,64 @@ struct RenderingManager::Impl {
 
     Allocated<TextureFactory> textureFactory_;
     Allocated<PipelineBuilder> pipelineBuilder_;
+
+    pipeline_id_t current_pipeline_id{PR_PIPELINE_NONE};
 };
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    GLFWAppWindow* window,
                                    CameraComponent& defaultCamera)
     : activeCamera_(defaultCamera) {
-    Allocated<Renderer> renderer_ = Renderer::create(library, window);
+    this->renderer_ = Renderer::create(library, window);
 
     impl_ = std::make_unique<Impl>();
 
     impl_->textureFactory_ = renderer_->getTextureFactory();
 
-    auto default_pipelines{renderer_->createDefaultPipelines()};
-    for (auto& default_pipeline : default_pipelines) {
-        AssetManager::get().createMaterialDefinition(
-            "Pipeline", default_pipeline.second->getStructure());
+    Renderer::AllocatedPipelineList default_pipelines{
+        renderer_->createDefaultPipelines()};
 
-        impl_->pipelines.alloc(std::move(default_pipeline.second),
-                               default_pipeline.first);
+    AssetManager& am{AssetManager::get()};
+
+    for (auto& default_pipeline : default_pipelines) {
+        PR_CORE_ASSERT(default_pipeline != nullptr,
+                       "The default pipelines must be initialised correctly "
+                       "when being used, not nullptr.");
+        am.createMaterialDefinition("Pipeline",
+                                    default_pipeline->getStructure());
+
+        auto new_id{default_pipeline->id()};
+        impl_->pipelines.alloc(std::move(default_pipeline), new_id);
     }
 };
 
 RenderingManager::~RenderingManager() = default;
 
-mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData) {
+mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData,
+                                                  pipeline_id_t pipelineId) {
+    PR_CORE_ASSERT(renderer_ != nullptr,
+                   "The renderer must be initialised in order to load meshes.");
+
+    if (pipelineId == PR_PIPELINE_ANY) {
+        pipelineId = PR_PIPELINE_DEFAULT_3D;
+    }
+
+    Pipeline* pipeline{nullptr};
+
+    pipeline = getPipeline(pipelineId);
+    if (pipeline == nullptr) {
+        PR_ERROR(
+            "Unable to load mesh into pipeline #{}, as it is undefined. "
+            "Skipping this mesh load.",
+            pipelineId);
+        return PR_UNREGISTERED;
+    }
+
+    if (impl_->current_pipeline_id != pipelineId) {
+        pipeline->bind();
+        impl_->current_pipeline_id = pipelineId;
+    }
+
     auto& vertex_bytes{meshData.vertex_data.data};
     Presto::size_t vertex_buffer_size{vertex_bytes.size()};
     Presto::size_t index_buffer_size{meshData.indices.size() * sizeof(Index)};
@@ -90,7 +122,8 @@ mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData) {
     // types instead of using ErasedBytes
     details->indices->write(ErasedBytes{meshData.indices}.getData());
 
-    bool success{renderer_->createMeshContext(*details)};
+    bool success{
+        renderer_->createMeshContext(*details, pipeline->getStructure())};
 
     if (!success) {
         PR_ERROR("Unable to create mesh context in renderer.");
@@ -220,7 +253,7 @@ void RenderingManager::resizeFramebuffer() const {
 };
 
 const PipelineStructure* RenderingManager::getPipelineStructure(
-    renderer_pipeline_id_t id) const {
+    pipeline_id_t id) const {
     auto transform_view{
         impl_->pipelines | std::views::values |
         std::views::transform(
@@ -288,111 +321,14 @@ PipelineBuilder& RenderingManager::getPipelineBuilder() {
     return *impl_->pipelineBuilder_;
 };
 
-/*
-MeshContext* RenderingManager::getMeshContext(renderer_mesh_id_t id) {
-    auto mesh{bufferMap_.find(id)};
-
-    return (mesh == bufferMap_.end()) ? nullptr : &(mesh->second);
-}
-
-void RenderingManager::removeTexture(renderer_texture_id_t id) {
-    auto erased{textureMap_.erase(id)};
-    if (erased == 0) {
-        PR_CORE_WARN(
-            "A delete was requested for a non-existant texture with ID
-{} " "in " "the OpenGL Draw Manager.", id);
-    }
-};
-
-void RenderingManager::destroyMeshContext(renderer_mesh_id_t id) {
-    auto erased{bufferMap_.erase(id)};
-    if (erased == 0) {
-        PR_CORE_WARN(
-            "A delete was requested for a non-existant mesh with ID {}
-in " "the OpenGL Draw Manager.", id);
-    }
-};
-
-OpenGLTexture* RenderingManager::getTexture(renderer_texture_id_t id) {
-    if (id == UNREGISTERED_RENDER_DATA_ID) {
+Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
+    auto* pipeline{impl_->pipelines.find(id)};
+    if (pipeline == nullptr) {
         PR_WARN(
-            "An unregistered texture has been requested in the draw "
-            "manager. Using the default texture.");
-
-        return &textureMap_[PR_DEFAULT_TEXTURE];
+            "Pipeline of id {} could not be found in the RenderingManager. ",
+            id);
     }
 
-    auto texture{textureMap_.find(id)};
-
-    return texture == textureMap_.end() ? nullptr : &(texture->second);
+    return pipeline;
 };
-
-renderer_mesh_id_t RenderingManager::createMeshContext(
-    const ImportedMesh& mesh) {
-    auto buffer{std::make_unique<OpenGLBuffer>(mesh.attributes,
-                                               mesh.vertex_count,
-mesh.bytes, mesh.indices, mesh.draw_mode)}; MeshContext
-context(std::move(buffer));
-
-    auto new_key{++currentKey_};
-    const auto insertion{bufferMap_.emplace(new_key, buffer)};
-
-    PR_CORE_ASSERT(insertion.second,
-                   "Presto failed to insert RenderGroup into the render
-list.");
-
-    PR_CORE_TRACE("Added new RenderGroup to the render list.");
-
-    return new_key;
-};
-
-renderer_texture_id_t RenderingManager::addTexture(const Presto::Image&
-image) { OpenGLTexture tex{image};
-
-    auto new_key{++currentKey_};
-    textureMap_.emplace(new_key, std::move(tex));
-
-    return new_key;
-};
-
-OpenGLPipeline* RenderingManager::getPipeline(renderer_pipeline_id_t id)
-{ auto pipeline{pipelineMap_.find(id)};
-
-    return (pipeline == pipelineMap_.end()) ? nullptr :
-&(pipeline->second);
-}
-*/
-
-/*
-PipelineStructure RenderingManager::addPipeline(OpenGLPipeline&&
-pipeline, renderer_pipeline_id_t id) { if (id == PR_ANY_PIPELINE) { id =
-currentKey_++;
-    }
-
-    PipelineStructure structure{pipeline.getStructure()};
-
-    if ()
-
-        // TODO: Make this only affect pipelines with the buffers
-        pipeline->setUniformBlock(0, *globalUniformBuffer_.get());
-    pipeline->setUniformBlock(1, *objectUniformBuffer_.get());
-
-    pipelineMap_.emplace(id, std::move(pipeline));
-};
-*/
-
-/*
-void RenderingManager::loadImageOnGpu(ImageAsset& image) {
-    if (image.loaded()) {
-        PR_CORE_WARN(
-            "Attempted redundant load of image resource {}. Skipping
-this " "load.", image.renderId_);
-
-        return;
-    }
-    auto image_id{renderer_->createTexture(image.getImage())};
-    image.renderId_ = image_id;
-};
-*/
-
 }  // namespace Presto

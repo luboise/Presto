@@ -13,7 +13,8 @@ class OpenGLPipeline final : public Pipeline {
     friend class OpenGLDrawManager;
     friend class OpenGLPipelineBuilder;
 
-    explicit OpenGLPipeline(GLuint vertexShader_, GLuint fragmentShader_);
+    explicit OpenGLPipeline(pipeline_id_t id, GLuint vertexShader_,
+                            GLuint fragmentShader_);
     ~OpenGLPipeline() override;
 
    public:

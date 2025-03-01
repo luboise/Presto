@@ -14,8 +14,9 @@
 namespace Presto {
 using Presto::UniformVariableType;
 
-OpenGLPipeline::OpenGLPipeline(GLuint vertexShader_, GLuint fragmentShader_)
-    : shaderProgram_(glCreateProgram()) {
+OpenGLPipeline::OpenGLPipeline(pipeline_id_t id, GLuint vertexShader_,
+                               GLuint fragmentShader_)
+    : Pipeline(id), shaderProgram_(glCreateProgram()) {
     glAttachShader(shaderProgram_, vertexShader_);
     glAttachShader(shaderProgram_, fragmentShader_);
 

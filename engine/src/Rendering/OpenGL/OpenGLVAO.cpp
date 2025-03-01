@@ -14,7 +14,7 @@ OpenGLVAO::OpenGLVAO() {
 };
 
 OpenGLVAO::OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
-                     const OpenGLPipeline& pipeline)
+                     const PipelineStructure& structure)
     : OpenGLVAO() {
     if (vertexBuffer == nullptr) {
         PR_ERROR(
@@ -32,7 +32,7 @@ OpenGLVAO::OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
         indexBuffer->bind();
     }
 
-    this->setAttribs(pipeline);
+    this->setAttribs(structure);
     this->finalise();
 }
 
@@ -67,7 +67,7 @@ void OpenGLVAO::setAttribPointer(const PipelineAttribute& attribute,
         getGLAttribType(type_details.sub_type), GL_FALSE, stride, &offset);
 };
 
-OpenGLVAO& OpenGLVAO::setAttribs(const OpenGLPipeline& pipeline) {
+OpenGLVAO& OpenGLVAO::setAttribs(const PipelineStructure& structure) {
     if (this->finalised()) {
         PR_ERROR(
             "Unable to set the attributes of an OpenGLVAO once it has been "
@@ -75,14 +75,9 @@ OpenGLVAO& OpenGLVAO::setAttribs(const OpenGLPipeline& pipeline) {
         return *this;
     }
 
-    const auto& structure{pipeline.getStructure()};
-
-    const std::vector<PipelineAttribute>& pipeline_attributes{
-        pipeline.getAttributes()};
-
     auto stride{static_cast<GLsizei>(structure.stride())};
 
-    for (const PipelineAttribute& pipeline_attribute : pipeline_attributes) {
+    for (const PipelineAttribute& pipeline_attribute : structure.attributes) {
         // Get the offset of the attribute from the meshcontext
 
         // Enable the layout slot, then set its format

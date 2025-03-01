@@ -11,7 +11,7 @@ struct VertexAttribute;
 class OpenGLVAO {
    public:
     OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
-              const OpenGLPipeline& pipeline);
+              const PipelineStructure& structure);
     OpenGLVAO();
 
     // OpenGLVAO();
@@ -19,7 +19,7 @@ class OpenGLVAO {
 
     void bind() const;
 
-    OpenGLVAO& setAttribs(const OpenGLPipeline&);
+    OpenGLVAO& setAttribs(const PipelineStructure&);
     void finalise();
     [[nodiscard]] bool finalised() const { return finalised_; }
 

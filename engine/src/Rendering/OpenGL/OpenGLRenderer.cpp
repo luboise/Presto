@@ -58,12 +58,11 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
 
     OpenGLPipelineBuilder builder{};
 
-    PipelineStructure default_3d;
-    PipelineStructure default_ui;
-
-    builder.setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
+    builder.setId(PR_PIPELINE_DEFAULT_3D)
+        .setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
         .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
-    pipelines[0] = {PR_PIPELINE_DEFAULT_3D, builder.build()};
+
+    pipelines[0] = builder.build();
 
     /*
 builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
@@ -129,9 +128,6 @@ void OpenGLRenderer::onFrameBufferResized() {
 }
 
 void OpenGLRenderer::render(MeshRegistrationData& data) {
-    PR_CORE_ASSERT(currentPipeline_ != nullptr,
-                   "OpenGL is unable to render with no pipeline set.");
-
     OpenGLMeshContext* context{contexts_.find(data.context_id)};
     if (context == nullptr) {
         PR_CORE_ERROR(
@@ -155,9 +151,6 @@ void OpenGLRenderer::render(MeshRegistrationData& data) {
 };
 
 void OpenGLRenderer::updateUniforms() {
-    PR_CORE_ASSERT(currentPipeline_ != nullptr,
-                   "Unable to setup uniforms on a null material.");
-
     ByteArray bytes(sizeof(globalUniformBuffer_));
 
     globalUniformBuffer_->write(bytes);
@@ -189,7 +182,8 @@ Allocated<TextureFactory> OpenGLRenderer::getTextureFactory() {
     return factory;
 };
 
-bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration) {
+bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
+                                       const PipelineStructure& structure) {
     if (registration.context_id != PR_UNREGISTERED) {
         PR_CORE_WARN(
             "Attempted to create a mesh context for registration {}, which "
@@ -200,7 +194,7 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration) {
 
     OpenGLVAO vao{dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
                   dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
-                  *currentPipeline_};
+                  structure};
 
     Allocated<OpenGLMeshContext> new_context{
         std::make_unique<OpenGLMeshContext>()};

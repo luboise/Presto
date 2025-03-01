@@ -26,12 +26,16 @@ constexpr double PR_MINIMUM_NEAR_DISTANCE{0.1};
 using mesh_context_id_t = Presto::uint32_t;
 
 using mesh_registration_id_t = Presto::uint32_t;
+constexpr mesh_registration_id_t PR_UNREGISTERED{
+    static_cast<mesh_registration_id_t>(-1)};
 
 using pipeline_id_t = Presto::uint16_t;
 using material_id_t = Presto::uint16_t;
 
-constexpr pipeline_id_t PR_PIPELINE_DEFAULT_3D = 0;
-constexpr pipeline_id_t PR_PIPELINE_DEFAULT_UI = 1;
+constexpr pipeline_id_t PR_PIPELINE_ANY{0};
+constexpr pipeline_id_t PR_PIPELINE_DEFAULT_3D{1};
+constexpr pipeline_id_t PR_PIPELINE_DEFAULT_UI{2};
+constexpr pipeline_id_t PR_PIPELINE_NONE{static_cast<pipeline_id_t>(-1)};
 
 // Textures
 

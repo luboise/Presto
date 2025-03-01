@@ -37,6 +37,7 @@ struct MaterialInstance::Impl {
 
     std::vector<UniformBufferExtra> uniform_buffers;
     std::vector<UniformBindingExtra> uniform_bindings;
+    std::vector<TexturePtr> textures;
 };
 
 MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
@@ -75,6 +76,13 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
             .location = static_cast<Presto::uint8_t>(binding.location),
             .data_type = binding.data_type,
             .data = ErasedBytes{ByteArray(binding.size())}};
+
+        if (binding.data_type == UniformVariableType::TEXTURE) {
+            impl_->uniform_bindings[i].data.write(
+                static_cast<ImportTypeOf<UniformVariableType::TEXTURE>>(
+                    impl_->textures.size()));
+            impl_->textures.push_back(nullptr);
+        }
     }
 }
 
@@ -83,7 +91,7 @@ MaterialInstance::~MaterialInstance() = default;
 MaterialInstance::PropertyDetails* MaterialInstance::getBinding(
     const Presto::string& name) {
     if (auto val{impl_->property_lookup.find(name)};
-        val == impl_->property_lookup.end()) {
+        val != impl_->property_lookup.end()) {
         return &(val->second);
     }
     return nullptr;
@@ -135,15 +143,66 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
             SWITCH_CASE(UniformVariableType::VEC3);
             SWITCH_CASE(UniformVariableType::VEC4);
             SWITCH_CASE(UniformVariableType::MAT4);
-            SWITCH_CASE(UniformVariableType::TEXTURE);
+
+            case UniformVariableType::TEXTURE: {
+                const TexturePtr& texture{
+                    impl_->textures[binding.data.as<Presto::uint8_t>()]};
+                if (texture == nullptr) {
+                    PR_TRACE(
+                        "No texture specified at location {} in material "
+                        "instance. Skipping this write.",
+                        binding.location);
+                    continue;
+                }
+                texture->bind(binding.location);
+
+                break;
+            }
+
             default:
                 PR_ERROR(
-                    "Unable to determine type of binding data. Skipping this "
+                    "Unable to determine type of binding data. Skipping "
+                    "this "
                     "write.");
                 break;
         }
 #undef SWITCH_CASE
     }
+};
+
+template <>
+MaterialInstance& MaterialInstance::setProperty(Presto::string name,
+                                                const Ptr<Texture>& data) {
+    PropertyDetails* details{getBinding(name)};
+
+    if (details == nullptr) {
+        PR_WARN(
+            "Unable to find texture \"{}\" in MaterialInstance of pipeline "
+            "{}. "
+            "Skipping this write.",
+            name, this->getPipelineId());
+        return *this;
+    }
+
+    if (details->binding.data_type != UniformVariableType::TEXTURE) {
+        PR_ERROR(
+            "Unable to write Texture value to \"{}\" in pipeline {}. (It "
+            "is "
+            "not a texture type). Skipping this write.",
+            name, this->getPipelineId());
+        return *this;
+    }
+
+    auto texture_index{getUniformDataStore(details->data_index)
+                           .as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
+    PR_CORE_ASSERT(
+        texture_index < impl_->textures.size(),
+        std::format("Texture index {} must be in bounds for array of size {}.",
+                    texture_index, impl_->textures.size()));
+
+    impl_->textures[texture_index] = data;
+
+    return *this;
 };
 
 }  // namespace Presto

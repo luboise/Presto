@@ -22,6 +22,8 @@ class PipelineBuilder;
 
 class UniformBuffer;
 
+struct PipelineStructure;
+
 class Renderer : protected LazyCalculator {
    public:
     static Allocated<Renderer> create(RENDER_LIBRARY lib,
@@ -38,6 +40,7 @@ class Renderer : protected LazyCalculator {
      * @return The new PipelineBuilder object.
      */
     virtual Allocated<PipelineBuilder> getPipelineBuilder() = 0;
+
     virtual Allocated<TextureFactory> getTextureFactory() = 0;
     // virtual Allocated<Texture> createTexture(Presto::Image image) = 0;
 
@@ -46,11 +49,11 @@ class Renderer : protected LazyCalculator {
     virtual Allocated<UniformBuffer> createUniformBuffer(
         Presto::size_t size) = 0;
 
-    using AllocatedPipelineList =
-        std::vector<std::pair<pipeline_id_t, Allocated<Pipeline>>>;
+    using AllocatedPipelineList = std::vector<Allocated<Pipeline>>;
     virtual AllocatedPipelineList createDefaultPipelines() = 0;
 
-    virtual bool createMeshContext(MeshRegistrationData&) = 0;
+    virtual bool createMeshContext(MeshRegistrationData&,
+                                   const PipelineStructure&) = 0;
     virtual void render(MeshRegistrationData&) = 0;
 
     void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }

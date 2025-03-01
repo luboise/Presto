@@ -3,14 +3,14 @@
 namespace Presto {
 
 enum class UniformVariableType : uint8_t {
-    INT,
-    UINT,
-    FLOAT,
-    VEC2,
-    VEC3,
-    VEC4,
-    MAT4,
-    TEXTURE,
+    INT = 1,
+    UINT = 2,
+    FLOAT = 3,
+    VEC2 = 4,
+    VEC3 = 5,
+    VEC4 = 6,
+    MAT4 = 7,
+    TEXTURE = 8,
 };
 
 template <UniformVariableType T>

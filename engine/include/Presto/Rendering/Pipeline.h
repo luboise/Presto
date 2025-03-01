@@ -4,7 +4,6 @@
 
 #include "Presto/Rendering/MaterialTypes.h"
 #include "Presto/Rendering/PipelineTypes.h"
-#include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 
 namespace Presto {
@@ -12,6 +11,8 @@ namespace Presto {
 class UniformBuffer;
 
 class Pipeline {
+    friend class PipelineBuilder;
+
    public:
     virtual void bind() = 0;
     virtual void unbind() = 0;
@@ -51,23 +52,17 @@ class Pipeline {
 
     // [[nodiscard]] bool accepts(const UniformLayout&) const;
 
-    [[nodiscard]] const std::vector<PipelineAttribute>& getAttributes() const {
-        return pipelineStructure_.attributes;
-    };
-
     virtual void setUniformBlock(uniform_index_t index,
                                  UniformBuffer& buffer) = 0;
 
-    [[nodiscard]] renderer_pipeline_id_t id() const { return this->id_; }
+    [[nodiscard]] pipeline_id_t id() const;
 
     virtual ~Pipeline() = default;
 
    protected:
-    void setId(renderer_pipeline_id_t id) { this->id_ = id; }
+    explicit Pipeline(pipeline_id_t id);
+    void setId(pipeline_id_t id);
 
     PipelineStructure pipelineStructure_;
-
-   private:
-    pipeline_id_t id_{PR_ANY_PIPELINE};
 };
 }  // namespace Presto

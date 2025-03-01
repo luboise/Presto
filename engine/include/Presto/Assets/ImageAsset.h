@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Presto/Assets/Image.h"
-
-#include "Presto/Rendering/RenderTypes.h"
-
 #include "Presto/Assets/Asset.h"
+#include "Presto/Assets/Image.h"
 
 // #include "Presto/Rendering/Renderer.h"
 
@@ -33,15 +30,10 @@ class ImageAsset final : public Asset {
     // 4 bytes since assumed RGBA, 1 for each channel
     [[nodiscard]] std::size_t size() const { return image_.size(); };
 
-    [[nodiscard]] renderer_texture_id_t getRenderId() const {
-        return renderId_;
-    };
-
    private:
     bool load() override;
 
     Presto::Image image_;
-    renderer_texture_id_t renderId_{PR_UNREGISTERED};
 };
 
 }  // namespace Presto

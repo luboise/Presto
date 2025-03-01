@@ -43,7 +43,7 @@ class MaterialAsset final :
    private:
     bool load() override;
 
-    pipeline_id_t pipelineId_{PR_PIPELINE_DEFAULT_3D};
+    pipeline_id_t pipelineId_{PR_PIPELINE_NONE};
     UniformLayout uniformLayout_;
 
     // PipelineStructure structure_{};

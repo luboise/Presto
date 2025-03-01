@@ -17,124 +17,6 @@
 #include <memory>
 
 namespace Presto {
-// const fs::path executableDirectory =
-// fs::absolute(fs::path(argv[0])).parent_path();
-
-// TODO: Fix this to be based on the executable path rather than the
-// directory which the program was called from
-
-/*
-ImportedModelData importModels(const AssetArg& filepath,
-                       const std::vector<asset_name_t>& customNames) {
-std::string filename{filepath.basename()};
-fs::path file_extension{filepath.fileExtension()};
-
-std::vector<ModelPtr> new_model_ptrs;
-std::vector<MaterialDefinitionPtr> new_material_ptrs;
-std::vector<ImagePtr> new_image_ptrs;
-
-ImportedModelData imported_data;
-
-if (file_extension == ".gltf" || file_extension == ".glb") {
-GLTFLoader loader;
-imported_data = loader.load(filepath, customNames);
-}
-
-PR_ASSERT(
-imported_data.models.size(),
-std::format("No models could be found in {}.", filepath.string()));
-
-for (size_t i = 0; i < imported_data.images.size(); i++) {
-ImagePtr image{createImageAsset(std::format("{}_image_{}", filename, i),
-                                imported_data.images[i])};
-new_image_ptrs.push_back(image);
-}
-
-for (size_t i = 0; i < imported_data.materials.size(); i++) {
-const ImportedMaterial& imported_material{imported_data.materials[i]};
-
-auto material_name{std::format("{}_material_{}", filename, i)};
-MaterialDefinitionPtr new_material{
-    createMaterial(material_name, imported_material)};
-
-// TODO: Maybe make this load when an entity enters the
-// scene, or at the end of every update loop
-new_material->ensureLoaded();
-
-new_material_ptrs.push_back(new_material);
-}
-
-for (size_t i{0}; i < imported_data.models.size(); ++i) {
-const auto& model = imported_data.models[i];
-auto new_name{i >= (customNames.size() - 1) ? customNames[i]
-                                            : model.name};
-
-auto new_model{std::make_shared<ModelAsset>(new_name)};
-
-for (const ImportedMesh& mesh : model.meshes) {
-    // Turn the raw mesh data into a new mesh asset
-    auto new_mesh_asset{std::make_shared<MeshAsset>(mesh)};
-    new_mesh_asset->setDefaultMaterial(
-        new_material_ptrs[mesh.material]);
-
-    new_model->meshes_.push_back(new_mesh_asset);
-}
-
-new_model->name_ = new_name;
-
-assets_[AssetType::MODEL][new_name] = new_model;
-
-new_model_ptrs.push_back(new_model);
-}
-
-// TODO: Implement full path/cwd system for engine to find it at
-// runtime, or have the user change it (would help the editor)
-// fs::path full_asset_path = Utils::File::getFullPath(filepath);
-
-for (ImportedMaterial& material : imported_data.materials) {
-new_material_ptrs.push_back(
-    std::make_shared<MaterialAsset>(material.name));
-auto new_material{this->createMaterial(material.name)};
-
-new_material->name_ = material.name;
-
-auto texture_index =
-    material.pbrMetallicRoughness.baseColorTexture.index;
-
-if (texture_index != -1) {
-    const auto& texture = model.textures[texture_index];
-    const auto& image_data = imported_data.images[texture.source];
-
-    Presto::Image image{
-        .width = static_cast<size_t>(image_data.width),
-        .height = static_cast<size_t>(image_data.height)};
-
-    image.bytes.resize(image.size());
-
-    std::memcpy(image.bytes.data(), image_data.image.data(),
-                image.bytes.size());
-
-    ImagePtr image_resource{createImageAsset(texture.name, image)};
-
-    new_material->setDiffuseTexture(image_resource);
-
-    // TODO: Maybe make this load when an entity enters the
-    // scene, or at the end of every update loop
-    new_material->ensureLoaded();
-}
-}
-
-for (size_t i = 0; i < model.meshes.size(); i++) {
-}
-
-for (auto& mat : new_material_ptrs) {
-assets_[AssetType::MATERIAL_DEFINITION].emplace(mat->name_,
-                                                std::move(mat));
-}
-
-return new_model_ptrs;
-}
-*/
 
 MaterialPtr AssetManager::createMaterialFromImport(
     const ImportedMaterial& imported_material,
@@ -148,9 +30,7 @@ MaterialPtr AssetManager::createMaterialFromImport(
                 value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
 
             material->setProperty(value.name, texturePtrs[texture_index]);
-        }
-
-        else {
+        } else {
             material->setProperty(value.name, value.data);
         }
     }
@@ -240,35 +120,7 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     // runtime, or have the user change it (would help the editor)
     // fs::path full_asset_path = Utils::File::getFullPath(filepath);
     return new_model_ptrs;
-};  // namespace Presto
-
-/*
-MaterialDefinitionPtr AssetManager::createMaterial(
-    const asset_name_t& customName, pipeline_id_t id) {
-    PipelineStructure* structure{
-        RenderingManager::get().getPipelineStructure(id)};
-
-    if (structure == nullptr) {
-        PR_ERROR(
-            "Unable to create material {} from pipeline #{}, as its
-structure " "was null. Skipping this material."); return nullptr;
-    }
-
-    return createMaterial(customName, *structure);
 };
-
-MaterialDefinitionPtr AssetManager::createMaterial(
-    const asset_name_t& customName, const PipelineStructure&
-inStructure) { auto
-new_material{std::make_shared<MaterialAsset>(customName, inStructure)};
-new_material->name_ = customName;
-
-    const auto key = new_material->name_;
-    assets_[AssetType::MATERIAL_DEFINITION][key] = new_material;
-
-    return new_material;
-}
-*/
 
 ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
                                          const asset_name_t& customName) {

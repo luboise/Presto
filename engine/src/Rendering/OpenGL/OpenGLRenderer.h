@@ -45,7 +45,8 @@ class OpenGLRenderer final : public Renderer {
 
     // Creates VAO for the mesh so that it can be rendered using that
     // pipeline
-    bool createMeshContext(MeshRegistrationData& registration) override;
+    bool createMeshContext(MeshRegistrationData& registration,
+                           const PipelineStructure& structure) override;
 
     // Deleted functions
     OpenGLRenderer(const OpenGLRenderer&) = delete;
@@ -54,8 +55,6 @@ class OpenGLRenderer final : public Renderer {
     OpenGLRenderer& operator=(OpenGLRenderer&&) = delete;
 
    private:
-    OpenGLPipeline* currentPipeline_{nullptr};
-
     Allocated<OpenGLUniformBuffer> globalUniformBuffer_;
     Allocated<OpenGLUniformBuffer> objectUniformBuffer_;
 

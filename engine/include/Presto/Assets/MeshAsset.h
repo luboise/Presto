@@ -24,7 +24,7 @@ class MeshAsset final : public Asset {
     };
 
     MeshAsset& setVertices(const ImportedAttributeList& attributes);
-    MeshAsset& setIndices(IndexList attributes);
+    MeshAsset& setIndices(IndexList indices);
 
     MeshAsset& setDrawMode(MeshDrawMode mode);
 

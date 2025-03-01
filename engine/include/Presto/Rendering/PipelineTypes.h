@@ -5,8 +5,6 @@
 
 namespace Presto {
 
-using renderer_pipeline_id_t = PR_NUMERIC_ID;
-
 struct PipelineAttribute {
     // Index of the attribute
     PR_NUMERIC_ID layout;

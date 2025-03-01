@@ -50,7 +50,7 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     static void setWindow(GLFWAppWindow* window);
 
     [[nodiscard]] const PipelineStructure* getPipelineStructure(
-        renderer_pipeline_id_t) const;
+        pipeline_id_t) const;
 
     void setCamera(CameraComponent& newCam);
     CameraComponent& getCamera() { return activeCamera_; };
@@ -59,7 +59,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
      * Loads an imported mesh into the renderer, and registers it with its
      * pipeline.
      */
-    mesh_registration_id_t loadMesh(MeshData meshData);
+    mesh_registration_id_t loadMesh(MeshData meshData,
+                                    pipeline_id_t pipelineId = PR_PIPELINE_ANY);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
@@ -78,32 +79,6 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
                                                  Presto::size_t height);
 
-    /*
-void AddRenderable(layer_id_t layer_index, Renderable*);
-
-void RemoveRenderable(Renderable* ptr_renderable) {
-_renderables.release(ptr_renderable);
-};
-    */
-
-    // Mesh* NewMesh(const VertexList&, const IndexList&);
-    // Renderable* NewRenderable(PrestoRenderableConstructorArgs);
-
-    /*
-MeshContext* getMeshContext(renderer_mesh_id_t);
-void destroyMeshContext(renderer_mesh_id_t);
-    */
-
-    /*
-OpenGLPipeline* getPipeline(renderer_pipeline_id_t);
-    */
-
-    // TODO: Implement custom shaders/materials
-    /*
-     renderer_material_id_t addMaterial(const Presto::Image& image);
-     void removeMaterial(renderer_material_id_t);
-            */
-
    private:
     // Static vars
     static RENDER_LIBRARY _library;
@@ -117,15 +92,17 @@ void loadImageOnGpu(ImageAsset&);
 
     void resizeFramebuffer() const;
 
-    void setPipeline(renderer_pipeline_id_t, Pipeline pipeline);
-    void setTexture(renderer_texture_id_t id, Texture texture);
+    void setPipeline(pipeline_id_t, Pipeline pipeline);
+    void setTexture(texture_id_t id, Texture texture);
 
-    Texture* getTexture(renderer_texture_id_t);
-    renderer_texture_id_t addTexture(const Presto::Image& image);
-    void removeTexture(renderer_texture_id_t);
+    Texture* getTexture(texture_id_t);
+    texture_id_t addTexture(const Presto::Image& image);
+    void removeTexture(texture_id_t);
 
     PipelineStructure addPipeline(Pipeline&& pipeline,
-                                  renderer_pipeline_id_t id = PR_ANY_PIPELINE);
+                                  pipeline_id_t id = PR_PIPELINE_ANY);
+
+    [[nodiscard]] Pipeline* getPipeline(pipeline_id_t id) const;
 
     // Member vars
     CameraComponent& activeCamera_;
