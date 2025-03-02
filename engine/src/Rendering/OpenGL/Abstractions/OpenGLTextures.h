@@ -79,7 +79,7 @@ class OpenGLTexture : public Texture {
 class OpenGLTexture2D final : public Texture2D {
    public:
     void bind(uint8_t slot) override {
-        glActiveTexture(GL_TEXTURE0 + slot);
+        glActiveTexture(GL_TEXTURE0 + static_cast<unsigned int>(slot));
         glBindTexture(GL_TEXTURE_2D, textureInst_);
     }
 

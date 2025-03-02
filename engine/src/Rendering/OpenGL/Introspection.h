@@ -130,47 +130,6 @@ std::vector<PipelineAttribute> getAttributesFromShader(GLuint program) {
     return attributes;
 };
 
-std::vector<PipelineUniform> getUniforms(GLuint program, GLenum base) {
-    GLint uniform_count = 0;
-
-    glGetProgramInterfaceiv(program, GL_UNIFORM, GL_ACTIVE_RESOURCES,
-                            &uniform_count);
-
-    std::vector<PipelineUniform> uniforms(uniform_count);
-
-    std::vector<GLenum> properties{GL_LOCATION, GL_TYPE, GL_ARRAY_SIZE,
-                                   GL_NAME_LENGTH};
-
-    std::array<GLint, 4> values{0};
-
-    std::vector<GLchar> name(256);
-
-    Presto::size_t running_offset{0};
-
-    for (GLint index = 0; index < uniform_count; ++index) {
-        glGetProgramResourceiv(
-            program, GL_PROGRAM_INPUT, index,
-            static_cast<GLsizei>(properties.size()), properties.data(),
-            static_cast<GLsizei>(properties.size()), nullptr, values.data());
-
-        name.resize(values[3]);
-        glGetProgramResourceName(program, GL_PROGRAM_INPUT, index,
-                                 static_cast<GLint>(name.size()), nullptr,
-                                 name.data());
-
-        PipelineUniform uniform{
-            .location = static_cast<PR_NUMERIC_ID>(values[0]),
-            .data_type = getUniformVariableType(values[1], values[2]),
-            .name = std::string(name.data()),
-            .offset = running_offset};
-        running_offset += uniform.size();
-
-        uniforms[index] = std::move(uniform);
-    }
-
-    return uniforms;
-};
-
 std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
     GLint uniform_count = 0;
 
@@ -283,6 +242,47 @@ for (GLint index = 0; index < block_count; ++index) {
     return blocks;
     */
 }
+
+std::vector<PipelineUniform> getUniforms(GLuint program, GLenum base) {
+    GLint uniform_count = 0;
+
+    glGetProgramInterfaceiv(program, GL_UNIFORM, GL_ACTIVE_RESOURCES,
+                            &uniform_count);
+
+    std::vector<PipelineUniform> uniforms(uniform_count);
+
+    std::vector<GLenum> properties{GL_LOCATION, GL_TYPE, GL_ARRAY_SIZE,
+                                   GL_NAME_LENGTH};
+
+    std::array<GLint, 4> values{0};
+
+    std::vector<GLchar> name(256);
+
+    Presto::size_t running_offset{0};
+
+    for (GLint index = 0; index < uniform_count; ++index) {
+        glGetProgramResourceiv(
+            program, GL_PROGRAM_INPUT, index,
+            static_cast<GLsizei>(properties.size()), properties.data(),
+            static_cast<GLsizei>(properties.size()), nullptr, values.data());
+
+        name.resize(values[3]);
+        glGetProgramResourceName(program, GL_PROGRAM_INPUT, index,
+                                 static_cast<GLint>(name.size()), nullptr,
+                                 name.data());
+
+        PipelineUniform uniform{
+            .location = static_cast<PR_NUMERIC_ID>(values[0]),
+            .data_type = getUniformVariableType(values[1], values[2]),
+            .name = std::string(name.data()),
+            .offset = running_offset};
+        running_offset += uniform.size();
+
+        uniforms[index] = std::move(uniform);
+    }
+
+    return uniforms;
+};
 
 }  // namespace Introspection
 

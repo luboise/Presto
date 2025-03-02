@@ -45,7 +45,7 @@ layout(location = 0) in vec4 _colour;
 layout(location = 1) in vec3 _normal;
 layout(location = 2) in vec2 _tex_coords;
 
-layout(location = 4) uniform sampler2D u_diffuseTexture;
+layout(binding = 4) uniform sampler2D u_diffuseTexture;
 
 void main() {
 	vec3 the_sun = vec3(-20, 20, 0);
