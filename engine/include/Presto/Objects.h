@@ -19,6 +19,12 @@ ComponentPtr<T> NewComponent(Args... args) {
     return EntityManager::Get().newComponent<T>(args...);
 };
 
+/**
+ * @brief  Gets a reference to the main camera. This is whats used to generate
+ * the view of the game world.
+ */
+CameraComponent& GetDefaultCamera();
+
 namespace CreateComponent {
 ComponentPtr<ModelComponent> Model(const ModelPtr& ptr);
 

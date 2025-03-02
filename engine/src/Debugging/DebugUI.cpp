@@ -301,7 +301,8 @@ void DebugUI::handleInput() {
         }
 
         std::string name{ImGui::GetKeyName(key)};
-        if (name == "PageUp") {
+
+        if (name == "Home") {
             visible_ = !visible_;
         }
     }

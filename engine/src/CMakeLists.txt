@@ -25,6 +25,7 @@ target_sources(
           Runtime/Time.cpp
           Materials.cpp
           Logging.cpp
+          Objects.cpp
           pch.cpp
           GLFWAppWindow.cpp)
 
