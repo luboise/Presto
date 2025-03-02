@@ -13,5 +13,6 @@ target_sources(
           PipelineTypes.cpp
           PipelineBuilder.cpp
           UniformTypes.cpp
+          Buffer.cpp
           # Materials
           MaterialInstance.cpp)

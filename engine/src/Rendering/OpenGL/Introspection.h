@@ -15,6 +15,16 @@ ShaderDataType getShaderDataType(GLint type, GLint count) {
             return ShaderDataType::INT;
         case GL_UNSIGNED_INT:
             return ShaderDataType::UINT;
+        case GL_FLOAT_VEC2:
+            return ShaderDataType::VEC2;
+        case GL_FLOAT_VEC3:
+            return ShaderDataType::VEC3;
+        case GL_FLOAT_VEC4:
+            return ShaderDataType::VEC4;
+        case GL_FLOAT_MAT3:
+            return ShaderDataType::MAT3;
+        case GL_FLOAT_MAT4:
+            return ShaderDataType::MAT4;
         case GL_FLOAT:
             switch (count) {
                 case 2:
@@ -29,17 +39,32 @@ ShaderDataType getShaderDataType(GLint type, GLint count) {
                     return ShaderDataType::FLOAT;
             }
         default:
-            // TODO: Add proper error handling here
+            PR_ERROR(
+                "Unknown shader data type encountered:   type {}   count {}. "
+                "Assuming float.",
+                type, count);
             return ShaderDataType::FLOAT;
     }
 }
 
 UniformVariableType getUniformVariableType(GLint type, GLint count) {
     switch (type) {
+        case GL_SAMPLER_2D:
+            return UniformVariableType::TEXTURE;
         case GL_INT:
             return UniformVariableType::INT;
         case GL_UNSIGNED_INT:
             return UniformVariableType::UINT;
+        case GL_FLOAT_VEC2:
+            return UniformVariableType::VEC2;
+        case GL_FLOAT_VEC3:
+            return UniformVariableType::VEC3;
+        case GL_FLOAT_VEC4:
+            return UniformVariableType::VEC4;
+        case GL_FLOAT_MAT3:
+            return UniformVariableType::MAT3;
+        case GL_FLOAT_MAT4:
+            return UniformVariableType::MAT4;
         case GL_FLOAT:
             switch (count) {
                 case 2:
@@ -54,7 +79,12 @@ UniformVariableType getUniformVariableType(GLint type, GLint count) {
                     return UniformVariableType::FLOAT;
             }
         default:
-            // TODO: Add proper error handling here
+            PR_ERROR(
+                "Unknown uniform variable type encountered:   type {}   count "
+                "{}. "
+                "Assuming float.",
+                type, count);
+
             return UniformVariableType::FLOAT;
     }
 }
@@ -150,22 +180,29 @@ std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
     std::vector<PipelineUniform> uniforms(uniform_count);
 
     std::vector<GLenum> properties{GL_LOCATION, GL_TYPE, GL_ARRAY_SIZE,
-                                   GL_NAME_LENGTH};
+                                   GL_NAME_LENGTH, GL_BLOCK_INDEX};
 
-    std::array<GLint, 4> values{0};
+    std::array<GLint, 5> values{0};
 
     std::vector<GLchar> name(256);
 
     Presto::size_t running_offset{0};
 
+    Presto::size_t real_count{0};
+
     for (GLint index = 0; index < uniform_count; ++index) {
         glGetProgramResourceiv(
-            program, GL_PROGRAM_INPUT, index,
-            static_cast<GLsizei>(properties.size()), properties.data(),
-            static_cast<GLsizei>(properties.size()), nullptr, values.data());
+            program, GL_UNIFORM, index, static_cast<GLsizei>(properties.size()),
+            properties.data(), static_cast<GLsizei>(properties.size()), nullptr,
+            values.data());
+
+        // Skip block variables
+        if (values[4] != -1) {
+            continue;
+        }
 
         name.resize(values[3]);
-        glGetProgramResourceName(program, GL_PROGRAM_INPUT, index,
+        glGetProgramResourceName(program, GL_UNIFORM, index,
                                  static_cast<GLint>(name.size()), nullptr,
                                  name.data());
 
@@ -174,10 +211,13 @@ std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
             .data_type = getUniformVariableType(values[1], values[2]),
             .name = std::string(name.data()),
             .offset = running_offset};
+
         running_offset += uniform.size();
 
-        uniforms[index] = std::move(uniform);
+        uniforms[real_count++] = std::move(uniform);
     }
+
+    uniforms.resize(real_count);
 
     return uniforms;
 };

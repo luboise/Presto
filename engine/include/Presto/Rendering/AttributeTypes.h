@@ -19,6 +19,7 @@ enum class ShaderDataType {
     VEC4,
     DVEC4,
 
+    MAT3,
     MAT4,
     DMAT4
 };

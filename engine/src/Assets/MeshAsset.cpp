@@ -11,8 +11,7 @@ namespace Presto {
 
 struct MeshAsset::Impl {
     MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
-    ProcessedVertexData vertex_data;
-
+    ProcessedMeshVertices vertices;
     IndexList indices;
 
     BoundingBox box;
@@ -22,10 +21,10 @@ MeshAsset::MeshAsset() { impl_ = std::make_unique<Impl>(); };
 MeshAsset::~MeshAsset() = default;
 
 bool MeshAsset::load() {
-    registrationId_ = RenderingManager::get().loadMesh(
-        MeshData{.draw_mode = impl_->draw_mode,
-                 .vertex_data{impl_->vertex_data},
-                 .indices{impl_->indices}});
+    registrationId_ =
+        RenderingManager::get().loadMesh(MeshData{.draw_mode = impl_->draw_mode,
+                                                  .vertex_data{impl_->vertices},
+                                                  .indices{impl_->indices}});
 
     return registrationId_ != PR_UNREGISTERED;
 }
@@ -52,13 +51,10 @@ MeshAsset& MeshAsset::setVertices(const ImportedAttributeList& attributes) {
         return *this;
     }
 
-    const PipelineStructure* ps{
-        RenderingManager::get().getPipelineStructure(PR_PIPELINE_DEFAULT_3D)};
-
-    auto processed{processVertices(attributes, *ps)};
+    auto processed{processVertices3D(attributes)};
 
     // TODO: Put checks here to make sure the processed vertices are well formed
-    this->impl_->vertex_data = std::move(processed);
+    this->impl_->vertices = std::move(processed);
 
     // TODO: Implement actual bounding box
     impl_->box = {.x_min = -1,

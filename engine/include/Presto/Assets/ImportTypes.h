@@ -56,6 +56,7 @@ struct ImportedModel {
 namespace DefaultAttributeName {
 
 constexpr auto POSITION = "a_vertexPosition";
+constexpr auto COLOUR = "a_vertexPosition";
 constexpr auto NORMAL = "a_normal";
 constexpr auto TEXCOORDS = "a_texcoords";
 

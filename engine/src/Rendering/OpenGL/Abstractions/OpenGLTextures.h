@@ -110,7 +110,9 @@ class OpenGLTexture2D final : public Texture2D {
             return;
         }
 
-        glTexSubImage2D(textureInst_, 0, 0, 0, width_, height_,
+        this->bind(0);
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width_, height_,
                         OPENGL_PIXEL_FORMAT, OPENGL_TEXTURE_DATA_TYPE,
                         bytes.data());
         glGenerateTextureMipmap(textureInst_);

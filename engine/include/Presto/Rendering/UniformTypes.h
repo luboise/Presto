@@ -9,8 +9,9 @@ enum class UniformVariableType : uint8_t {
     VEC2 = 4,
     VEC3 = 5,
     VEC4 = 6,
-    MAT4 = 7,
-    TEXTURE = 8,
+    MAT3 = 7,
+    MAT4 = 8,
+    TEXTURE = 9,
 };
 
 template <UniformVariableType T>

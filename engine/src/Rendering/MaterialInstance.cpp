@@ -49,7 +49,7 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
 
     // Allocate a buffer for each uniform block (needed for hotswap)
     impl_->uniform_buffers.resize(impl_->structure.blocks.size());
-    for (Presto::size_t i = 0; i < impl_->structure.blocks.size(); i++) {
+    for (Presto::size_t i{0}; i < impl_->structure.blocks.size(); i++) {
         const UniformBlock& block{impl_->structure.blocks[i]};
 
         impl_->uniform_buffers[i] = {
@@ -78,7 +78,7 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
             .data = ErasedBytes{ByteArray(binding.size())}};
 
         if (binding.data_type == UniformVariableType::TEXTURE) {
-            impl_->uniform_bindings[i].data.write(
+            impl_->uniform_bindings[i].data.reset(
                 static_cast<ImportTypeOf<UniformVariableType::TEXTURE>>(
                     impl_->textures.size()));
             impl_->textures.push_back(nullptr);

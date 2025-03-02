@@ -48,6 +48,11 @@ struct RenderingManager::Impl {
     Allocated<PipelineBuilder> pipelineBuilder_;
 
     pipeline_id_t current_pipeline_id{PR_PIPELINE_NONE};
+
+    struct {
+        Ref<MaterialInstance> material;
+        Pipeline* pipeline;
+    } current;
 };
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
@@ -104,8 +109,8 @@ mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData,
         impl_->current_pipeline_id = pipelineId;
     }
 
-    auto& vertex_bytes{meshData.vertex_data.data};
-    Presto::size_t vertex_buffer_size{vertex_bytes.size()};
+    std::vector<Vertex3D>& vertex_bytes{meshData.vertex_data.vertices};
+    Presto::size_t vertex_buffer_size{vertex_bytes.size() * sizeof(Vertex3D)};
     Presto::size_t index_buffer_size{meshData.indices.size() * sizeof(Index)};
 
     auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
@@ -116,11 +121,17 @@ mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData,
                                            index_buffer_size),
     })};
 
-    details->vertices->write(meshData.vertex_data.data);
+    auto& in_vertices{meshData.vertex_data.vertices};
+
+    details->vertices->write(
+        std::span<std::byte>(reinterpret_cast<std::byte*>(in_vertices.data()),
+                             sizeof(in_vertices[0]) * in_vertices.size()));
 
     // TODO: Add more write functions here that are optimised for different data
     // types instead of using ErasedBytes
-    details->indices->write(ErasedBytes{meshData.indices}.getData());
+    details->indices->write(std::span<std::byte>(
+        reinterpret_cast<std::byte*>(meshData.indices.data()),
+        sizeof(meshData.indices[0]) * meshData.indices.size()));
 
     bool success{
         renderer_->createMeshContext(*details, pipeline->getStructure())};
@@ -204,12 +215,25 @@ void RenderingManager::update() {
             const MaterialPtr& material{drawStruct.model->getMaterial(i)};
 
             const auto pipeline_id{material->getPipelineId()};
-            auto* pipeline{impl_->pipelines.find(pipeline_id)};
-            PR_ASSERT(pipeline != nullptr,
-                      "Meshes on the draw list can't be drawn to a nullptr "
-                      "pipeline.");
-            pipeline->bind();
-            material->bindTo(*pipeline);
+
+            // Update pipeline if changed
+            if (impl_->current.pipeline == nullptr ||
+                impl_->current_pipeline_id != pipeline_id) {
+                auto* pipeline{impl_->pipelines.find(pipeline_id)};
+                PR_ASSERT(pipeline != nullptr,
+                          "Meshes on the draw list can't be drawn to a nullptr "
+                          "pipeline.");
+                pipeline->bind();
+                impl_->current.pipeline = pipeline;
+                impl_->current_pipeline_id = pipeline_id;
+            }
+
+            // Update material if changed
+            if (impl_->current.material.expired() ||
+                impl_->current.material.lock() != material) {
+                material->bindTo(*impl_->current.pipeline);
+                impl_->current.material = material;
+            }
 
             auto* data{impl_->mesh_registrations.find(mesh->registrationId_)};
             PR_CORE_ASSERT(
@@ -219,6 +243,12 @@ void RenderingManager::update() {
             renderer_->render(*data);
         }
     });
+
+    // Unbind all bound resources
+    impl_->current_pipeline_id = PR_PIPELINE_NONE;
+    impl_->current.pipeline = nullptr;
+
+    impl_->current.material.reset();
 
     // TODO: Refactor this to cache in the RenderingManager if the
     // performance impact is too much

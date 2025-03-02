@@ -45,7 +45,7 @@ layout(location = 0) in vec4 _colour;
 layout(location = 1) in vec3 _normal;
 layout(location = 2) in vec2 _tex_coords;
 
-layout(location = 4) uniform sampler2D sampler1;
+layout(location = 4) uniform sampler2D u_diffuseTexture;
 
 void main() {
 	vec3 the_sun = vec3(-20, 20, 0);
@@ -60,7 +60,7 @@ void main() {
 	// Disable lighting for debugging
     // intensity = 1;
 
-    colour = texture(sampler1, _tex_coords) * intensity;
+    colour = texture(u_diffuseTexture, _tex_coords) * intensity;
 }
 )";
 
@@ -89,9 +89,9 @@ constexpr auto DEFAULT_UI_FRAGMENT_SHADER = R"(
 out vec4 colour;
 
 layout(location = 0) in vec2 _tex_coords;
-layout(location = 1) uniform sampler2D sampler1;
+layout(location = 1) uniform sampler2D u_diffuseTexture;
 
 void main() {
-    colour = texture(sampler1, _tex_coords);
+    colour = texture(u_diffuseTexture, _tex_coords);
 }
 )";

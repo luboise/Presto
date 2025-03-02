@@ -12,8 +12,8 @@ class PRESTO_API Buffer {
 
     enum class BufferType : Presto::uint8_t { VERTEX, INDEX, UNIFORM };
 
-    [[nodiscard]] Presto::size_t size() const { return size_; }
-    [[nodiscard]] BufferType type() const { return type_; };
+    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] BufferType type() const;
 
     virtual void write(buffer_write_t bytes, Presto::size_t offset = 0) = 0;
 
@@ -26,27 +26,11 @@ class PRESTO_API Buffer {
     Buffer(const Buffer&) = delete;
     Buffer& operator=(const Buffer&) = delete;
 
-    [[nodiscard]] Presto::size_t getWriteSize(
-        Presto::size_t desiredSize, Presto::size_t startOffset) const {
-        Presto::size_t write_size{
-            std::min(desiredSize, this->size_ - startOffset)};
-
-        if (write_size != desiredSize) {
-            PR_WARN(
-                "Requested write to Buffer of size {} exceeds the "
-                "boundaries "
-                "of "
-                "the buffer by {} bytes. Writing only up until the end of the "
-                "buffer.",
-                this->size_, size_ - write_size);
-        }
-
-        return write_size;
-    }
+    [[nodiscard]] Presto::size_t getWriteSize(Presto::size_t desiredSize,
+                                              Presto::size_t startOffset) const;
 
    protected:
-    explicit Buffer(BufferType type, Presto::size_t size)
-        : type_(type), size_(size) {};
+    explicit Buffer(BufferType type, Presto::size_t size);
 
    private:
     BufferType type_;

@@ -1,4 +1,6 @@
 #include "GLTFLoader.h"
+#include <algorithm>
+#include <bit>
 #include <set>
 #include <type_traits>
 
@@ -129,16 +131,23 @@ std::vector<T> getDataFromAccessor2(const tinygltf::Model& model,
 
     std::vector<T> ret(read_count);
 
-    const auto accessor_offset = bv.byteOffset + accessor.byteOffset;
-    auto stride = bv.byteStride;
-    if (stride == 0) {
-        stride = read_size;
-    };
+    // Find original data type
+    using ogdatatype = uint16_t;
 
-    // for (int byte = accessor_offset; byte < read_count; byte++) {
+    const auto accessor_offset = bv.byteOffset + accessor.byteOffset;
+
+    // Get the stride (it must be at least the size of the data)
+    auto stride = std::max(bv.byteStride, read_size);
+    ogdatatype value{};
+
+    std::array<unsigned char, sizeof(ogdatatype)> myarray{};
     for (size_t i = 0; i < read_count; i++) {
-        std::memcpy(&ret[i], &buffer.data[accessor_offset + (i * stride)],
-                    read_size);
+        // Get the amount of bytes of the original data type
+        std::ranges::copy_n(&buffer.data[accessor_offset + (i * stride)],
+                            sizeof(ogdatatype), myarray.begin());
+
+        value = std::bit_cast<ogdatatype>(myarray);
+        ret[i] = static_cast<T>(value);
     }
 
     return ret;
@@ -216,7 +225,20 @@ ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
     std::memcpy(image.bytes.data(), image_data.image.data(),
                 image.bytes.size());
 
-    return {.name = image_data.uri, .image = std::move(image)};
+    Presto::string new_name{};
+    if (!image_data.name.empty()) {
+        new_name = image_data.name;
+
+    } else if (!image_data.uri.empty()) {
+        new_name = image_data.uri;
+    } else {
+        PR_ERROR(
+            "Name and URI are both empty inside of an imported GLTF texture. "
+            "Using \"UnnamedImportedTexture\" instead.");
+        new_name = "UnnamedImportedTexture";
+    }
+
+    return {.name = new_name, .image = std::move(image)};
 }
 
 ImportedModelData GLTFLoader::load(
@@ -281,18 +303,19 @@ ImportedModelData GLTFLoader::load(
 
             new_submesh.draw_mode = mesh.mode;
 
-            new_submesh.indices = getDataFromAccessor2<RawMeshData::IndexType>(
-                model, mesh.indices);
+            new_submesh.indices =
+                getDataFromAccessor2<Index>(model, mesh.indices);
 
             new_submesh.material_index = mesh.material;
 
             std::vector<ImportedVertexAttribute> imported_attributes;
 
-            for (const auto& [attribute, accessor_index] : mesh.attributes) {
+            for (const auto& [attribute_name, accessor_index] :
+                 mesh.attributes) {
                 auto accessor{model.accessors[accessor_index]};
                 auto data{getDataFromAccessor(model, accessor_index)};
 
-                data.name = tinygltfNameToPrestoName(data.name);
+                data.name = tinygltfNameToPrestoName(attribute_name);
 
                 imported_attributes.push_back(data);
             }

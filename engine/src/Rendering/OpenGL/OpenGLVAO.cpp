@@ -59,12 +59,13 @@ void OpenGLVAO::finalise() {
 };
 
 void OpenGLVAO::setAttribPointer(const PipelineAttribute& attribute,
-                                 GLsizei stride, Presto::size_t offset) {
+                                 GLsizei stride, attribute_offset_t offset) {
     AttributeTypeDetails type_details{attributeTypeDetailsOf(attribute.type)};
 
-    glVertexAttribPointer(
-        attribute.layout, static_cast<GLsizei>(type_details.sub_type_count),
-        getGLAttribType(type_details.sub_type), GL_FALSE, stride, &offset);
+    glVertexAttribPointer(attribute.layout,
+                          static_cast<GLsizei>(type_details.sub_type_count),
+                          getGLAttribType(type_details.sub_type), GL_FALSE,
+                          stride, (void*)offset);
 };
 
 OpenGLVAO& OpenGLVAO::setAttribs(const PipelineStructure& structure) {
@@ -82,7 +83,9 @@ OpenGLVAO& OpenGLVAO::setAttribs(const PipelineStructure& structure) {
 
         // Enable the layout slot, then set its format
         glEnableVertexAttribArray(pipeline_attribute.layout);
-        setAttribPointer(pipeline_attribute, stride, pipeline_attribute.offset);
+        setAttribPointer(
+            pipeline_attribute, stride,
+            static_cast<attribute_offset_t>(pipeline_attribute.offset));
     }
 
     return *this;

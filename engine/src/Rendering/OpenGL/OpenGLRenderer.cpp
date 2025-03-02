@@ -151,13 +151,16 @@ void OpenGLRenderer::render(MeshRegistrationData& data) {
 };
 
 void OpenGLRenderer::updateUniforms() {
-    ByteArray bytes(sizeof(globalUniformBuffer_));
+    // TODO: Move these binds somewhere else
+    globalUniformBuffer_->write(
+        std::span<std::byte>(reinterpret_cast<std::byte*>(&globalUniforms_),
+                             sizeof(GlobalUniforms)));
+    globalUniformBuffer_->bind(0);
 
-    globalUniformBuffer_->write(bytes);
-
-    bytes = ByteArray(sizeof(objectUniformBuffer_));
-
-    objectUniformBuffer_->write(bytes);
+    objectUniformBuffer_->write(
+        std::span<std::byte>(reinterpret_cast<std::byte*>(&objectUniforms_),
+                             sizeof(ObjectUniforms)));
+    objectUniformBuffer_->bind(1);
 
     setDirty(false);
 };
@@ -192,12 +195,14 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
         return false;
     }
 
-    OpenGLVAO vao{dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
-                  dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
-                  structure};
+    OpenGLVAO new_vao{};
 
-    Allocated<OpenGLMeshContext> new_context{
-        std::make_unique<OpenGLMeshContext>()};
+    Allocated<OpenGLMeshContext> new_context{new OpenGLMeshContext{
+        .vao = {dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
+                dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
+                structure},
+        .index_count = static_cast<GLsizei>(registration.indices->size()),
+    }};
 
     auto allocation{contexts_.alloc(std::move(new_context))};
 

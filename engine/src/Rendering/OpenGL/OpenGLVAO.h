@@ -9,11 +9,12 @@ class OpenGLPipeline;
 struct VertexAttribute;
 
 class OpenGLVAO {
+    using attribute_offset_t = std::int64_t;
+
    public:
     OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
               const PipelineStructure& structure);
     OpenGLVAO();
-
     // OpenGLVAO();
     ~OpenGLVAO();
 
@@ -23,9 +24,14 @@ class OpenGLVAO {
     void finalise();
     [[nodiscard]] bool finalised() const { return finalised_; }
 
+    OpenGLVAO(const OpenGLVAO&) = delete;
+    OpenGLVAO& operator=(const OpenGLVAO&) = delete;
+    OpenGLVAO(OpenGLVAO&&) = delete;
+    OpenGLVAO& operator=(OpenGLVAO&&) = delete;
+
    private:
     void setAttribPointer(const PipelineAttribute& attribute, GLsizei stride,
-                          Presto::size_t offset);
+                          attribute_offset_t offset);
 
     bool finalised_{false};
 

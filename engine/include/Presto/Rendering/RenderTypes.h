@@ -2,6 +2,7 @@
 
 #include "Presto/Core/Constants.h"
 #include "Presto/Types/CoreTypes.h"
+#include "VertexTypes.h"
 
 namespace Presto {
 
@@ -62,6 +63,13 @@ class Vertex {
    private:
 };
 
+/*
+layout(location = 0) in vec3 a_vertexPosition;
+layout(location = 1) in vec3 a_colour;
+layout(location = 2) in vec3 a_normal;
+layout(location = 3) in vec2 a_texcoords;
+*/
+
 enum class ShaderStage { VERTEX, FRAGMENT };
 
 enum class MeshDrawMode : Presto::uint8_t {
@@ -75,17 +83,18 @@ enum class MeshDrawMode : Presto::uint8_t {
 // TODO: Make this more robust and give it more values, such as attributes. At
 // the moment, the attributes can be retrieved using the pipeline handle using
 // getPipelineStructure(id)
-struct ProcessedVertexData {
+struct ProcessedMeshVertices {
     pipeline_id_t pipeline_id;
 
     // AttributeSet attributes;
     Presto::size_t vertex_count;
-    ByteArray data;
+
+    std::vector<Vertex3D> vertices;
 };
 
 struct MeshData {
     MeshDrawMode draw_mode;
-    ProcessedVertexData vertex_data;
+    ProcessedMeshVertices vertex_data;
     IndexList indices;
     // [[nodiscard]] BoundingBox getBoundingBox() const;
 };

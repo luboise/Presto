@@ -62,6 +62,10 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
     for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
         ImportedTexture& texture{imported_data.textures[i]};
         if (texture.name.empty()) {
+            PR_WARN(
+                "Imported texture ({}x{}) has no name. Skipping this "
+                "import.",
+                texture.image.width, texture.image.height);
             continue;
         }
 
