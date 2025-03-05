@@ -30,7 +30,7 @@ class CameraComponent : public Component, LazyCalculator {
     CameraComponent& setFOV(camera_fov_t fovDegrees);
 
     // Sets the near and far planes of a perspective projection.
-    // Requires near >= PR_MINIMUM_NEAR_DISTANCE, and far >= near
+    // Requires near >= PR_MIN_NEAR_DISTANCE, and far >= near
     CameraComponent& setDistances(camera_distance_t newNear,
                                   camera_distance_t newFar);
 

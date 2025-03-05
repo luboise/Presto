@@ -62,9 +62,9 @@ class Allocator {
 
         V new_id{idGenerator_.generate()};
         PR_CORE_ASSERT(!entries_.contains(new_id),
-                       "Keys that an Allocator receives from an IDGenerator "
-                       "must be unique, and {} wasn't.",
-                       new_id);
+                       std::format("Keys that an Allocator receives from an "
+                                   "IDGenerator must be unique, and {} wasn't.",
+                                   new_id));
 
         return put(new_id, std::move(ptr));
     }
@@ -95,13 +95,14 @@ class Allocator {
             if (!idGenerator_.reserve(key)) {
                 return BAD_INSERTION();
             }
+
             new_id = key;
         }
 
         PR_CORE_ASSERT(!entries_.contains(new_id),
-                       "Keys that an Allocator receives from an IDGenerator "
-                       "must be unique, and {} wasn't.",
-                       new_id);
+                       std::format("Keys that an Allocator receives from an "
+                                   "IDGenerator must be unique, and {} wasn't.",
+                                   new_id));
 
         return put(new_id, std::move(allocation));
     }

@@ -19,6 +19,8 @@ MeshAsset::MeshAsset() { impl_ = std::make_unique<Impl>(); };
 MeshAsset::~MeshAsset() = default;
 
 bool MeshAsset::load() {
+    this->impl_->mesh_data.pipeline_id = PR_PIPELINE_DEFAULT_3D;
+
     registrationId_ = RenderingManager::get().loadMesh(impl_->mesh_data);
     return registrationId_ != PR_UNREGISTERED;
 }

@@ -195,6 +195,13 @@ ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
 
 MaterialDefinitionPtr AssetManager::createMaterialDefinition(
     Presto::string name, const PipelineStructure& structure) {
+    if (assets_[AssetType::MATERIAL_DEFINITION].contains(name)) {
+        PR_ERROR(
+            "Unable to create material definition, as a definition with the "
+            "same name already exists.");
+        return nullptr;
+    }
+
     MaterialDefinitionPtr new_definition{
         std::make_shared<MaterialAsset>(name, structure)};
 

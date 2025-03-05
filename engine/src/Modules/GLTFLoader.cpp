@@ -67,6 +67,10 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
                     return ShaderDataType::INT;
                 case (TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT):
                     return ShaderDataType::UINT;
+                case (TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT):
+                    return ShaderDataType::USHORT;
+                case (TINYGLTF_COMPONENT_TYPE_SHORT):
+                    return ShaderDataType::SHORT;
                 default:
                     break;
             }
@@ -234,10 +238,12 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
             return chars;
         }};
 
-#define SWITCH_CASE(type)                                                      \
-    chars =                                                                    \
-        vector_to_uchars(getAccessorAs<SubTypeOf<ShaderImportTypeOf<(type)>>>( \
-            model, accessorIndex));
+#define SWITCH_CASE(type)                                         \
+    case (type):                                                  \
+        chars = vector_to_uchars(                                 \
+            getAccessorAs<SubTypeOf<ShaderImportTypeOf<(type)>>>( \
+                model, accessorIndex));                           \
+        break;
 
     switch (tinygltf_type) {
         SWITCH_CASE(ShaderDataType::INT)

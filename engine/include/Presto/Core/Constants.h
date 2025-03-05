@@ -20,7 +20,7 @@ using PR_BIT_TYPE = std::uint16_t;
 
 constexpr PR_BIT_TYPE AS_BIT(std::uint8_t x) { return 1U << x; }
 
-constexpr double PR_MINIMUM_NEAR_DISTANCE{0.1};
+constexpr double PR_MIN_NEAR_DISTANCE{0.1};
 
 // Pipelines
 using mesh_context_id_t = Presto::uint32_t;
@@ -31,6 +31,9 @@ constexpr mesh_registration_id_t PR_UNREGISTERED{
 
 using pipeline_id_t = Presto::uint16_t;
 using material_id_t = Presto::uint16_t;
+
+constexpr pipeline_id_t PR_MIN_USER_PIPELINE_ID{10};
+constexpr mesh_registration_id_t PR_MIN_RUNTIME_MESH_ID{10};
 
 constexpr pipeline_id_t PR_PIPELINE_ANY{0};
 constexpr pipeline_id_t PR_PIPELINE_DEFAULT_3D{1};

@@ -67,10 +67,11 @@ constexpr auto getGLAttributeDetails(ShaderDataType type) {
         GLenum gl_type;
     } vals{};
 
-#define SWITCH_CASE(type)                    \
-    case type:                               \
-        vals.gl_type = OpenGLTypeOf<(type)>; \
-        vals.count = ShaderDataTypeTraits<(type)>::subtype_count;
+#define SWITCH_CASE(type)                                         \
+    case type:                                                    \
+        vals.gl_type = OpenGLTypeOf<(type)>;                      \
+        vals.count = ShaderDataTypeTraits<(type)>::subtype_count; \
+        break;
 
     switch (type) {
         SWITCH_CASE(ShaderDataType::SHORT);

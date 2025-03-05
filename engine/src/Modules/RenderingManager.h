@@ -4,6 +4,7 @@
 
 #include "Presto/Assets/ImageAsset.h"
 #include "Presto/Assets/MaterialAsset.h"
+#include "Presto/Objects/Components/CameraComponent.h"
 #include "Presto/Rendering/PipelineBuilder.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"

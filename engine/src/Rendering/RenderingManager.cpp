@@ -5,7 +5,6 @@
 
 #include "Modules/RenderingManager.h"
 
-#include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
 #include "Presto/Rendering/RenderTypes.h"
@@ -44,8 +43,8 @@ struct RenderingManager::Impl {
 
     std::vector<MaterialPtr> materials;
 
-    pipeline_allocator_t pipelines;
-    mesh_allocator_t mesh_registrations;
+    pipeline_allocator_t pipelines{PR_MIN_USER_PIPELINE_ID};
+    mesh_allocator_t mesh_registrations{PR_MIN_RUNTIME_MESH_ID};
 
     std::map<texture_id_t, Ptr<Texture>> textures;
 
@@ -53,6 +52,8 @@ struct RenderingManager::Impl {
     Allocated<PipelineBuilder> pipelineBuilder_;
 
     pipeline_id_t current_pipeline_id{PR_PIPELINE_NONE};
+
+    ComponentPtr<CameraComponent> camera_2d;
 
     struct {
         Ref<MaterialInstance> material;
@@ -70,6 +71,8 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     impl_->textureFactory_ = renderer_->getTextureFactory();
 
+    impl_->camera_2d = NewComponent<CameraComponent>();
+
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
 
@@ -79,8 +82,13 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
         PR_CORE_ASSERT(default_pipeline != nullptr,
                        "The default pipelines must be initialised correctly "
                        "when being used, not nullptr.");
-        am.createMaterialDefinition("Pipeline",
-                                    default_pipeline->getStructure());
+        auto new_definition{
+            am.createMaterialDefinition(std::to_string(default_pipeline->id()),
+                                        default_pipeline->getStructure())};
+
+        PR_ASSERT(new_definition != nullptr,
+                  "The newly created pipeline cannot already exist under a "
+                  "different name.");
 
         auto new_id{default_pipeline->id()};
         impl_->pipelines.alloc(std::move(default_pipeline), new_id);
