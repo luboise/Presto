@@ -23,8 +23,8 @@ VulkanDevice::VulkanDevice(const VkPhysicalDevice& phys,
 }
 
 VulkanDevice::~VulkanDevice() {
-    vkDeviceWaitIdle(_handle);
-    vkDestroyDevice(_handle, nullptr);
+    vkDeviceWaitIdle(handle_);
+    vkDestroyDevice(handle_, nullptr);
 }
 
 void VulkanDevice::createLogicalDevice() {
@@ -77,16 +77,16 @@ void VulkanDevice::createLogicalDevice() {
         createInfo.enabledLayerCount = 0;
     }
 
-    if (vkCreateDevice(_physicalDevice, &createInfo, nullptr, &_handle) !=
+    if (vkCreateDevice(_physicalDevice, &createInfo, nullptr, &handle_) !=
         VK_SUCCESS) {
         throw std::runtime_error("Unable to create logical device.");
     }
 }
 
 void VulkanDevice::retrieveQueueHandles() {
-    vkGetDeviceQueue(_handle, _indices.graphicsFamily.value(), 0,
+    vkGetDeviceQueue(handle_, _indices.graphicsFamily.value(), 0,
                      &this->_graphicsQueue);
-    vkGetDeviceQueue(_handle, _indices.presentFamily.value(), 0,
+    vkGetDeviceQueue(handle_, _indices.presentFamily.value(), 0,
                      &this->_presentQueue);
 }
 
@@ -136,16 +136,7 @@ SwapchainSupportDetails VulkanDevice::querySwapchainSupport(
     return details;
 };
 
-Buffer* VulkanDevice::createBuffer(const Buffer::BUFFER_TYPE type,
-                                   const VkDeviceSize size) {
-    auto* new_buffer = new Buffer(*this, type, size);
-    _buffers.push_back(new_buffer);
-
-    // Fix this to be using the one from the vector
-    return new_buffer;
-}
-
-DescriptorPool* VulkanDevice::createDescriptorPool() {
+Allocated<DescriptorPool> VulkanDevice::createDescriptorPool() {
     // TODO: Fix magic constant
     auto* pool = new DescriptorPool(*this);
 
@@ -153,16 +144,12 @@ DescriptorPool* VulkanDevice::createDescriptorPool() {
     return pool;
 };
 
-CommandPool* VulkanDevice::createCommandPool() {
-    auto* pool = new CommandPool(*this);
-
-    _commandPools.push_back(pool);
-
-    return pool;
+Allocated<CommandPool> VulkanDevice::createCommandPool() {
+    return std::make_unique<CommandPool>(*this);
 };
 
-VulkanSyncSet* VulkanDevice::createSyncSet() {
-    auto* sync_set = new VulkanSyncSet(this->_handle);
+Allocated<VulkanSyncSet> VulkanDevice::createSyncSet() {
+    auto* sync_set = new VulkanSyncSet(this->handle_);
 
     this->_syncSets.push_back(sync_set);
     return sync_set;

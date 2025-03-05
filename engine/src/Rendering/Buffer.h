@@ -8,7 +8,7 @@ namespace Presto {
 
 class PRESTO_API Buffer {
    public:
-    using buffer_write_t = std::span<std::byte>;
+    using buffer_write_t = std::span<const std::byte>;
 
     enum class BufferType : Presto::uint8_t { VERTEX, INDEX, UNIFORM };
 

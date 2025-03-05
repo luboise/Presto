@@ -15,4 +15,5 @@ target_sources(
           UniformTypes.cpp
           Buffer.cpp
           # Materials
+          ShaderTypes.cpp
           MaterialInstance.cpp)

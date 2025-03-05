@@ -14,7 +14,7 @@ CommandPool::CommandPool(const VulkanDevice& device) : _device(device) {
     createInfo.queueFamilyIndex =
         device.getQueueFamilyIndices().graphicsFamily.value();
 
-    if (vkCreateCommandPool(_device.handle(), &createInfo, nullptr, &_handle) !=
+    if (vkCreateCommandPool(_device.handle(), &createInfo, nullptr, &handle_) !=
         VK_SUCCESS) {
         throw std::runtime_error("Unable to create command pool.");
     }
@@ -40,7 +40,7 @@ void CommandPool::destroyCommandBuffer(CommandBuffer* const to_remove) {
 };
 
 CommandPool::~CommandPool() {
-    vkResetCommandPool(_device.handle(), _handle, 0);
-    vkDestroyCommandPool(_device.handle(), _handle, nullptr);
+    vkResetCommandPool(_device.handle(), handle_, 0);
+    vkDestroyCommandPool(_device.handle(), handle_, nullptr);
 }
 }  // namespace Presto

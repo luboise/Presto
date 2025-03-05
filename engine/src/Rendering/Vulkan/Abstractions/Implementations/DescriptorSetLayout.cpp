@@ -17,12 +17,12 @@ DescriptorSetLayout::DescriptorSetLayout(const VulkanDevice& device,
     createInfo.pBindings = bindings.data();
 
     if (vkCreateDescriptorSetLayout(_device.handle(), &createInfo, nullptr,
-                                    &_handle) != VK_SUCCESS) {
+                                    &handle_) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create descriptor set layout.");
     };
 }
 
 DescriptorSetLayout::~DescriptorSetLayout() {
-    vkDestroyDescriptorSetLayout(_device.handle(), _handle, nullptr);
+    vkDestroyDescriptorSetLayout(_device.handle(), handle_, nullptr);
 }
 }  // namespace Presto

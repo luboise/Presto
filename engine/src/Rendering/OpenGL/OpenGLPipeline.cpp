@@ -31,6 +31,20 @@ OpenGLPipeline::OpenGLPipeline(pipeline_id_t id, GLuint vertexShader_,
     pipelineStructure_.uniform_blocks =
         Introspection::getUniformBlocksFromShader(shaderProgram_);
 
+    GLint location{};
+
+    for (PipelineUniform& uniform : pipelineStructure_.uniforms) {
+        if (uniform.data_type != UniformVariableType::TEXTURE) {
+            continue;
+        }
+
+        location = glGetUniformLocation(shaderProgram_, uniform.name.data());
+        GLint bind_point{};
+        glGetUniformiv(shaderProgram_, location, &bind_point);
+
+        uniform.location = static_cast<decltype(uniform.location)>(bind_point);
+    }
+
     pipelineStructure_.uses_global_uniforms =
         std::ranges::any_of(pipelineStructure_.uniform_blocks,
                             [](const PipelineUniformBlock& block) -> bool {

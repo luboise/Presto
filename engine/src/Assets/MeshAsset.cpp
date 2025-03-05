@@ -10,9 +10,7 @@
 namespace Presto {
 
 struct MeshAsset::Impl {
-    MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
-    ProcessedMeshVertices vertices;
-    IndexList indices;
+    MeshData mesh_data;
 
     BoundingBox box;
 };
@@ -21,11 +19,7 @@ MeshAsset::MeshAsset() { impl_ = std::make_unique<Impl>(); };
 MeshAsset::~MeshAsset() = default;
 
 bool MeshAsset::load() {
-    registrationId_ =
-        RenderingManager::get().loadMesh(MeshData{.draw_mode = impl_->draw_mode,
-                                                  .vertex_data{impl_->vertices},
-                                                  .indices{impl_->indices}});
-
+    registrationId_ = RenderingManager::get().loadMesh(impl_->mesh_data);
     return registrationId_ != PR_UNREGISTERED;
 }
 
@@ -39,7 +33,7 @@ MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
 };
 
 MeshAsset& MeshAsset::setDrawMode(MeshDrawMode mode) {
-    impl_->draw_mode = mode;
+    impl_->mesh_data.draw_mode = mode;
     return *this;
 };
 
@@ -51,10 +45,10 @@ MeshAsset& MeshAsset::setVertices(const ImportedAttributeList& attributes) {
         return *this;
     }
 
-    auto processed{processVertices3D(attributes)};
+    auto processed{processVertices<Vertex3D>(attributes)};
 
     // TODO: Put checks here to make sure the processed vertices are well formed
-    this->impl_->vertices = std::move(processed);
+    this->impl_->mesh_data.vertices = std::move(processed);
 
     // TODO: Implement actual bounding box
     impl_->box = {.x_min = -1,
@@ -80,7 +74,7 @@ bool MeshAsset::modifiable() const {
 };
 
 MeshAsset& MeshAsset::setIndices(IndexList indices) {
-    this->impl_->indices = std::move(indices);
+    this->impl_->mesh_data.indices = std::move(indices);
     return *this;
 };
 

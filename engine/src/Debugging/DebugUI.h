@@ -34,7 +34,7 @@ class DebugUI {
     inline static bool showComponentBrowser_{true};
 
     inline static EditorState state_{EditorState::EDITING};
-    inline static entity_ptr selectedEntity_{nullptr};
+    inline static EntityPtr selectedEntity_{nullptr};
 
     inline static std::vector<std::string> errorMessages_;
 

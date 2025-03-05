@@ -1,4 +1,5 @@
 #include "GLTFLoader.h"
+
 #include <algorithm>
 #include <bit>
 #include <set>
@@ -6,8 +7,9 @@
 
 #include "Presto/Assets/AssetPath.h"
 #include "Presto/Assets/ImportTypes.h"
-#include "Presto/Rendering/AttributeTypes.h"
+#include "Presto/Rendering/ShaderTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
+#include "Presto/Types/CoreTypeTraits.h"
 #include "Presto/Types/CoreTypes.h"
 #include "tiny_gltf.h"
 
@@ -104,7 +106,7 @@ ImportedVertexAttribute getDataFromAccessor(const tinygltf::Model& model,
 
     const auto accessor_offset = bv.byteOffset + accessor.byteOffset;
 
-    std::memcpy(ret_buffer.data(), buffer.data.data() + accessor_offset,
+    std::memcpy(ret_buffer.data(), &buffer.data[accessor_offset],
                 bv.byteLength);
 
     ImportedVertexAttribute ret{
@@ -117,6 +119,7 @@ ImportedVertexAttribute getDataFromAccessor(const tinygltf::Model& model,
     return ret;
 }
 
+/*
 template <typename T>
 std::vector<T> getDataFromAccessor2(const tinygltf::Model& model,
                                     size_t accessorIndex) {
@@ -130,6 +133,10 @@ std::vector<T> getDataFromAccessor2(const tinygltf::Model& model,
     const auto read_count = accessor.count;
 
     std::vector<T> ret(read_count);
+
+    auto innerFunction{[]<typename InnerT>() {
+
+        }};
 
     // Find original data type
     using ogdatatype = uint16_t;
@@ -152,6 +159,118 @@ std::vector<T> getDataFromAccessor2(const tinygltf::Model& model,
 
     return ret;
 }
+   */
+
+template <typename T>
+[[nodiscard]] std::vector<T> getAccessorAs(const tinygltf::Model& model,
+                                           Presto::size_t accessorIndex) {
+    const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
+
+    const auto& bv = model.bufferViews[accessor.bufferView];
+    const auto& buffer = model.buffers[bv.buffer];
+
+    const auto read_count = accessor.count;
+    std::vector<T> ret(read_count);
+
+    const auto accessor_offset = bv.byteOffset + accessor.byteOffset;
+
+    // Get the stride (it must be at least the size of the data)
+    auto stride = std::max(bv.byteStride, sizeof(T));
+
+    std::array<unsigned char, sizeof(T)> bytes{};
+    for (size_t i = 0; i < read_count; i++) {
+        // Get the amount of bytes of the original data type
+        std::ranges::copy_n(&buffer.data[accessor_offset + (i * stride)],
+                            sizeof(T), bytes.begin());
+
+        ret[i] = std::bit_cast<T>(bytes);
+    }
+
+    return ret;
+};
+
+/*
+template <ShaderDataType TO_T, ShaderDataType FROM_T>
+bool getAccessorCharsBySubtype(const tinygltf::Model& model,
+                               Presto::size_t accessorIndex,
+                               std::vector<unsigned char>& outChars) {
+    // Get the data as the gltf subtype
+    using TinyGLTFSubtype = SubTypeOf<ShaderImportTypeOf<FROM_T>>;
+    std::vector<TinyGLTFSubtype> data_as_tinygltf_subtype{
+        getAccessorAs<TinyGLTFSubtype>(model, accessorIndex)};
+
+    using DesiredSubtype = SubTypeOf<ShaderImportTypeOf<TO_T>>;
+
+    // Convert it to the type we want std::vector<SubTypeOf<T>>
+    std::vector<DesiredSubtype> subtype_data(data_as_tinygltf_subtype.begin(),
+                                             data_as_tinygltf_subtype.end());
+
+    using Wanted = SubTypeOf<ShaderImportTypeOf<GLTFType>>;
+
+    outChars.resize(subtype_data.size() * sizeof(SubTypeOf<T>));
+
+    std::memcpy(outChars.data(), subtype_data.data(), outChars.size());
+
+    return true;
+}
+*/
+
+template <typename T>
+std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
+                                       size_t accessorIndex) {
+    // Find original data type
+
+    ShaderDataType tinygltf_type{
+        tinygltfToPrestoType(model.accessors[accessorIndex])};
+
+    std::vector<unsigned char> chars;
+    std::vector<T> ret;
+
+    auto vector_to_uchars{
+        []<typename J>(std::vector<J> inVec) -> std::vector<unsigned char> {
+            std::vector<unsigned char> chars(inVec.size() * sizeof(J));
+
+            std::memcpy(chars.data(), inVec.data(), chars.size());
+            return chars;
+        }};
+
+#define SWITCH_CASE(type)                                                      \
+    chars =                                                                    \
+        vector_to_uchars(getAccessorAs<SubTypeOf<ShaderImportTypeOf<(type)>>>( \
+            model, accessorIndex));
+
+    switch (tinygltf_type) {
+        SWITCH_CASE(ShaderDataType::INT)
+        SWITCH_CASE(ShaderDataType::UINT);
+        SWITCH_CASE(ShaderDataType::DOUBLE);
+        SWITCH_CASE(ShaderDataType::VEC3);
+        SWITCH_CASE(ShaderDataType::VEC4);
+        SWITCH_CASE(ShaderDataType::MAT3);
+        SWITCH_CASE(ShaderDataType::MAT4);
+        SWITCH_CASE(ShaderDataType::SHORT);
+        SWITCH_CASE(ShaderDataType::USHORT);
+        SWITCH_CASE(ShaderDataType::FLOAT);
+        default: {
+            PR_ERROR("Unable to parse data.");
+            return {};
+        }
+    }
+
+#undef SWITCH_CASE
+
+    ret.resize(chars.size() / sizeof(T));
+
+    std::span<unsigned char> char_view{chars};
+
+    std ::array<unsigned char, sizeof(T)> bytes{};
+    for (size_t i = 0; i < ret.size(); i++) {
+        std ::memcpy(bytes.data(), &char_view[i * sizeof(T)], sizeof(T));
+        ret[i] = std ::bit_cast<T>(bytes);
+    }
+
+    return ret;
+
+}  // namespace Presto
 
 template <typename T>
 std::vector<T> castBuffer(const ByteArray& bytes) {
@@ -304,7 +423,7 @@ ImportedModelData GLTFLoader::load(
             new_submesh.draw_mode = mesh.mode;
 
             new_submesh.indices =
-                getDataFromAccessor2<Index>(model, mesh.indices);
+                getAccessorAndConvertTo<Index>(model, mesh.indices);
 
             new_submesh.material_index = mesh.material;
 

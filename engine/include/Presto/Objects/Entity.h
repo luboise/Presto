@@ -84,5 +84,5 @@ class PRESTO_API Entity {
     glm::vec3 _rotation{0, 0, 0};
 };
 
-using entity_ptr = Entity*;
+using EntityPtr = Entity*;
 }  // namespace Presto

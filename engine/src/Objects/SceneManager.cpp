@@ -73,7 +73,7 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
     for (const auto& object : jsonData[OBJECTS_KEY]) {
         if (object[TYPE_KEY] == ENTITY_KEY) {
             auto entity_name = object[NAME_KEY];
-            entity_ptr new_entity =
+            EntityPtr new_entity =
                 EntityManagerImpl::get().newEntity(entity_name);
 
             const auto& components = object[COMPONENTS_KEY];

@@ -21,19 +21,19 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
 
     friend Figure::~Figure();
 
-    using EntityMap = std::map<entity_id_t, entity_ptr>;
+    using EntityMap = std::map<entity_id_t, EntityPtr>;
 
    public:
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
-    [[nodiscard]] entity_ptr newEntity(const entity_name_t& name = "Entity");
+    [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
     std::vector<Entity*> newEntities(PR_SIZE count);
 
-    entity_ptr getEntityByID(entity_id_t id);
+    EntityPtr getEntityByID(entity_id_t id);
 
-    std::vector<entity_ptr> findAll();
+    std::vector<EntityPtr> findAll();
 
-    std::vector<entity_ptr> findWhere(auto filter);
+    std::vector<EntityPtr> findWhere(auto filter);
 
     ComponentSearchResults findComponentsWhere(const ComponentFilter& =
                                                    [](auto&) { return true; });
@@ -100,7 +100,7 @@ return entityMap_[new_id].get();
         return reinterpret_cast<std::vector<ComponentPtr<T>>*>(&(it->second));
     }
 
-    void destroyEntity(entity_ptr entity);
+    void destroyEntity(EntityPtr entity);
 
     using entity_unique_ptr =
         std::unique_ptr<Entity, std::function<void(Entity*)>>;

@@ -10,6 +10,8 @@
 
 namespace Presto {
 
+[[nodiscard]] EntityPtr NewEntity();
+
 /**
  * @brief  Creates a new component of any type. The arguments given must match
  * the arguments of the private constructor of that component.

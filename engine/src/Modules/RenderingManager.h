@@ -11,6 +11,7 @@
 
 #include "Presto/Rendering/TextureTypes.h"
 #include "Presto/Types/MaterialTypes.h"
+#include "Rendering/MeshRegistrationData.h"
 
 namespace Presto {
 class GLFWAppWindow;
@@ -24,6 +25,8 @@ class Pipeline;
 class Texture;
 
 struct ImportedMesh;
+
+struct MeshRegistrationData;
 
 using layer_id_t = PR_NUMERIC_ID;
 
@@ -57,8 +60,9 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
      * Loads an imported mesh into the renderer, and registers it with its
      * pipeline.
      */
-    mesh_registration_id_t loadMesh(MeshData meshData,
-                                    pipeline_id_t pipelineId = PR_PIPELINE_ANY);
+
+    mesh_registration_id_t loadMesh(
+        MeshData meshData, mesh_registration_id_t customId = PR_UNREGISTERED);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
@@ -101,6 +105,11 @@ void loadImageOnGpu(ImageAsset&);
                                   pipeline_id_t id = PR_PIPELINE_ANY);
 
     [[nodiscard]] Pipeline* getPipeline(pipeline_id_t id) const;
+
+    template <typename T>
+    Allocated<MeshRegistrationData> createMeshRegistration(
+        const std::vector<T>& vertices, IndexList& indices,
+        pipeline_id_t pipelineId);
 
     // Member vars
     CameraComponent& activeCamera_;

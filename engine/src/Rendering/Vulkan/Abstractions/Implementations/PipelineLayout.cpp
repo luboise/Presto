@@ -18,7 +18,7 @@ PipelineLayout::PipelineLayout(
     pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
     if (vkCreatePipelineLayout(_device->handle(), &pipelineLayoutInfo, nullptr,
-                               &_handle) != VK_SUCCESS) {
+                               &handle_) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create graphics pipeline layout.");
     }
 
@@ -26,6 +26,6 @@ PipelineLayout::PipelineLayout(
 }
 
 PipelineLayout::~PipelineLayout() {
-    vkDestroyPipelineLayout(_device->handle(), _handle, nullptr);
+    vkDestroyPipelineLayout(_device->handle(), handle_, nullptr);
 }
 }  // namespace Presto

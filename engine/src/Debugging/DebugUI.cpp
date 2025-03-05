@@ -314,7 +314,7 @@ void DebugUI::drawEntityBrowser() {
         ImGuiTreeNodeFlags flags{ImGuiTreeNodeFlags_DefaultOpen |
                                  ImGuiTreeNodeFlags_Leaf};
 
-        std::vector<entity_ptr> entities{EntityManagerImpl::get().findAll()};
+        std::vector<EntityPtr> entities{EntityManagerImpl::get().findAll()};
 
         for (const auto& entity_ptr : entities) {
             entity_id_t id{entity_ptr->getId()};

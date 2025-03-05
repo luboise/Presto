@@ -25,7 +25,7 @@ class Pipeline {
 
     template <typename T>
     void setUniform(uniform_name_t name, T data) {
-        uniform_index_t index{getIndex(std::move(name))};
+        uniform_index_t index{getIndex(name)};
         if (index == PR_INVALID_UNIFORM) {
             PR_ERROR(
                 "Unable to set uniform \"{}\" (its index could not be found)",

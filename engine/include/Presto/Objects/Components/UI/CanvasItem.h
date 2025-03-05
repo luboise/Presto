@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Presto/Aliases/Handles.h"
+#include "Presto/Types/CoreTypes.h"
+
 namespace Presto {
 
-using CanvasUnits = float;
+using CanvasUnits = Presto::float32_t;
 
-constexpr CanvasUnits PR_CANVAS_MIN_VALUE = 0;
+constexpr CanvasUnits PR_CANVAS_MIN_VALUE = -1;
 constexpr CanvasUnits PR_CANVAS_MAX_VALUE = 1;
 
 struct CanvasPosition {
@@ -25,7 +28,13 @@ class PRESTO_API CanvasItem {
         return position_;
     }
 
+    [[nodiscard]] const TexturePtr& texture() const;
+
+    CanvasItem& setTexture(const TexturePtr&);
+
    private:
     CanvasPosition position_;
+    TexturePtr texture_;
 };
+
 }  // namespace Presto

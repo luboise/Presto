@@ -5,8 +5,11 @@
 
 #include "Modules/RenderingManager.h"
 
+#include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
+#include "Presto/Objects.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Types/ComponentTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include "Presto/Objects/Components.h"
@@ -14,6 +17,8 @@
 #include "Modules/EntityManagerImpl.h"
 
 #include "Presto/Rendering/Pipeline.h"
+#include "Rendering/DefaultMeshes.h"
+#include "Rendering/MeshRegistrationData.h"
 #include "Rendering/Renderer.h"
 
 // #include "Rendering/Vulkan/VulkanRenderer.h"
@@ -51,7 +56,7 @@ struct RenderingManager::Impl {
 
     struct {
         Ref<MaterialInstance> material;
-        Pipeline* pipeline;
+        Pipeline* pipeline{nullptr};
     } current;
 };
 
@@ -80,12 +85,17 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
         auto new_id{default_pipeline->id()};
         impl_->pipelines.alloc(std::move(default_pipeline), new_id);
     }
+
+    // Load the default quad (used for UI rendering)
+    loadMesh(DefaultMeshes::Quad, PR_MESH_QUAD);
 };
 
 RenderingManager::~RenderingManager() = default;
 
-mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData,
-                                                  pipeline_id_t pipelineId) {
+/*
+mesh_registration_id_t RenderingManager::loadMesh(
+    MeshData meshData, pipeline_id_t pipelineId,
+    mesh_registration_id_t customId) {
     PR_CORE_ASSERT(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
@@ -140,12 +150,71 @@ mesh_registration_id_t RenderingManager::loadMesh(MeshData meshData,
         PR_ERROR("Unable to create mesh context in renderer.");
         return -1;
     }
-    auto pair{impl_->mesh_registrations.alloc(std::move(details))};
+
+    if (customId == PR_UNREGISTERED) {
+        // Set it to the "define for me" allocation key
+        customId = 0;
+    }
+
+    auto pair{impl_->mesh_registrations.alloc(std::move(details), customId)};
 
     mesh_registration_id_t registration_id{pair.first};
     pair.second->render_manager_id = registration_id;
 
     return registration_id;
+};
+*/
+
+struct AllocatedStuff {};
+
+template <typename T>
+Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
+    const std::vector<T>& vertices, IndexList& indices,
+    pipeline_id_t pipelineId) {
+    PR_CORE_ASSERT(renderer_ != nullptr,
+                   "The renderer must be initialised in order to load meshes.");
+
+    if (pipelineId == PR_PIPELINE_ANY) {
+        pipelineId = PR_PIPELINE_DEFAULT_3D;
+    }
+
+    Pipeline* pipeline{nullptr};
+
+    pipeline = getPipeline(pipelineId);
+    if (pipeline == nullptr) {
+        PR_ERROR(
+            "Unable to load mesh into pipeline #{}, as it is undefined. "
+            "Skipping this mesh load.",
+            pipelineId);
+        return nullptr;
+    }
+
+    if (impl_->current_pipeline_id != pipelineId) {
+        pipeline->bind();
+        impl_->current_pipeline_id = pipelineId;
+    }
+
+    Presto::size_t vertex_buffer_size{vertices.size() * sizeof(T)};
+    Presto::size_t index_buffer_size{indices.size() * sizeof(Index)};
+
+    auto ret{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
+        .render_manager_id{},
+        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
+                                            vertex_buffer_size),
+        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
+                                           index_buffer_size),
+    })};
+
+    ret->vertices->write(
+        std::span(reinterpret_cast<const std::byte*>(vertices.data()),
+                  vertex_buffer_size));
+
+    // TODO: Add more write functions here that are optimised for different data
+    // types instead of using ErasedBytes
+    ret->indices->write(std::span(reinterpret_cast<std::byte*>(indices.data()),
+                                  index_buffer_size));
+
+    return ret;
 };
 
 void RenderingManager::init(CameraComponent& defaultCamera) {
@@ -194,7 +263,7 @@ void RenderingManager::update() {
     auto& em{EntityManagerImpl::get()};
 
     auto mesh_draws{em.findAll() |
-                    std::views::transform([](entity_ptr entity) -> DrawStruct {
+                    std::views::transform([](EntityPtr entity) -> DrawStruct {
                         return {.model = entity->getComponent<ModelComponent>(),
                                 .transform =
                                     entity->getComponent<TransformComponent>()};
@@ -243,6 +312,41 @@ void RenderingManager::update() {
             renderer_->render(*data);
         }
     });
+
+    auto canvas_draws{
+        em.findAll() |
+        std::views::transform(
+            [](EntityPtr entity) -> ComponentPtr<CanvasComponent> {
+                return entity->getComponent<CanvasComponent>();
+            }) |
+        std::views::filter(
+            [](const auto& canvas) { return canvas != nullptr; })};
+
+    auto* ui_pipeline{getPipeline(PR_PIPELINE_DEFAULT_UI)};
+
+    ui_pipeline->bind();
+
+    auto* quad_registration{impl_->mesh_registrations.find(PR_MESH_QUAD)};
+    PR_CORE_ASSERT(quad_registration != nullptr,
+                   "The default quad can not be null.");
+
+    renderer_->setCameraData(activeCamera_);
+
+    // Set pipeline to UI pipeline
+    for (const ComponentPtr<CanvasComponent>& ptr : canvas_draws) {
+        for (const CanvasGroup& group : ptr->groups_) {
+            // Render each canvasitem where it should be
+            for (const CanvasItem& canvasItem : group.items()) {
+                if (canvasItem.texture() == nullptr) {
+                    PR_ERROR("CanvasItem has no texture. Skipping this draw.");
+                    continue;
+                }
+
+                canvasItem.texture()->bind(2);
+                renderer_->render(*quad_registration);
+            }
+        }
+    }
 
     // Unbind all bound resources
     impl_->current_pipeline_id = PR_PIPELINE_NONE;
@@ -360,5 +464,66 @@ Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
     }
 
     return pipeline;
+};
+
+mesh_registration_id_t RenderingManager::loadMesh(
+    MeshData meshData, mesh_registration_id_t customId) {
+    PR_CORE_ASSERT(renderer_ != nullptr,
+                   "The renderer must be initialised in order to load meshes.");
+
+    auto pipelineId{meshData.pipeline_id};
+
+    if (pipelineId == PR_PIPELINE_ANY) {
+        pipelineId = PR_PIPELINE_DEFAULT_3D;
+    }
+
+    Pipeline* pipeline{nullptr};
+
+    pipeline = getPipeline(pipelineId);
+    if (pipeline == nullptr) {
+        PR_ERROR(
+            "Unable to load mesh into pipeline #{}, as it is undefined. "
+            "Skipping this mesh load.",
+            pipelineId);
+        return PR_UNREGISTERED;
+    }
+
+    if (impl_->current_pipeline_id != pipelineId) {
+        pipeline->bind();
+        impl_->current_pipeline_id = pipelineId;
+    }
+
+    Allocated<MeshRegistrationData> details;
+    std::visit(
+        [&]<typename T>(const std::vector<T>& vertices) {
+            details = createMeshRegistration(vertices, meshData.indices,
+                                             meshData.pipeline_id);
+        },
+        meshData.vertices);
+
+    if (details == nullptr) {
+        PR_ERROR("Unable to create mesh registration from MeshData.");
+        return PR_UNREGISTERED;
+    }
+
+    bool success{
+        renderer_->createMeshContext(*details, pipeline->getStructure())};
+
+    if (!success) {
+        PR_ERROR("Unable to create mesh context in renderer.");
+        return PR_UNREGISTERED;
+    }
+
+    if (customId == PR_UNREGISTERED) {
+        // Set it to the "define for me" allocation key
+        customId = 0;
+    }
+
+    auto pair{impl_->mesh_registrations.alloc(std::move(details), customId)};
+
+    mesh_registration_id_t registration_id{pair.first};
+    pair.second->render_manager_id = registration_id;
+
+    return registration_id;
 };
 }  // namespace Presto

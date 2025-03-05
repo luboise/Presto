@@ -16,7 +16,7 @@ class CommandBuffer : public Abstraction<VkCommandBuffer> {
     friend class CommandPool;
 
    public:
-    void reset() { vkResetCommandBuffer(_handle, 0); }
+    void reset() { vkResetCommandBuffer(handle_, 0); }
 
     void startRecording(uint flags);
     void startRecording() { this->startRecording(0); };
@@ -27,10 +27,10 @@ class CommandBuffer : public Abstraction<VkCommandBuffer> {
     void bind(Pipeline&);
     void bind(const DescriptorFrameSet&);
     void bind(const VulkanDrawInfo&);
-    void bind(const std::vector<Buffer*>&, std::vector<unsigned long>);
+    void bind(const std::vector<VulkanBuffer*>&, std::vector<unsigned long>);
 
-    void bind(Buffer& buffer, unsigned long offset) {
-        std::vector<Buffer*> buffers = {&buffer};
+    void bind(VulkanBuffer& buffer, unsigned long offset) {
+        std::vector<VulkanBuffer*> buffers = {&buffer};
         this->bind(buffers, {offset});
     };
 

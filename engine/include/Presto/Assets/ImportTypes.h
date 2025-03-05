@@ -2,7 +2,6 @@
 
 #include "Presto/Assets/Image.h"
 
-#include "Presto/Rendering/AttributeTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
@@ -22,9 +21,7 @@ struct ImportedVertexAttribute {
 
     ByteArray data;
 
-    [[nodiscard]] Presto::size_t dataSize() const {
-        return attributeTypeDetailsOf(type).size();
-    };
+    [[nodiscard]] Presto::size_t dataSize() const;
 };
 
 using ImportedAttributeList = std::vector<ImportedVertexAttribute>;

@@ -85,7 +85,7 @@ class OpenGLTexture2D final : public Texture2D {
 
     OpenGLTexture2D(opengl_dim_t width, opengl_dim_t height)
         : width_(width), height_(height) {
-        this->bind(0);
+        this->bind(31);
         glTexImage2D(GL_TEXTURE_2D, 0, OPENGL_PIXEL_FORMAT, width_, height_, 0,
                      OPENGL_PIXEL_FORMAT, OPENGL_TEXTURE_DATA_TYPE, nullptr);
 
@@ -110,7 +110,7 @@ class OpenGLTexture2D final : public Texture2D {
             return;
         }
 
-        this->bind(0);
+        this->bind(31);
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width_, height_,
                         OPENGL_PIXEL_FORMAT, OPENGL_TEXTURE_DATA_TYPE,

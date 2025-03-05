@@ -92,7 +92,7 @@ void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
 
     this->bind();
     glBufferSubData(openGlBufferType_, static_cast<GLintptr>(offset),
-                    static_cast<GLsizeiptr>(write_size), data.data());
+                    static_cast<GLsizeiptr>(write_size), (void*)data.data());
 }
 
 }  // namespace Presto

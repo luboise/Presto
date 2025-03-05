@@ -1,10 +1,13 @@
 #include "OpenGLVAO.h"
 
 #include "Presto/Rendering/AttributeTypes.h"
+#include "Presto/Rendering/ShaderTypes.h"
+#include "Presto/Types/CoreTypeTraits.h"
 #include "Rendering/OpenGL/OpenGLBuffer.h"
 #include "Rendering/OpenGL/OpenGLPipeline.h"
 
 #include "OpenGLTypes.h"
+#include "Rendering/OpenGL/OpenGLTypeConversion.h"
 
 namespace Presto {
 
@@ -58,13 +61,46 @@ void OpenGLVAO::finalise() {
     glBindVertexArray(0);
 };
 
+constexpr auto getGLAttributeDetails(ShaderDataType type) {
+    struct {
+        GLint count;
+        GLenum gl_type;
+    } vals{};
+
+#define SWITCH_CASE(type)                    \
+    case type:                               \
+        vals.gl_type = OpenGLTypeOf<(type)>; \
+        vals.count = ShaderDataTypeTraits<(type)>::subtype_count;
+
+    switch (type) {
+        SWITCH_CASE(ShaderDataType::SHORT);
+        SWITCH_CASE(ShaderDataType::USHORT);
+        SWITCH_CASE(ShaderDataType::INT);
+        SWITCH_CASE(ShaderDataType::UINT);
+        SWITCH_CASE(ShaderDataType::FLOAT);
+        SWITCH_CASE(ShaderDataType::DOUBLE);
+        SWITCH_CASE(ShaderDataType::VEC2);
+        SWITCH_CASE(ShaderDataType::DVEC2);
+        SWITCH_CASE(ShaderDataType::VEC3);
+        SWITCH_CASE(ShaderDataType::DVEC3);
+        SWITCH_CASE(ShaderDataType::VEC4);
+        SWITCH_CASE(ShaderDataType::DVEC4);
+        SWITCH_CASE(ShaderDataType::MAT3);
+        SWITCH_CASE(ShaderDataType::DMAT3);
+        SWITCH_CASE(ShaderDataType::MAT4);
+        SWITCH_CASE(ShaderDataType::DMAT4);
+    }
+
+#undef SWITCH_CASE
+
+    return vals;
+}
+
 void OpenGLVAO::setAttribPointer(const PipelineAttribute& attribute,
                                  GLsizei stride, attribute_offset_t offset) {
-    AttributeTypeDetails type_details{attributeTypeDetailsOf(attribute.type)};
+    auto x{getGLAttributeDetails(attribute.type)};
 
-    glVertexAttribPointer(attribute.layout,
-                          static_cast<GLsizei>(type_details.sub_type_count),
-                          getGLAttribType(type_details.sub_type), GL_FALSE,
+    glVertexAttribPointer(attribute.layout, x.count, x.gl_type, GL_FALSE,
                           stride, (void*)offset);
 };
 

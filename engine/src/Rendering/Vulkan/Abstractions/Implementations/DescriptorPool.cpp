@@ -34,24 +34,24 @@ count_of_each_descriptor_type;  // For combined image samplers
     createInfo.pPoolSizes = poolSizes;
 
     if (vkCreateDescriptorPool(_device.handle(), &createInfo, nullptr,
-                               &_handle) != VK_SUCCESS) {
+                               &handle_) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create descriptor pool.");
     };
 }
 
-DescriptorPool::operator VkDescriptorPool() const { return this->_handle; };
+DescriptorPool::operator VkDescriptorPool() const { return this->handle_; };
 
 DescriptorPool::~DescriptorPool() {
     auto* device_handle = _device.handle();
-    vkResetDescriptorPool(device_handle, _handle, 0);
-    vkDestroyDescriptorPool(device_handle, _handle, nullptr);
+    vkResetDescriptorPool(device_handle, handle_, 0);
+    vkDestroyDescriptorPool(device_handle, handle_, nullptr);
 }
 
 std::vector<VkDescriptorSet> DescriptorPool::allocate(
     const std::vector<VkDescriptorSetLayout>& layouts) {
     VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-    allocInfo.descriptorPool = _handle;
+    allocInfo.descriptorPool = handle_;
 
     const auto& device = _device;
 
@@ -65,7 +65,7 @@ std::vector<VkDescriptorSet> DescriptorPool::allocate(
         throw std::runtime_error(
             fmt::format("Unable to allocate {} descriptor sets from "
                         "DescriptorPool {}.",
-                        layouts.size(), fmt::ptr(this), fmt::ptr(_handle)));
+                        layouts.size(), fmt::ptr(this), fmt::ptr(handle_)));
     }
 
     return allocated;

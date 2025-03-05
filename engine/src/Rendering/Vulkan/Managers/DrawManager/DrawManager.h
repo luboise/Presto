@@ -2,7 +2,6 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <Rendering/Vulkan/Abstractions/Buffer.h>
 #include "Rendering/Vulkan/Abstractions/CommandPool.h"
 #include "Rendering/Vulkan/Abstractions/Swapchain.h"
 

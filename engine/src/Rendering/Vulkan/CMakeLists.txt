@@ -4,6 +4,6 @@ add_subdirectory(Managers)
 add_subdirectory(VulkanUtils)
 
 target_sources(
-  Presto
+  ${PRESTO_ENGINE_NAME}
   PRIVATE VulkanRenderer.cpp QueueFamilyIndices/QueueFamilyIndices.cpp
-          VulkanShader/VulkanShader.cpp)
+          VulkanShader/VulkanShader.cpp MemoryMapping.cpp MemoryAllocation.cpp)

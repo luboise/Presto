@@ -12,6 +12,9 @@ namespace fs = std::filesystem;
 
 namespace Presto {
 
+using int16_t = std::int16_t;
+using uint16_t = std::uint16_t;
+
 using float32_t = glm::float32_t;
 using float64_t = glm::float64_t;
 
@@ -41,6 +44,41 @@ using FilePath = fs::path;
 struct VisualExtents {
     std::uint16_t width;
     std::uint16_t height;
+};
+
+enum class ShaderDataSubType : uint8_t {
+    SHORT,
+    USHORT,
+    INT,
+    UINT,
+    FLOAT,
+    DOUBLE
+};
+
+enum class ShaderDataType : uint8_t {
+    SHORT,
+    USHORT,
+
+    INT,
+    UINT,
+
+    FLOAT,
+    DOUBLE,
+
+    VEC2,
+    DVEC2,
+
+    VEC3,
+    DVEC3,
+
+    VEC4,
+    DVEC4,
+
+    MAT3,
+    DMAT3,
+
+    MAT4,
+    DMAT4
 };
 
 }  // namespace Presto

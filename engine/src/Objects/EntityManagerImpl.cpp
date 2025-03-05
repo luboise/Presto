@@ -46,7 +46,7 @@ void EntityManagerImpl::update() {
 }
 
 // Methods
-entity_ptr EntityManagerImpl::newEntity(const entity_name_t& name) {
+EntityPtr EntityManagerImpl::newEntity(const entity_name_t& name) {
     entity_id_t new_id = EntityManagerImpl::reserveId();
 
     PR_CORE_ASSERT(
@@ -61,7 +61,7 @@ entity_ptr EntityManagerImpl::newEntity(const entity_name_t& name) {
     const auto new_transform{newComponent<TransformComponent>()};
     new_entity->setComponent(new_transform);
 
-    entity_ptr handle{new_entity.get()};
+    EntityPtr handle{new_entity.get()};
     PR_CORE_ASSERT(
         handle != nullptr,
         "Internal error: A new entity handle has been retrieved as null.");
@@ -71,7 +71,7 @@ entity_ptr EntityManagerImpl::newEntity(const entity_name_t& name) {
     return handle;
 }
 
-void EntityManagerImpl::destroyEntity(entity_ptr entity) {
+void EntityManagerImpl::destroyEntity(EntityPtr entity) {
     // // Remove from map
     // impl_->entity_map.erase(entity->id_);
 
@@ -87,8 +87,8 @@ entity_id_t EntityManagerImpl::reserveId() { return impl_->current_id++; }
 // TODO: Implement this to clean up dangling entities/components
 void EntityManagerImpl::collectGarbage() {};
 
-std::vector<entity_ptr> EntityManagerImpl::findAll() {
-    std::vector<entity_ptr> entities(impl_->entity_map.size());
+std::vector<EntityPtr> EntityManagerImpl::findAll() {
+    std::vector<EntityPtr> entities(impl_->entity_map.size());
     int i = 0;
 
     // Get each raw pointer
@@ -99,7 +99,7 @@ std::vector<entity_ptr> EntityManagerImpl::findAll() {
     return entities;
 };
 
-std::vector<entity_ptr> EntityManagerImpl::findWhere(auto filter) {
+std::vector<EntityPtr> EntityManagerImpl::findWhere(auto filter) {
     return impl_->entity_map | std::views::values | std::views::filter(filter);
 }
 
@@ -185,6 +185,10 @@ void EntityManagerImpl::instantiateEntities() {
 
 entity_id_t EntityManager::reserveId() {
     return EntityManagerImpl::get().reserveId();
+};
+
+EntityPtr EntityManager::newEntity(const entity_name_t& name) {
+    return EntityManagerImpl::get().newEntity(name);
 };
 
 }  // namespace Presto

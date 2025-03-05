@@ -1,6 +1,12 @@
 #include "Presto/Assets/ImportTypes.h"
 
+#include "Presto/Rendering/ShaderTypes.h"
+
 namespace Presto {
+
+Presto::size_t ImportedVertexAttribute::dataSize() const {
+    return ShaderTypeSize(type);
+};
 
 /*
 

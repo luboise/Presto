@@ -2,15 +2,8 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include "Rendering/Vulkan/VulkanDevice/VulkanSyncSet/VulkanSyncSet.h"
-
-#include "Rendering/Vulkan/QueueFamilyIndices/QueueFamilyIndices.h"
-
-#include <Rendering/Vulkan/Abstractions/Buffer.h>
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
-#include "Rendering/Vulkan/Abstractions/CommandPool.h"
-#include "Rendering/Vulkan/Abstractions/DescriptorPool.h"
-#include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
+#include "Rendering/Vulkan/QueueFamilyIndices/QueueFamilyIndices.h"
 
 namespace Presto {
 struct SwapchainSupportDetails {
@@ -18,6 +11,12 @@ struct SwapchainSupportDetails {
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
 };
+
+class VulkanBuffer;
+class DescriptorPool;
+class CommandPool;
+class DescriptorSetLayout;
+struct VulkanSyncSet;
 
 class VulkanDevice : public Abstraction<VkDevice> {
    public:
@@ -28,11 +27,10 @@ class VulkanDevice : public Abstraction<VkDevice> {
 
     [[nodiscard]] const QueueFamilyIndices& getQueueFamilyIndices() const;
 
-    DescriptorPool* createDescriptorPool();
-    Buffer* createBuffer(Buffer::BUFFER_TYPE, VkDeviceSize);
-    CommandPool* createCommandPool();
+    Allocated<DescriptorPool> createDescriptorPool();
+    Allocated<CommandPool> createCommandPool();
 
-    VulkanSyncSet* createSyncSet();
+    Allocated<VulkanSyncSet> createSyncSet();
 
     [[nodiscard]] SwapchainSupportDetails getSwapchainSupportDetails() const;
 
@@ -66,14 +64,11 @@ class VulkanDevice : public Abstraction<VkDevice> {
     std::vector<DescriptorSetLayout*> _descriptorSetLayouts;
 
     std::vector<DescriptorPool*> _descriptorPools;
-    std::vector<Buffer*> _buffers;
-
-    std::vector<CommandPool*> _commandPools;
-    std::vector<VulkanSyncSet*> _syncSets;
+    std::vector<VulkanBuffer*> _buffers;
 
     void createSwapchain();
 
-    static const VkDescriptorSetLayout allocateDescriptorSetLayout(
+    static VkDescriptorSetLayout allocateDescriptorSetLayout(
         const VulkanDevice&);
 };
 }  // namespace Presto

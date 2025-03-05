@@ -101,11 +101,13 @@ class ErasedBytes {
 
     [[nodiscard]] ByteArray bytes() const { return this->data_; }
 
-    template <UniformVariableType T>
-    [[nodiscard]] typename UniformVariableTypeTraits<T>::type as() const {
-        using return_t = UniformVariableTypeTraits<T>::type;
-        return as<return_t>();
-    }
+    /*
+template <UniformVariableType T>
+[[nodiscard]] typename UniformVariableTypeTraits<T>::type as() const {
+    using return_t = UniformVariableTypeTraits<T>::type;
+    return as<return_t>();
+}
+    */
 
     std::span<std::byte> getData() { return data_; }
 
@@ -127,4 +129,5 @@ class ErasedBytes {
         std::memcpy(data_.data(), newData.data(), data_.size());
     };
 };
+
 }  // namespace Presto

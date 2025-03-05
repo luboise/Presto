@@ -20,7 +20,7 @@ class DescriptorSetLayout : public Abstraction<VkDescriptorSetLayout> {
     // TODO: Put an individual destructor here
     ~DescriptorSetLayout();
 
-    explicit operator VkDescriptorSetLayout() { return _handle; };
+    explicit operator VkDescriptorSetLayout() { return handle_; };
 
    private:
     const VulkanDevice& _device;

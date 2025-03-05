@@ -1,6 +1,7 @@
 #include "Presto/Rendering/PipelineTypes.h"
 
 #include <numeric>
+#include "Presto/Rendering/ShaderTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 
 namespace Presto {
@@ -16,7 +17,7 @@ Presto::size_t PipelineUniform::size() const {
 };
 
 Presto::size_t PipelineAttribute::size() const {
-    return attributeTypeDetailsOf(this->type).size();
+    return ShaderTypeSize(this->type);
 };
 
 Presto::size_t PipelineStructure::stride() const {

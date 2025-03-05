@@ -15,7 +15,7 @@ class CommandPool : public Abstraction<VkCommandPool> {
     CommandPool(const VulkanDevice&);
     ~CommandPool();
 
-    CommandBuffer* const createCommandBuffer();
+    CommandBuffer* createCommandBuffer();
     void destroyCommandBuffer(CommandBuffer* const);
 
     inline const VulkanDevice& getLogicalDevice() { return this->_device; }

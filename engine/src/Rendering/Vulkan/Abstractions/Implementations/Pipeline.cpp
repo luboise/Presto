@@ -32,13 +32,13 @@ PR_CORE_WARN(
     info.layout = pipelineLayout->handle();
 
     if (vkCreateGraphicsPipelines(_logicalDevice, VK_NULL_HANDLE, 1, &info,
-                                  nullptr, &_handle) != VK_SUCCESS) {
+                                  nullptr, &handle_) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create graphics pipeline.");
     }
 }
 
 Pipeline::~Pipeline() {
-    vkDestroyPipeline(_logicalDevice, _handle, nullptr);
+    vkDestroyPipeline(_logicalDevice, handle_, nullptr);
     delete _layout;
 };
 }  // namespace Presto

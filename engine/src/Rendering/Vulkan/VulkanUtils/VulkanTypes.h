@@ -1,21 +1,23 @@
 #pragma once
 
+#include <vulkan/vulkan_core.h>
 #include "Presto/Rendering/RenderTypes.h"
-#include "Rendering/Vulkan/Abstractions/Buffer.h"
 
 namespace Presto {
+
 class Pipeline;
+class VulkanBuffer;
 
 struct VulkanDrawInfo : public DrawInfo {
-    Buffer* vertex_buffer = nullptr;
-    Buffer* index_buffer = nullptr;
+    VulkanBuffer* vertex_buffer = nullptr;
+    VulkanBuffer* index_buffer = nullptr;
 
     Pipeline* pipeline = nullptr;
 };
 
 struct DescriptorFrameSet {
     std::vector<VkDescriptorSet> sets;
-    std::vector<std::unique_ptr<Buffer>> uniform_buffers;
+    std::vector<std::unique_ptr<VulkanBuffer>> uniform_buffers;
 };
 
 using SetLayoutList = std::vector<VkDescriptorSetLayout>;

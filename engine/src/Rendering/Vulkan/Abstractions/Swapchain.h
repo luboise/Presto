@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
-#include "Presto/Rendering/Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
 #include "Abstraction.h"
@@ -19,7 +19,7 @@ class Swapchain : public Abstraction<VkSwapchainKHR> {
     Swapchain(VulkanDevice*, const VkSurfaceKHR*, const GLFWAppWindow*);
     ~Swapchain() { this->teardown(); };
 
-    explicit operator VkSwapchainKHR() const { return this->_handle; }
+    explicit operator VkSwapchainKHR() const { return this->handle_; }
 
     [[nodiscard]] inline VkExtent2D getExtent() const { return this->_extent; };
     [[nodiscard]] inline VulkanDevice* getDevice() const {
@@ -36,7 +36,7 @@ class Swapchain : public Abstraction<VkSwapchainKHR> {
                           VkSemaphore wait_for = nullptr) {
         // Acquire image from swap chain to draw into
         VkResult res =
-            vkAcquireNextImageKHR(_device->handle(), _handle, UINT64_MAX,
+            vkAcquireNextImageKHR(_device->handle(), handle_, UINT64_MAX,
                                   wait_for, VK_NULL_HANDLE, &_image_out);
 
         return res;

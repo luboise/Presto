@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AttributeTypes.h"
+
+#include "Presto/Rendering/ShaderTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include <map>
@@ -10,14 +12,15 @@ namespace Presto {
 using vertex_binding_t = std::uint16_t;
 
 struct VertexAttribute {
-    AttributeTypeDetails typeDetails;
+    // AttributeTypeDetails typeDetails;
+    ShaderDataType type;
 
     PR_STRING_ID name;
     vertex_binding_t index;
     Presto::size_t offset{0};
 
     [[nodiscard]] std::size_t size() const noexcept {
-        return typeDetails.size();
+        return ShaderTypeSize(type);
     };
 };
 

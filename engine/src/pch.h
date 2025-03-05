@@ -7,6 +7,7 @@
 #include <numeric>    // IWYU pragma: export
 #include <ranges>     // IWYU pragma: export
 #include <utility>    // IWYU pragma: export
+#include <variant>    // IWYU pragma: export
 
 // Data
 #include <fstream>  // IWYU pragma: export

@@ -21,7 +21,7 @@ class Allocator {
     static consteval return_t BAD_INSERTION() { return {0, nullptr}; }
 
    public:
-    Allocator() = default;
+    explicit Allocator(K threshold = 1) : idGenerator_(threshold) {};
 
     /**
      * @brief  Search for a value by key

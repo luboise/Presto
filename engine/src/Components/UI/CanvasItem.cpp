@@ -6,4 +6,11 @@ namespace Presto {
             .y = std::clamp(y, PR_CANVAS_MIN_VALUE, PR_CANVAS_MAX_VALUE)};
 }
 
+CanvasItem& CanvasItem::setTexture(const TexturePtr& texture) {
+    texture_ = texture;
+
+    return *this;
+};
+
+const TexturePtr& CanvasItem::texture() const { return texture_; };
 }  // namespace Presto

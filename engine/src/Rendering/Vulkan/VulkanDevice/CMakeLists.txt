@@ -1,5 +1,5 @@
 target_sources(
-	Presto
-        PRIVATE VulkanDevice.cpp
-        #
-        VulkanSyncSet/VulkanSyncSet.cpp)
+  ${PRESTO_ENGINE_NAME}
+  PRIVATE VulkanDevice.cpp
+          #
+          VulkanSyncSet/VulkanSyncSet.cpp)

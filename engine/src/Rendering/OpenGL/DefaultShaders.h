@@ -45,7 +45,7 @@ layout(location = 0) in vec4 _colour;
 layout(location = 1) in vec3 _normal;
 layout(location = 2) in vec2 _tex_coords;
 
-layout(binding = 4) uniform sampler2D u_diffuseTexture;
+layout(binding = 3) uniform sampler2D u_diffuseTexture;
 
 void main() {
 	vec3 the_sun = vec3(-20, 20, 0);
@@ -65,21 +65,28 @@ void main() {
 )";
 
 constexpr auto DEFAULT_UI_VERTEX_SHADER = R"(
-
 #version 430
 
-layout(location = 0) out vec2 tex_coords;
+layout(location = 0) in vec2 a_vertexPosition;
+layout(location = 1) in vec3 a_colour;
+layout(location = 2) in vec2 a_texcoords;
 
-layout(location = 0) in vec2 _screen_position;
-layout(location = 1) in vec2 _tex_coords;
+layout(location = 0) out vec4 colour;
+layout(location = 1) out vec2 tex_coords;
 
-// Global uniforms
-layout(location = 0) uniform mat4 view;
-layout(location = 1) uniform mat4 projection;
+layout(std140, binding = 0) uniform GlobalUniforms {
+    mat4 view;
+    mat4 projection;
+};
 
 void main() {
-    gl_Position = projection * vec4(_vp, 1.0);
-    tex_coords = _tex_coords;
+    gl_Position = projection * view * vec4(a_vertexPosition.x, 
+	// Need to flip the Y pos as OpenGL has tex coords start in bottom left instead of top left
+											1 - a_vertexPosition.y,
+											0,
+											1.0);
+    										colour = vec4(a_colour, 1.0);
+    tex_coords = a_texcoords;
 }
 )";
 
@@ -88,10 +95,11 @@ constexpr auto DEFAULT_UI_FRAGMENT_SHADER = R"(
 
 out vec4 colour;
 
-layout(location = 0) in vec2 _tex_coords;
-layout(location = 1) uniform sampler2D u_diffuseTexture;
+layout(location = 0) in vec4 _colour;
+layout(location = 1) in vec2 _tex_coords;
+layout(binding = 2) uniform sampler2D u_diffuseTexture;
 
 void main() {
-    colour = texture(u_diffuseTexture, _tex_coords);
+    colour = texture(u_diffuseTexture, _tex_coords) * _colour;
 }
 )";
