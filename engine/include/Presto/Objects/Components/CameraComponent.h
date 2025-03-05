@@ -18,6 +18,8 @@ class CameraComponent : public Component, LazyCalculator {
     [[nodiscard]] Presto::mat4 getViewMatrix();
     [[nodiscard]] Presto::mat4 getProjectionMatrix();
 
+    CameraComponent& setType(CameraType newType);
+
     CameraComponent& setYaw(double newYaw);
     CameraComponent& setPitch(double newPitch);
     CameraComponent& setRoll(double newRoll);

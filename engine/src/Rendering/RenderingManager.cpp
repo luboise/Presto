@@ -72,6 +72,8 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
     impl_->textureFactory_ = renderer_->getTextureFactory();
 
     impl_->camera_2d = NewComponent<CameraComponent>();
+    impl_->camera_2d->setType(CameraType::ORTHOGRAPHIC)
+        .setExtents({.width = 10, .height = 10});
 
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
@@ -338,7 +340,7 @@ void RenderingManager::update() {
     PR_CORE_ASSERT(quad_registration != nullptr,
                    "The default quad can not be null.");
 
-    renderer_->setCameraData(activeCamera_);
+    renderer_->setCameraData(*impl_->camera_2d);
 
     // Set pipeline to UI pipeline
     for (const ComponentPtr<CanvasComponent>& ptr : canvas_draws) {

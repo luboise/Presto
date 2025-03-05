@@ -62,10 +62,20 @@ glm::vec3 CameraComponent::getFocus() const { return _focusPoint; }
 
 void CameraComponent::recalculate() {
     // Calculate offset pointing at origin with the y axis up
-    viewMatrix_ = glm::lookAt(_cameraPos, _focusPoint, glm::vec3(0, 1, 0));
+    if (type_ == CameraType::PERSPECTIVE) {
+        viewMatrix_ = glm::lookAt(_cameraPos, _focusPoint, glm::vec3(0, 1, 0));
 
-    projectionMatrix_ = glm::perspectiveFov<double>(
-        fov_, extents_.width, extents_.height, near_, far_);
+        projectionMatrix_ = glm::perspectiveFov<double>(
+            fov_, extents_.width, extents_.height, near_, far_);
+    }
+
+    if (type_ == CameraType::ORTHOGRAPHIC) {
+        viewMatrix_ = glm::mat4{1};
+        projectionMatrix_ =
+            glm::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
+                       -(extents_.height / 2.0F), (extents_.height / 2.0F),
+                       -1000.F, 1000.F);
+    }
 }
 
 CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
@@ -90,10 +100,19 @@ CameraComponent& CameraComponent::setDistances(camera_distance_t near,
 
     return *this;
 };
+
 CameraComponent& CameraComponent::setExtents(VisualExtents newExtents) {
     extents_ = newExtents;
     setDirty();
 
     return *this;
 }
+
+CameraComponent& CameraComponent::setType(CameraType newType) {
+    this->type_ = newType;
+    this->setDirty();
+
+    return *this;
+};
+
 }  // namespace Presto
