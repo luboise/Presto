@@ -30,7 +30,7 @@ class PRESTO_API Entity {
 
     static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};
 
-    [[nodiscard]] entity_id_t getId() const { return this->id_; };
+    [[nodiscard]] entity_id_t id() const { return this->id_; };
 
     // TODO: Move component ID into the component class if possible
     // (Commponent itself cannot be templated!)

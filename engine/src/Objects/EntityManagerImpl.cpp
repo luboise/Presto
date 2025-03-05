@@ -103,13 +103,6 @@ std::vector<EntityPtr> EntityManagerImpl::findWhere(auto filter) {
     return impl_->entity_map | std::views::values | std::views::filter(filter);
 }
 
-// MapFilterView<EntityManagerImpl::ComponentMap>
-ComponentSearchResults EntityManagerImpl::findComponentsWhere(
-    const ComponentFilter& filter) {
-    return componentDatabase_ | std::views::values | std::views::join |
-           std::views::filter(filter);
-}
-
 /*
     MapFilterView<EntityManagerImpl::ComponentMap>
     EntityManagerImpl::findComponentsByType(CheckedComponentBits bits) {
@@ -190,5 +183,12 @@ entity_id_t EntityManager::reserveId() {
 EntityPtr EntityManager::newEntity(const entity_name_t& name) {
     return EntityManagerImpl::get().newEntity(name);
 };
+
+// MapFilterView<EntityManagerImpl::ComponentMap>
+ComponentSearchResults EntityManager::findComponentsWhere(
+    const ComponentFilter& filter) {
+    return componentDatabase_ | std::views::values | std::views::join |
+           std::views::filter(filter);
+}
 
 }  // namespace Presto

@@ -35,7 +35,7 @@ return ComponentPtr<SubClass>{dynamic_cast<SubClass*>(this)};
 }
     */
 
-    [[nodiscard]] component_id_t getId() const { return this->id_; };
+    [[nodiscard]] component_id_t id() const { return this->id_; };
 
    protected:
     Component() = default;

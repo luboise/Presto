@@ -5,6 +5,9 @@
 #include "ComponentBits.h"
 
 namespace Presto {
+
+class CameraComponent;
+
 class DebugUI {
    public:
     enum class EditorState { EDITING, SELECTING_A_FILE, SELECTING_A_FOLDER };
@@ -32,6 +35,7 @@ class DebugUI {
 
     inline static bool showEntityBrowser_{true};
     inline static bool showComponentBrowser_{true};
+    // inline static bool showCameraAdjuster_{true};
 
     inline static EditorState state_{EditorState::EDITING};
     inline static EntityPtr selectedEntity_{nullptr};
@@ -42,8 +46,13 @@ class DebugUI {
 
     static void drawEntityBrowser();
     static void drawComponentBrowser();
+    static void drawCameraAdjuster();
+
+    static void drawSelectedComponent();
 
     static void handleInput();
+
+    inline static Ptr<Component> selectedComponent_;
 
     inline static std::function<void()> exitCallback_;
 

@@ -65,8 +65,9 @@ void CameraComponent::recalculate() {
     if (type_ == CameraType::PERSPECTIVE) {
         viewMatrix_ = glm::lookAt(_cameraPos, _focusPoint, glm::vec3(0, 1, 0));
 
-        projectionMatrix_ = glm::perspectiveFov<double>(
-            fov_, extents_.width, extents_.height, near_, far_);
+        projectionMatrix_ =
+            glm::perspectiveFov<double>(fov_, extents_.width, extents_.height,
+                                        distances_.near, distances_.far);
     }
 
     if (type_ == CameraType::ORTHOGRAPHIC) {
@@ -74,7 +75,7 @@ void CameraComponent::recalculate() {
         projectionMatrix_ =
             glm::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
                        -(extents_.height / 2.0F), (extents_.height / 2.0F),
-                       -1000.F, 1000.F);
+                       distances_.near, distances_.far);
     }
 }
 
@@ -85,16 +86,17 @@ CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
     return *this;
 };
 
-CameraComponent& CameraComponent::setDistances(camera_distance_t near,
-                                               camera_distance_t far) {
-    PR_ASSERT(near >= PR_MIN_NEAR_DISTANCE,
-              "The camera's near distance must be at least {}",
-              PR_MIN_NEAR_DISTANCE)
-    PR_ASSERT(far > near,
+CameraComponent& CameraComponent::setDistances(CameraDistances distances) {
+    if (type_ == CameraType::PERSPECTIVE) {
+        PR_ASSERT(distances.near >= PR_MIN_NEAR_DISTANCE,
+                  "The camera's near distance must be at least {}",
+                  PR_MIN_NEAR_DISTANCE)
+    }
+
+    PR_ASSERT(distances.far > distances.near,
               "The camera's far distance must be at least the near distance.")
 
-    near_ = near;
-    far_ = far;
+    distances_ = distances;
 
     setDirty();
 
@@ -115,4 +117,6 @@ CameraComponent& CameraComponent::setType(CameraType newType) {
     return *this;
 };
 
+CameraType& CameraComponent::getType() { return type_; };
+VisualExtents& CameraComponent::getExtents() { return extents_; };
 }  // namespace Presto

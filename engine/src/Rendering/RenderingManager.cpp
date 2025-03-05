@@ -73,7 +73,7 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     impl_->camera_2d = NewComponent<CameraComponent>();
     impl_->camera_2d->setType(CameraType::ORTHOGRAPHIC)
-        .setExtents({.width = 10, .height = 10});
+        .setExtents({.width = 1, .height = 2});
 
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};

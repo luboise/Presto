@@ -8,11 +8,15 @@
 
 #include "DebugUI.h"
 
+#include <algorithm>
+#include <memory>
 #include <utility>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "imgui.h"
 #include "imgui_internal.h"
+
+#include "DebugComponents.h"
 
 namespace Presto {
 
@@ -215,6 +219,12 @@ void DebugUI::drawMainEditor() {
         drawComponentBrowser();
     };
 
+    /*
+if (showCameraAdjuster_) {
+    drawCameraAdjuster();
+}
+    */
+
     CHILD(Assets, 1, 0.5, {
         ImGui::Text("Assets");
 
@@ -317,7 +327,7 @@ void DebugUI::drawEntityBrowser() {
         std::vector<EntityPtr> entities{EntityManagerImpl::get().findAll()};
 
         for (const auto& entity_ptr : entities) {
-            entity_id_t id{entity_ptr->getId()};
+            entity_id_t id{entity_ptr->id()};
             {
                 std::string label{
                     std::format("({}) {}", id, entity_ptr->getName())};
@@ -343,7 +353,7 @@ void DebugUI::drawEntityBrowser() {
 void DebugUI::drawComponentBrowser() {
     if (ImGui::Begin("Component Browser")) {
         ImGui::BeginTable(
-            "ComponentBrowserTable", 2,
+            "ComponentBrowserTable", 3,
             ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersH);
 
         ImGui::TableNextColumn();
@@ -353,7 +363,7 @@ void DebugUI::drawComponentBrowser() {
 
         auto bits{DebugUI::componentBits_};
 
-        auto components{EntityManagerImpl::get().findComponentsWhere(
+        auto components_view{EntityManager::Get().findComponentsWhere(
             [bits](const GenericComponentPtr& component) {
                 if (bits == -1U) {
                     return true;
@@ -367,12 +377,25 @@ void DebugUI::drawComponentBrowser() {
                     component->isOfType<ModelComponent>()) {
                     return true;
                 }
+                if (((bits & CAMERA_BIT) != 0U) &&
+                    component->isOfType<CameraComponent>()) {
+                    return true;
+                }
 
                 return false;
             })};
 
+        std::vector<Ptr<Component>> components(components_view.begin(),
+                                               components_view.end());
+
+        std::ranges::sort(
+            components,
+            [](const Ptr<Component>& a, const Ptr<Component>& b) -> bool {
+                return a->id() < b->id();
+            });
+
         for (const GenericComponentPtr& component : components) {
-            auto id{component->getId()};
+            auto id{component->id()};
             {
                 std::string label{std::format("({}) Component", id)};
 
@@ -383,7 +406,7 @@ void DebugUI::drawComponentBrowser() {
                                      : ImGuiTreeNodeFlags_None),
                         "%s", label.data())) {
                     if (ImGui::IsItemClicked()) {
-                        // selectedEntity_ = entity_ptr;
+                        selectedComponent_ = component;
                     };
 
                     ImGui::TreePop();
@@ -397,7 +420,7 @@ void DebugUI::drawComponentBrowser() {
         auto make_checkbox{[bits](const char* label, CheckedComponentBit bit) {
             bool enabled{static_cast<bool>(bits & bit)};
             if (ImGui::Checkbox(label, &enabled)) {
-                DebugUI::componentBits_ = DebugUI::componentBits_ ^ bit;
+                DebugUI::componentBits_ ^= bit;
             };
         }};
 
@@ -416,10 +439,69 @@ void DebugUI::drawComponentBrowser() {
         make_checkbox("Model", MODEL_BIT);
         make_checkbox("Camera", CAMERA_BIT);
 
+        if (selectedComponent_ != nullptr) {
+            ImGui::TableNextColumn();
+            drawSelectedComponent();
+        }
+
         ImGui::EndTable();
 
         ImGui::End();
     }
 }
+
+void DebugUI::drawSelectedComponent() {
+    ImGui::Text("Component Editor");
+
+    PR_CORE_ASSERT(selectedComponent_ != nullptr,
+                   "drawSelectedComponent shouldn't be called if the selected "
+                   "component is null.");
+
+    if (selectedComponent_->isOfType<CameraComponent>()) {
+        Ptr<CameraComponent> camera{
+            std::dynamic_pointer_cast<CameraComponent>(selectedComponent_)};
+
+        DebugComponents::EnumChooser(
+            camera->getType(),
+            std::vector<EnumMember<CameraType>>{
+                {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
+                {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
+
+        auto& extents{camera->getExtents()};
+
+        DebugComponents::SliderChooser(
+            extents.width, "Extents width", 1, 3840,
+            [&camera, &extents](auto value) {
+                camera->setExtents({.width = value, .height = extents.height});
+            });
+
+        DebugComponents::SliderChooser(
+            extents.height, "Extents height", 1, 2160,
+            [&camera, &extents](auto value) {
+                camera->setExtents({.width = extents.width, .height = value});
+            });
+
+        auto distances{camera->getDistances()};
+
+        DebugComponents::SliderChooser(
+            distances.near, "Near", -1000.F, 3000.F,
+            [&camera, &distances](auto value) {
+                if (value > distances.far) {
+                    return;
+                }
+
+                camera->setDistances({value, distances.far});
+            });
+
+        DebugComponents::SliderChooser(
+            distances.far, "Far", -1000.F, 3000.F,
+            [&camera, &distances](auto value) {
+                if (value < distances.near) {
+                    return;
+                }
+                camera->setDistances({distances.near, value});
+            });
+    }
+};
 
 }  // namespace Presto

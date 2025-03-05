@@ -9,12 +9,17 @@ enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 
 class CameraComponent : public Component, LazyCalculator {
     using camera_fov_t = double;
-    using camera_distance_t = double;
+    using camera_distance_t = float;
 
     friend class EntityManager;
     friend class EntityManagerImpl;
 
    public:
+    struct CameraDistances {
+        camera_distance_t near;
+        camera_distance_t far;
+    };
+
     [[nodiscard]] Presto::mat4 getViewMatrix();
     [[nodiscard]] Presto::mat4 getProjectionMatrix();
 
@@ -33,8 +38,13 @@ class CameraComponent : public Component, LazyCalculator {
 
     // Sets the near and far planes of a perspective projection.
     // Requires near >= PR_MIN_NEAR_DISTANCE, and far >= near
-    CameraComponent& setDistances(camera_distance_t newNear,
-                                  camera_distance_t newFar);
+    CameraComponent& setDistances(CameraDistances distances);
+
+    [[nodiscard]] CameraDistances getDistances() const { return distances_; }
+
+    [[nodiscard]] VisualExtents& getExtents();
+
+    [[nodiscard]] CameraType& getType();
 
     [[nodiscard]] double getYaw() const;
     [[nodiscard]] double getPitch() const;
@@ -53,8 +63,7 @@ class CameraComponent : public Component, LazyCalculator {
 
     // FOV of the camera (default of 90deg)
     camera_fov_t fov_{glm::radians(90.0F)};
-    camera_distance_t near_{1};
-    camera_distance_t far_{1000};
+    CameraDistances distances_{.near = -1, .far = 1000};
 
     // TODO: Move the default extents somewhere else
     // Default extents of 1080p
@@ -66,7 +75,7 @@ class CameraComponent : public Component, LazyCalculator {
 
     void recalculate();
 
-    glm::highp_mat4 viewMatrix_{1};
-    glm::highp_mat4 projectionMatrix_{1};
+    glm::mat4 viewMatrix_{1};
+    glm::mat4 projectionMatrix_{1};
 };
 }  // namespace Presto
