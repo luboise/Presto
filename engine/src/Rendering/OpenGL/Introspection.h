@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <algorithm>
 
 #include "Presto/Rendering/AttributeTypes.h"
 #include "Presto/Rendering/PipelineTypes.h"
@@ -130,7 +131,11 @@ std::vector<PipelineAttribute> getAttributesFromShader(GLuint program) {
     return attributes;
 };
 
-std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
+const auto default_uniform_filter = [](auto index) { return index == -1; };
+
+std::vector<PipelineUniform> getUniformsFromShader(
+    GLuint program,
+    const std::function<bool(GLint)>& filter = default_uniform_filter) {
     GLint uniform_count = 0;
 
     glGetProgramInterfaceiv(program, GL_UNIFORM, GL_ACTIVE_RESOURCES,
@@ -155,8 +160,7 @@ std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
             properties.data(), static_cast<GLsizei>(properties.size()), nullptr,
             values.data());
 
-        // Skip block variables
-        if (values[4] != -1) {
+        if (!filter(values[4])) {
             continue;
         }
 
@@ -182,65 +186,67 @@ std::vector<PipelineUniform> getUniformsFromShader(GLuint program) {
 };
 
 std::vector<PipelineUniformBlock> getUniformBlocksFromShader(GLuint program) {
-    return {};
+    // Get number of blocks
+    GLint block_count = 0;
+    glGetProgramiv(program, GL_ACTIVE_UNIFORM_BLOCKS, &block_count);
 
-    /*
-// Get number of blocks
-GLint block_count = 0;
-glGetProgramInterfaceiv(program, GL_UNIFORM_BLOCK, GL_ACTIVE_UNIFORM_BLOCKS,
-                        &block_count);
+    std::vector<PipelineUniformBlock> blocks(block_count);
 
-std::vector<PipelineUniformBlock> blocks(block_count);
+    // List of properties to get about each block
+    std::vector<GLenum> block_props{GL_BUFFER_BINDING, GL_BUFFER_DATA_SIZE,
+                                    GL_NAME_LENGTH, GL_NUM_ACTIVE_VARIABLES};
 
-// List of properties to get about each block
-std::vector<GLenum> properties{GL_BUFFER_BINDING, GL_BUFFER_DATA_SIZE,
-                               GL_NAME_LENGTH, GL_NUM_ACTIVE_VARIABLES};
+    std::vector<GLchar> block_name(256);
 
-std::array<GLint, 4> values{0};
+    // For each uniform block
+    for (GLint block_index = 0; block_index < block_count; ++block_index) {
+        PipelineUniformBlock uniform_block;
 
-std::vector<GLchar> name(256);
+        GLint num_uniforms_in_block{};
+        GLint name_length{};
 
-for (GLint index = 0; index < block_count; ++index) {
-    // Get properties
-    glGetProgramResourceiv(
-        program, GL_UNIFORM_BLOCK, index,
-        static_cast<GLsizei>(properties.size()), properties.data(),
-        static_cast<GLsizei>(properties.size()), nullptr, values.data());
+        GLsizei chars_written{};
 
-    // Get name
-    name.resize(values[2]);
-    glGetProgramResourceName(program, GL_UNIFORM_BLOCK, index,
-                             static_cast<GLint>(name.size()), nullptr,
-                             name.data());
-
-    std::vector<PipelineUniform> uniforms;
-    for (auto uniform_index = 0; uniform_index < values[3];
-         ++uniform_index) {
-        GLint uniform_count{};
-        glGetActiveUniformBlockiv(program, uniform_index,
+        glGetActiveUniformBlockiv(program, block_index,
                                   GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS,
-                                  &uniform_count);
+                                  &num_uniforms_in_block);
 
-        std::vector<GLint> uniform_indices(uniform_count);
+        // Get the name of the block
+        glGetActiveUniformBlockiv(program, block_index,
+                                  GL_UNIFORM_BLOCK_NAME_LENGTH, &name_length);
+        glGetActiveUniformBlockName(program, block_index, name_length,
+                                    &chars_written, block_name.data());
 
-        glGetActiveUniformBlockiv(program, blockIndex,
+        GLint binding{};
+        std::vector<GLint> uniform_indices(num_uniforms_in_block);
+
+        // Get the indices of all of the uniforms
+        glGetActiveUniformBlockiv(program, block_index,
                                   GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
                                   uniform_indices.data());
 
-        glGetActiveUniformsiv(program);
+        for (GLint uniform_index{0}; uniform_index < num_uniforms_in_block;
+             ++uniform_index) {
+            glGetActiveUniformBlockiv(program, block_index,
+                                      GL_UNIFORM_BLOCK_BINDING, &binding);
+        }
+
+        std::vector<GLuint> unsigned_indices{uniform_indices.begin(),
+                                             uniform_indices.end()};
+
+        auto uniforms{
+            getUniformsFromShader(program, [&block_index](auto index) -> bool {
+                return index == block_index;
+            })};
+
+        uniform_block.name = Presto::string(block_name.data(), chars_written);
+        uniform_block.binding = binding;
+        uniform_block.uniforms = std::move(uniforms);
+
+        blocks[block_index] = std::move(uniform_block);
     }
 
-    PipelineUniformBlock uniform{
-        .location = static_cast<PR_NUMERIC_ID>(values[0]),
-        .type = getShaderDataType(values[1], values[2]),
-        .name = std::string(name.data()),
-    };
-
-    blocks[index] = std::move(attribute);
-}
-
     return blocks;
-    */
 }
 
 std::vector<PipelineUniform> getUniforms(GLuint program, GLenum base) {
