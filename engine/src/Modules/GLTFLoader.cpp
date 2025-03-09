@@ -238,12 +238,16 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
             return chars;
         }};
 
-#define SWITCH_CASE(type)                                         \
-    case (type):                                                  \
-        chars = vector_to_uchars(                                 \
-            getAccessorAs<SubTypeOf<ShaderImportTypeOf<(type)>>>( \
-                model, accessorIndex));                           \
-        break;
+#define SWITCH_CASE(type)                                                 \
+    case (type): {                                                        \
+        auto original_data{                                               \
+            getAccessorAs<SubTypeOf<ShaderImportTypeOf<(type)>>>(         \
+                model, accessorIndex)};                                   \
+        std::vector<SubTypeOf<T>> substituted_data{original_data.begin(), \
+                                                   original_data.end()};  \
+        chars = vector_to_uchars(std::move(substituted_data));            \
+        break;                                                            \
+    }
 
     switch (tinygltf_type) {
         SWITCH_CASE(ShaderDataType::INT)
