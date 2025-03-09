@@ -70,7 +70,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     PipelineBuilder& getPipelineBuilder();
 
-    Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size);
+    [[nodiscard]] Allocated<UniformBuffer> createUniformBuffer(
+        Presto::size_t size);
 
     [[nodiscard]] Ptr<MaterialInstance> createMaterial(MaterialType type,
                                                        Presto::string name);

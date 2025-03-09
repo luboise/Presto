@@ -1,16 +1,38 @@
 #include "Presto/Objects/Components/UI/CanvasItem.h"
+#include <memory>
+#include "Presto/Rendering/RenderTypes.h"
+#include "Rendering/StructBuffer.h"
 
 namespace Presto {
-[[nodiscard]] CanvasPosition CanvasPosition::clamped() const {
-    return {.x = std::clamp(x, PR_CANVAS_MIN_VALUE, PR_CANVAS_MAX_VALUE),
-            .y = std::clamp(y, PR_CANVAS_MIN_VALUE, PR_CANVAS_MAX_VALUE)};
-}
+
+struct CanvasItem::Impl {
+    StructUniformBuffer<CanvasItemAttributes> struct_buffer;
+    TexturePtr texture;
+};
 
 CanvasItem& CanvasItem::setTexture(const TexturePtr& texture) {
-    texture_ = texture;
+    impl_->texture = texture;
 
     return *this;
 };
 
-const TexturePtr& CanvasItem::texture() const { return texture_; };
+CanvasItem::CanvasItem(vec2 position) : LazyCalculator() {
+    impl_ = std::make_unique<Impl>();
+    impl_->struct_buffer.write({.position = position});
+}
+
+const TexturePtr& CanvasItem::texture() const { return impl_->texture; };
+
+const CanvasPosition& CanvasItem::position() const {
+    return impl_->struct_buffer.data().position;
+};
+
+CanvasItem& CanvasItem::setAttributes(CanvasItemAttributes attributes) {
+    impl_->struct_buffer.write(attributes);
+
+    return *this;
+};
+
+CanvasItem::~CanvasItem() = default;
+CanvasItem::CanvasItem(CanvasItem&&) noexcept = default;
 }  // namespace Presto

@@ -4,11 +4,7 @@ namespace Presto {
 class CanvasItem;
 
 class CanvasGroup;
-struct CanvasPosition;
+using CanvasPosition = Presto::vec2;
 };  // namespace Presto
-
-using CanvasItem = Presto::CanvasItem;
-using CanvasGroup = Presto::CanvasGroup;
-using CanvasPosition = Presto::CanvasPosition;
 
 using Presto::CanvasGroup, Presto::CanvasItem, Presto::CanvasPosition;

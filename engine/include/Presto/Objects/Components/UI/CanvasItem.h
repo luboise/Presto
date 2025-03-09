@@ -1,40 +1,34 @@
 #pragma once
 
 #include "Presto/Aliases/Handles.h"
+#include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
+
+#include "Presto/Utils/LazyCalculator.h"
 
 namespace Presto {
 
-using CanvasUnits = Presto::float32_t;
-
-constexpr CanvasUnits PR_CANVAS_MIN_VALUE = -1;
-constexpr CanvasUnits PR_CANVAS_MAX_VALUE = 1;
-
-struct CanvasPosition {
-    CanvasUnits x;
-    CanvasUnits y;
-
-    /** @brief Clamps a canvas position to be within the canvas bounds.
-     *  @see PR_CANVAS_MIN_VALUE and PR_CANVAS_MAX_VALUE
-     */
-    [[nodiscard]] CanvasPosition clamped() const;
-};
-
-class PRESTO_API CanvasItem {
+class PRESTO_API CanvasItem : LazyCalculator {
    public:
-    explicit CanvasItem(CanvasPosition position) : position_(position) {}
+    explicit CanvasItem(CanvasPosition position);
+    ~CanvasItem();
 
-    [[nodiscard]] const CanvasPosition& getPosition() const {
-        return position_;
-    }
+    [[nodiscard]] CanvasItem& setAttributes(CanvasItemAttributes attributes);
+
+    [[nodiscard]] const CanvasPosition& position() const;
 
     [[nodiscard]] const TexturePtr& texture() const;
-
     CanvasItem& setTexture(const TexturePtr&);
 
+    CanvasItem(CanvasItem&&) noexcept;
+
+    CanvasItem(const CanvasItem&) = delete;
+    CanvasItem& operator=(const CanvasItem&) = delete;
+    CanvasItem& operator=(CanvasItem&&) = delete;
+
    private:
-    CanvasPosition position_;
-    TexturePtr texture_;
+    struct Impl;
+    Allocated<Impl> impl_;
 };
 
 }  // namespace Presto

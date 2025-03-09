@@ -67,6 +67,10 @@ constexpr auto BASE_COLOR = BASE_COLOUR;
 
 constexpr auto DIFFUSE_TEXTURE = "u_diffuseTexture";
 
+constexpr auto UI_POSITION = "u_position";
+constexpr auto UI_SIZE = "u_size";
+constexpr auto UI_OFFSET = "u_offset";
+
 };  // namespace DefaultMaterialPropertyName
 
 struct ImportedMaterialProperty {

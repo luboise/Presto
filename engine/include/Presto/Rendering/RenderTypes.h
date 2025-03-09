@@ -15,6 +15,12 @@ struct ObjectUniforms {
     Presto::mat4 transform;
 };
 
+struct CanvasItemAttributes {
+    Presto::vec2 position{0, 0};
+    Presto::vec2 offset{0, 0};
+    Presto::float32_t scale{1};
+};
+
 struct DrawInfo {
     std::size_t vertex_count = 0;
 
@@ -74,5 +80,17 @@ struct MeshData {
     IndexList indices;
     // [[nodiscard]] BoundingBox getBoundingBox() const;
 };
+
+using CanvasUnits = Presto::float32_t;
+
+constexpr CanvasUnits PR_CANVAS_MIN_VALUE = -1;
+constexpr CanvasUnits PR_CANVAS_MAX_VALUE = 1;
+
+using CanvasPosition = Presto::vec2;
+
+/** @brief Clamps a canvas position to be within the canvas bounds.
+ *  @see PR_CANVAS_MIN_VALUE and PR_CANVAS_MAX_VALUE
+ */
+CanvasPosition Clamped(const CanvasPosition& pos);
 
 }  // namespace Presto

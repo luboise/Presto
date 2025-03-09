@@ -13,7 +13,7 @@ class OpenGLUniformBuffer final : public UniformBuffer {
     void bind(Presto::size_t index) override;
     void unbind() override;
 
-    void write(const std::span<std::byte>& bytes,
+    void write(const std::span<const std::byte>& bytes,
                Presto::size_t offset = 0) override;
 
    private:

@@ -79,6 +79,13 @@ layout(std140, binding = 0) uniform GlobalUniforms {
     mat4 projection;
 };
 
+
+layout (std140, binding = 1) uniform UIUniforms {
+	vec2 u_position;
+	vec2 u_offset;
+	float u_size;
+};
+
 void main() {
     gl_Position = projection * view * vec4(a_vertexPosition.x, 
 	// Need to flip the Y pos as OpenGL has tex coords start in bottom left instead of top left

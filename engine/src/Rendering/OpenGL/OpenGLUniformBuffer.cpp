@@ -15,7 +15,7 @@ OpenGLUniformBuffer::OpenGLUniformBuffer(Presto::size_t bufferSize)
                  nullptr, GL_DYNAMIC_DRAW);
 };
 
-void OpenGLUniformBuffer::write(const std::span<std::byte>& bytes,
+void OpenGLUniformBuffer::write(const std::span<const std::byte>& bytes,
                                 Presto::size_t offset) {
     glBindBuffer(GL_UNIFORM_BUFFER, buffer_);
     glBufferSubData(GL_UNIFORM_BUFFER, static_cast<GLsizeiptr>(offset),

@@ -9,8 +9,16 @@ class PRESTO_API CanvasGroup {
    public:
     ~CanvasGroup() = default;
 
-    void addItem(CanvasItem item) { items_.push_back(std::move(item)); };
+    void addItem(CanvasItem item) { items_.emplace_back(std::move(item)); };
+    void addItem(CanvasItem&& item) { items_.emplace_back(std::move(item)); };
+
     [[nodiscard]] const auto& items() const { return this->items_; }
+
+    CanvasGroup(const CanvasGroup&) = default;
+    CanvasGroup(CanvasGroup&&) = default;
+
+    CanvasGroup& operator=(const CanvasGroup&) = delete;
+    CanvasGroup& operator=(CanvasGroup&&) = delete;
 
    private:
     CanvasGroup() = default;

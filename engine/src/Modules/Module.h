@@ -65,7 +65,7 @@ class PRESTO_API Module {
      * @warning The base Module class has its copy and move constructors
      * deleted, meaning that only references can be retrieved from get().
      */
-    static T& get() {
+    [[nodiscard]] static T& get() {
         INTERNAL_MODULE_STATIC_ASSERTION();
         PR_CORE_ASSERT(T::initialised(),
                        std::format("Attempted to get uninitialised module: {}",
