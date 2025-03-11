@@ -99,7 +99,7 @@ template <ShaderDataType T>
 // requires requires { ShaderDataTypeTraits<T>::ImportType; }
 using ShaderImportTypeOf = ShaderDataTypeTraits<T>::ImportType;
 
-constexpr Presto::size_t ShaderTypeSize(ShaderDataType type) {
+constexpr Presto::size_t SizeOfShaderType(ShaderDataType type) {
 #define SWITCH_CASE(type)                                         \
     case type:                                                    \
         return sizeof(ShaderDataTypeTraits<(type)>::ImportType) * \

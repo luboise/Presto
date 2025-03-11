@@ -14,7 +14,7 @@ target_sources(
           PipelineBuilder.cpp
           UniformTypes.cpp
           Buffer.cpp
-          # TextureInstance.cpp
-          # Materials
+          # TextureInstance.cpp Materials
           ShaderTypes.cpp
-          MaterialInstance.cpp)
+          MaterialInstance.cpp
+          VertexTypes.cpp)

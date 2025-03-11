@@ -34,4 +34,18 @@ bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
 
     return success != 0;
 };
+GLenum OpenGLUtils::PrestoDrawModeToOpenGLDrawMode(MeshDrawMode mode) {
+    switch (mode) {
+        case MeshDrawMode::POINTS:
+            return GL_POINTS;
+        case MeshDrawMode::LINES:
+            return GL_LINES;
+        case MeshDrawMode::LINE_STRIP:
+            return GL_LINE_STRIP;
+        case MeshDrawMode::TRIANGLES:
+            return GL_TRIANGLES;
+        case MeshDrawMode::TRIANGLE_STRIP:
+            return GL_TRIANGLE_STRIP;
+    }
+}
 }  // namespace Presto

@@ -3,7 +3,6 @@
 #include "Rendering/OpenGL/utils.h"
 
 #include "DefaultShaders.h"
-#include "glm/gtc/type_ptr.hpp"
 
 namespace Presto {
 OpenGLShader::OpenGLShader() : shaderProgram_(glCreateProgram()) {};

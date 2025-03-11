@@ -68,9 +68,7 @@ void CameraComponent::recalculate() {
         projectionMatrix_ =
             glm::perspectiveFov<double>(fov_, extents_.width, extents_.height,
                                         distances_.near, distances_.far);
-    }
-
-    if (type_ == CameraType::ORTHOGRAPHIC) {
+    } else if (type_ == CameraType::ORTHOGRAPHIC) {
         viewMatrix_ = glm::mat4{1};
         projectionMatrix_ =
             glm::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
@@ -88,9 +86,9 @@ CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
 
 CameraComponent& CameraComponent::setDistances(CameraDistances distances) {
     if (type_ == CameraType::PERSPECTIVE) {
-        PR_ASSERT(distances.near >= PR_MIN_NEAR_DISTANCE,
-                  "The camera's near distance must be at least {}",
-                  PR_MIN_NEAR_DISTANCE)
+        // PR_ASSERT(distances.near >= PR_MIN_NEAR_DISTANCE,
+        // "The camera's near distance must be at least {}",
+        // PR_MIN_NEAR_DISTANCE)
     }
 
     PR_ASSERT(distances.far > distances.near,

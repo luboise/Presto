@@ -13,6 +13,18 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     static constexpr auto INVALID_SHADER_ID = 0;
 
    public:
+    OpenGLPipelineBuilder& setAttributesOverride(
+        std::vector<PipelineAttribute> attributes) {
+        this->attributesOverride_ = std::move(attributes);
+
+        return *this;
+    }
+
+    OpenGLPipelineBuilder& clearAttributesOverride() {
+        attributesOverride_.clear();
+        return *this;
+    }
+
     PipelineBuilder& setShader(const char* data, ShaderStage type) override {
         switch (type) {
             case ShaderStage::VERTEX: {
@@ -67,8 +79,11 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
             return nullptr;
         }
 
-        Allocated<Pipeline> pipeline{
-            new OpenGLPipeline(id(), vertexShader_.id, fragmentShader_.id)};
+        Allocated<Pipeline> pipeline{new OpenGLPipeline(
+            id(), vertexShader_.id, fragmentShader_.id, attributesOverride_)};
+
+        if (!attributesOverride_.empty()) {
+        }
 
         return pipeline;
     };
@@ -89,6 +104,8 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
         ShaderAllocation(ShaderAllocation&&) = default;
         ShaderAllocation& operator=(ShaderAllocation&&) = default;
     };
+
+    std::vector<PipelineAttribute> attributesOverride_;
 
     ShaderAllocation vertexShader_{INVALID_SHADER_ID};
     ShaderAllocation fragmentShader_{INVALID_SHADER_ID};

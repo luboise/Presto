@@ -20,7 +20,7 @@ struct VertexAttribute {
     Presto::size_t offset{0};
 
     [[nodiscard]] std::size_t size() const noexcept {
-        return ShaderTypeSize(type);
+        return SizeOfShaderType(type);
     };
 };
 

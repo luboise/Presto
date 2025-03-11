@@ -36,8 +36,7 @@ struct ImportedMesh {
     Presto::size_t vertex_count;
     IndexList indices;
 
-    // TODO: Make this a Presto type that can map to multiple graphics APIs
-    std::int32_t draw_mode;
+    MeshDrawMode draw_mode;
 
     [[nodiscard]] bool hasMaterial() const {
         return material_index != PR_NO_MATERIAL_INDEX;
@@ -53,9 +52,14 @@ struct ImportedModel {
 namespace DefaultAttributeName {
 
 constexpr auto POSITION = "a_vertexPosition";
-constexpr auto COLOUR = "a_vertexPosition";
+
+constexpr auto COLOUR = "a_colour";
+constexpr auto COLOR = COLOUR;
+
 constexpr auto NORMAL = "a_normal";
 constexpr auto TEXCOORDS = "a_texcoords";
+
+bool IsDefaultAttributeName(const Presto::string& str);
 
 }  // namespace DefaultAttributeName
 

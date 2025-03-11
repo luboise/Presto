@@ -17,7 +17,7 @@ Presto::size_t PipelineUniform::size() const {
 };
 
 Presto::size_t PipelineAttribute::size() const {
-    return ShaderTypeSize(this->type);
+    return SizeOfShaderType(this->type);
 };
 
 Presto::size_t PipelineStructure::stride() const {

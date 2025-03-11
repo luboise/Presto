@@ -88,11 +88,17 @@ void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
         return;
     }
 
-    auto write_size{getWriteSize(data.size(), offset)};
-
     this->bind();
-    glBufferSubData(openGlBufferType_, static_cast<GLintptr>(offset),
-                    static_cast<GLsizeiptr>(write_size), (void*)data.data());
+
+    void* ptr{glMapBuffer(openGlBufferType_, GL_WRITE_ONLY)};
+    std::memcpy(ptr, data.data(), data.size());
+    glUnmapBuffer(openGlBufferType_);
+
+    /*
+    //auto write_size{getWriteSize(data.size(), offset)};
+glBufferSubData(openGlBufferType_, static_cast<GLintptr>(offset),
+                static_cast<GLsizeiptr>(write_size), (void*)data.data());
+                                    */
 }
 
 }  // namespace Presto

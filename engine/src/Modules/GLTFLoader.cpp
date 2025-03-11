@@ -96,8 +96,8 @@ PR_STRING_ID tinygltfNameToPrestoName(const PR_STRING_ID& name) {
     return name;
 }
 
-ImportedVertexAttribute getDataFromAccessor(const tinygltf::Model& model,
-                                            size_t accessorIndex) {
+ImportedVertexAttribute oldGetAttributeFromAccessor(
+    const tinygltf::Model& model, size_t accessorIndex) {
     const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
     ShaderDataType type{tinygltfToPrestoType(accessor)};
 
@@ -117,7 +117,7 @@ ImportedVertexAttribute getDataFromAccessor(const tinygltf::Model& model,
         .name = accessor.name,
         .type = type,
         .count = accessor.count,
-        .data = ret_buffer,
+        .data{},
     };
 
     return ret;
@@ -173,21 +173,22 @@ template <typename T>
     const auto& bv = model.bufferViews[accessor.bufferView];
     const auto& buffer = model.buffers[bv.buffer];
 
-    const auto read_count = accessor.count;
+    // const auto read_count = bv.byteLength / sizeof(T);
+    const auto read_count =
+        accessor.count * tinygltf::GetNumComponentsInType(accessor.type);
+
     std::vector<T> ret(read_count);
 
     const auto accessor_offset = bv.byteOffset + accessor.byteOffset;
 
     // Get the stride (it must be at least the size of the data)
-    auto stride = std::max(bv.byteStride, sizeof(T));
+    // auto stride = std::max(bv.byteStride, sizeof(T));
 
-    std::array<unsigned char, sizeof(T)> bytes{};
+    std::span<const T> span{
+        reinterpret_cast<const T*>(&buffer.data[accessor_offset]), read_count};
+
     for (size_t i = 0; i < read_count; i++) {
-        // Get the amount of bytes of the original data type
-        std::ranges::copy_n(&buffer.data[accessor_offset + (i * stride)],
-                            sizeof(T), bytes.begin());
-
-        ret[i] = std::bit_cast<T>(bytes);
+        ret[i] = span[i];
     }
 
     return ret;
@@ -215,21 +216,6 @@ bool getAccessorCharsBySubtype(const tinygltf::Model& model,
 
     std::memcpy(outChars.data(), subtype_data.data(), outChars.size());
 
-    return true;
-}
-*/
-
-template <typename T>
-std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
-                                       size_t accessorIndex) {
-    // Find original data type
-
-    ShaderDataType tinygltf_type{
-        tinygltfToPrestoType(model.accessors[accessorIndex])};
-
-    std::vector<unsigned char> chars;
-    std::vector<T> ret;
-
     auto vector_to_uchars{
         []<typename J>(std::vector<J> inVec) -> std::vector<unsigned char> {
             std::vector<unsigned char> chars(inVec.size() * sizeof(J));
@@ -237,6 +223,51 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
             std::memcpy(chars.data(), inVec.data(), chars.size());
             return chars;
         }};
+
+
+    return true;
+}
+*/
+
+ImportedVertexAttribute getAttributeFromAccessor(const tinygltf::Model& model,
+                                                 Presto::size_t accessorIndex) {
+    const auto& accessor{model.accessors[accessorIndex]};
+    const auto& bufferview = model.bufferViews[accessor.bufferView];
+    const auto& buffer = model.buffers[bufferview.buffer];
+
+    auto converted_name{tinygltfNameToPrestoName(accessor.name)};
+    auto type{tinygltfToPrestoType(accessor)};
+
+    const std::span<const std::byte> bytes{
+        reinterpret_cast<const std::byte*>(
+            &buffer.data[bufferview.byteOffset + accessor.byteOffset]),
+        accessor.count * SizeOfShaderType(type)};
+
+    return {.name = converted_name,
+            .type = tinygltfToPrestoType(accessor),
+            .count = accessor.count,
+            .data = ByteArray(bytes.begin(), bytes.end())};
+}
+
+const auto vector_to_uchars{
+    []<typename J>(std::vector<J> inVec) -> std::vector<unsigned char> {
+        std::vector<unsigned char> chars(inVec.size() * sizeof(J));
+
+        std::memcpy(chars.data(), inVec.data(), chars.size());
+        return chars;
+    }};
+
+template <typename T>
+std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
+                                       size_t accessorIndex) {
+    // Find original data type
+
+    const auto& accessor{model.accessors[accessorIndex]};
+
+    ShaderDataType tinygltf_type{tinygltfToPrestoType(accessor)};
+
+    std::vector<unsigned char> chars;
+    std::vector<T> ret;
 
 #define SWITCH_CASE(type)                                                 \
     case (type): {                                                        \
@@ -253,13 +284,30 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
         SWITCH_CASE(ShaderDataType::INT)
         SWITCH_CASE(ShaderDataType::UINT);
         SWITCH_CASE(ShaderDataType::DOUBLE);
-        SWITCH_CASE(ShaderDataType::VEC3);
-        SWITCH_CASE(ShaderDataType::VEC4);
-        SWITCH_CASE(ShaderDataType::MAT3);
-        SWITCH_CASE(ShaderDataType::MAT4);
-        SWITCH_CASE(ShaderDataType::SHORT);
-        SWITCH_CASE(ShaderDataType::USHORT);
-        SWITCH_CASE(ShaderDataType::FLOAT);
+        SWITCH_CASE(ShaderDataType::VEC2);
+        case (ShaderDataType ::VEC3): {
+            auto original_data{getAccessorAs<
+                SubTypeOf<ShaderImportTypeOf<(ShaderDataType ::VEC3)>>>(
+                model, accessorIndex)};
+            std ::vector<SubTypeOf<T>> substituted_data{original_data.begin(),
+                                                        original_data.end()};
+            chars = vector_to_uchars(std ::move(substituted_data));
+            break;
+        };
+            SWITCH_CASE(ShaderDataType::VEC4);
+            SWITCH_CASE(ShaderDataType::MAT3);
+            SWITCH_CASE(ShaderDataType::MAT4);
+            SWITCH_CASE(ShaderDataType::SHORT);
+        case (ShaderDataType ::USHORT): {
+            auto original_data{getAccessorAs<
+                SubTypeOf<ShaderImportTypeOf<(ShaderDataType ::USHORT)>>>(
+                model, accessorIndex)};
+            std ::vector<SubTypeOf<T>> substituted_data{original_data.begin(),
+                                                        original_data.end()};
+            chars = vector_to_uchars(std ::move(substituted_data));
+            break;
+        };
+            SWITCH_CASE(ShaderDataType::FLOAT);
         default: {
             PR_ERROR("Unable to parse data.");
             return {};
@@ -268,7 +316,7 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
 
 #undef SWITCH_CASE
 
-    ret.resize(chars.size() / sizeof(T));
+    ret.resize(accessor.count);
 
     std::span<unsigned char> char_view{chars};
 
@@ -362,7 +410,8 @@ ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
         new_name = image_data.uri;
     } else {
         PR_ERROR(
-            "Name and URI are both empty inside of an imported GLTF texture. "
+            "Name and URI are both empty inside of an imported GLTF "
+            "texture. "
             "Using \"UnnamedImportedTexture\" instead.");
         new_name = "UnnamedImportedTexture";
     }
@@ -430,7 +479,22 @@ ImportedModelData GLTFLoader::load(
         for (tinygltf::Primitive& mesh : current_model.primitives) {
             ImportedMesh new_submesh;
 
-            new_submesh.draw_mode = mesh.mode;
+            switch (mesh.mode) {
+                case TINYGLTF_MODE_POINTS:
+                    new_submesh.draw_mode = MeshDrawMode::POINTS;
+                case TINYGLTF_MODE_LINE:
+                    new_submesh.draw_mode = MeshDrawMode::LINES;
+                case TINYGLTF_MODE_LINE_STRIP:
+                    new_submesh.draw_mode = MeshDrawMode::LINE_STRIP;
+                case TINYGLTF_MODE_TRIANGLES:
+                    new_submesh.draw_mode = MeshDrawMode::TRIANGLES;
+                case TINYGLTF_MODE_TRIANGLE_STRIP:
+                    new_submesh.draw_mode = MeshDrawMode::TRIANGLE_STRIP;
+                case TINYGLTF_MODE_LINE_LOOP:
+                case TINYGLTF_MODE_TRIANGLE_FAN:
+                default:
+                    new_submesh.draw_mode = MeshDrawMode::TRIANGLES;
+            }
 
             new_submesh.indices =
                 getAccessorAndConvertTo<Index>(model, mesh.indices);
@@ -441,16 +505,61 @@ ImportedModelData GLTFLoader::load(
 
             for (const auto& [attribute_name, accessor_index] :
                  mesh.attributes) {
-                auto accessor{model.accessors[accessor_index]};
-                auto data{getDataFromAccessor(model, accessor_index)};
+                auto converted_name{tinygltfNameToPrestoName(attribute_name)};
 
-                data.name = tinygltfNameToPrestoName(attribute_name);
+                if (converted_name == DefaultAttributeName::POSITION ||
+                    converted_name == DefaultAttributeName::NORMAL ||
+                    converted_name == DefaultAttributeName::COLOUR) {
+                    auto data{getAccessorAs<Presto::float32_t>(model,
+                                                               accessor_index)};
 
-                imported_attributes.push_back(data);
+                    ImportedVertexAttribute new_attribute{
+                        .name = converted_name,
+                        .type = ShaderDataType::VEC3,
+                        .count = model.accessors[accessor_index].count,
+                        .data =
+                            ByteArray(data.size() * sizeof(Presto::float32_t))};
+
+                    std::memcpy(new_attribute.data.data(), data.data(),
+                                new_attribute.data.size());
+                    imported_attributes.push_back(std::move(new_attribute));
+
+                } else if (converted_name == DefaultAttributeName::TEXCOORDS) {
+                    auto data{
+                        getAccessorAs<Presto::vec2>(model, accessor_index)};
+
+                    ImportedVertexAttribute new_attribute{
+                        .name = converted_name,
+                        .type = ShaderDataType::VEC2,
+                        .count = model.accessors[accessor_index].count,
+                        .data = ByteArray(data.size() * sizeof(Presto::vec2))};
+
+                    std::memcpy(new_attribute.data.data(), data.data(),
+                                new_attribute.data.size());
+                    imported_attributes.push_back(std::move(new_attribute));
+
+                } else {
+                    PR_INFO(
+                        "{} is not a default attribute. Skipping this in "
+                        "GLTF "
+                        "import.",
+                        attribute_name);
+                    continue;
+                }
             }
 
-            new_submesh.attributes = imported_attributes;
-            new_model.meshes.push_back(new_submesh);
+            new_submesh.attributes = std::move(imported_attributes);
+
+            // The vertex count is the minimum of the vertex counts of the
+            // attributes
+            new_submesh.vertex_count = std::ranges::min(
+                new_submesh.attributes |
+                std::views::transform(
+                    [](const ImportedVertexAttribute& val) -> Presto::size_t {
+                        return val.count;
+                    }));
+
+            new_model.meshes.push_back(std::move(new_submesh));
         }
 
         imported_data.models.push_back(new_model);

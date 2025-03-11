@@ -6,6 +6,7 @@
 #include "Presto/Rendering/RenderTypes.h"
 
 #include "Rendering/OpenGL/OpenGLBuffer.h"
+#include "Rendering/OpenGL/utils.h"
 #include "Rendering/Renderer.h"
 
 #include "Rendering/DefaultTextures.h"
@@ -21,8 +22,6 @@
 #include "DefaultShaders.h"
 
 #include "Presto/Runtime/GLFWAppWindow.h"
-
-#include <glm/gtc/type_ptr.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -58,15 +57,16 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
 
     OpenGLPipelineBuilder builder{};
 
-    builder.setId(PR_PIPELINE_DEFAULT_3D)
+    builder.setAttributesOverride(Vertex3D::getPipelineAttributes())
+        .setId(PR_PIPELINE_DEFAULT_3D)
         .setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
         .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
     pipelines[0] = builder.build();
 
-    builder.setId(PR_PIPELINE_DEFAULT_UI);
-    builder.setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
+    builder.setAttributesOverride(VertexUI::getPipelineAttributes())
+        .setId(PR_PIPELINE_DEFAULT_UI)
+        .setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
         .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
-
     pipelines[1] = builder.build();
 
     return pipelines;
@@ -199,8 +199,12 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
         .vao = {dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
                 dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
                 structure},
-        .index_count = static_cast<GLsizei>(registration.indices->size()),
+        .index_count =
+            static_cast<GLsizei>(registration.indices->size() / sizeof(Index)),
     }};
+
+    new_context->draw_mode =
+        OpenGLUtils::PrestoDrawModeToOpenGLDrawMode(registration.draw_mode);
 
     auto allocation{contexts_.alloc(std::move(new_context))};
 

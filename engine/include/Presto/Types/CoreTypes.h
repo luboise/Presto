@@ -1,10 +1,8 @@
 #pragma once
 
 #include <filesystem>
-#include <vector>
-
 #include <glm/glm.hpp>
-#include "glm/fwd.hpp"
+#include <vector>
 
 #include "HandleTypes.h"  // IWYU pragma: export
 

@@ -21,6 +21,10 @@ template <>
         std::views::transform([](const ImportedVertexAttribute& val)
                                   -> Presto::size_t { return val.count; }))};
 
+    PR_CORE_ASSERT(
+        vertex_count != 0,
+        "The number of vertices to be processed must be higher than 0.");
+
     vertices.resize(vertex_count);
 
     if (const auto& in_a{std::ranges::find_if(
@@ -30,11 +34,17 @@ template <>
             })};
         in_a != inputAttributes.end()) {
         // Get the desired attribute from the input list
-        Presto::size_t in_stride{sizeof(Vertex3D::vertexPosition)};
-
+        std::span<const Presto::float32_t> span;
         for (Presto::size_t i{0}; i < vertex_count; i++) {
-            std::memcpy(&vertices[i].vertexPosition, &in_a->data[i * in_stride],
-                        in_stride);
+            if (i == 52) {
+                bool pog{true};
+            }
+
+            span = std::span{reinterpret_cast<const Presto::float32_t*>(
+                                 &in_a->data[i * sizeof(Presto::vec3)]),
+                             3};
+            vertices[i].vertexPosition =
+                Presto::vec3{span[0], span[1], span[2]};
         }
     } else {
         PR_ERROR(

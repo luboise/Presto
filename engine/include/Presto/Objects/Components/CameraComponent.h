@@ -63,7 +63,7 @@ class CameraComponent : public Component, LazyCalculator {
 
     // FOV of the camera (default of 90deg)
     camera_fov_t fov_{glm::radians(90.0F)};
-    CameraDistances distances_{.near = -1, .far = 1000};
+    CameraDistances distances_{.near = 0.1, .far = 1000};
 
     // TODO: Move the default extents somewhere else
     // Default extents of 1080p

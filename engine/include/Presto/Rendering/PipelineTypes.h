@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Presto/Rendering/AttributeTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 
 namespace Presto {

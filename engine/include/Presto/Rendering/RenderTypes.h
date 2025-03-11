@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
+#include "Presto/Rendering/VertexTypes.h"
 #include "Presto/Types/CoreTypes.h"
-#include "VertexTypes.h"
 
 namespace Presto {
 
@@ -33,7 +33,7 @@ struct DrawInfo {
 
 using Index = uint32_t;
 
-class Vertex;
+struct Vertex;
 
 using VertexList = std::vector<Vertex>;
 using IndexList = std::vector<Index>;
@@ -52,14 +52,6 @@ struct RawMeshData {
     std::vector<IndexType> indices;
 
     int draw_mode{};
-};
-
-class Vertex {
-   public:
-    template <typename T>
-    T getAttribute() const;
-
-   private:
 };
 
 enum class ShaderStage { VERTEX, FRAGMENT };

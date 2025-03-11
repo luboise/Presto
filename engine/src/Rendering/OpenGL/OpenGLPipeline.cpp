@@ -7,32 +7,37 @@
 #include "Rendering/Utils/RenderingUtils.h"
 
 #include "Presto/Rendering/UniformBuffer.h"
-#include "glm/gtc/type_ptr.hpp"
 
 #include "Introspection.h"
 
 namespace Presto {
 using Presto::UniformVariableType;
 
-OpenGLPipeline::OpenGLPipeline(pipeline_id_t id, GLuint vertexShader_,
-                               GLuint fragmentShader_)
+OpenGLPipeline::OpenGLPipeline(
+    pipeline_id_t id, GLuint vertexShader, GLuint fragmentShader,
+    const std::vector<PipelineAttribute>& attributesOverride)
     : Pipeline(id), shaderProgram_(glCreateProgram()) {
-    glAttachShader(shaderProgram_, vertexShader_);
-    glAttachShader(shaderProgram_, fragmentShader_);
+    glAttachShader(shaderProgram_, vertexShader);
+    glAttachShader(shaderProgram_, fragmentShader);
 
     glLinkProgram(shaderProgram_);
     PR_ASSERT(OpenGLUtils::ShaderProgramLinkedCorrectly(shaderProgram_),
               "Shader program failed to link.");
 
-    pipelineStructure_.attributes =
-        Introspection::getAttributesFromShader(shaderProgram_);
+    if (!attributesOverride.empty()) {
+        pipelineStructure_.attributes = attributesOverride;
+    } else {
+        pipelineStructure_.attributes =
+            Introspection::getAttributesFromShader(shaderProgram_);
+    }
+
     pipelineStructure_.uniforms =
         Introspection::getUniformsFromShader(shaderProgram_);
     pipelineStructure_.uniform_blocks =
         Introspection::getUniformBlocksFromShader(shaderProgram_);
 
+    // Find all bound uniform textures
     GLint location{};
-
     for (PipelineUniform& uniform : pipelineStructure_.uniforms) {
         if (uniform.data_type != UniformVariableType::TEXTURE) {
             continue;
