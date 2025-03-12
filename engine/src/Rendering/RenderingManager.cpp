@@ -43,12 +43,18 @@ struct RenderingManager::Impl {
 
     std::map<texture_id_t, Ptr<Texture>> textures;
 
-    Allocated<TextureFactory> textureFactory_;
-    Allocated<PipelineBuilder> pipelineBuilder_;
+    Allocated<TextureFactory> texture_factory;
+    Allocated<PipelineBuilder> pipeline_builder;
 
     pipeline_id_t current_pipeline_id{PR_PIPELINE_NONE};
 
-    ComponentPtr<CameraComponent> camera_2d;
+    bool using_debug_cam{false};
+    ComponentPtr<CameraComponent> cam_active;
+    ComponentPtr<CameraComponent> cam_debug;
+
+    ComponentPtr<CameraComponent> cam_2d;
+
+    // Member vars
 
     struct {
         Ref<MaterialInstance> material;
@@ -58,20 +64,20 @@ struct RenderingManager::Impl {
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
                                    GLFWAppWindow* window) {
-    activeCamera_ = NewComponent<CameraComponent>();
-    activeCamera_->setFOV(DEFAULT_FOV);
-
-    debugCamera_ = NewComponent<CameraComponent>();
-    debugCamera_->setFOV(DEFAULT_FOV);
-
     this->renderer_ = Renderer::create(library, window);
 
     impl_ = std::make_unique<Impl>();
 
-    impl_->textureFactory_ = renderer_->getTextureFactory();
+    impl_->texture_factory = renderer_->getTextureFactory();
 
-    impl_->camera_2d = NewComponent<CameraComponent>();
-    impl_->camera_2d->setType(CameraType::ORTHOGRAPHIC)
+    impl_->cam_active = NewComponent<CameraComponent>();
+    impl_->cam_active->setFOV(DEFAULT_FOV);
+
+    impl_->cam_debug = NewComponent<CameraComponent>();
+    impl_->cam_debug->setFOV(DEFAULT_FOV);
+
+    impl_->cam_2d = NewComponent<CameraComponent>();
+    impl_->cam_2d->setType(CameraType::ORTHOGRAPHIC)
         .setExtents({.width = 1, .height = 2});
 
     Renderer::AllocatedPipelineList default_pipelines{
@@ -252,7 +258,7 @@ void RenderingManager::init() {
 Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
                                                  Presto::size_t height) {
     texture_id_t new_id{impl_->texture_ids.generate()};
-    Ptr<Texture2D> new_texture{impl_->textureFactory_->new2D(width, height)};
+    Ptr<Texture2D> new_texture{impl_->texture_factory->new2D(width, height)};
 
     impl_->textures.emplace(new_id,
                             std::static_pointer_cast<Texture>(new_texture));
@@ -267,7 +273,8 @@ void RenderingManager::update() {
     };
 
     // Update the global uniforms to the current camera
-    renderer_->setCameraData(*activeCamera_);
+    renderer_->setCameraData(
+        *(impl_->using_debug_cam ? impl_->cam_debug : impl_->cam_active));
 
     auto& em{EntityManagerImpl::get()};
 
@@ -339,7 +346,7 @@ void RenderingManager::update() {
     PR_CORE_ASSERT(quad_registration != nullptr,
                    "The default quad can not be null.");
 
-    renderer_->setCameraData(*impl_->camera_2d);
+    renderer_->setCameraData(*impl_->cam_2d);
 
     // Set pipeline to UI pipeline
     for (const ComponentPtr<CanvasComponent>& ptr : canvas_draws) {
@@ -388,7 +395,7 @@ void RenderingManager::setMainCamera(const Ptr<CameraComponent>& mainCam) {
     PR_CORE_ASSERT(RenderingManager::initialised(),
                    "Unable to set camera when the RenderingManager is "
                    "uninitialised.")
-    activeCamera_ = mainCam;
+    impl_->cam_active = mainCam;
 }
 
 void RenderingManager::resizeFramebuffer() const {
@@ -456,12 +463,12 @@ Ptr<MaterialInstance> RenderingManager::findMaterial(
 };
 
 PipelineBuilder& RenderingManager::getPipelineBuilder() {
-    PR_CORE_ASSERT(impl_->pipelineBuilder_ != nullptr,
+    PR_CORE_ASSERT(impl_->pipeline_builder != nullptr,
                    "The application must be initialised in order to "
                    "get the pipeline "
                    "builder.");
 
-    return *impl_->pipelineBuilder_;
+    return *impl_->pipeline_builder;
 };
 
 Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
@@ -538,4 +545,19 @@ mesh_registration_id_t RenderingManager::loadMesh(
 
 void RenderingManager::drawLine(const Line& line) {};
 
+bool& RenderingManager::usingDebugCamera() { return impl_->using_debug_cam; }
+
+void RenderingManager::setUsingDebugCamera(bool isUsing) {
+    impl_->using_debug_cam = isUsing;
+}
+CameraComponent& RenderingManager::getMainCamera() {
+    PR_CORE_ASSERT(impl_->cam_active != nullptr,
+                   "The active camera must always be defined.");
+    return *impl_->cam_active;
+};
+CameraComponent& RenderingManager::getDebugCamera() {
+    PR_CORE_ASSERT(impl_->cam_debug != nullptr,
+                   "The debug camera must always be defined.");
+    return *impl_->cam_debug;
+};
 }  // namespace Presto

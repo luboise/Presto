@@ -57,17 +57,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     void setMainCamera(const Ptr<CameraComponent>&);
 
-    CameraComponent& getCamera() {
-        PR_CORE_ASSERT(activeCamera_ != nullptr,
-                       "The active camera must always be defined.");
-        return *activeCamera_;
-    };
-
-    CameraComponent& getDebugCamera() {
-        PR_CORE_ASSERT(debugCamera_ != nullptr,
-                       "The debug camera must always be defined.");
-        return *debugCamera_;
-    };
+    CameraComponent& getMainCamera();
+    CameraComponent& getDebugCamera();
 
     /**
      * Loads an imported mesh into the renderer, and registers it with its
@@ -96,6 +87,9 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
                                                  Presto::size_t height);
 
     void drawLine(const Line&);
+
+    void setUsingDebugCamera(bool isUsing);
+    [[nodiscard]] bool& usingDebugCamera();
 
    private:
     // Static vars
@@ -126,10 +120,6 @@ void loadImageOnGpu(ImageAsset&);
     Allocated<MeshRegistrationData> createMeshRegistration(
         const std::vector<T>& vertices, IndexList& indices,
         pipeline_id_t pipelineId);
-
-    // Member vars
-    Ptr<CameraComponent> activeCamera_;
-    Ptr<CameraComponent> debugCamera_;
 
     explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window);
 

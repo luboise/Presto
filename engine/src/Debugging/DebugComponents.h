@@ -57,6 +57,34 @@ void SliderChooser(T& val, const char* label, T min, T max,
     };
 };
 
+template <typename T, typename CallbackT = std::function<void(T)>>
+    requires std::is_convertible_v<T, bool>
+void CheckboxChooser(T& val, const char* label, CallbackT callback = nullptr) {
+    T temp{val};
+    bool enabled{static_cast<bool>(val)};
+
+    if (ImGui::Checkbox(label, &enabled)) {
+        if (callback != nullptr) {
+            callback(!temp);
+        } else {
+            val = !temp;
+        }
+    };
+};
+
+void Vec3Chooser(Presto::vec3& val, const char* label,
+                 const std::function<void(Presto::vec3)>& callback = nullptr) {
+    Presto::vec3 temp{val};
+
+    if (ImGui::DragFloat3(label, reinterpret_cast<float*>(&temp.x))) {
+        if (callback != nullptr) {
+            callback(temp);
+        } else {
+            val = temp;
+        }
+    };
+};
+
 }  // namespace DebugComponents
 
 }  // namespace Presto

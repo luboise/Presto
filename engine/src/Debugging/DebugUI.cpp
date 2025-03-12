@@ -1,6 +1,7 @@
 #include "Debugging/ComponentBits.h"
 #include "Modules/EntityManagerImpl.h"
 
+#include "Modules/RenderingManager.h"
 #include "Presto/Objects/Components.h"
 
 #include "Presto/Objects/Entity.h"
@@ -461,6 +462,11 @@ void DebugUI::drawSelectedComponent() {
         Ptr<CameraComponent> camera{
             std::dynamic_pointer_cast<CameraComponent>(selectedComponent_)};
 
+        static bool& using_debug_cam{
+            RenderingManager::get().usingDebugCamera()};
+
+        DebugComponents::CheckboxChooser(using_debug_cam, "Use Debug Camera");
+
         DebugComponents::EnumChooser(
             camera->getType(),
             std::vector<EnumMember<CameraType>>{
@@ -482,6 +488,11 @@ void DebugUI::drawSelectedComponent() {
             });
 
         auto distances{camera->getDistances()};
+
+        Presto::vec3 pos{camera->getPos()};
+        DebugComponents::Vec3Chooser(
+            pos, "Position",
+            [&camera](Presto::vec3 newPos) { camera->setPos(newPos); });
 
         DebugComponents::SliderChooser(
             distances.near, "Near", -1000.F, 3000.F,
