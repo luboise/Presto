@@ -57,9 +57,13 @@ struct RenderingManager::Impl {
 };
 
 RenderingManager::RenderingManager(RENDER_LIBRARY library,
-                                   GLFWAppWindow* window,
-                                   CameraComponent& defaultCamera)
-    : activeCamera_(defaultCamera) {
+                                   GLFWAppWindow* window) {
+    activeCamera_ = NewComponent<CameraComponent>();
+    activeCamera_->setFOV(DEFAULT_FOV);
+
+    debugCamera_ = NewComponent<CameraComponent>();
+    debugCamera_->setFOV(DEFAULT_FOV);
+
     this->renderer_ = Renderer::create(library, window);
 
     impl_ = std::make_unique<Impl>();
@@ -222,7 +226,7 @@ Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
     return ret;
 };
 
-void RenderingManager::init(CameraComponent& defaultCamera) {
+void RenderingManager::init() {
     PR_CORE_ASSERT(_library != UNSET,
                    "Unable to initialise the RenderingManager with an "
                    "unset graphics library.");
@@ -231,7 +235,7 @@ void RenderingManager::init(CameraComponent& defaultCamera) {
                    "Window handle.");
 
     instance_ = std::unique_ptr<RenderingManager>(new RenderingManager(
-        RenderingManager::_library, RenderingManager::_window, defaultCamera));
+        RenderingManager::_library, RenderingManager::_window));
 }
 
 [[nodiscard]] Ptr<Texture2D> RenderingManager::createTexture2D(
@@ -263,7 +267,7 @@ void RenderingManager::update() {
     };
 
     // Update the global uniforms to the current camera
-    renderer_->setCameraData(activeCamera_);
+    renderer_->setCameraData(*activeCamera_);
 
     auto& em{EntityManagerImpl::get()};
 
@@ -380,11 +384,11 @@ void RenderingManager::setWindow(GLFWAppWindow* window) {
     RenderingManager::_window = window;
 }
 
-void RenderingManager::setCamera(CameraComponent& newCam) {
+void RenderingManager::setMainCamera(const Ptr<CameraComponent>& mainCam) {
     PR_CORE_ASSERT(RenderingManager::initialised(),
                    "Unable to set camera when the RenderingManager is "
                    "uninitialised.")
-    activeCamera_ = newCam;
+    activeCamera_ = mainCam;
 }
 
 void RenderingManager::resizeFramebuffer() const {
@@ -532,8 +536,6 @@ mesh_registration_id_t RenderingManager::loadMesh(
     return registration_id;
 };
 
-void RenderingManager::drawLine(const Line& line) {
-
-};
+void RenderingManager::drawLine(const Line& line) {};
 
 }  // namespace Presto

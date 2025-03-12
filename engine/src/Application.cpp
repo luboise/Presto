@@ -13,7 +13,6 @@
 #endif
 
 namespace Presto {
-constexpr auto DEFAULT_FOV = 120;
 
 Application::Application() {
     // TODO: Fix this to be injected
@@ -34,12 +33,7 @@ Application::Application() {
 
     EntityManagerImpl::init();
 
-    auto default_camera{
-        EntityManagerImpl::get().newComponent<CameraComponent>()};
-
-    default_camera->setFOV(DEFAULT_FOV);
-
-    RenderingManager::init(*default_camera);
+    RenderingManager::init();
 
     // SceneManager::init();
     EventManager::init();

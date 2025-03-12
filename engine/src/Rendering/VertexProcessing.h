@@ -36,10 +36,6 @@ template <>
         // Get the desired attribute from the input list
         std::span<const Presto::float32_t> span;
         for (Presto::size_t i{0}; i < vertex_count; i++) {
-            if (i == 52) {
-                bool pog{true};
-            }
-
             span = std::span{reinterpret_cast<const Presto::float32_t*>(
                                  &in_a->data[i * sizeof(Presto::vec3)]),
                              3};

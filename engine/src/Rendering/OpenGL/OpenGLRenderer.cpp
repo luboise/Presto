@@ -1,7 +1,15 @@
-#include "OpenGLRenderer.h"
+#include "./OpenGLRenderer.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "./OpenGLBuffer.h"
+#include "./OpenGLPipeline.h"
+#include "./OpenGLPipelineBuilder.h"
+#include "./OpenGLTextureFactory.h"
+#include "./OpenGLUniformBuffer.h"
+#include "./OpenGLVAO.h"
+#include "./utils.h"
 
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/PipelineTypes.h"
@@ -10,16 +18,8 @@
 #include "Presto/Utils/File.h"
 
 #include "Rendering/DefaultTextures.h"
-#include "Rendering/OpenGL/OpenGLBuffer.h"
-#include "Rendering/OpenGL/utils.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Utils/RenderingUtils.h"
-
-#include "OpenGLPipeline.h"
-#include "OpenGLPipelineBuilder.h"
-#include "OpenGLTextureFactory.h"
-#include "OpenGLUniformBuffer.h"
-#include "OpenGLVAO.h"
 
 namespace Presto {
 

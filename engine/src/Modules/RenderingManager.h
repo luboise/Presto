@@ -44,7 +44,7 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     static constexpr PR_NUMERIC_ID PR_MINIMUM_MATERIAL_KEY = 10;
 
     // TODO: Get rid of this and move it into the constructor
-    static void init(CameraComponent& defaultCamera);
+    static void init();
 
     void update() override;
     void clear();
@@ -55,8 +55,19 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     [[nodiscard]] const PipelineStructure* getPipelineStructure(
         pipeline_id_t) const;
 
-    void setCamera(CameraComponent& newCam);
-    CameraComponent& getCamera() { return activeCamera_; };
+    void setMainCamera(const Ptr<CameraComponent>&);
+
+    CameraComponent& getCamera() {
+        PR_CORE_ASSERT(activeCamera_ != nullptr,
+                       "The active camera must always be defined.");
+        return *activeCamera_;
+    };
+
+    CameraComponent& getDebugCamera() {
+        PR_CORE_ASSERT(debugCamera_ != nullptr,
+                       "The debug camera must always be defined.");
+        return *debugCamera_;
+    };
 
     /**
      * Loads an imported mesh into the renderer, and registers it with its
@@ -117,10 +128,10 @@ void loadImageOnGpu(ImageAsset&);
         pipeline_id_t pipelineId);
 
     // Member vars
-    CameraComponent& activeCamera_;
+    Ptr<CameraComponent> activeCamera_;
+    Ptr<CameraComponent> debugCamera_;
 
-    explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window,
-                              CameraComponent& defaultCamera);
+    explicit RenderingManager(RENDER_LIBRARY library, GLFWAppWindow* window);
 
     Allocated<Renderer> renderer_;
 

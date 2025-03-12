@@ -5,6 +5,7 @@
 #include "Presto/Utils/LazyCalculator.h"
 
 namespace Presto {
+
 enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 
 class CameraComponent : public Component, LazyCalculator {
