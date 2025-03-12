@@ -10,7 +10,7 @@ add_subdirectory(Modules)
 add_subdirectory(Objects)
 add_subdirectory(Physics)
 add_subdirectory(Rendering)
-add_subdirectory(Shaders)
+add_subdirectory(Runtime)
 add_subdirectory(Utils)
 
 if(PRESTO_DEBUG_BUILD)
@@ -22,7 +22,6 @@ target_sources(
   PRIVATE Application.cpp
           # Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
-          Runtime/Time.cpp
           Materials.cpp
           Logging.cpp
           Objects.cpp

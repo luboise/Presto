@@ -3,6 +3,7 @@
 #include "Presto/Types/CoreTypes.h"
 
 namespace Presto::Utils {
+
 std::string File::ReadFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(path);
@@ -64,4 +65,9 @@ json File::GetJSON(const fs::path& path) {
 fs::path File::getFullPath(const Presto::string& path) {
     return executableDirectory / path;
 };
+
+std::string File::ReadAssetFile(const AssetArg& path) {
+    return ReadFile(path.string());
+};
+
 }  // namespace Presto::Utils

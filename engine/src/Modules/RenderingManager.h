@@ -15,19 +15,20 @@
 #include "Rendering/MeshRegistrationData.h"
 
 namespace Presto {
+
 class GLFWAppWindow;
-class Renderer;
+
 class CameraComponent;
 
+class Renderer;
 class Buffer;
 class UniformBuffer;
-
 class Pipeline;
 class Texture;
-
 struct ImportedMesh;
-
 struct MeshRegistrationData;
+
+struct Line;
 
 using layer_id_t = PR_NUMERIC_ID;
 
@@ -82,6 +83,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
                                                  Presto::size_t height);
+
+    void drawLine(const Line&);
 
    private:
     // Static vars

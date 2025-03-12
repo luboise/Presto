@@ -67,5 +67,10 @@ target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE tinygltf)
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-set(PRESTO_BASE_SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/Shaders)
-compileshadersfortarget(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}")
+set(PRESTO_BASE_SHADER_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
+compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
+                           "assets/shaders/default")
+if(NOT PRESTO_SHADERS_COMPILED_SUCCESSFULLY)
+  message(FATAL_ERROR "Failed to compile default shaders. Unable to build.")
+endif()

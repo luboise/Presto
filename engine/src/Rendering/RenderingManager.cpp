@@ -1,34 +1,29 @@
+// STL imports
 #include <algorithm>
 #include <memory>
 #include <ranges>
 #include <utility>
 
-#include "Modules/RenderingManager.h"
-
+// Public imports
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
+#include "Presto/Objects/Components.h"
+#include "Presto/Rendering/Drawables.h"
+#include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Types/ComponentTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
-#include "Presto/Objects/Components.h"
-
+// Internal imports
+#include "Memory/AllocatorTypes.h"
+#include "Modules/AssetManager.h"
 #include "Modules/EntityManagerImpl.h"
-
-#include "Presto/Rendering/Pipeline.h"
+#include "Modules/RenderingManager.h"
 #include "Rendering/DefaultMeshes.h"
 #include "Rendering/MeshRegistrationData.h"
 #include "Rendering/Renderer.h"
-
-// #include "Rendering/Vulkan/VulkanRenderer.h"
-
-#include "Presto/Runtime/GLFWAppWindow.h"
-
 #include "Utils/IDGenerator.h"
-
-#include "Modules/AssetManager.h"
-
-#include "Memory/AllocatorTypes.h"
 
 namespace Presto {
 
@@ -536,4 +531,9 @@ mesh_registration_id_t RenderingManager::loadMesh(
 
     return registration_id;
 };
+
+void RenderingManager::drawLine(const Line& line) {
+
+};
+
 }  // namespace Presto

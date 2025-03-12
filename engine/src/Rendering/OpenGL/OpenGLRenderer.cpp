@@ -1,32 +1,28 @@
 #include "OpenGLRenderer.h"
 
-#include "Presto/Core/Constants.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Runtime/GLFWAppWindow.h"
+#include "Presto/Utils/File.h"
 
+#include "Rendering/DefaultTextures.h"
 #include "Rendering/OpenGL/OpenGLBuffer.h"
 #include "Rendering/OpenGL/utils.h"
 #include "Rendering/Renderer.h"
-
-#include "Rendering/DefaultTextures.h"
 #include "Rendering/Utils/RenderingUtils.h"
 
 #include "OpenGLPipeline.h"
 #include "OpenGLPipelineBuilder.h"
+#include "OpenGLTextureFactory.h"
 #include "OpenGLUniformBuffer.h"
 #include "OpenGLVAO.h"
 
-#include "OpenGLTextureFactory.h"
-
-#include "DefaultShaders.h"
-
-#include "Presto/Runtime/GLFWAppWindow.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 namespace Presto {
+
 using PointType = float;
 
 OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
@@ -57,16 +53,24 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
 
     OpenGLPipelineBuilder builder{};
 
+    Presto::string vert{Utils::File::ReadAssetFile(
+        "assets/shaders/default/opengl/default_3d.vert")};
+    Presto::string frag{Utils::File::ReadAssetFile(
+        "assets/shaders/default/opengl/default_3d.frag")};
     builder.setAttributesOverride(Vertex3D::getPipelineAttributes())
         .setId(PR_PIPELINE_DEFAULT_3D)
-        .setShader(DEFAULT_VERTEX_SHADER, ShaderStage::VERTEX)
-        .setShader(DEFAULT_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
+        .setShader(vert.c_str(), ShaderStage::VERTEX)
+        .setShader(frag.c_str(), ShaderStage::FRAGMENT);
     pipelines[0] = builder.build();
 
+    vert = Utils::File::ReadAssetFile(
+        "assets/shaders/default/opengl/default_ui.vert");
+    frag = Utils::File::ReadAssetFile(
+        "assets/shaders/default/opengl/default_ui.frag");
     builder.setAttributesOverride(VertexUI::getPipelineAttributes())
         .setId(PR_PIPELINE_DEFAULT_UI)
-        .setShader(DEFAULT_UI_VERTEX_SHADER, ShaderStage::VERTEX)
-        .setShader(DEFAULT_UI_FRAGMENT_SHADER, ShaderStage::FRAGMENT);
+        .setShader(vert.c_str(), ShaderStage::VERTEX)
+        .setShader(frag.c_str(), ShaderStage::FRAGMENT);
     pipelines[1] = builder.build();
 
     return pipelines;
