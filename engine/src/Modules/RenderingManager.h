@@ -57,7 +57,7 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     void setMainCamera(const EntityPtr&);
 
-    EntityRef getMainCamera();
+    EntityPtr getMainCamera();
     ComponentPtr<CameraComponent> getDebugCamera();
 
     /**

@@ -13,20 +13,23 @@ namespace Presto {
 [[nodiscard]] EntityRef NewEntity();
 
 /**
- * @brief  Creates a new component of any type. The arguments given must match
- * the arguments of the private constructor of that component.
+ * @brief  Gets a reference to the main camera. This is whats used to generate
+ * the view of the game world.
+ */
+CameraComponent& GetDefaultCamera();
+
+void SetDefaultCameraConductor(const ComponentPtr<ConductorComponent>&);
+
+/**
+ * @brief  Creates a new component of any type. The arguments given must
+ * match the arguments of the private constructor of that component.
  */
 template <DerivedFrom<Component> T, typename... Args>
 ComponentPtr<T> NewComponent(Args... args) {
     return EntityManager::Get().newComponent<T>(args...);
 };
 
-/**
- * @brief  Gets a reference to the main camera. This is whats used to generate
- * the view of the game world.
- */
-CameraComponent& GetDefaultCamera();
-
+// Functions that create components
 namespace CreateComponent {
 ComponentPtr<ModelComponent> Model(const ModelPtr& ptr);
 

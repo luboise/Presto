@@ -8,10 +8,15 @@ Presto::CameraComponent& Presto::GetDefaultCamera() {
 
     return *RenderingManager::get()
                 .getMainCamera()
-                .lock()
                 ->getComponent<CameraComponent>();
 }
 
 Presto::EntityRef Presto::NewEntity() {
     return EntityManagerImpl::Get().newEntity();
+};
+
+void Presto::SetDefaultCameraConductor(
+    const ComponentPtr<ConductorComponent>& ptr) {
+    EntityPtr main_camera{RenderingManager::get().getMainCamera()};
+    main_camera->setComponent<ConductorComponent>(ptr);
 };

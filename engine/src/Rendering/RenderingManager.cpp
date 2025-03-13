@@ -560,7 +560,7 @@ void RenderingManager::setUsingDebugCamera(bool isUsing) {
     impl_->using_debug_cam = isUsing;
 }
 
-EntityRef RenderingManager::getMainCamera() {
+EntityPtr RenderingManager::getMainCamera() {
     return impl_->cam_active_entity;
     /*
 auto cam{impl_->cam_active_entity->getComponent<CameraComponent>()};
