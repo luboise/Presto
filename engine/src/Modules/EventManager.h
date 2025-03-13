@@ -37,7 +37,7 @@ class PRESTO_API EventManager final : public Module<EventManager> {
     EventManager() = default;
     ~EventManager() = default;
 
-    void registerCallbacks(Entity&);
+    void registerCallbacks(Entity*);
 
     // std::vector<HandlerFunction<>> eventHandlers_;
     std::vector<KeyEventHandler> keyEventHandlers_;

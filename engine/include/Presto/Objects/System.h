@@ -13,6 +13,6 @@ class PRESTO_API System {
     virtual void UpdateEntity(Entity& e) = 0;
 
    private:
-    std::vector<Entity*> _entities;
+    std::vector<EntityPtr> _entities;
 };
 }  // namespace Presto

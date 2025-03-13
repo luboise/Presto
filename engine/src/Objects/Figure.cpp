@@ -14,8 +14,8 @@ Figure::Figure(figure_size_t size) {
 }
 
 Figure::~Figure() {
-    for (auto* ptr : entities_) {
-        EntityManagerImpl::get().destroyEntity(ptr);
+    for (auto& ptr : entities_) {
+        ptr->destroy();
     }
 }
 

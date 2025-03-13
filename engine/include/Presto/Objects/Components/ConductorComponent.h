@@ -26,7 +26,7 @@ class PRESTO_API ConductorComponent : public Component {
     bool registered_{false};
 
    protected:
-    Entity* entity{nullptr};
+    Entity* entity;
 
     // Conductor() = default;
 

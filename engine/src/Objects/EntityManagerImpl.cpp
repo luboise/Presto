@@ -16,13 +16,13 @@ namespace Presto {
 // std::map<entity_id_t, entity_ptr> EntityManagerImpl::entityMap_;
 
 struct EntityManagerImpl::Impl {
-    std::map<entity_id_t, entity_unique_ptr> entity_map;
+    std::map<entity_id_t, EntityPtr> entity_map;
 
     std::vector<entity_tag_name_t> tag_map;
 
     entity_id_t current_id{1};
 
-    std::queue<entity_unique_ptr> entity_queue;
+    std::queue<EntityPtr> entity_queue;
 };
 
 EntityManager& EntityManager::Get() { return EntityManagerImpl::get(); }
@@ -54,32 +54,29 @@ EntityPtr EntityManagerImpl::newEntity(const entity_name_t& name) {
                              [new_id](auto& key) { return key == new_id; }),
         "Attempted to create entity using existing id: {}", new_id);
 
-    auto new_entity = entity_unique_ptr(
-        new Entity(new_id, name),
-        [this](Entity* entity) { this->destroyEntity(entity); });
+    EntityPtr new_entity(new Entity(new_id, name));
 
-    const auto new_transform{newComponent<TransformComponent>()};
+    auto new_transform{newComponent<TransformComponent>()};
     new_entity->setComponent(new_transform);
 
-    EntityPtr handle{new_entity.get()};
     PR_CORE_ASSERT(
-        handle != nullptr,
-        "Internal error: A new entity handle has been retrieved as null.");
+        new_entity.get() != nullptr,
+        "Internal error: A new entity handle has been retrieved as nullptr.");
 
-    impl_->entity_queue.push(std::move(new_entity));
+    impl_->entity_queue.push(new_entity);
 
-    return handle;
+    return new_entity;
 }
 
-void EntityManagerImpl::destroyEntity(EntityPtr entity) {
-    // // Remove from map
-    // impl_->entity_map.erase(entity->id_);
-
+void EntityManagerImpl::destroyEntity(Entity* entity_ptr) {
     // Delete the entity
-    delete entity;
+    auto num_erased{impl_->entity_map.erase(entity_ptr->id_)};
+
+    PR_CORE_ASSERT(num_erased == 1, std::format("Entity was not erased: {}",
+                                                fmt::ptr(entity_ptr)));
 
     // Send event
-    Presto::ObjectDestroyedEvent(static_cast<void*>(entity));
+    Presto::ObjectDestroyedEvent(static_cast<void*>(entity_ptr));
 }
 
 entity_id_t EntityManagerImpl::reserveId() { return impl_->current_id++; }
@@ -88,15 +85,8 @@ entity_id_t EntityManagerImpl::reserveId() { return impl_->current_id++; }
 void EntityManagerImpl::collectGarbage() {};
 
 std::vector<EntityPtr> EntityManagerImpl::findAll() {
-    std::vector<EntityPtr> entities(impl_->entity_map.size());
-    int i = 0;
-
-    // Get each raw pointer
-    std::ranges::for_each(
-        impl_->entity_map | std::views::values,
-        [&entities, &i](auto& e) { entities[i++] = e.get(); });
-
-    return entities;
+    auto vals{impl_->entity_map | std::views::values};
+    return std::vector<EntityPtr>{vals.begin(), vals.end()};
 };
 
 std::vector<EntityPtr> EntityManagerImpl::findWhere(auto filter) {
@@ -146,10 +136,10 @@ bool EntityManagerImpl::exists(entity_id_t id) const {
                                 [id](auto& key) { return key == id; });
 };
 
-std::vector<Entity*> EntityManagerImpl::newEntities(PR_SIZE count) {
+std::vector<EntityPtr> EntityManagerImpl::newEntities(PR_SIZE count) {
     PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
                    "Invalid entity count construction requested.");
-    std::vector<Entity*> entities(count);
+    std::vector<EntityPtr> entities(count);
 
     for (PR_SIZE i = 0; i < count; i++) {
         entities[i] = newEntity("Entity");
@@ -159,7 +149,7 @@ std::vector<Entity*> EntityManagerImpl::newEntities(PR_SIZE count) {
 };
 
 void EntityManagerImpl::instantiateEntities() {
-    entity_unique_ptr entity{};
+    EntityPtr entity{};
     while (!impl_->entity_queue.empty()) {
         entity = std::move(impl_->entity_queue.front());
         impl_->entity_queue.pop();

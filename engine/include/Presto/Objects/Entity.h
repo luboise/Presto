@@ -32,6 +32,8 @@ class PRESTO_API Entity {
 
     [[nodiscard]] entity_id_t id() const { return this->id_; };
 
+    void destroy();
+
     // TODO: Move component ID into the component class if possible
     // (Commponent itself cannot be templated!)
     template <ComponentType ComponentClass>
@@ -84,5 +86,4 @@ class PRESTO_API Entity {
     glm::vec3 _rotation{0, 0, 0};
 };
 
-using EntityPtr = Entity*;
 }  // namespace Presto

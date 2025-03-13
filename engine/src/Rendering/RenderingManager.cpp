@@ -12,8 +12,8 @@
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
-#include "Presto/Types/ComponentTypes.h"
 #include "Presto/Types/CoreTypes.h"
+#include "Presto/Types/ObjectTypes.h"
 
 // Internal imports
 #include "Memory/AllocatorTypes.h"
@@ -49,9 +49,10 @@ struct RenderingManager::Impl {
     pipeline_id_t current_pipeline_id{PR_PIPELINE_NONE};
 
     bool using_debug_cam{false};
-    ComponentPtr<CameraComponent> cam_active;
-    ComponentPtr<CameraComponent> cam_debug;
 
+    EntityPtr cam_active_entity;
+
+    ComponentPtr<CameraComponent> cam_debug;
     ComponentPtr<CameraComponent> cam_2d;
 
     // Member vars
@@ -70,15 +71,21 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     impl_->texture_factory = renderer_->getTextureFactory();
 
-    impl_->cam_active = NewComponent<CameraComponent>();
-    impl_->cam_active->setFOV(DEFAULT_FOV);
+    auto active_camera{NewComponent<CameraComponent>()};
 
-    impl_->cam_debug = NewComponent<CameraComponent>();
-    impl_->cam_debug->setFOV(DEFAULT_FOV);
+    impl_->cam_active_entity = EntityManagerImpl::get().newEntity();
+    impl_->cam_active_entity->setComponent(active_camera);
+
+    active_camera->setFOV(DEFAULT_FOV);
+
+    auto cam_2d{NewComponent<CameraComponent>()};
 
     impl_->cam_2d = NewComponent<CameraComponent>();
     impl_->cam_2d->setType(CameraType::ORTHOGRAPHIC)
         .setExtents({.width = 1, .height = 2});
+
+    impl_->cam_debug = NewComponent<CameraComponent>();
+    impl_->cam_debug->setFOV(DEFAULT_FOV);
 
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
@@ -274,7 +281,9 @@ void RenderingManager::update() {
 
     // Update the global uniforms to the current camera
     renderer_->setCameraData(
-        *(impl_->using_debug_cam ? impl_->cam_debug : impl_->cam_active));
+        *(impl_->using_debug_cam
+              ? impl_->cam_debug
+              : impl_->cam_active_entity->getComponent<CameraComponent>()));
 
     auto& em{EntityManagerImpl::get()};
 
@@ -391,11 +400,11 @@ void RenderingManager::setWindow(GLFWAppWindow* window) {
     RenderingManager::_window = window;
 }
 
-void RenderingManager::setMainCamera(const Ptr<CameraComponent>& mainCam) {
+void RenderingManager::setMainCamera(const EntityPtr& mainCam) {
     PR_CORE_ASSERT(RenderingManager::initialised(),
                    "Unable to set camera when the RenderingManager is "
                    "uninitialised.")
-    impl_->cam_active = mainCam;
+    impl_->cam_active_entity = mainCam;
 }
 
 void RenderingManager::resizeFramebuffer() const {
@@ -550,14 +559,23 @@ bool& RenderingManager::usingDebugCamera() { return impl_->using_debug_cam; }
 void RenderingManager::setUsingDebugCamera(bool isUsing) {
     impl_->using_debug_cam = isUsing;
 }
-CameraComponent& RenderingManager::getMainCamera() {
-    PR_CORE_ASSERT(impl_->cam_active != nullptr,
-                   "The active camera must always be defined.");
-    return *impl_->cam_active;
+
+EntityRef RenderingManager::getMainCamera() {
+    return impl_->cam_active_entity;
+    /*
+auto cam{impl_->cam_active_entity->getComponent<CameraComponent>()};
+PR_CORE_ASSERT(cam != nullptr, "The active camera must always be defined.");
+return *cam;
+    */
 };
-CameraComponent& RenderingManager::getDebugCamera() {
-    PR_CORE_ASSERT(impl_->cam_debug != nullptr,
-                   "The debug camera must always be defined.");
-    return *impl_->cam_debug;
+
+ComponentPtr<CameraComponent> RenderingManager::getDebugCamera() {
+    return impl_->cam_debug;
+    /*
+auto cam{impl_->cam_debug_entity->getComponent<CameraComponent>()};
+PR_CORE_ASSERT(cam != nullptr, "The debug camera must always be defined.");
+return cam;
+    */
 };
+
 }  // namespace Presto

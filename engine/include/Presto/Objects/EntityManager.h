@@ -20,7 +20,7 @@ class PRESTO_API EntityManager {
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<Entity*> newEntities(PR_SIZE count);
+    std::vector<EntityPtr> newEntities(PR_SIZE count);
 
     EntityPtr getEntityByID(entity_id_t id);
 
@@ -105,11 +105,7 @@ return entityMap_[new_id].get();
         return reinterpret_cast<std::vector<ComponentPtr<T>>*>(&(it->second));
     }
 
-    void destroyEntity(EntityPtr entity);
     entity_id_t reserveId();
-
-    using entity_unique_ptr =
-        std::unique_ptr<Entity, std::function<void(Entity*)>>;
 
     ComponentDatabase componentDatabase_;
 

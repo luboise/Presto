@@ -4,6 +4,10 @@
 
 namespace Presto {
 
+class Entity;
+using EntityPtr = Ptr<Entity>;
+using EntityRef = Ref<Entity>;
+
 using component_id_t = PR_NUMERIC_ID;
 
 class Component;

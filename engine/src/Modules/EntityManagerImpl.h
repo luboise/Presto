@@ -17,6 +17,8 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     friend class Application;
     friend class Module;
 
+    friend void Entity::destroy();
+
     // friend class Module<EntityManagerImpl>;
 
     friend Figure::~Figure();
@@ -27,7 +29,7 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<Entity*> newEntities(PR_SIZE count);
+    std::vector<EntityPtr> newEntities(PR_SIZE count);
 
     EntityPtr getEntityByID(entity_id_t id);
 
@@ -100,10 +102,7 @@ return entityMap_[new_id].get();
         return reinterpret_cast<std::vector<ComponentPtr<T>>*>(&(it->second));
     }
 
-    void destroyEntity(EntityPtr entity);
-
-    using entity_unique_ptr =
-        std::unique_ptr<Entity, std::function<void(Entity*)>>;
+    void destroyEntity(Entity* entity);
 
     ComponentDatabase componentDatabase_;
 

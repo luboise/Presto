@@ -37,7 +37,7 @@ void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
         std::dynamic_pointer_cast<ConductorComponent>(componentPtr)};
 
     if (conductor_ptr != nullptr) {
-        EventManager::get().registerCallbacks(*this);
+        EventManager::get().registerCallbacks(this);
     }
 
     auto rigidbody_ptr{
@@ -60,4 +60,7 @@ std::vector<ComponentPtr<ConductorComponent>> Entity::getConductors() {
 
     return {data.begin(), data.end()};
 }
+
+void Entity::destroy() { EntityManagerImpl::get().destroyEntity(this); }
+
 }  // namespace Presto

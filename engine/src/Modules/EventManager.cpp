@@ -11,10 +11,10 @@ using ConductorPtr = ComponentPtr<ConductorComponent>;
 
 using MakeConductor = std::function<ConductorPtr(GenericComponentPtr& val)>;
 
-void EventManager::registerCallbacks(Entity& entity) {
-    for (const auto& conductor : entity.getConductors()) {
+void EventManager::registerCallbacks(Entity* entity) {
+    for (const auto& conductor : entity->getConductors()) {
         if (conductor->registered_) {
-            PR_ASSERT(&entity == conductor->entity,
+            PR_ASSERT(entity == conductor->entity,
                       "A Conductor component has been assigned to multiple "
                       "different entities.");
 
@@ -26,7 +26,7 @@ void EventManager::registerCallbacks(Entity& entity) {
                 [conductor](KeyEvent& event) { conductor->onInput(event); });
         }
         conductor->registered_ = true;
-        conductor->entity = &entity;
+        conductor->entity = entity;
     }
 }
 

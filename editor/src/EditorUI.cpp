@@ -214,7 +214,7 @@ void EditorUI::drawMainEditor() {
                                 flags | (selected_scene == label
                                              ? ImGuiTreeNodeFlags_Selected
                                              : ImGuiTreeNodeFlags_None),
-                                label.data())) {
+                                "%s", label.data())) {
                             if (ImGui::IsItemClicked()) {
                                 selected_scene = label;
                             };

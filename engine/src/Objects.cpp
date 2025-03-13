@@ -6,9 +6,12 @@
 Presto::CameraComponent& Presto::GetDefaultCamera() {
     using namespace Presto;
 
-    return RenderingManager::get().getMainCamera();
+    return *RenderingManager::get()
+                .getMainCamera()
+                .lock()
+                ->getComponent<CameraComponent>();
 }
 
-Presto::EntityPtr Presto::NewEntity() {
+Presto::EntityRef Presto::NewEntity() {
     return EntityManagerImpl::Get().newEntity();
 };

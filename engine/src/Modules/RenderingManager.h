@@ -55,10 +55,10 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     [[nodiscard]] const PipelineStructure* getPipelineStructure(
         pipeline_id_t) const;
 
-    void setMainCamera(const Ptr<CameraComponent>&);
+    void setMainCamera(const EntityPtr&);
 
-    CameraComponent& getMainCamera();
-    CameraComponent& getDebugCamera();
+    EntityRef getMainCamera();
+    ComponentPtr<CameraComponent> getDebugCamera();
 
     /**
      * Loads an imported mesh into the renderer, and registers it with its

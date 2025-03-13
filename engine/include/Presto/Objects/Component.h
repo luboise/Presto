@@ -2,7 +2,7 @@
 
 #include "Presto/Platform.h"
 
-#include "Presto/Types/ComponentTypes.h"
+#include "Presto/Types/ObjectTypes.h"
 
 namespace Presto {
 // using component_class_t = std::uint32_t;

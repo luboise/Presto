@@ -6,11 +6,11 @@
 #include "Presto/Objects/Entity.h"         // IWYU pragma: export
 #include "Presto/Objects/EntityManager.h"  // IWYU pragma: export
 
-#include "Presto/Types/ComponentTypes.h"  // IWYU pragma: export
+#include "Presto/Types/ObjectTypes.h"  // IWYU pragma: export
 
 namespace Presto {
 
-[[nodiscard]] EntityPtr NewEntity();
+[[nodiscard]] EntityRef NewEntity();
 
 /**
  * @brief  Creates a new component of any type. The arguments given must match
