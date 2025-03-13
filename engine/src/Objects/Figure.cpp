@@ -19,7 +19,7 @@ Figure::~Figure() {
     }
 }
 
-Entity& Figure::get(std::size_t index) {
+Entity& Figure::getEntity(std::size_t index) {
     PR_ASSERT(
         index < entities_.size(),
         std::format("Index out of acccepted bounds [1, {}]", entities_.size()));

@@ -15,7 +15,7 @@ class Figure {
     explicit Figure(figure_size_t size);
     ~Figure();
 
-    Entity& get(std::size_t index);
+    Entity& getEntity(std::size_t index = 0);
 
    private:
     std::vector<EntityPtr> entities_;
