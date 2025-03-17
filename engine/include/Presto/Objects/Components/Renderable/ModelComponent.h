@@ -44,6 +44,10 @@ class PRESTO_API ModelComponent : public Component {
     [[nodiscard]] PR_SIZE meshCount() const { return meshes_.size(); }
 
     material_override_t& getMaterial(std::size_t index) {
+        if (materialOverrides_[index] == nullptr) {
+            return this->meshes_[index]->defaultMaterial();
+        }
+
         return materialOverrides_[index];
     };
 

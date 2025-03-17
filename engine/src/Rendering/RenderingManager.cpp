@@ -287,17 +287,17 @@ void RenderingManager::update() {
 
     auto& em{EntityManagerImpl::get()};
 
-    auto mesh_draws{em.findAll() |
-                    std::views::transform([](EntityPtr entity) -> DrawStruct {
-                        return {.model = entity->getComponent<ModelComponent>(),
-                                .transform =
-                                    entity->getComponent<TransformComponent>()};
-                    }) |
-                    std::views::filter([](const DrawStruct& drawStruct) {
-                        return drawStruct.model != nullptr &&
-                               drawStruct.model->meshCount() > 0 &&
-                               drawStruct.transform != nullptr;
-                    })};
+    auto mesh_draws{
+        em.findAll() |
+        std::views::transform([](const EntityPtr& entity) -> DrawStruct {
+            return {.model = entity->getComponent<ModelComponent>(),
+                    .transform = entity->getComponent<TransformComponent>()};
+        }) |
+        std::views::filter([](const DrawStruct& drawStruct) {
+            return drawStruct.model != nullptr &&
+                   drawStruct.model->meshCount() > 0 &&
+                   drawStruct.transform != nullptr;
+        })};
 
     std::ranges::for_each(mesh_draws, [this](const DrawStruct& drawStruct) {
         renderer_->setObjectData(
@@ -307,6 +307,13 @@ void RenderingManager::update() {
             const MeshPtr& mesh{drawStruct.model->getMesh(i)};
 
             const MaterialPtr& material{drawStruct.model->getMaterial(i)};
+
+            if (material == nullptr) {
+                PR_ERROR(
+                    "No material available to render in 3d. Using the fallback "
+                    "material. ");
+                continue;
+            }
 
             const auto pipeline_id{material->getPipelineId()};
 
@@ -329,7 +336,7 @@ void RenderingManager::update() {
                 impl_->current.material = material;
             }
 
-            auto* data{impl_->mesh_registrations.find(mesh->registrationId_)};
+            auto* data{impl_->mesh_registrations.find(mesh->registrationId())};
             PR_CORE_ASSERT(
                 data != nullptr,
                 "Mesh registrations can't be null at the draw phase.");
@@ -341,7 +348,7 @@ void RenderingManager::update() {
     auto canvas_draws{
         em.findAll() |
         std::views::transform(
-            [](EntityPtr entity) -> ComponentPtr<CanvasComponent> {
+            [](const EntityPtr& entity) -> ComponentPtr<CanvasComponent> {
                 return entity->getComponent<CanvasComponent>();
             }) |
         std::views::filter(

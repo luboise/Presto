@@ -53,6 +53,8 @@ namespace DefaultAttributeName {
 
 constexpr auto POSITION = "a_vertexPosition";
 
+constexpr auto BASE_COLOUR = "u_baseColour";
+
 constexpr auto COLOUR = "a_colour";
 constexpr auto COLOR = COLOUR;
 

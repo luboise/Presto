@@ -109,7 +109,7 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
 
             // Make sure the material is loaded
             if (imported_mesh.hasMaterial() &&
-                new_material_ptrs[imported_mesh.material_index] == nullptr) {
+                new_material_ptrs[imported_mesh.material_index] != nullptr) {
                 mesh->setDefaultMaterial(
                     new_material_ptrs[imported_mesh.material_index]);
             }
@@ -117,12 +117,9 @@ std::vector<ModelPtr> AssetManager::loadModelsFromDisk(
         }
 
         assets_[AssetType::MODEL][new_name] = model;
-        new_model_ptrs.push_back(model);
+        new_model_ptrs[i] = std::move(model);
     }
 
-    // TODO: Implement full path/cwd system for engine to find it at
-    // runtime, or have the user change it (would help the editor)
-    // fs::path full_asset_path = Utils::File::getFullPath(filepath);
     return new_model_ptrs;
 };
 

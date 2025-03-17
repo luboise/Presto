@@ -23,11 +23,14 @@ class MeshAsset final : public Asset {
         return AssetType::MESH;
     };
 
+    [[nodiscard]] mesh_registration_id_t registrationId() const;
+
     MeshAsset& setVertices(const ImportedAttributeList& attributes);
     MeshAsset& setIndices(IndexList indices);
 
     MeshAsset& setDrawMode(MeshDrawMode mode);
 
+    [[nodiscard]] MaterialPtr& defaultMaterial() const;
     MeshAsset& setDefaultMaterial(const MaterialPtr&);
 
     // TODO: Adapt to imported mesh so it doesn't have to be calculated
@@ -41,8 +44,5 @@ class MeshAsset final : public Asset {
     bool load() override;
 
     [[nodiscard]] bool modifiable() const;
-
-    mesh_registration_id_t registrationId_{PR_UNREGISTERED};
-    MaterialPtr defaultMaterial_;
 };
 }  // namespace Presto

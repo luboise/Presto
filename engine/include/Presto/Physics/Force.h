@@ -1,6 +1,7 @@
 #pragma once
 
 namespace Presto {
+
 struct Force {
     vec3 velocity{0};
     vec3 angular_velocity{0};

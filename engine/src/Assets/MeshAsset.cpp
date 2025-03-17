@@ -12,6 +12,10 @@ namespace Presto {
 struct MeshAsset::Impl {
     MeshData mesh_data;
 
+    MaterialPtr default_material;
+
+    mesh_registration_id_t registration_id{PR_UNREGISTERED};
+
     BoundingBox box;
 };
 
@@ -21,8 +25,8 @@ MeshAsset::~MeshAsset() = default;
 bool MeshAsset::load() {
     this->impl_->mesh_data.pipeline_id = PR_PIPELINE_DEFAULT_3D;
 
-    registrationId_ = RenderingManager::get().loadMesh(impl_->mesh_data);
-    return registrationId_ != PR_UNREGISTERED;
+    impl_->registration_id = RenderingManager::get().loadMesh(impl_->mesh_data);
+    return impl_->registration_id != PR_UNREGISTERED;
 }
 
 MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
@@ -30,7 +34,7 @@ MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
         return *this;
     }
 
-    defaultMaterial_ = material;
+    impl_->default_material = material;
     return *this;
 };
 
@@ -75,9 +79,16 @@ bool MeshAsset::modifiable() const {
     return true;
 };
 
+MaterialPtr& MeshAsset::defaultMaterial() const {
+    return impl_->default_material;
+};
+
 MeshAsset& MeshAsset::setIndices(IndexList indices) {
     this->impl_->mesh_data.indices = std::move(indices);
     return *this;
 };
 
+mesh_registration_id_t MeshAsset::registrationId() const {
+    return impl_->registration_id;
+}
 }  // namespace Presto

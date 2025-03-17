@@ -25,6 +25,7 @@ target_sources(
           Materials.cpp
           Logging.cpp
           Objects.cpp
+          Physics.cpp
           pch.cpp
           GLFWAppWindow.cpp)
 
