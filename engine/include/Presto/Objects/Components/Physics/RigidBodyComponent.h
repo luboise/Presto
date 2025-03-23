@@ -25,4 +25,5 @@ class PRESTO_API RigidBodyComponent : public Component {
    private:
     Force force_;
 };
+
 }  // namespace Presto

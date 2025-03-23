@@ -5,14 +5,14 @@
 namespace Presto {
 
 using Point2D = vec2;
-using Point3D = vec3;
+using Point = vec3;
 
-Presto::float32_t ShortestDistance(const Point3D& p1, const Point3D& p2);
+Presto::float32_t ShortestDistance(const Point& p1, const Point& p2);
 
 struct Shape {
     TransformData data{};
 
-    bool contains(Point3D p);
+    bool contains(Point p);
 };
 
 template <typename T>
@@ -25,10 +25,8 @@ struct LineSegmentBase {
     }
 };
 
-using LineSegment2D = LineSegmentBase<Point2D>;
-using LineSegment3D = LineSegmentBase<Point3D>;
-
-using LineSegment = LineSegment3D;
+using LineSegment = LineSegmentBase<vec3>;
+using LineSegment2D = LineSegmentBase<vec2>;
 
 /*
 struct LineSegment3D {
@@ -50,10 +48,24 @@ struct Circle : Shape {
     Presto::float32_t radius{1};
 };
 
+struct Ray {
+    vec3 position;
+    Presto::float32_t magnitude;
+    vec3 direction;
+};
+
+struct Rectangle : Shape {
+    // Give any 2 points
+    Rectangle(vec2 p1, vec2 p2);
+
+    vec2 bottom_left{};
+    vec2 top_right{};
+};
+
 struct Triangle : Shape {
-    Point3D p1;
-    Point3D p2;
-    Point3D p3;
+    Point p1;
+    Point p2;
+    Point p3;
 
     [[nodiscard]] Triangle operator*(const Presto::mat4& other) const;
     Triangle& operator*=(const Presto::mat4& other);
@@ -69,7 +81,9 @@ struct Cylinder : Shape {
 bool Intersects(const Cylinder&, Triangle);
 bool Intersects(const Circle&, const LineSegment&);
 
-// vec3 ClosestPointTo(const LineSegment3D&, const Point3D&);
-vec2 ClosestPointTo(const LineSegment2D&, const Point2D&);
+bool Intersects2D(const Rectangle& rect, LineSegment2D segment);
+
+vec3 ClosestPointTo(const LineSegment&, const Point&);
+// vec2 ClosestPointTo(const LineSegment2D&, const Point2D&);
 
 }  // namespace Presto
