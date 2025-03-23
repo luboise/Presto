@@ -1,0 +1,26 @@
+
+To check edge collision in 2d
+
+
+
+
+
+- Project the cylinder to a circle (x^2 + y^2 <= r)
+	- No need to actually project it, we can just create a new circle on XZ plane (view from above)
+- Project the triangle to the circles space
+- For each edge
+	 - Check if the edge collides
+- If none collide
+	- No collision 
+
+// From this point onwards, we can assume the triangle MIGHT have collided
+
+- Project the triangle to the front view of the cylinder (rectangle view)
+	- In order to do this
+	- if check, then return true
+- Project the triangle to the side view of the cylinder (side rectangle view)
+	- if check, then return true
+
+// The triangle didnt cross it from the side at all, which means the top check didn't actually cross it
+
+return false 

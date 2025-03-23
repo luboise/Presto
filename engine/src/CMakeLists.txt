@@ -4,6 +4,7 @@ target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE
 add_subdirectory(API)
 
 add_subdirectory(Assets)
+add_subdirectory(Collision)
 add_subdirectory(Common)
 add_subdirectory(Components)
 add_subdirectory(Modules)

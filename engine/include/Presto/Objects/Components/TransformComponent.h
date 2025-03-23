@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Objects/Component.h"
+#include "Presto/Objects/TransformData.h"
 
 namespace Presto {
 class RenderingManager;
@@ -47,13 +48,9 @@ class PRESTO_API TransformComponent : public Component {
     // }
 
    private:
-    [[nodiscard]] inline mat4 getModelView() const {
-        return getModelMatrix(translation_, yawPitchRoll_, scale_);
-    };
+    [[nodiscard]] mat4 getModelView() const { return transformData_.asMat4(); };
 
-    vec3 translation_;
-    vec3 yawPitchRoll_;
-    vec3 scale_;
+    TransformData transformData_{};
 
     // std::array<bool, 3> useRounding_{false};
 
