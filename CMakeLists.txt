@@ -15,8 +15,9 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
       CACHE PATH "Install path" FORCE)
 endif()
 
-option(PRESTO_BUILD_EDITOR "Enable the PrestoEditor target." OFF)
-option(PRESTO_DEBUG_BUILD "Enable the PrestoEditor target." OFF)
+option(PRESTO_BUILD_EDITOR "Enables the PrestoEditor target." OFF)
+option(PRESTO_DEBUG_BUILD "Enables debug macros and modules." OFF)
+option(PRESTO_ENABLE_TESTS "Enables testing." ON)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 

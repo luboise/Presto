@@ -31,7 +31,7 @@ bool Presto::Intersects(const Presto::Cylinder& cylinder,
         return false;
     }
 
-    // Now, check the triangle from the front (no z value)
+    // Check the triangle from the front (no z value)
     copy = tri;
     copy.p1.z = 0;
     copy.p2.z = 0;

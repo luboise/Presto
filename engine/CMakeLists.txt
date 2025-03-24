@@ -74,3 +74,7 @@ compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
 if(NOT PRESTO_SHADERS_COMPILED_SUCCESSFULLY)
   message(FATAL_ERROR "Failed to compile default shaders. Unable to build.")
 endif()
+
+if(PRESTO_ENABLE_TESTS)
+  add_subdirectory(test)
+endif()
