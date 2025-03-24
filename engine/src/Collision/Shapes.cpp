@@ -1,14 +1,17 @@
 #include "Presto/Collision/Shapes.h"
 
 #include <glm/gtx/closest_point.hpp>
-#include "Utils/Math.h"
 
 bool Presto::Intersects(const Presto::Cylinder& cylinder,
                         Presto::Triangle tri) {
     using namespace Presto;
 
     // View the triangle from the cylinder's perspective (from above)
-    tri *= glm::inverse(cylinder.data.asMat4());
+
+    auto rotmat{cylinder.data.asMat4()};
+    rotmat = glm::inverse(rotmat);
+
+    tri *= rotmat;
 
     Presto::Triangle copy{tri};
 
@@ -76,10 +79,11 @@ Presto::Triangle Presto::Triangle::operator*(const Presto::mat4& other) const {
     // TODO: Test the performance of this
     return {
         .p1 = vec3{vec4{this->p1, 1} * other},
-        .p2 = vec3{vec4{this->p2, 2} * other},
-        .p3 = vec3{vec4{this->p3, 3} * other},
+        .p2 = vec3{vec4{this->p2, 1} * other},
+        .p3 = vec3{vec4{this->p3, 1} * other},
     };
 }
+
 template <>
 Presto::float32_t Presto::LineSegment::length() const {
     return ShortestDistance(p1, p2);
@@ -119,13 +123,27 @@ Presto::vec3 Presto::ClosestPointTo(const LineSegment& segment,
     return (scalar_projection * v) + segment.p1;
 };
 
+// Check if the point is inside of the rectangle
+bool Presto::Intersects2D(const Rectangle& rect, Point2D point) {
+    return rect.bottom_left.x <= point.x &&  //
+           rect.bottom_left.y <= point.y &&  //
+           point.x <= rect.top_right.x &&    //
+           point.y <= rect.top_right.y;
+};
+
 bool Presto::Intersects2D(const Rectangle& rect, LineSegment2D segment) {
+    if (Intersects2D(rect, segment.p1) || Intersects2D(rect, segment.p2)) {
+        return true;
+    }
+
     vec2 diff{segment.p2 - segment.p1};
     vec2 norm{glm::normalize(diff)};
 
     // Invert to avoid division in next step
-    norm.x = norm.x == 0 ? 0 : 1 / norm.x;
-    norm.y = norm.y == 0 ? 0 : 1 / norm.y;
+    norm.x =
+        norm.x == 0 ? std::numeric_limits<float>::infinity() : (1 / norm.x);
+    norm.y =
+        norm.y == 0 ? std::numeric_limits<float>::infinity() : (1 / norm.y);
 
     // Get the t values of all 4 sides of the rectangle
     vec2 left_bottom{(rect.bottom_left - segment.p1) * norm};

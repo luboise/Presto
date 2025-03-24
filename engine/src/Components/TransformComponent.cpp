@@ -7,9 +7,10 @@ mat4 TransformData::asMat4() const {
 
     model = glm::translate(model, this->position);
 
-    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(0, 1, 0));
-    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(1, 0, 0));
+    // Apply in reverse order to avoid gimbal lock
     model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
+    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(1, 0, 0));
+    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(0, 1, 0));
 
     model = glm::scale(model, this->scale);
 

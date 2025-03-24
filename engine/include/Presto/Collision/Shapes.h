@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Presto/Core.h"
 #include "Presto/Objects/TransformData.h"
 
 namespace Presto {
@@ -81,6 +82,7 @@ struct Cylinder : Shape {
 bool Intersects(const Cylinder&, Triangle);
 bool Intersects(const Circle&, const LineSegment&);
 
+bool Intersects2D(const Rectangle& rect, Point2D point);
 bool Intersects2D(const Rectangle& rect, LineSegment2D segment);
 
 vec3 ClosestPointTo(const LineSegment&, const Point&);

@@ -7,7 +7,7 @@ struct TransformData {
 
     /* x: Yaw, y: Pitch, z: Roll */
     Presto::vec3 rotation;
-    Presto::vec3 scale;
+    Presto::vec3 scale{1};
 
     [[nodiscard]] Presto::mat4 asMat4() const;
 
