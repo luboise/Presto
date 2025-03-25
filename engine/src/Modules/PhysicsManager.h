@@ -5,7 +5,12 @@
 #include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
 #include "Presto/Objects/Entity.h"
 
+namespace chrono {
+class ChSystemSMC;
+}
+
 namespace Presto {
+
 class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);
 
@@ -23,12 +28,15 @@ class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
     };
 
    private:
-    explicit PhysicsManager() = default;
+    explicit PhysicsManager();
     ~PhysicsManager();
 
     void addPairing(const PhysicsPairing&);
 
     std::vector<PhysicsPairing> pairings_;
     std::vector<Force> persistentForces_;
+
+    Allocated<chrono::ChSystemSMC> system_;
 };
+
 }  // namespace Presto

@@ -6,6 +6,7 @@
 *.spv
 
 cmake-build*/
+build*/
 
 docs/doxygen/
 

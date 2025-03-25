@@ -24,6 +24,8 @@ target_include_directories(
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
 
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
+
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
   target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE dwmapi.lib
@@ -47,6 +49,8 @@ endif()
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC glfw ${Vulkan_LIBRARIES}
                                                    spdlog)
 
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS})
+
 set(TINYGLTF_HEADER_ONLY
     OFF
     CACHE INTERNAL "" FORCE)
@@ -62,17 +66,22 @@ set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${OPENGL_LIBRARIES} glfw
                                                     GLEW::GLEW)
 target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE tinygltf)
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS})
 
 # Needed for shared library
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-set(PRESTO_BASE_SHADER_DIR
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
-compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
-                           "assets/shaders/default")
-if(NOT PRESTO_SHADERS_COMPILED_SUCCESSFULLY)
-  message(FATAL_ERROR "Failed to compile default shaders. Unable to build.")
+if(${CMAKE_BINARY_DIR})
+  set(PRESTO_BASE_SHADER_DIR
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
+  compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
+                             "assets/shaders/default")
+  if(NOT PRESTO_SHADERS_COMPILED_SUCCESSFULLY)
+    message(FATAL_ERROR "Failed to compile default shaders. Unable to build.")
+  endif()
+else()
+  message(STATUS "No binary dir specified. Skipping shader compilation.")
 endif()
 
 if(PRESTO_ENABLE_TESTS)

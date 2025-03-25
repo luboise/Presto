@@ -25,3 +25,10 @@
 [submodule "ext/stb"]
 	path = ext/stb
 	url = https://github.com/nothings/stb.git
+[submodule "ext/chrono"]
+    path = ext/chrono
+    url = https://github.com/projectchrono/chrono.git
+    branch = release/9.0
+[submodule "ext/eigen"]
+	path = ext/eigen
+	url = https://github.com/PX4/eigen.git

@@ -65,6 +65,15 @@ add_subdirectory(ext/TinyGLTF)
 
 # find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
+# Eigen needed for Chrono add_subdirectory(ext/eigen)
+find_package(Eigen3 REQUIRED NO_MODULE)
+find_package(Chrono REQUIRED CONFIG)
+
+if(NOT Chrono_FOUND)
+  message("Could not find Chrono or one of its required modules")
+  return()
+endif()
+
 if(WIN32)
   set(PLATFORM Windows)
 

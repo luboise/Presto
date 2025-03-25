@@ -18,7 +18,7 @@ macro(compile_shaders_for_target target_name IN_SHADER_DIR OUT_SHADER_SUFFIX)
 
   foreach(ignore RANGE 1)
     message(CHECK_START "Check output dir")
-    if(${CMAKE_RUNTIME_OUTPUT_DIRECTORY} STREQUAL "")
+    if("${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" STREQUAL "")
       message(
         CHECK_FAIL
         "CMAKE_RUNTIME_OUTPUT_DIRECTORY has not been specified. Skipping shader compilation."

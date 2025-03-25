@@ -42,4 +42,10 @@ TEST(CylinderCollisionTests, BasicAssertions) {
     Cylinder c{.radius = 0.5, .height = 1};
     Triangle tri{.p1{-0.4, 0, 0}, .p2{-3, 0, 0}, .p3{-4, 5, 2}};
     ASSERT_TRUE(Intersects(c, tri));
+
+    tri.p1 = {-0.5, 0, 0};
+    ASSERT_TRUE(Intersects(c, tri));
+
+    tri.p1 = {-0.6, 0, 0};
+    ASSERT_FALSE(Intersects(c, tri));
 }

@@ -1,12 +1,18 @@
 #include "Modules/PhysicsManager.h"
 
-#include "Presto/Objects/Components/TransformComponent.h"
+#include <chrono/physics/ChSystemSMC.h>
+#include <memory>
 
+#include "Presto/Objects/Components/TransformComponent.h"
+#include "Presto/Physics/Force.h"
 #include "Presto/Runtime/Time.h"
 
-#include "Presto/Physics/Force.h"
+using namespace chrono;
 
 namespace Presto {
+
+PhysicsManager::PhysicsManager() { system_ = std::make_unique<ChSystemSMC>(); };
+
 PhysicsManager::~PhysicsManager() { pairings_.clear(); }
 
 void PhysicsManager::update() {
@@ -32,4 +38,5 @@ void PhysicsManager::addPairing(const PhysicsPairing& pairing) {
 void PhysicsManager::addPersistentForce(Force force) {
     persistentForces_.push_back(force);
 };
+
 }  // namespace Presto
