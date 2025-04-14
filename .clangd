@@ -1,7 +1,7 @@
 CompileFlags:
   # Add: [-Wall, -Werror]
   Add: [-Werror]
-  Remove: [-include-pch] # Prevents preloading PCH in clangd diagnostics
+  Remove: [-include-pch, -fmodules-ts, -fdeps-format=p1689r5, -fmodule-mapper=*] # Prevents preloading PCH in clangd diagnostics
 
 Diagnostics:
   UnusedIncludes: Strict

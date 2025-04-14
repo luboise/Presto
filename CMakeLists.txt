@@ -63,21 +63,23 @@ add_subdirectory(ext/glm)
 set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
 add_subdirectory(ext/TinyGLTF)
 
+# add_subdirectory(ext/gtl)
+add_subdirectory(ext/GTE/GTE)
+
 # find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
-# Eigen needed for Chrono add_subdirectory(ext/eigen)
+# add_subdirectory(ext/eigen)
 find_package(Eigen3 REQUIRED NO_MODULE)
-find_package(Chrono REQUIRED CONFIG)
 
-if(NOT Chrono_FOUND)
-  message("Could not find Chrono or one of its required modules")
-  return()
-endif()
+# find_package(Chrono REQUIRED CONFIG)
+
+# if(NOT Chrono_FOUND) message("Could not find Chrono or one of its required
+# modules") return() endif()
 
 if(WIN32)
   set(PLATFORM Windows)
 
-  add_compile_definitions(PR_PLATFORM_WINDOWS)
+  add_compile_definitions(PR_PLATFORM_WINDOWS GTE_USE_MSWINDOWS GTE_USE_OPENGL)
   add_compile_definitions(NOMINMAX)
 
   set(CMAKE_GENERATOR_PLATFORM
@@ -85,7 +87,7 @@ if(WIN32)
       CACHE STRING "Platform (x64)" FORCE)
 elseif(UNIX)
   set(PLATFORM Unix)
-  add_compile_definitions(PR_PLATFORM_UNIX)
+  add_compile_definitions(PR_PLATFORM_UNIX GTE_USE_LINUX GTE_USE_OPENGL)
 else()
   message(FATAL_ERROR "Platform not selected."
                       "Expected Windows or Unix platform for compilation.")

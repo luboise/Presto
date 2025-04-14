@@ -24,7 +24,9 @@ target_include_directories(
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
 
-target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
+
+# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")

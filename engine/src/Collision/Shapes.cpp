@@ -6,64 +6,67 @@ bool Presto::Intersects(const Presto::Cylinder& cylinder,
                         Presto::Triangle tri) {
     using namespace Presto;
 
-    // View the triangle from the cylinder's perspective (from above)
+    /*
+// View the triangle from the cylinder's perspective (from above)
 
-    auto rotmat{cylinder.data.asMat4()};
-    rotmat = glm::inverse(rotmat);
+auto rotmat{cylinder.data.asMat4()};
+rotmat = glm::inverse(rotmat);
 
-    tri *= rotmat;
+tri *= rotmat;
 
-    Presto::Triangle copy{tri};
+Presto::Triangle copy{tri};
 
-    // Remove y components (2d triangle)
-    copy.p1.y = 0;
-    copy.p2.y = 0;
-    copy.p3.y = 0;
+// Remove y components (2d triangle)
+copy.p1.y = 0;
+copy.p2.y = 0;
+copy.p3.y = 0;
 
-    // Now we want to find the shortest distance to the origin, because the
-    // cylinder originates at (0,0,0)
+// Now we want to find the shortest distance to the origin, because the
+// cylinder originates at (0,0,0)
 
-    const Point origin{0, 0, 0};
+const Point origin{0, 0, 0};
 
-    if (glm::length(ClosestPointTo(LineSegment(copy.p2, copy.p1), origin)) >
-            cylinder.radius &&
-        glm::length(ClosestPointTo(LineSegment(copy.p3, copy.p2), origin)) >
-            cylinder.radius &&
-        glm::length(ClosestPointTo(LineSegment(copy.p3, copy.p1), origin)) >
-            cylinder.radius) {
-        return false;
-    }
+if (glm::length(ClosestPointTo(LineSegment(copy.p2, copy.p1), origin)) >
+        cylinder.radius &&
+    glm::length(ClosestPointTo(LineSegment(copy.p3, copy.p2), origin)) >
+        cylinder.radius &&
+    glm::length(ClosestPointTo(LineSegment(copy.p3, copy.p1), origin)) >
+        cylinder.radius) {
+    return false;
+}
 
-    // Check the triangle from the front (no z value)
-    copy = tri;
-    copy.p1.z = 0;
-    copy.p2.z = 0;
-    copy.p3.z = 0;
+// Check the triangle from the front (no z value)
+copy = tri;
+copy.p1.z = 0;
+copy.p2.z = 0;
+copy.p3.z = 0;
 
-    Rectangle rec{{-cylinder.radius, -cylinder.height},
-                  {cylinder.radius, cylinder.height}};
+Rectangle rec{{-cylinder.radius, -cylinder.height},
+              {cylinder.radius, cylinder.height}};
 
-    if (Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
-        Intersects2D(rec, LineSegment2D{copy.p2, copy.p3}) ||
-        Intersects2D(rec, LineSegment2D{copy.p1, copy.p3})) {
-        return true;
-    }
+if (Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
+    Intersects2D(rec, LineSegment2D{copy.p2, copy.p3}) ||
+    Intersects2D(rec, LineSegment2D{copy.p1, copy.p3})) {
+    return true;
+}
 
-    copy = tri;
+copy = tri;
 
-    mat4 rotation_matrix{
-        glm::rotate(mat4{1}, glm::radians(90.0f), vec3(0.0f, 1.0f, 0.0f))};
+mat4 rotation_matrix{
+    glm::rotate(mat4{1}, glm::radians(90.0f), vec3(0.0f, 1.0f, 0.0f))};
 
-    copy.p1 = vec4{copy.p1, 1} * rotation_matrix;
-    copy.p1.z = 0;
-    copy.p2 = vec4{copy.p2, 1} * rotation_matrix;
-    copy.p2.z = 0;
-    copy.p3 = vec4{copy.p3, 1} * rotation_matrix;
-    copy.p3.z = 0;
+copy.p1 = vec4{copy.p1, 1} * rotation_matrix;
+copy.p1.z = 0;
+copy.p2 = vec4{copy.p2, 1} * rotation_matrix;
+copy.p2.z = 0;
+copy.p3 = vec4{copy.p3, 1} * rotation_matrix;
+copy.p3.z = 0;
 
-    return Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
-           Intersects2D(rec, LineSegment2D{copy.p2, copy.p3}) ||
-           Intersects2D(rec, LineSegment2D{copy.p1, copy.p3});
+return Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
+       Intersects2D(rec, LineSegment2D{copy.p2, copy.p3}) ||
+       Intersects2D(rec, LineSegment2D{copy.p1, copy.p3});
+               */
+    return false;
 };
 
 Presto::Triangle& Presto::Triangle::operator*=(const Presto::mat4& other) {

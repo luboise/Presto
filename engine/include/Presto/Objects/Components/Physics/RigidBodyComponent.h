@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Presto/Collision/Shapes.h"
 #include "Presto/Objects/Component.h"
 
 #include "Presto/Physics/Force.h"
+#include "Presto/Utils/SubTypeMap.h"
 
 namespace Presto {
+
 class RenderingManager;
 
 class PRESTO_API RigidBodyComponent : public Component {
@@ -15,6 +18,8 @@ class PRESTO_API RigidBodyComponent : public Component {
     void addAngularVelocity(vec3 angularVel);
     void addForce(Force force);
 
+    [[nodiscard]] bool collidingWith(const RigidBodyComponent& other) const;
+
     struct PhysicsMovement {
         vec3 pos_offset;
         vec3 angular_offset;
@@ -24,6 +29,7 @@ class PRESTO_API RigidBodyComponent : public Component {
 
    private:
     Force force_;
+    SubTypeMap<CollisionShape> colliders_;
 };
 
 }  // namespace Presto

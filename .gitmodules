@@ -32,3 +32,6 @@
 [submodule "ext/eigen"]
 	path = ext/eigen
 	url = https://github.com/PX4/eigen.git
+[submodule "ext/GTE"]
+	path = ext/GTE
+	url = https://github.com/davideberly/GeometricTools
