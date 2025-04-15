@@ -9,7 +9,7 @@ struct RenderComponent::Impl {
     std::vector<ModelSubcomponent> models;
 };
 
-RenderComponent::RenderComponent() = default;
+RenderComponent::RenderComponent() { impl_ = std::make_unique<Impl>(); };
 RenderComponent::~RenderComponent() = default;
 
 void RenderComponent::onEnterScene() {
