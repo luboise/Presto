@@ -1,5 +1,5 @@
 #include "Modules/SceneManager.h"
-#include "Presto/Objects/Components/Renderable/ModelSubcomponent.h"
+#include "Presto/Objects/Components/Renderables/ModelSubcomponent.h"
 
 #include "Modules/AssetManager.h"
 #include "Modules/EntityManagerImpl.h"

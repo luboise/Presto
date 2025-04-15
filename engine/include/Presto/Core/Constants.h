@@ -46,6 +46,7 @@ using texture_id_t = Presto::uint16_t;
 constexpr texture_id_t PR_DEFAULT_TEXTURE{9};
 
 constexpr mesh_registration_id_t PR_MESH_QUAD{1};
+constexpr mesh_registration_id_t PR_MESH_0_SQUARE{2};
 
 constexpr PR_STRING_ID PR_ANY_NAME{"PRESTO_ANY_NAME"};
 

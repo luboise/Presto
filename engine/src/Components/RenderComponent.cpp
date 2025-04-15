@@ -1,6 +1,6 @@
 #include "Presto/Objects/Components/RenderComponent.h"
-#include "Presto/Objects/Components/Renderable/ModelSubcomponent.h"
-#include "Presto/Objects/Components/Renderable/QuadSubcomponent.h"
+#include "Presto/Objects/Components/Renderables/ModelSubcomponent.h"
+#include "Presto/Objects/Components/Renderables/QuadSubcomponent.h"
 
 namespace Presto {
 
@@ -54,11 +54,11 @@ RenderComponent& RenderComponent::addModel(ModelSubcomponent&& model) {
     return *this;
 };
 
-const std::vector<QuadSubcomponent>& RenderComponent::getQuads() const {
+std::vector<QuadSubcomponent>& RenderComponent::getQuads() const {
     return impl_->quads;
 };
 
-const std::vector<ModelSubcomponent>& RenderComponent::getModels() const {
+std::vector<ModelSubcomponent>& RenderComponent::getModels() const {
     return impl_->models;
 };
 

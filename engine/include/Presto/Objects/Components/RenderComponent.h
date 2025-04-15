@@ -22,11 +22,11 @@ class PRESTO_API RenderComponent final : public Component {
 
     RenderComponent& addQuad(const QuadSubcomponent& quad);
     RenderComponent& addQuad(QuadSubcomponent&& quad);
-    [[nodiscard]] const std::vector<QuadSubcomponent>& getQuads() const;
+    [[nodiscard]] std::vector<QuadSubcomponent>& getQuads() const;
 
     RenderComponent& addModel(const ModelSubcomponent& model);
     RenderComponent& addModel(ModelSubcomponent&& model);
-    [[nodiscard]] const std::vector<ModelSubcomponent>& getModels() const;
+    [[nodiscard]] std::vector<ModelSubcomponent>& getModels() const;
 
    private:
     void onEnterScene() override;

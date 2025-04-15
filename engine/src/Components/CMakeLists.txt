@@ -5,8 +5,8 @@ target_sources(
           TransformComponent.cpp
           # Rendering
           RenderComponent.cpp
-          # Renderable/SpriteSubcomponent.cpp
-          # Physics
+          Renderables/Renderables.cpp
+          # Renderables/SpriteSubcomponent.cpp Physics
           Physics/RigidBodyComponent.cpp
           # UI
           UI/CanvasItem.cpp

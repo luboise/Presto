@@ -116,6 +116,11 @@ void loadImageOnGpu(ImageAsset&);
 
     [[nodiscard]] Pipeline* getPipeline(pipeline_id_t id) const;
 
+    void switchPipeline(Pipeline* pipeline);
+    void switchPipeline(pipeline_id_t id);
+
+    void switchMaterial(const MaterialPtr& material);
+
     template <typename T>
     Allocated<MeshRegistrationData> createMeshRegistration(
         const std::vector<T>& vertices, IndexList& indices,

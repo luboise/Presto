@@ -3,6 +3,7 @@
 #include <type_traits>
 #include "Presto/Aliases/Handles.h"
 
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/ErasedBytes.h"
 #include "Presto/Rendering/UniformBuffer.h"
 #include "Presto/Rendering/UniformTypes.h"

@@ -4,7 +4,7 @@
 
 #include "Presto/Core/Constants.h"
 
-#include "Presto/Objects/Component.h"
+#include "Presto/Objects/Components/RenderComponent.h"
 #include "Presto/Objects/Subcomponent.h"
 
 #include "Presto/Assets/ModelAsset.h"  // IWYU pragma: export
@@ -20,7 +20,7 @@ struct MeshDraw {
     };
 };
 
-struct PRESTO_API ModelSubcomponent : public Subcomponent<Component> {
+struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
     std::vector<MeshDraw> draws;
 
     ModelSubcomponent() = delete;

@@ -110,6 +110,7 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     // Load the default quad (used for UI rendering)
     loadMesh(DefaultMeshes::Quad, PR_MESH_QUAD);
+    loadMesh(DefaultMeshes::ZeroedSquare, PR_MESH_0_SQUARE);
 };
 
 RenderingManager::~RenderingManager() = default;
@@ -295,7 +296,6 @@ void RenderingManager::update() {
         }) |
         std::views::filter([](const DrawStruct& drawStruct) {
             return drawStruct.render != nullptr &&
-                   drawStruct.render->getModels().size() > 0 &&
                    drawStruct.transform != nullptr;
         })};
 
@@ -305,37 +305,14 @@ void RenderingManager::update() {
 
         for (const auto& model : drawStruct.render->getModels()) {
             for (const MeshDraw& draw : model.draws) {
-                // for (std::size_t i = 0; i < model.draws.size(); i++) {
-
                 if (draw.material == nullptr) {
                     PR_ERROR(
-                        "No material available to render in 3d. Using the "
-                        "fallback "
-                        "material. ");
+                        "No material available to render in 3D. Skipping "
+                        "draw.");
                     continue;
                 }
 
-                const auto pipeline_id{draw.material->getPipelineId()};
-
-                // Update pipeline if changed
-                if (impl_->current.pipeline == nullptr ||
-                    impl_->current_pipeline_id != pipeline_id) {
-                    auto* pipeline{impl_->pipelines.find(pipeline_id)};
-                    PR_ASSERT(
-                        pipeline != nullptr,
-                        "Meshes on the draw list can't be drawn to a nullptr "
-                        "pipeline.");
-                    pipeline->bind();
-                    impl_->current.pipeline = pipeline;
-                    impl_->current_pipeline_id = pipeline_id;
-                }
-
-                // Update material if changed
-                if (impl_->current.material.expired() ||
-                    impl_->current.material.lock() != draw.material) {
-                    draw.material->bindTo(*impl_->current.pipeline);
-                    impl_->current.material = draw.material;
-                }
+                switchMaterial(draw.material);
 
                 auto* data{impl_->mesh_registrations.find(
                     draw.mesh->registrationId())};
@@ -345,6 +322,34 @@ void RenderingManager::update() {
 
                 renderer_->render(*data);
             }
+        }
+
+        for (QuadSubcomponent& quad : drawStruct.render->getQuads()) {
+            // for (std::size_t i = 0; i < model.draws.size(); i++) {
+
+            if (quad.material == nullptr) {
+                PR_ERROR(
+                    "No material available to render in 3d. Using the "
+                    "fallback "
+                    "material. ");
+                continue;
+            }
+
+            switchMaterial(quad.material);
+
+            auto* data{impl_->mesh_registrations.find(PR_MESH_0_SQUARE)};
+            PR_CORE_ASSERT(data != nullptr,
+                           "The default quad can not be null.");
+
+            // TODO: Move this somewhere else so it isn't calculated 7 million
+            // times
+            quad.transform.scale = vec3{quad.width, quad.height, 0};
+
+            renderer_->setObjectData(
+                {.transform{drawStruct.transform->getModelView() *
+                            quad.transform.asMat4()}});
+
+            renderer_->render(*data);
         }
     });
 
@@ -589,6 +594,36 @@ auto cam{impl_->cam_debug_entity->getComponent<CameraComponent>()};
 PR_CORE_ASSERT(cam != nullptr, "The debug camera must always be defined.");
 return cam;
     */
+};
+
+void RenderingManager::switchPipeline(Pipeline* pipeline) {
+    // Update pipeline if changed
+    PR_ASSERT(pipeline != nullptr, "Unable to switch to null pipeline.");
+    pipeline->bind();
+    impl_->current.pipeline = pipeline;
+    impl_->current_pipeline_id = pipeline->id();
+}
+
+void RenderingManager::switchPipeline(pipeline_id_t id) {
+    auto* pipeline{getPipeline(id)};
+    switchPipeline(pipeline);
+}
+
+void RenderingManager::switchMaterial(const MaterialPtr& material) {
+    const auto pipeline_id{material->getPipelineId()};
+
+    // Update pipeline if changed
+    if (impl_->current.pipeline == nullptr ||
+        impl_->current_pipeline_id != pipeline_id) {
+        switchPipeline(pipeline_id);
+    }
+
+    // Update material if changed
+    if (impl_->current.material.expired() ||
+        impl_->current.material.lock() != material) {
+        material->bindTo(*impl_->current.pipeline);
+        impl_->current.material = material;
+    }
 };
 
 }  // namespace Presto

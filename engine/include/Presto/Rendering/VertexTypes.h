@@ -24,7 +24,7 @@ struct Vertex {};
 
 struct Vertex3D : public Vertex {
     Presto::vec3 vertexPosition;
-    Presto::vec3 colour;
+    Presto::vec3 colour = {1, 1, 1};
     Presto::vec3 normal;
     Presto::vec2 tex_coords;
 
