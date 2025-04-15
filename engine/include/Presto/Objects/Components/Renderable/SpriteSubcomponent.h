@@ -2,15 +2,15 @@
 
 #include "Presto/Core/Constants.h"
 
-#include "Presto/Assets/ImageAsset.h"
 #include "Presto/Objects/Component.h"
+#include "Presto/Objects/Components/RenderComponent.h"
+#include "Presto/Objects/Subcomponent.h"
 
 namespace Presto {
-struct RenderGroup;
 
 using mesh_registration_id_t = PR_NUMERIC_ID;
 
-class PRESTO_API SpriteComponent : public Component {
+struct PRESTO_API SpriteSubcomponent : public Subcomponent<RenderComponent> {
     // friend class RenderingManager;
     friend class EntityManagerImpl;
 
@@ -22,8 +22,8 @@ class PRESTO_API SpriteComponent : public Component {
     void setAsset(const ImagePtr& asset);
 
    private:
-    explicit SpriteComponent(const ImagePtr& asset);
-    SpriteComponent() = default;
+    explicit SpriteSubcomponent(const ImagePtr& asset);
+    SpriteSubcomponent() = default;
 
     ImagePtr asset_{nullptr};
 };

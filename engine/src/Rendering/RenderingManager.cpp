@@ -275,7 +275,7 @@ Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
 
 void RenderingManager::update() {
     struct DrawStruct {
-        ComponentPtr<ModelComponent> model;
+        ComponentPtr<RenderComponent> render;
         ComponentPtr<TransformComponent> transform;
     };
 
@@ -290,12 +290,12 @@ void RenderingManager::update() {
     auto mesh_draws{
         em.findAll() |
         std::views::transform([](const EntityPtr& entity) -> DrawStruct {
-            return {.model = entity->getComponent<ModelComponent>(),
+            return {.render = entity->getComponent<RenderComponent>(),
                     .transform = entity->getComponent<TransformComponent>()};
         }) |
         std::views::filter([](const DrawStruct& drawStruct) {
-            return drawStruct.model != nullptr &&
-                   drawStruct.model->meshCount() > 0 &&
+            return drawStruct.render != nullptr &&
+                   drawStruct.render->getModels().size() > 0 &&
                    drawStruct.transform != nullptr;
         })};
 
@@ -303,45 +303,48 @@ void RenderingManager::update() {
         renderer_->setObjectData(
             {.transform = drawStruct.transform->getModelView()});
 
-        for (std::size_t i = 0; i < drawStruct.model->meshCount(); i++) {
-            const MeshPtr& mesh{drawStruct.model->getMesh(i)};
+        for (const auto& model : drawStruct.render->getModels()) {
+            for (const MeshDraw& draw : model.draws) {
+                // for (std::size_t i = 0; i < model.draws.size(); i++) {
 
-            const MaterialPtr& material{drawStruct.model->getMaterial(i)};
+                if (draw.material == nullptr) {
+                    PR_ERROR(
+                        "No material available to render in 3d. Using the "
+                        "fallback "
+                        "material. ");
+                    continue;
+                }
 
-            if (material == nullptr) {
-                PR_ERROR(
-                    "No material available to render in 3d. Using the fallback "
-                    "material. ");
-                continue;
+                const auto pipeline_id{draw.material->getPipelineId()};
+
+                // Update pipeline if changed
+                if (impl_->current.pipeline == nullptr ||
+                    impl_->current_pipeline_id != pipeline_id) {
+                    auto* pipeline{impl_->pipelines.find(pipeline_id)};
+                    PR_ASSERT(
+                        pipeline != nullptr,
+                        "Meshes on the draw list can't be drawn to a nullptr "
+                        "pipeline.");
+                    pipeline->bind();
+                    impl_->current.pipeline = pipeline;
+                    impl_->current_pipeline_id = pipeline_id;
+                }
+
+                // Update material if changed
+                if (impl_->current.material.expired() ||
+                    impl_->current.material.lock() != draw.material) {
+                    draw.material->bindTo(*impl_->current.pipeline);
+                    impl_->current.material = draw.material;
+                }
+
+                auto* data{impl_->mesh_registrations.find(
+                    draw.mesh->registrationId())};
+                PR_CORE_ASSERT(
+                    data != nullptr,
+                    "Mesh registrations can't be null at the draw phase.");
+
+                renderer_->render(*data);
             }
-
-            const auto pipeline_id{material->getPipelineId()};
-
-            // Update pipeline if changed
-            if (impl_->current.pipeline == nullptr ||
-                impl_->current_pipeline_id != pipeline_id) {
-                auto* pipeline{impl_->pipelines.find(pipeline_id)};
-                PR_ASSERT(pipeline != nullptr,
-                          "Meshes on the draw list can't be drawn to a nullptr "
-                          "pipeline.");
-                pipeline->bind();
-                impl_->current.pipeline = pipeline;
-                impl_->current_pipeline_id = pipeline_id;
-            }
-
-            // Update material if changed
-            if (impl_->current.material.expired() ||
-                impl_->current.material.lock() != material) {
-                material->bindTo(*impl_->current.pipeline);
-                impl_->current.material = material;
-            }
-
-            auto* data{impl_->mesh_registrations.find(mesh->registrationId())};
-            PR_CORE_ASSERT(
-                data != nullptr,
-                "Mesh registrations can't be null at the draw phase.");
-
-            renderer_->render(*data);
         }
     });
 
@@ -559,13 +562,16 @@ mesh_registration_id_t RenderingManager::loadMesh(
     return registration_id;
 };
 
-void RenderingManager::drawLine(const Line& line) {};
+PR_DEBUG_ONLY_CODE(
+    void RenderingManager::drawLine(const Line& line){};
 
-bool& RenderingManager::usingDebugCamera() { return impl_->using_debug_cam; }
+    bool& RenderingManager::usingDebugCamera() {
+        return impl_->using_debug_cam;
+    }
 
-void RenderingManager::setUsingDebugCamera(bool isUsing) {
-    impl_->using_debug_cam = isUsing;
-}
+    void RenderingManager::setUsingDebugCamera(bool isUsing) {
+        impl_->using_debug_cam = isUsing;
+    })
 
 EntityPtr RenderingManager::getMainCamera() {
     return impl_->cam_active_entity;

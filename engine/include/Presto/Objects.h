@@ -31,7 +31,6 @@ ComponentPtr<T> NewComponent(Args... args) {
 
 // Functions that create components
 namespace CreateComponent {
-ComponentPtr<ModelComponent> Model(const ModelPtr& ptr);
 
 template <DerivedFrom<ConductorComponent> T, typename... Args>
 ComponentPtr<T> Conductor(Args... args) {

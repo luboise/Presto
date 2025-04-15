@@ -17,7 +17,7 @@
 #endif
 
 #ifdef PR_DEBUG_BUILD
-#define PR_DEBUG_ONLY_CODE(x) (x);
+#define PR_DEBUG_ONLY_CODE(x) x;
 #else
 #define PR_DEBUG_ONLY_CODE(x)
 #endif

@@ -3,7 +3,6 @@
 #include "Managers.h"
 
 #include "Presto/Events.h"
-#include "Presto/Objects/Components/CameraComponent.h"
 #include "Presto/Runtime.h"
 
 #include "Utils/DebugTimer.h"

@@ -374,8 +374,8 @@ void DebugUI::drawComponentBrowser() {
                     component->isOfType<TransformComponent>()) {
                     return true;
                 }
-                if (((bits & MODEL_BIT) != 0U) &&
-                    component->isOfType<ModelComponent>()) {
+                if (((bits & RENDER_BIT) != 0U) &&
+                    component->isOfType<RenderComponent>()) {
                     return true;
                 }
                 if (((bits & CAMERA_BIT) != 0U) &&
@@ -437,7 +437,7 @@ void DebugUI::drawComponentBrowser() {
         }
 
         make_checkbox("Transform", TRANSFORM_BIT);
-        make_checkbox("Model", MODEL_BIT);
+        make_checkbox("Model", RENDER_BIT);
         make_checkbox("Camera", CAMERA_BIT);
 
         if (selectedComponent_ != nullptr) {

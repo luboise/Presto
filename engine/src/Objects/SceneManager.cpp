@@ -1,5 +1,5 @@
 #include "Modules/SceneManager.h"
-#include "Presto/Objects/Components/Renderable/ModelComponent.h"
+#include "Presto/Objects/Components/Renderable/ModelSubcomponent.h"
 
 #include "Modules/AssetManager.h"
 #include "Modules/EntityManagerImpl.h"
@@ -92,8 +92,8 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
                     }
 
                     ComponentPtr new_mesh_component{
-                        EntityManagerImpl::get().newComponent<ModelComponent>(
-                            mr)};
+                        EntityManagerImpl::get()
+                            .newComponent<ModelSubcomponent>(mr)};
 
                     new_entity->setComponent(new_mesh_component);
                 }

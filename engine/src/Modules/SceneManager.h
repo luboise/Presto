@@ -26,7 +26,7 @@ class SceneManager final : public Module<SceneManager> {
 
    private:
     SceneManager();
-    ~SceneManager();
+    ~SceneManager() override;
 
     // Returns the error as a string if an error occurs when validating the
     // scene
