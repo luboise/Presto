@@ -9,7 +9,7 @@ struct TransformData {
     Presto::vec3 rotation;
     Presto::vec3 scale{1};
 
-    [[nodiscard]] Presto::mat4 asMat4() const;
+    [[nodiscard]] Presto::mat4 asModelMat() const;
 
     TransformData& addRotation(Presto::vec3);
     TransformData& addTranslation(Presto::vec3);

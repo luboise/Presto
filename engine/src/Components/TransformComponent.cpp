@@ -2,7 +2,7 @@
 
 namespace Presto {
 
-mat4 TransformData::asMat4() const {
+mat4 TransformData::asModelMat() const {
     mat4 model{1.0F};
 
     model = glm::translate(model, this->position);

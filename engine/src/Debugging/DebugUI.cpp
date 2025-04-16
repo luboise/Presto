@@ -468,12 +468,12 @@ void DebugUI::drawSelectedComponent() {
         DebugComponents::CheckboxChooser(using_debug_cam, "Use Debug Camera");
 
         DebugComponents::EnumChooser(
-            camera->getType(),
+            camera->type(),
             std::vector<EnumMember<CameraType>>{
                 {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
                 {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
 
-        auto& extents{camera->getExtents()};
+        auto& extents{camera->extents()};
 
         DebugComponents::SliderChooser(
             extents.width, "Extents width", 1, 3840,
@@ -487,12 +487,17 @@ void DebugUI::drawSelectedComponent() {
                 camera->setExtents({.width = extents.width, .height = value});
             });
 
-        auto distances{camera->getDistances()};
+        auto distances{camera->distances()};
 
-        Presto::vec3 pos{camera->getPos()};
+        Presto::vec3 pos{camera->position()};
         DebugComponents::Vec3Chooser(
             pos, "Position",
-            [&camera](Presto::vec3 newPos) { camera->setPos(newPos); });
+            [&camera](Presto::vec3 newPos) { camera->setPosition(newPos); });
+
+        Presto::vec3 rot{camera->rotation()};
+        DebugComponents::Vec3Chooser(
+            rot, "Rotation",
+            [&camera](Presto::vec3 rot) { camera->setRotation(rot); });
 
         DebugComponents::SliderChooser(
             distances.near, "Near", -1000.F, 3000.F,

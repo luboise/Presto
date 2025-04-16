@@ -347,7 +347,7 @@ void RenderingManager::update() {
 
             renderer_->setObjectData(
                 {.transform{drawStruct.transform->getModelView() *
-                            quad.transform.asMat4()}});
+                            quad.transform.asModelMat()}});
 
             renderer_->render(*data);
         }

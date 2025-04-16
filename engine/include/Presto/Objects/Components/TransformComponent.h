@@ -48,7 +48,9 @@ class PRESTO_API TransformComponent : public Component {
     // }
 
    private:
-    [[nodiscard]] mat4 getModelView() const { return transformData_.asMat4(); };
+    [[nodiscard]] mat4 getModelView() const {
+        return transformData_.asModelMat();
+    };
 
     TransformData transformData_{};
 
