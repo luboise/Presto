@@ -4,46 +4,27 @@
 #include "Window.h"
 
 namespace Presto {
+
 class Renderer;
 
-class GLFWAppWindow : public Window {
+struct WindowData;
+
+class GLFWAppWindow final : public Window {
    public:
     explicit GLFWAppWindow(const WindowProperties& props);
     ~GLFWAppWindow() override;
 
     void update() override;
 
-    [[nodiscard]] unsigned getWidth() const override {
-        return windowData_.window_size.width;
-    }
-    [[nodiscard]] unsigned getHeight() const override {
-        return windowData_.window_size.height;
-    }
-
-    void setCallbackFunction(const EventCallbackFn& fn) override {
-        windowData_.event_callback = fn;
-    }
-
-    [[nodiscard]] void* getWindowHandle() const { return this->windowPtr_; }
-
-    /*
-explicit operator GLFWwindow*() const {
-return this->getWindowHandle();
-}
-    */
-
-    /*
-            explicit operator const GLFWwindow*() const {
-                return this->getWindowHandle();
-            }
-                    */
-
-    [[nodiscard]] const VisualExtents& getFramebufferSize() const {
-        return windowData_.framebuffer_size;
-    }
+    // Getters from WindowData
+    [[nodiscard]] unsigned getWidth() const override;
+    [[nodiscard]] unsigned getHeight() const override;
+    [[nodiscard]] const VisualExtents& getFramebufferSize() const;
 
     void setVSync(bool vsync) override;
     bool vSyncEnabled() override;
+
+    [[nodiscard]] void* getWindowHandle() const { return this->windowPtr_; }
 
     GLFWAppWindow(const GLFWAppWindow&) = default;
     GLFWAppWindow(GLFWAppWindow&&) = delete;
@@ -59,18 +40,6 @@ return this->getWindowHandle();
 
     static Input::Key getPrestoKeyCode(int GLFWKeycode);
 
-    struct WindowData {
-        std::string title;
-
-        VisualExtents window_size;
-        VisualExtents framebuffer_size;
-
-        bool VSync{false};
-
-        EventCallbackFn event_callback;
-        Renderer* pRenderer{nullptr};
-    };
-
-    WindowData windowData_;
+    Allocated<WindowData> windowData_{nullptr};
 };
 }  // namespace Presto

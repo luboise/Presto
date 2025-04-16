@@ -16,10 +16,11 @@ namespace Presto {
 Application::Application() {
     // TODO: Fix this to be injected
     this->appWindow_ = Window::create();
-    // this->_app_window = new GLFWAppWindow();
-    appWindow_->setCallbackFunction(
-        [this](auto& e) -> void { this->onEvent(e); });
 
+    EventManager::init();
+    this->initialiseEvents();  // Initialise application events in EventManager
+
+    // this->_app_window = new GLFWAppWindow();
     AssetManager::init();
     // AssetManager must be initialised before RenderingManager
 
@@ -35,7 +36,6 @@ Application::Application() {
     RenderingManager::init();
 
     // SceneManager::init();
-    EventManager::init();
     PhysicsManager::init();
     Time::init();
 
@@ -119,34 +119,19 @@ void Application::run() {
     tearDown();
 }
 
-void Application::onEvent(Event& e) {
-    EventDispatcher dispatcher(e);
+void Application::initialiseEvents() {
+    auto& em{EventManager::get()};
 
-    dispatcher.Dispatch<WindowResizeEvent>(
-        [this](auto& e) -> bool { return this->onWindowResize(e); });
+    em.addHandler<WindowResizeEvent>(
+        [this](WindowResizeEvent& e) { this->onWindowResize(e); });
 
-    dispatcher.Dispatch<WindowCloseEvent>(
+    em.addHandler<WindowCloseEvent>(
         [this](auto& e) -> bool { return this->onWindowClose(e); });
 
-    dispatcher.Dispatch<FramebufferResizedEvent>([](auto& /*e*/) -> bool {
+    em.addHandler<FramebufferResizedEvent>([](auto& /*e*/) -> bool {
         RenderingManager::get().resizeFramebuffer();
         return true;
     });
-
-    // TODO: Properly put this into the event system
-    auto lambda{[](KeyEvent& event) -> bool {
-        EventManager::get().onKeyEvent(event);
-        return true;
-    }};
-
-    if (e.inCategory(EventCategoryKeyboard)) {
-        if (auto* ptr = dynamic_cast<KeyEvent*>(&e); ptr != nullptr) {
-            lambda(*ptr);
-        }
-    }
-
-    // TODO: Implement log levels
-    // PR_CORE_TRACE("{}", e.toString());
 }
 
 // TODO: Implement this

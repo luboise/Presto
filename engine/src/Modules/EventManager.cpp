@@ -21,18 +21,13 @@ void EventManager::registerCallbacks(Entity* entity) {
             continue;
         }
 
-        if (conductor->handlesInput_) {
-            keyEventHandlers_.emplace_back(
-                [conductor](KeyEvent& event) { conductor->onInput(event); });
+        if (conductor->handlesKeyEvents_) {
+            this->addHandler<KeyEvent>(
+                [conductor](KeyEvent& event) { conductor->on(event); });
         }
         conductor->registered_ = true;
         conductor->entity = entity;
     }
 }
 
-void EventManager::onKeyEvent(KeyEvent& event) {
-    for (const auto& handler : keyEventHandlers_) {
-        handler(event);
-    }
-};
 }  // namespace Presto

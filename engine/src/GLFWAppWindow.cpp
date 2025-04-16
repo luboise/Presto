@@ -10,6 +10,8 @@
 #include "Presto/Runtime/Events/KeyEvents.h"
 #include "Presto/Runtime/Events/MouseEvents.h"
 
+#include "Presto/Runtime/WindowData.h"
+
 namespace Presto {
 bool GLFWAppWindow::s_GLFWInitialised = false;
 
@@ -24,15 +26,18 @@ void GLFWAppWindow::shutdown() {
     }
 }
 
-GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) { init(props); }
+GLFWAppWindow::GLFWAppWindow(const WindowProperties& props) {
+    windowData_ = std::make_unique<WindowData>();
+    init(props);
+}
 
 GLFWAppWindow::~GLFWAppWindow() { this->GLFWAppWindow::shutdown(); }
 
 void GLFWAppWindow::init(const WindowProperties& props) {
-    this->windowData_.title = props.title;
+    this->windowData_->title = props.title;
 
-    this->windowData_.window_size = props.extents;
-    this->windowData_.framebuffer_size = props.extents;
+    this->windowData_->window_size = props.extents;
+    this->windowData_->framebuffer_size = props.extents;
 
     PR_CORE_INFO("Creating window \"{}\" ({}x{})", props.title,
                  props.extents.width, props.extents.height);
@@ -85,7 +90,7 @@ void GLFWAppWindow::SetCallbacks() {
         WindowData& data{
             *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
         WindowCloseEvent e = WindowCloseEvent();
-        data.event_callback(e);
+        data.templated_event_callback(e);
     });
 
     glfwSetKeyCallback(
@@ -106,13 +111,13 @@ void GLFWAppWindow::SetCallbacks() {
                 case GLFW_PRESS: {
                     KeyEvent e(presto_key_code,
                                KeyEvent::KeyEventType::PRESSED);
-                    data.event_callback(e);
+                    data.templated_event_callback(e);
                     break;
                 }
                 case GLFW_RELEASE: {
                     KeyEvent e(presto_key_code,
                                KeyEvent::KeyEventType::RELEASED);
-                    data.event_callback(e);
+                    data.templated_event_callback(e);
                     break;
                 }
                 default:
@@ -128,12 +133,12 @@ void GLFWAppWindow::SetCallbacks() {
         switch (action) {
             case GLFW_PRESS: {
                 MouseButtonPressedEvent e(button);
-                data.event_callback(e);
+                data.templated_event_callback(e);
                 break;
             }
             case GLFW_RELEASE: {
                 MouseButtonReleasedEvent e(button);
-                data.event_callback(e);
+                data.templated_event_callback(e);
                 break;
             }
             default:
@@ -146,7 +151,7 @@ void GLFWAppWindow::SetCallbacks() {
             WindowData& data{
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
             MouseMovedEvent e((float)xpos, (float)ypos);
-            data.event_callback(e);
+            data.templated_event_callback(e);
         });
 
     glfwSetScrollCallback(
@@ -154,7 +159,7 @@ void GLFWAppWindow::SetCallbacks() {
             WindowData& data{
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
             MouseScrolledEvent e((float)xoffset, (float)yoffset);
-            data.event_callback(e);
+            data.templated_event_callback(e);
         });
 
     // Set platform specific callbacks
@@ -169,7 +174,7 @@ void GLFWAppWindow::SetCallbacks() {
                 .width = static_cast<std::uint16_t>(new_width),
                 .height = static_cast<std::uint16_t>(new_height),
             };
-            data.event_callback(e);
+            data.templated_event_callback(e);
         });
 
     glfwSetFramebufferSizeCallback(
@@ -182,7 +187,7 @@ void GLFWAppWindow::SetCallbacks() {
                 .height = static_cast<std::uint16_t>(new_height),
             };
             FramebufferResizedEvent e(new_width, new_height);
-            data.event_callback(e);
+            data.templated_event_callback(e);
         });
 }
 
@@ -194,10 +199,10 @@ void GLFWAppWindow::setVSync(bool vsync) {
     } else {
         glfwSwapInterval(0);
     }
-    this->windowData_.VSync = vsync;
+    this->windowData_->VSync = vsync;
 }
 
-bool GLFWAppWindow::vSyncEnabled() { return windowData_.VSync; }
+bool GLFWAppWindow::vSyncEnabled() { return windowData_->VSync; }
 
 Input::Key GLFWAppWindow::getPrestoKeyCode(int GLFWKeycode) {
     switch (GLFWKeycode) {
@@ -215,5 +220,17 @@ Input::Key GLFWAppWindow::getPrestoKeyCode(int GLFWKeycode) {
             return Input::Key::INVALID_KEY;
     }
 };
+
+const VisualExtents& GLFWAppWindow::getFramebufferSize() const {
+    return windowData_->framebuffer_size;
+}
+
+unsigned GLFWAppWindow::getHeight() const {
+    return windowData_->window_size.height;
+}
+
+unsigned GLFWAppWindow::getWidth() const {
+    return windowData_->window_size.width;
+}
 
 }  // namespace Presto

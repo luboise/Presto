@@ -18,8 +18,9 @@ class PRESTO_API ConductorComponent : public Component {
     virtual void start() {};
     virtual void update() {};
 
-    virtual void onInput(KeyEvent& /*unused*/) { handlesInput_ = false; };
-    bool handlesInput_{true};
+    virtual void on(KeyEvent& /*unused*/) { handlesKeyEvents_ = false; };
+
+    bool handlesKeyEvents_{true};
 
     void onEnterScene() override { this->start(); }
 

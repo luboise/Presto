@@ -4,7 +4,7 @@
 #include "Presto/Objects/Component.h"
 
 #include "Presto/Physics/Force.h"
-#include "Presto/Utils/SubTypeMap.h"
+#include "Presto/Utils/TypeMap.h"
 
 namespace Presto {
 
@@ -29,7 +29,7 @@ class PRESTO_API RigidBodyComponent : public Component {
 
    private:
     Force force_;
-    SubTypeMap<CollisionShape> colliders_;
+    // TypeMap<CollisionShape> colliders_;
 };
 
 }  // namespace Presto

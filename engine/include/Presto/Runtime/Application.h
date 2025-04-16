@@ -28,7 +28,7 @@ class PRESTO_API Application {
     // Intended to be replaced by user logic
     virtual void gameLoop() {};
 
-    void onEvent(Event& e);
+    void initialiseEvents();
 
     Application(const Application&) = delete;
     Application(Application&&) = delete;

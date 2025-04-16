@@ -3,6 +3,7 @@
 #include "Event.h"
 
 namespace Presto {
+
 class MouseMovedEvent : public Event {
    public:
     MouseMovedEvent(float x, float y) : mouseX(x), mouseY(y) {}
@@ -53,6 +54,7 @@ class MouseButtonEvent : public Event {
     EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
                          EventCategory::EventCategoryMouse |
                          EventCategory::EventCategoryMouseButton)
+
    protected:
     MouseButtonEvent(int button) : mouse_button(button) {}
     int mouse_button;
