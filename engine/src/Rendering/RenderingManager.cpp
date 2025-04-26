@@ -572,6 +572,23 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
     return new_mesh;
 };
 
+void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
+    if (ptr == nullptr) {
+        PR_CORE_ERROR(
+            "An attempt was made to unload a nullptr Mesh. This will be "
+            "ignored.");
+        return;
+    }
+
+    if (!ptr.unique()) {
+        PR_WARN("Unable to unload mesh with id {} as it is currently in use.",
+                ptr->registrationId());
+        return;
+    }
+
+    impl_->mesh_registrations.release(ptr->registrationId());
+};
+
 PR_DEBUG_ONLY_CODE(
     void RenderingManager::drawLine(const Line& line){};
 

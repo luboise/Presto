@@ -107,6 +107,15 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     MaterialPtr createMaterialFromImport(const ImportedMaterial&,
                                          std::vector<Ptr<Texture>>&);
 
+    template <DerivedFrom<Asset> T, typename... Args>
+        requires std::is_constructible_v<T, Args...>
+    Ptr<T> newAsset(Args&&... args) {
+        Ptr<T> new_asset{new T(std::forward<Args>(args)...)};
+        addAsset(new_asset);
+
+        return new_asset;
+    }
+
     template <typename T>
         requires DerivedFrom<T, Asset>
     void addAsset(Ptr<T> asset) {

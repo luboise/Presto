@@ -65,11 +65,16 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     ComponentPtr<CameraComponent> getDebugCamera();
 
     /**
-     * Loads an imported mesh into the renderer, and registers it with its
-     * pipeline.
+     * @brief  Loads an imported mesh into the renderer, and registers it with
+     * its pipeline.
      */
     Ptr<Mesh> loadMesh(MeshData meshData,
                        mesh_registration_id_t customId = PR_UNREGISTERED);
+
+    /**
+     * @brief  Unloads an existing Mesh from the renderer, and destroys it
+     */
+    void unloadMesh(Ptr<Mesh>&&);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);

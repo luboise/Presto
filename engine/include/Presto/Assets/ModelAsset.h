@@ -24,11 +24,13 @@ class ModelAsset final : public Asset {
         return AssetType::MODEL;
     };
 
+    [[nodiscard]] Presto::size_t meshCount() const;
     [[nodiscard]] const std::vector<MeshDraw>& getDraws() { return draws_; }
 
     BoundingBox getBoundingBox();
 
-    ModelAsset& addMesh(MeshData, MaterialPtr = nullptr);
+    ModelAsset& addMesh(MeshPtr, MaterialPtr = nullptr);
+
     ModelAsset& clear();
 
    private:

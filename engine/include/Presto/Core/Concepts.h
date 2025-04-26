@@ -22,12 +22,6 @@ concept DerivedFrom = std::is_base_of_v<Base, Derived> && requires {
           });
 };
 
-template <typename T, typename... Args>
-constexpr bool is_constructible_v = std::constructible_from<T, Args...>;
-
-template <typename T, typename... Args>
-concept ArgsFor = std::constructible_from<T, Args...>;
-
 using Scalar = float;
 
 template <typename T>

@@ -10,7 +10,6 @@ class AssetSource {
    public:
     virtual ~AssetSource() { this->ensureUnloaded(); }
 
-    virtual void load() = 0;
     virtual void unload() = 0;
 
     [[nodiscard]] bool loaded() const { return loaded_; }

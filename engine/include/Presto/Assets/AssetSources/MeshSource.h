@@ -14,24 +14,38 @@ struct ImportedModelData;
 class MeshSource final : public AssetSource {
    public:
     explicit MeshSource(AssetPath filepath);
+    ~MeshSource() override;
 
-    void load() override;
-    void unload() override {}
+    ModelPtr loadModel(Presto::string modelName, bool allowReload = true);
+    void unloadModel(const Presto::string& modelName);
+
+    void reloadFile();
 
     ModelPtr getModel(const Presto::string& name);
 
    private:
-    void updateMesh();
+    // void updateMesh();
 
-    Allocated<ImportedModelData> importData_;
+    // Allocated<ImportedModelData> importData_;
 
-    struct MaterialReady {
-        ImportedMaterial material_import;
+    struct LoadedModel {
+        Presto::string name;
+        std::vector<ImportedMesh> mesh_imports;
+        std::vector<Ptr<Mesh>> meshes;
+
+        ModelPtr ptr;
     };
 
-    std::vector<ModelPtr> models_;
-    std::vector<MeshPtr> meshes_;
-    std::vector<MaterialPtr> materials_;
+    LoadedModel* getLoadedModel(const Presto::string& name);
+    void unloadModel(LoadedModel& loadedModel);
+
+    struct LoadedMaterial {
+        ImportedMaterial material_import;
+        MaterialPtr ptr;
+    };
+
+    std::vector<LoadedModel> models_;
+    std::vector<LoadedMaterial> materials_;
     std::vector<TexturePtr> textures_;
 };
 
