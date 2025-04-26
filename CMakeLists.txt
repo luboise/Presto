@@ -53,6 +53,9 @@ set(JSON_BuildTests
     CACHE INTERNAL "")
 add_subdirectory(ext/json)
 
+find_package(Vulkan REQUIRED)
+include_directories(${Vulkan_INCLUDE_DIR})
+
 # OpenGL Libraries
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -64,8 +67,6 @@ add_subdirectory(ext/TinyGLTF)
 
 # add_subdirectory(ext/gtl)
 add_subdirectory(ext/GTE/GTE)
-
-# find_package(Vulkan REQUIRED) include_directories(${Vulkan_INCLUDE_DIR})
 
 # add_subdirectory(ext/eigen)
 find_package(Eigen3 REQUIRED NO_MODULE)
