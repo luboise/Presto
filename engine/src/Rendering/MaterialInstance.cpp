@@ -145,8 +145,9 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
             SWITCH_CASE(UniformVariableType::MAT4);
 
             case UniformVariableType::TEXTURE: {
-                const TexturePtr& texture{
-                    impl_->textures[binding.data.as<Presto::uint8_t>()]};
+                auto texture_index{binding.data.as<Presto::uint8_t>()};
+                const TexturePtr& texture{impl_->textures[texture_index]};
+
                 if (texture == nullptr) {
                     PR_TRACE(
                         "No texture specified at location {} in material "

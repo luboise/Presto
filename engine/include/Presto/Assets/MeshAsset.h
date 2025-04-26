@@ -6,11 +6,12 @@
 #include "Presto/Core/Constants.h"
 
 #include "Presto/Rendering/BoundingBox.h"
-#include "Presto/Rendering/RenderTypes.h"
 
 #include "ImportTypes.h"
 
 namespace Presto {
+
+struct MeshData;
 
 class MeshAsset final : public Asset {
     friend class RenderingManager;
@@ -25,16 +26,22 @@ class MeshAsset final : public Asset {
 
     [[nodiscard]] mesh_registration_id_t registrationId() const;
 
-    MeshAsset& setVertices(const ImportedAttributeList& attributes);
-    MeshAsset& setIndices(IndexList indices);
+    /*
+MeshAsset& setVertices(const ImportedAttributeList& attributes);
+MeshAsset& setIndices(IndexList indices);
 
-    MeshAsset& setDrawMode(MeshDrawMode mode);
+MeshAsset& setDrawMode(MeshDrawMode mode);
+    */
+
+    MeshAsset& setMeshData(MeshData data);
 
     [[nodiscard]] MaterialPtr& defaultMaterial() const;
     MeshAsset& setDefaultMaterial(const MaterialPtr&);
 
     // TODO: Adapt to imported mesh so it doesn't have to be calculated
     [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Presto
+
+    static MeshPtr from(const ImportedMesh&);
 
    private:
     struct Impl;
@@ -45,4 +52,5 @@ class MeshAsset final : public Asset {
 
     [[nodiscard]] bool modifiable() const;
 };
+
 }  // namespace Presto

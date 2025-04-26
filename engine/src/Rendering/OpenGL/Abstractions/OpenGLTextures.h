@@ -2,8 +2,9 @@
 
 #include <GL/glew.h>
 
-#include "Presto/Assets/Image.h"
+#include "Presto/Assets/ImageData.h"
 
+#include "Presto/Assets/ImageAsset.h"
 #include "Presto/Rendering/TextureTypes.h"
 
 namespace Presto {
@@ -49,7 +50,7 @@ class OpenGLSamplerInstance {
 
 class OpenGLTexture : public Texture {
    public:
-    explicit OpenGLTexture(const Presto::Image& image) { load(image); };
+    explicit OpenGLTexture(const Presto::ImageData& image) { load(image); };
 
     ~OpenGLTexture() override;
 
@@ -57,7 +58,7 @@ class OpenGLTexture : public Texture {
         return textureId_ != 0 && samplerId_ != 0;
     };
 
-    void load(const Presto::Image& image);
+    void load(const Presto::ImageData& data);
     void unload();
 
     void bind(std::uint8_t slot) override;
@@ -78,45 +79,18 @@ class OpenGLTexture : public Texture {
 
 class OpenGLTexture2D final : public Texture2D {
    public:
-    void bind(uint8_t slot) override {
-        glActiveTexture(GL_TEXTURE0 + static_cast<unsigned int>(slot));
-        glBindTexture(GL_TEXTURE_2D, textureInst_);
-    }
+    OpenGLTexture2D(opengl_dim_t width, opengl_dim_t height);
 
-    OpenGLTexture2D(opengl_dim_t width, opengl_dim_t height)
-        : width_(width), height_(height) {
-        this->bind(31);
-        glTexImage2D(GL_TEXTURE_2D, 0, OPENGL_PIXEL_FORMAT, width_, height_, 0,
-                     OPENGL_PIXEL_FORMAT, OPENGL_TEXTURE_DATA_TYPE, nullptr);
+    void bind(uint8_t slot) override;
 
-        // TODO: Parametrise this with a proper sampler value system
-        glSamplerParameteri(samplerInst_, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glSamplerParameteri(samplerInst_, GL_TEXTURE_MIN_FILTER,
-                            GL_LINEAR_MIPMAP_LINEAR);
-        glSamplerParameteri(samplerInst_, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glSamplerParameteri(samplerInst_, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
+    void setImage(const ImagePtr& ptr) override;
 
-    [[nodiscard]] std::size_t height() const override { return height_; }
-    [[nodiscard]] std::size_t width() const override { return width_; }
+    void load() override;
 
-    void write(ByteArray bytes) override {
-        if (auto size{pixelCount() * OPENGL_PIXEL_SIZE}; bytes.size() != size) {
-            PR_ERROR(
-                "The number of bytes received ({}) does not match the "
-                "number "
-                "of bytes expected ({}). Skipping this texture write.",
-                size, bytes.size());
-            return;
-        }
+    [[nodiscard]] std::size_t height() const override;
+    [[nodiscard]] std::size_t width() const override;
 
-        this->bind(31);
-
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width_, height_,
-                        OPENGL_PIXEL_FORMAT, OPENGL_TEXTURE_DATA_TYPE,
-                        bytes.data());
-        glGenerateTextureMipmap(textureInst_);
-    }
+    void write(ByteArray bytes) override;
 
    private:
     opengl_dim_t width_{0};
@@ -124,6 +98,8 @@ class OpenGLTexture2D final : public Texture2D {
 
     OpenGLTextureInstance textureInst_;
     OpenGLSamplerInstance samplerInst_;
+
+    void reloadInstances();
 };
 
 }  // namespace Presto

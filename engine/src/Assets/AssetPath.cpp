@@ -12,6 +12,9 @@ AssetPath::AssetPath(const char* inPath) {
     path_ = Utils::File::getFullPath(Presto::string{inPath});
 }
 
+/**
+ * @brief  Return the filename without the extension
+ */
 Presto::string AssetPath::basename() const { return path_.stem(); }
 
 const FilePath& AssetPath::path() const { return path_; }

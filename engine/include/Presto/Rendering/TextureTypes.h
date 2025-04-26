@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Core/Constants.h"
+#include "Presto/Types/AssetTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
@@ -9,11 +10,12 @@ namespace Presto {
 enum class TextureType : Presto::uint8_t { TEX2D };
 
 class PRESTO_API Texture {
-    using texture_id_t = PR_NUMERIC_ID;
-    static constexpr texture_id_t TEXTURE_ID{-1U};
-
    public:
     virtual void bind(Presto::uint8_t slot) = 0;
+    virtual void load() = 0;
+
+    [[nodiscard]] texture_id_t id() const { return id_; }
+    [[nodiscard]] bool loaded() const { return id_ == UNLOADED_TEXTURE_ID; }
 
     virtual ~Texture() = default;
 
@@ -22,25 +24,32 @@ class PRESTO_API Texture {
     Texture& operator=(const Texture&) = delete;
     Texture& operator=(Texture&&) = delete;
 
-    [[nodiscard]] texture_id_t id() const { return id_; }
-
    protected:
-    Texture() = default;
-
     void setId(texture_id_t id) { id_ = id; }
 
+    static constexpr texture_id_t UNLOADED_TEXTURE_ID{
+        static_cast<texture_id_t>(-1U)};
+
+    Texture() = default;
+
    private:
-    texture_id_t id_{};
+    texture_id_t id_{UNLOADED_TEXTURE_ID};
 };
 
 class Texture2D : public Texture {
    public:
-    [[nodiscard]] virtual std::size_t width() const = 0;
-    [[nodiscard]] virtual std::size_t height() const = 0;
+    virtual void setImage(const ImagePtr& ptr) = 0;
 
     virtual void write(ByteArray bytes) = 0;
 
+    [[nodiscard]] ImagePtr image() const { return image_; }
+
+    [[nodiscard]] virtual std::size_t width() const = 0;
+    [[nodiscard]] virtual std::size_t height() const = 0;
     [[nodiscard]] std::size_t pixelCount() const { return width() * height(); };
+
+   private:
+    ImagePtr image_;
 };
 
 template <TextureType T>

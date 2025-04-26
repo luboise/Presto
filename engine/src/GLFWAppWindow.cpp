@@ -1,5 +1,6 @@
 #include "Presto/Runtime/GLFWAppWindow.h"
 #include <memory>
+#include "Presto/Core/Logging.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -43,19 +44,28 @@ void GLFWAppWindow::init(const WindowProperties& props) {
                  props.extents.width, props.extents.height);
 
     if (!s_GLFWInitialised) {
-        const int success = glfwInit();
-
-        PR_CORE_ASSERT(success,
-                       "Unable to initialise GLFW. Program cannot continue.");
-
         // Disable OpenGL
         // glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+#ifdef PR_PLATFORM_UNIX
+        if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND) != 0) {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+        } else {
+            PR_WARN("GLFW Wayland not available. Using X11.");
+        }
+
+        glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+#endif
 
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
         s_GLFWInitialised = true;
+        const int success = glfwInit();
+
+        PR_CORE_ASSERT(success,
+                       "Unable to initialise GLFW. Program cannot continue.");
     }
 
     // The 2 nulls are fullscreen monitor choice and graphics library object
@@ -81,6 +91,10 @@ void GLFWAppWindow::init(const WindowProperties& props) {
     glfwSetWindowUserPointer(new_window, &windowData_);
     this->SetCallbacks();
     this->setVSync(true);
+
+    glfwSetInputMode(new_window, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
+
+    PR_TRACE(glfwGetPlatform());
 }
 
 void GLFWAppWindow::SetCallbacks() {

@@ -3,15 +3,20 @@
 
 namespace Presto {
 
-ImagePtr LoadImage(const AssetArg& path) {
-    // TODO: Add naming
-    return AssetManager::get().loadImageFromDisk(path, "UnnamedImage");
+ImagePtr LoadImage(const AssetArg& path, Presto::string name) {
+    if (name.empty()) {
+        name = path.basename();
+    }
+
+    return AssetManager::get().loadImageFromDisk(path, name);
 }
 
 ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
-    auto models{AssetManager::get().loadModelsFromDisk(filepath, customName)};
-    if (!models.empty()) {
-        return models[0];
+    ModelLoadResult result{
+        AssetManager::get().loadModelsFromDisk(filepath, customName)};
+
+    if (!result.models.empty()) {
+        return result.models[0];
     }
 
     return nullptr;
@@ -20,5 +25,9 @@ ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
 ModelPtr FindModel(const asset_name_t& name) {
     return AssetManager::get().find<AssetType::MODEL>(name);
 };
+
+Ptr<MeshSource> AddMeshSource(const AssetArg& filepath) {
+    return AssetManager::get().addAssetSource<MeshSource>(filepath);
+}
 
 }  // namespace Presto

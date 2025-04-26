@@ -1,4 +1,4 @@
-#include "Presto/Assets/Image.h"
+#include "Presto/Assets/ImageData.h"
 
 namespace Presto {
 
@@ -9,7 +9,7 @@ namespace Presto {
 const ByteArray default_texture_bytes{BLACK_PIXEL, WHITE_PIXEL, WHITE_PIXEL,
                                       BLACK_PIXEL};
 
-static const Presto::Image DEFAULT_TEXTURE{
+static const Presto::ImageData DEFAULT_TEXTURE{
     .width = 2,
     .height = 2,
     .bytes{default_texture_bytes.begin(), default_texture_bytes.end()}};

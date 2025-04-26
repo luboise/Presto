@@ -10,6 +10,9 @@
 
 namespace Presto {
 
+class MeshSource;
+struct MeshDraw;
+
 class ModelAsset final : public Asset {
     friend class AssetManager;
     friend class RenderingManager;
@@ -21,9 +24,12 @@ class ModelAsset final : public Asset {
         return AssetType::MODEL;
     };
 
-    [[nodiscard]] const std::vector<MeshPtr>& getMeshes() { return meshes_; }
+    [[nodiscard]] const std::vector<MeshDraw>& getDraws() { return draws_; }
 
     BoundingBox getBoundingBox();
+
+    ModelAsset& addMesh(MeshData, MaterialPtr = nullptr);
+    ModelAsset& clear();
 
    private:
     bool load() override;
@@ -32,7 +38,9 @@ class ModelAsset final : public Asset {
 
     // std::vector<RawMeshData> meshes_;
     // std::vector<MeshData> meshes_;
-    std::vector<MeshPtr> meshes_;
+
+    std::vector<MeshDraw> draws_;
+    Ptr<MeshSource> source_;
 };
 
 }  // namespace Presto

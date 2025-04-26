@@ -5,7 +5,7 @@
 #include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
-struct Image {
+struct ImageData {
     using image_data_t = ByteArray;
 
     std::size_t width;

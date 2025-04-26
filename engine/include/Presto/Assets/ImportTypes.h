@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Presto/Assets/Image.h"
+#include "Presto/Assets/ImageData.h"
 
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
@@ -27,6 +27,8 @@ struct ImportedVertexAttribute {
 using ImportedAttributeList = std::vector<ImportedVertexAttribute>;
 
 static constexpr Presto::uint8_t PR_NO_MATERIAL_INDEX = -1;
+
+struct ImportedMaterial;
 
 struct ImportedMesh {
     ImportedAttributeList attributes;
@@ -95,7 +97,7 @@ struct ImportedMaterial {
 
 struct ImportedTexture {
     Presto::string name;
-    Presto::Image image;
+    Presto::ImageData image;
 };
 
 struct ImportedModelData {

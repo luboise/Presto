@@ -13,9 +13,10 @@ class MaterialAsset;
 using MaterialDefinitionPtr = Ptr<MaterialAsset>;
 class ImageAsset;
 using ImagePtr = Ptr<ImageAsset>;
-class MeshAsset;
-using MeshPtr = Ptr<MeshAsset>;
 class ModelAsset;
 using ModelPtr = Ptr<ModelAsset>;
+
+class Mesh;
+using MeshPtr = Ptr<Mesh>;
 
 }  // namespace Presto

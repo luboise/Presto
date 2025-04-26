@@ -26,7 +26,11 @@ class UniformBuffer;
 class Pipeline;
 class Texture;
 struct ImportedMesh;
+
 struct MeshRegistrationData;
+struct MeshData;
+
+class Mesh;
 
 struct Line;
 
@@ -64,9 +68,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
      * Loads an imported mesh into the renderer, and registers it with its
      * pipeline.
      */
-
-    mesh_registration_id_t loadMesh(
-        MeshData meshData, mesh_registration_id_t customId = PR_UNREGISTERED);
+    Ptr<Mesh> loadMesh(MeshData meshData,
+                       mesh_registration_id_t customId = PR_UNREGISTERED);
 
     layer_id_t addLayer(size_t pos = -1);
     void removeLayer(layer_id_t id);
@@ -108,7 +111,7 @@ void loadImageOnGpu(ImageAsset&);
     void setTexture(texture_id_t id, Texture texture);
 
     Texture* getTexture(texture_id_t);
-    texture_id_t addTexture(const Presto::Image& image);
+    texture_id_t addTexture(const Presto::ImageData& image);
     void removeTexture(texture_id_t);
 
     PipelineStructure addPipeline(Pipeline&& pipeline,

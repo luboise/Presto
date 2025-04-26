@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Presto/Objects/Component.h"
+#include "Presto/Types/AssetTypes.h"
 
 namespace Presto {
 
@@ -23,6 +24,8 @@ class PRESTO_API RenderComponent final : public Component {
     RenderComponent& addQuad(const QuadSubcomponent& quad);
     RenderComponent& addQuad(QuadSubcomponent&& quad);
     [[nodiscard]] std::vector<QuadSubcomponent>& getQuads() const;
+
+    RenderComponent& addModel(const ModelPtr& model);
 
     RenderComponent& addModel(const ModelSubcomponent& model);
     RenderComponent& addModel(ModelSubcomponent&& model);

@@ -1,19 +1,23 @@
 #pragma once
 
 #include "Module.h"
+#include "Presto/Assets/AssetSources/AssetSource.h"
 
 // #include "Presto/Assets/ImageAsset.h"
 // #include "Presto/Assets/ModelAsset.h"
 
+#include "Presto/Aliases/Handles.h"
 #include "Presto/Assets/Asset.h"
 
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Assets/ModelAsset.h"
 
+#include "Presto/Core/Concepts.h"
 #include "Presto/Types/AssetTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include <map>
+#include <memory>
 
 namespace Presto {
 // enum class ResourceType { JSON, RAW };
@@ -45,6 +49,14 @@ struct AssetTraits<AssetType::MODEL> {
     using ResourcePtr = AssetPtr<ResourceT>;
 };
 
+struct ModelLoadResult {
+    bool success;
+
+    std::vector<ModelPtr> models;
+    std::vector<TexturePtr> textures;
+    std::vector<MaterialPtr> materials;
+};
+
 class PRESTO_API AssetManager final : public Module<AssetManager> {
     MODULE_FUNCTIONS(AssetManager);
 
@@ -52,14 +64,14 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     void update() override {}
 
     /**
-     * @brief Loads models from the disk, and returns a list of loaded models.
+     * @brief Loads models from the disk, and returns all newly loaded assets
      */
-    std::vector<ModelPtr> loadModelsFromDisk(const AssetArg& filepath,
-                                             const asset_name_t& customName) {
+    ModelLoadResult loadModelsFromDisk(const AssetArg& filepath,
+                                       const asset_name_t& customName) {
         return loadModelsFromDisk(filepath, std::vector{customName});
     };
 
-    std::vector<ModelPtr> loadModelsFromDisk(
+    ModelLoadResult loadModelsFromDisk(
         const AssetArg& filepath,
         const std::vector<asset_name_t>& customNames = {});
 
@@ -67,7 +79,7 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
                                const asset_name_t& customName);
 
     ImagePtr createImageAsset(const asset_name_t& customName,
-                              const Presto::Image& image);
+                              const Presto::ImageData& image);
 
     template <AssetType Type>
     [[nodiscard]] auto find(const asset_name_t& key)
@@ -81,14 +93,33 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     MaterialDefinitionPtr createMaterialDefinition(
         Presto::string name, const PipelineStructure& structure);
 
+    template <typename T>
+        requires DerivedFrom<T, AssetSource, Strictness::STRICT>
+    Ptr<T> addAssetSource(const AssetArg& filepath) {
+        Ptr<T> new_source{std::make_shared<T>(filepath)};
+
+        assetSources_.push_back(
+            std::static_pointer_cast<AssetSource>(new_source));
+
+        return new_source;
+    };
+
+    MaterialPtr createMaterialFromImport(const ImportedMaterial&,
+                                         std::vector<Ptr<Texture>>&);
+
+    template <typename T>
+        requires DerivedFrom<T, Asset>
+    void addAsset(Ptr<T> asset) {
+        assets_[asset.type()][asset.name()] = asset;
+    }
+
    private:
     AssetManager() = default;
     ~AssetManager() override = default;
 
     std::map<AssetType, std::map<asset_name_t, std::shared_ptr<Asset>>> assets_;
 
-    MaterialPtr createMaterialFromImport(const ImportedMaterial&,
-                                         std::vector<Ptr<Texture>>&);
+    std::vector<AssetSource> assetSources_;
 };
 
 /**/

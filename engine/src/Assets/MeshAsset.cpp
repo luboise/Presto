@@ -2,7 +2,7 @@
 
 #include "Modules/RenderingManager.h"
 #include "Presto/Core/Constants.h"
-#include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Rendering/MeshData.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include "Rendering/VertexProcessing.h"
@@ -13,8 +13,6 @@ struct MeshAsset::Impl {
     MeshData mesh_data;
 
     MaterialPtr default_material;
-
-    mesh_registration_id_t registration_id{PR_UNREGISTERED};
 
     BoundingBox box;
 };
@@ -37,15 +35,32 @@ MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
     impl_->default_material = material;
     return *this;
 };
-
-MeshAsset& MeshAsset::setDrawMode(MeshDrawMode mode) {
-    impl_->mesh_data.draw_mode = mode;
-    return *this;
-};
-
+//
 // TODO: Implement bounding box logic on import of mesh
 BoundingBox MeshAsset::getBoundingBox() const { return impl_->box; }
 
+bool MeshAsset::modifiable() const {
+    if (this->loaded()) {
+        PR_ERROR(
+            "Unable to modify MeshAsset \"{}\" while it is loaded. It must be "
+            "unloaded before being modified.\nSkipping this modification.",
+            this->name());
+        return false;
+    }
+
+    return true;
+};
+
+MaterialPtr& MeshAsset::defaultMaterial() const {
+    return impl_->default_material;
+};
+
+MeshAsset& MeshAsset::setMeshData(MeshData data) {
+    impl_->mesh_data = std::move(data);
+    return *this;
+};
+
+/*
 MeshAsset& MeshAsset::setVertices(const ImportedAttributeList& attributes) {
     if (!modifiable()) {
         return *this;
@@ -67,28 +82,36 @@ MeshAsset& MeshAsset::setVertices(const ImportedAttributeList& attributes) {
     return *this;
 };
 
-bool MeshAsset::modifiable() const {
-    if (this->loaded()) {
-        PR_ERROR(
-            "Unable to modify MeshAsset \"{}\" while it is loaded. It must be "
-            "unloaded before being modified.\nSkipping this modification.",
-            this->name());
-        return false;
-    }
-
-    return true;
-};
-
-MaterialPtr& MeshAsset::defaultMaterial() const {
-    return impl_->default_material;
-};
-
 MeshAsset& MeshAsset::setIndices(IndexList indices) {
     this->impl_->mesh_data.indices = std::move(indices);
     return *this;
 };
 
-mesh_registration_id_t MeshAsset::registrationId() const {
-    return impl_->registration_id;
-}
+MeshAsset& MeshAsset::setDrawMode(MeshDrawMode mode) {
+    impl_->mesh_data.draw_mode = mode;
+    return *this;
+};
+
+
+
+MeshPtr MeshAsset::from(const ImportedMesh& i_mesh) {
+    MeshPtr mesh{std::make_shared<MeshAsset>()};
+
+    MeshData data{};
+
+    data.draw_mode = imported_mesh.draw_mode;
+    data.setVertices(imported_mesh.attributes);
+    data.indices = imported_mesh.indices;
+
+    mesh->setMeshData(std::move(data));
+
+    // Make sure the material is loaded
+    if (i_mesh.hasMaterial() && i_mesh.material_data != nullptr) {
+        mesh->setDefaultMaterial(*i_mesh.material_data);
+    }
+
+    return mesh;
+};
+*/
+
 }  // namespace Presto

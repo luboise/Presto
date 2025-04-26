@@ -11,19 +11,8 @@
 
 namespace Presto {
 
-struct MeshDraw {
-    const MeshPtr mesh;
-    const MaterialPtr material;
-
-    const MaterialPtr& getMaterial() {
-        return material == nullptr ? mesh->defaultMaterial() : material;
-    };
-};
-
 struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
     std::vector<MeshDraw> draws;
-
-    ModelSubcomponent() = delete;
 
     [[nodiscard]] PR_SIZE meshCount() const { return draws.size(); }
 

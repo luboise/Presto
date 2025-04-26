@@ -13,7 +13,7 @@
 namespace Presto {
 class GLFWAppWindow;
 class CameraComponent;
-class Image;
+class ImageData;
 class UniformLayout;
 struct ImportedMesh;
 

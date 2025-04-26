@@ -55,7 +55,6 @@ add_subdirectory(ext/json)
 
 # OpenGL Libraries
 find_package(OpenGL REQUIRED)
-add_subdirectory(ext/GLFW)
 find_package(GLEW REQUIRED)
 
 add_subdirectory(ext/glm)
@@ -87,11 +86,17 @@ if(WIN32)
       CACHE STRING "Platform (x64)" FORCE)
 elseif(UNIX)
   set(PLATFORM Unix)
-  add_compile_definitions(PR_PLATFORM_UNIX GTE_USE_LINUX GTE_USE_OPENGL)
+  add_compile_definitions(PR_PLATFORM_UNIX GTE_USE_LINUX GTE_USE_OPENGL
+                          GLFW_USE_WAYLAND)
+  set(GLFW_BUILD_WAYLAND
+      ON
+      CACHE BOOL "Enable Wayland support")
 else()
   message(FATAL_ERROR "Platform not selected."
                       "Expected Windows or Unix platform for compilation.")
 endif()
+
+add_subdirectory(ext/GLFW)
 
 add_subdirectory(engine)
 

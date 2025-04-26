@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Presto/Assets/Asset.h"
-#include "Presto/Assets/Image.h"
+#include "Presto/Assets/ImageData.h"
 
 // #include "Presto/Rendering/Renderer.h"
 
@@ -10,7 +10,7 @@ class ImageAsset final : public Asset {
     friend class RenderingManager;
 
    public:
-    ImageAsset(PR_STRING_ID name, Presto::Image image)
+    ImageAsset(PR_STRING_ID name, Presto::ImageData image)
         : Asset(std::move(name)), image_(std::move(image)) {};
 
     ~ImageAsset() override = default;
@@ -19,11 +19,11 @@ class ImageAsset final : public Asset {
         return AssetType::IMAGE;
     };
 
-    [[nodiscard]] const Presto::Image& getImage() const { return image_; }
+    [[nodiscard]] const Presto::ImageData& data() const { return image_; }
 
-    [[nodiscard]] std::size_t getWidth() const { return image_.width; }
-    [[nodiscard]] std::size_t getHeight() const { return image_.height; }
-    [[nodiscard]] auto getData() const -> const Image::image_data_t& {
+    [[nodiscard]] std::size_t width() const { return image_.width; }
+    [[nodiscard]] std::size_t height() const { return image_.height; }
+    [[nodiscard]] auto getData() const -> const ImageData::image_data_t& {
         return image_.bytes;
     }
 
@@ -33,7 +33,7 @@ class ImageAsset final : public Asset {
    private:
     bool load() override;
 
-    Presto::Image image_;
+    Presto::ImageData image_;
 };
 
 }  // namespace Presto

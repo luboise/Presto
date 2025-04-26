@@ -394,9 +394,9 @@ ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
                    "should have been validated.");
     const auto& image_data = model.images[index];
 
-    Presto::Image image{.width = static_cast<size_t>(image_data.width),
-                        .height = static_cast<size_t>(image_data.height),
-                        .bytes{}};
+    Presto::ImageData image{.width = static_cast<size_t>(image_data.width),
+                            .height = static_cast<size_t>(image_data.height),
+                            .bytes{}};
 
     image.bytes.resize(image.size());
     std::memcpy(image.bytes.data(), image_data.image.data(),
@@ -473,8 +473,9 @@ ImportedModelData GLTFLoader::load(
 
         ImportedModel new_model{};
 
-        new_model.name =
-            i >= (customNames.size() - 1) ? customNames[i] : current_model.name;
+        new_model.name = !customNames.empty() && (i <= (customNames.size() - 1))
+                             ? customNames[i]
+                             : current_model.name;
 
         for (tinygltf::Primitive& mesh : current_model.primitives) {
             ImportedMesh new_submesh;

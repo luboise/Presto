@@ -42,7 +42,28 @@ RenderComponent& RenderComponent::addQuad(QuadSubcomponent&& quad) {
     return *this;
 };
 
+RenderComponent& RenderComponent::addModel(const ModelPtr& model) {
+    if (model == nullptr) {
+        PR_ERROR(
+            "Unable to add a null model to a RenderComponent. Skipping this "
+            "request.");
+        return *this;
+    }
+
+    ModelSubcomponent subcomp{};
+    for (MeshPtr mesh : model->getMeshes()) {
+        subcomp.draws.push_back(
+            MeshDraw{.mesh = std::move(mesh),
+                     .material = std::move(mesh->defaultMaterial())});
+    }
+
+    this->addModel(std::move(subcomp));
+
+    return *this;
+};
+
 RenderComponent& RenderComponent::addModel(const ModelSubcomponent& model) {
+    // TODO: Add validation checks here for the subdraws
     impl_->models.emplace_back(model);
 
     return *this;

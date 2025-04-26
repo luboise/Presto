@@ -9,6 +9,7 @@
 #include "Presto/Objects.h"
 #include "Presto/Objects/Components.h"
 #include "Presto/Rendering/Drawables.h"
+#include "Presto/Rendering/MeshData.h"
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
@@ -39,7 +40,9 @@ struct RenderingManager::Impl {
     std::vector<MaterialPtr> materials;
 
     pipeline_allocator_t pipelines{PR_MIN_USER_PIPELINE_ID};
+
     mesh_allocator_t mesh_registrations{PR_MIN_RUNTIME_MESH_ID};
+    std::vector<Mesh> meshes;
 
     std::map<texture_id_t, Ptr<Texture>> textures;
 
@@ -55,7 +58,7 @@ struct RenderingManager::Impl {
     ComponentPtr<CameraComponent> cam_debug;
     ComponentPtr<CameraComponent> cam_2d;
 
-    // Member vars
+    //  Member vars
 
     struct {
         Ref<MaterialInstance> material;
@@ -254,7 +257,7 @@ void RenderingManager::init() {
 
 [[nodiscard]] Ptr<Texture2D> RenderingManager::createTexture2D(
     const ImagePtr& image_ptr) {
-    auto image{image_ptr->getImage()};
+    auto image{image_ptr->data()};
 
     // TODO: Add width/height validation here
     Ptr<Texture2D> new_texture{createTexture2D(image.width, image.height)};
@@ -506,8 +509,8 @@ Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
     return pipeline;
 };
 
-mesh_registration_id_t RenderingManager::loadMesh(
-    MeshData meshData, mesh_registration_id_t customId) {
+Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
+                                     mesh_registration_id_t customId) {
     PR_CORE_ASSERT(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
@@ -525,7 +528,7 @@ mesh_registration_id_t RenderingManager::loadMesh(
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
             pipelineId);
-        return PR_UNREGISTERED;
+        return nullptr;
     }
 
     if (impl_->current_pipeline_id != pipelineId) {
@@ -543,7 +546,7 @@ mesh_registration_id_t RenderingManager::loadMesh(
 
     if (details == nullptr) {
         PR_ERROR("Unable to create mesh registration from MeshData.");
-        return PR_UNREGISTERED;
+        return nullptr;
     }
 
     bool success{
@@ -551,7 +554,7 @@ mesh_registration_id_t RenderingManager::loadMesh(
 
     if (!success) {
         PR_ERROR("Unable to create mesh context in renderer.");
-        return PR_UNREGISTERED;
+        return nullptr;
     }
 
     if (customId == PR_UNREGISTERED) {
@@ -564,7 +567,9 @@ mesh_registration_id_t RenderingManager::loadMesh(
     mesh_registration_id_t registration_id{pair.first};
     pair.second->render_manager_id = registration_id;
 
-    return registration_id;
+    Ptr<Mesh> new_mesh{Ptr<Mesh>{new Mesh(pair.first)}};
+
+    return new_mesh;
 };
 
 PR_DEBUG_ONLY_CODE(
@@ -576,7 +581,8 @@ PR_DEBUG_ONLY_CODE(
 
     void RenderingManager::setUsingDebugCamera(bool isUsing) {
         impl_->using_debug_cam = isUsing;
-    })
+    }  //
+)
 
 EntityPtr RenderingManager::getMainCamera() {
     return impl_->cam_active_entity;

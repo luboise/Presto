@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/VertexTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
@@ -62,15 +61,6 @@ enum class MeshDrawMode : Presto::uint8_t {
     LINE_STRIP,
     TRIANGLES,
     TRIANGLE_STRIP
-};
-
-struct MeshData {
-    pipeline_id_t pipeline_id{PR_PIPELINE_NONE};
-
-    MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
-    AnyVertexList vertices;
-    IndexList indices;
-    // [[nodiscard]] BoundingBox getBoundingBox() const;
 };
 
 using CanvasUnits = Presto::float32_t;
