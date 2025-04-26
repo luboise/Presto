@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "Modules/RenderingManager.h"
+#include "Presto/Assets/ImportTypes.h"
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Rendering/ErasedBytes.h"
 #include "Presto/Rendering/MaterialTypes.h"
@@ -204,6 +205,19 @@ MaterialInstance& MaterialInstance::setProperty(Presto::string name,
     impl_->textures[texture_index] = data;
 
     return *this;
+};
+
+void MaterialInstance::setFromImport(const ImportedMaterial& imported_material,
+                                     std::vector<TexturePtr>& texturePtrs) {
+    for (const auto& value : imported_material.values) {
+        if (value.data_type == UniformVariableType::TEXTURE) {
+            auto texture_index{
+                value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
+            this->setProperty(value.name, texturePtrs[texture_index]);
+        } else {
+            this->setProperty(value.name, value.data);
+        }
+    }
 };
 
 }  // namespace Presto

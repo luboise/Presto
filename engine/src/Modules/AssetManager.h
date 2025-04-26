@@ -78,9 +78,6 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     ImagePtr loadImageFromDisk(const AssetArg& path,
                                const asset_name_t& customName);
 
-    ImagePtr createImageAsset(const asset_name_t& customName,
-                              const Presto::ImageData& image);
-
     template <AssetType Type>
     [[nodiscard]] auto find(const asset_name_t& key)
         -> AssetTraits<Type>::ResourcePtr {
@@ -116,6 +113,7 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
         return new_asset;
     }
 
+    // TODO: Make this check for existing assets before adding
     template <typename T>
         requires DerivedFrom<T, Asset>
     void addAsset(Ptr<T> asset) {

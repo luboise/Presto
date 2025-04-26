@@ -6,7 +6,6 @@
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/MeshData.h"
-#include "Presto/Rendering/UniformTypes.h"
 #include "Presto/Utils/File.h"
 // #include "Rendering/Meshes/Cube.h"
 
@@ -25,17 +24,7 @@ MaterialPtr AssetManager::createMaterialFromImport(
     MaterialPtr material{RenderingManager::get().createMaterial(
         MaterialType::DEFAULT_3D, imported_material.name)};
 
-    for (const auto& value : imported_material.values) {
-        if (value.data_type == UniformVariableType::TEXTURE) {
-            auto texture_index{
-                value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
-
-            material->setProperty(value.name, texturePtrs[texture_index]);
-        } else {
-            material->setProperty(value.name, value.data);
-        }
-    }
-
+    material->setFromImport(imported_material, texturePtrs);
     return material;
 };
 
@@ -283,14 +272,6 @@ new_mr->indices = default_cube.indices;
 
     return new_resource;
 }
-
-ImagePtr AssetManager::createImageAsset(const asset_name_t& customName,
-                                        const Presto::ImageData& image) {
-    auto new_image{std::make_shared<ImageAsset>(customName, image)};
-    assets_[AssetType::IMAGE][customName] = new_image;
-
-    return new_image;
-};
 
 MaterialDefinitionPtr AssetManager::createMaterialDefinition(
     Presto::string name, const PipelineStructure& structure) {

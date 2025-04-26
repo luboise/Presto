@@ -19,9 +19,20 @@ class MeshSource final : public AssetSource {
     ModelPtr loadModel(Presto::string modelName, bool allowReload = true);
     void unloadModel(const Presto::string& modelName);
 
+    MaterialPtr loadMaterial(Presto::string materialName,
+                             bool allowReload = true);
+    void unloadMaterial(const Presto::string& materialName);
+
     void reloadFile();
 
     ModelPtr getModel(const Presto::string& name);
+
+    void unload() override;
+
+    MeshSource(const MeshSource&) = delete;
+    MeshSource(MeshSource&&) = delete;
+    MeshSource& operator=(const MeshSource&) = delete;
+    MeshSource& operator=(MeshSource&&) = delete;
 
    private:
     // void updateMesh();
@@ -33,16 +44,20 @@ class MeshSource final : public AssetSource {
         std::vector<ImportedMesh> mesh_imports;
         std::vector<Ptr<Mesh>> meshes;
 
-        ModelPtr ptr;
+        ModelPtr ptr{nullptr};
     };
 
     LoadedModel* getLoadedModel(const Presto::string& name);
     void unloadModel(LoadedModel& loadedModel);
 
     struct LoadedMaterial {
+        Presto::string name;
         ImportedMaterial material_import;
-        MaterialPtr ptr;
+        MaterialPtr ptr{nullptr};
     };
+
+    LoadedMaterial* getLoadedMaterial(const Presto::string& name);
+    void unloadMaterial(LoadedMaterial& loadedMaterial);
 
     std::vector<LoadedModel> models_;
     std::vector<LoadedMaterial> materials_;

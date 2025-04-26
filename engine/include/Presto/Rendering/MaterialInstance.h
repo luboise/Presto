@@ -34,6 +34,8 @@ template <typename T>
 inline constexpr bool is_any_pointer_type_v =
     (has_arrow_operator_v<T> || std::is_pointer_v<T>);
 
+struct ImportedMaterial;
+
 class MaterialInstance {
     friend class MaterialAsset;
     friend class RenderingManager;
@@ -48,6 +50,9 @@ class MaterialInstance {
     [[nodiscard]] const UniformLayout& getUniformStructure() const;
 
     [[nodiscard]] pipeline_id_t getPipelineId() const;
+
+    void setFromImport(const ImportedMaterial& imported_material,
+                       std::vector<TexturePtr>& texturePtrs);
 
     template <typename T>
         requires requires { sizeof(T); } &&
