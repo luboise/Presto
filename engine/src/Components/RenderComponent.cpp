@@ -47,6 +47,7 @@ RenderComponent& RenderComponent::addModel(const ModelPtr& model) {
             "request.");
         return *this;
     }
+    impl_->models.push_back(model);
 
     return *this;
 };
