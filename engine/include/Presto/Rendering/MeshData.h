@@ -22,8 +22,6 @@ struct MeshData {
 struct MeshDraw {
     const MeshPtr mesh;
     const MaterialPtr material;
-
-    const MaterialPtr& getMaterial();
 };
 
 class Mesh {

@@ -24,6 +24,11 @@ void MeshData::setVertices(const ImportedAttributeList& attributes) {
     this->vertices = std::move(processed);
 }
 
+// Mesh functions
+Mesh::Mesh(mesh_registration_id_t id) : registrationId_(id) {};
+
+mesh_registration_id_t Mesh::registrationId() const { return registrationId_; }
+
 /*
 MeshData MeshData::from(const RawMeshData& rawData) {
 MeshData mesh_data;
@@ -83,13 +88,4 @@ BoundingBox MeshData::getBoundingBox() const {
     return box;
 };
 */
-const MaterialPtr& MeshDraw::getMaterial() {
-    return material == nullptr ? mesh->defaultMaterial() : material;
-};
-
-// Mesh functions
-Mesh::Mesh(mesh_registration_id_t id) : registrationId_(id) {};
-
-mesh_registration_id_t Mesh::registrationId() const { return registrationId_; }
-
 }  // namespace Presto

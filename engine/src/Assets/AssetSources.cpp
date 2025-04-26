@@ -26,7 +26,15 @@ void MeshSource::unload() {
 };
 
 ModelPtr MeshSource::getModel(const Presto::string& name) {
-    if (auto* loaded{getLoadedModel(name)}; loaded != nullptr) {
+    if (LoadedModel * loaded{getLoadedModel(name)}; loaded != nullptr) {
+        return loaded->ptr;
+    }
+
+    return nullptr;
+};
+
+MaterialPtr MeshSource::getMaterial(const Presto::string& name) {
+    if (LoadedMaterial * loaded{getLoadedMaterial(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
 

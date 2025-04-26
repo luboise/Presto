@@ -5,7 +5,6 @@
 /*
 #include "Presto/Assets/ImageAsset.h"     // IWYU pragma: export
 #include "Presto/Assets/MaterialAsset.h"  // IWYU pragma: export
-#include "Presto/Assets/MeshAsset.h"      // IWYU pragma: export
 #include "Presto/Assets/ModelAsset.h"     // IWYU pragma: export
 */
 #include "Presto/Assets/AssetSources/AssetSource.h"  // IWYU pragma: export
@@ -26,16 +25,21 @@ class MeshSource;
 ImagePtr LoadImage(const AssetArg& path, Presto::string name = "");
 
 /**
- * @brief Loads models from the disk, and returns a list of loaded models.
+ * @brief  Creates a new MeshSource object from a file path. This can be used to
+ * load models and meshes.
  */
-ModelPtr LoadModel(const AssetArg& filepath,
-                   const asset_name_t& customName = "");
-
+Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath);
 /**
  * @brief  Finds an existing (loaded) model, and returns a new handle to it.
  */
 ModelPtr FindModel(const asset_name_t& name);
 
-Ptr<MeshSource> AddMeshSource(const AssetArg& filepath);
-
+// TODO: Fix this function to work again with MeshSources
+/**
+ * @brief Loads models from the disk, and returns a list of loaded models.
+ */
+/*
+ModelPtr LoadModel(const AssetArg& filepath,
+                   const asset_name_t& customName = "");
+                                   */
 }  // namespace Presto

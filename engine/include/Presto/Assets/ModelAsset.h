@@ -1,10 +1,9 @@
 #pragma once
 
+#include "Presto/Aliases/Handles.h"
 #include "Presto/Types/CoreTypes.h"
 
 #include "Asset.h"
-
-#include "Presto/Assets/MeshAsset.h"
 
 #include "Presto/Rendering/BoundingBox.h"
 

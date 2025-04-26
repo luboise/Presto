@@ -66,14 +66,16 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     /**
      * @brief Loads models from the disk, and returns all newly loaded assets
      */
-    ModelLoadResult loadModelsFromDisk(const AssetArg& filepath,
-                                       const asset_name_t& customName) {
-        return loadModelsFromDisk(filepath, std::vector{customName});
-    };
+    /*
+ModelLoadResult loadModelsFromDisk(const AssetArg& filepath,
+                                   const asset_name_t& customName) {
+    return loadModelsFromDisk(filepath, std::vector{customName});
+};
 
-    ModelLoadResult loadModelsFromDisk(
-        const AssetArg& filepath,
-        const std::vector<asset_name_t>& customNames = {});
+ModelLoadResult loadModelsFromDisk(
+    const AssetArg& filepath,
+    const std::vector<asset_name_t>& customNames = {});
+            */
 
     ImagePtr loadImageFromDisk(const AssetArg& path,
                                const asset_name_t& customName);
@@ -101,8 +103,10 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
         return new_source;
     };
 
-    MaterialPtr createMaterialFromImport(const ImportedMaterial&,
-                                         std::vector<Ptr<Texture>>&);
+    /*
+MaterialPtr createMaterialFromImport(const ImportedMaterial&,
+                                     std::vector<Ptr<Texture>>&);
+                                                                             */
 
     template <DerivedFrom<Asset> T, typename... Args>
         requires std::is_constructible_v<T, Args...>
@@ -117,7 +121,7 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
     template <typename T>
         requires DerivedFrom<T, Asset>
     void addAsset(Ptr<T> asset) {
-        assets_[asset.type()][asset.name()] = asset;
+        assets_[asset->type()][asset->name()] = asset;
     }
 
    private:
@@ -126,7 +130,7 @@ class PRESTO_API AssetManager final : public Module<AssetManager> {
 
     std::map<AssetType, std::map<asset_name_t, std::shared_ptr<Asset>>> assets_;
 
-    std::vector<AssetSource> assetSources_;
+    std::vector<Ptr<AssetSource>> assetSources_;
 };
 
 /**/

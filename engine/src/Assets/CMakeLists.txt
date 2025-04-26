@@ -3,7 +3,7 @@ target_sources(
   PRIVATE Asset.cpp
           AssetPath.cpp
           AssetSources.cpp
-          MeshAsset.cpp
+          # MeshAsset.cpp
           ModelAsset.cpp
           MaterialAsset.cpp
           MaterialInstanceAsset.cpp

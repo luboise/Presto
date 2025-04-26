@@ -4,7 +4,6 @@
 #include "Components/Physics/RigidBodyComponent.h"  // IWYU pragma: export
 
 #include "Components/RenderComponent.h"                 // IWYU pragma: export
-#include "Components/Renderables/ModelSubcomponent.h"   // IWYU pragma: export
 #include "Components/Renderables/QuadSubcomponent.h"    // IWYU pragma: export
 #include "Components/Renderables/SpriteSubcomponent.h"  // IWYU pragma: export
 

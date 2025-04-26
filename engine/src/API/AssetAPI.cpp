@@ -11,6 +11,7 @@ ImagePtr LoadImage(const AssetArg& path, Presto::string name) {
     return AssetManager::get().loadImageFromDisk(path, name);
 }
 
+/*
 ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
     ModelLoadResult result{
         AssetManager::get().loadModelsFromDisk(filepath, customName)};
@@ -21,12 +22,13 @@ ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
 
     return nullptr;
 }
+*/
 
 ModelPtr FindModel(const asset_name_t& name) {
     return AssetManager::get().find<AssetType::MODEL>(name);
 };
 
-Ptr<MeshSource> AddMeshSource(const AssetArg& filepath) {
+Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<MeshSource>(filepath);
 }
 

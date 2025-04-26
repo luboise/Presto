@@ -5,212 +5,25 @@
 
 #include "Presto/Assets/MaterialAsset.h"
 #include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MeshData.h"
 #include "Presto/Utils/File.h"
 // #include "Rendering/Meshes/Cube.h"
 
 #include "GLTFLoader.h"
-
-#include "Modules/RenderingManager.h"
 
 #include <stb_image.h>
 #include <memory>
 
 namespace Presto {
 
-MaterialPtr AssetManager::createMaterialFromImport(
-    const ImportedMaterial& imported_material,
-    std::vector<TexturePtr>& texturePtrs) {
-    MaterialPtr material{RenderingManager::get().createMaterial(
-        MaterialType::DEFAULT_3D, imported_material.name)};
-
-    material->setFromImport(imported_material, texturePtrs);
-    return material;
-};
-
-ModelLoadResult AssetManager::loadModelsFromDisk(
-    const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
-    std::string filename{filepath.basename()};
-    fs::path file_extension{filepath.fileExtension()};
-
-    ImportedModelData imported_data;
-
-    if (file_extension == ".gltf" || file_extension == ".glb") {
-        GLTFLoader loader;
-        imported_data = loader.load(filepath, customNames);
-    }
-
-    PR_ASSERT(
-        imported_data.models.size() > 0,
-        std::format("No models could be found in {}.", filepath.string()));
-
-    std::vector<ModelPtr> new_model_ptrs(imported_data.models.size());
-    std::vector<MaterialPtr> new_material_ptrs(imported_data.materials.size());
-    std::vector<TexturePtr> new_texture_ptrs(imported_data.textures.size());
-
-    // Turn the textures into assets
-    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
-        ImportedTexture& texture{imported_data.textures[i]};
-        if (texture.name.empty()) {
-            PR_WARN(
-                "Imported texture ({}x{}) has no name. Skipping this import.",
-                texture.image.width, texture.image.height);
-            continue;
-        }
-
-        // TODO: Make this cache images that it gets from the import rather than
-        // create a new asset for each one
-        const auto& image_ptr{createImageAsset(texture.name, texture.image)};
-
-        new_texture_ptrs[i] =
-            RenderingManager::get().createTexture2D(image_ptr);
-    }
-
-    // Turn the materials into assets
-    for (std::size_t i{0}; i < new_material_ptrs.size(); ++i) {
-        new_material_ptrs[i] = createMaterialFromImport(
-            imported_data.materials[i], new_texture_ptrs);
-    }
-
-    // Turns the models into model assets (and subsequently their underlying
-    // meshes)
-
-    for (size_t i{0}; i < imported_data.models.size(); ++i) {
-        const auto& imported_model = imported_data.models[i];
-
-        auto new_name{i >= (customNames.size() - 1) ? customNames[i]
-                                                    : imported_model.name};
-
-        ModelPtr model{std::make_shared<ModelAsset>(new_name)};
-
-        const PipelineStructure* pipeline_structure{
-            RenderingManager::get().getPipelineStructure(
-                PR_PIPELINE_DEFAULT_3D)};
-        PR_CORE_ASSERT(pipeline_structure != nullptr,
-                       "The pipeline structure of the default pipelines must "
-                       "not be nullptr.");
-
-        for (const ImportedMesh& imported_mesh : imported_model.meshes) {
-            MeshPtr mesh{std::make_shared<MeshAsset>()};
-
-            MeshData data{};
-
-            data.draw_mode = imported_mesh.draw_mode;
-            data.setVertices(imported_mesh.attributes);
-            data.indices = imported_mesh.indices;
-
-            mesh->setMeshData(std::move(data));
-
-            // Make sure the material is loaded
-            if (imported_mesh.hasMaterial() &&
-                new_material_ptrs[imported_mesh.material_index] != nullptr) {
-                mesh->setDefaultMaterial(
-                    new_material_ptrs[imported_mesh.material_index]);
-            }
-            model->meshes_.push_back(mesh);
-        }
-
-        assets_[AssetType::MODEL][new_name] = model;
-        new_model_ptrs[i] = std::move(model);
-    }
-
-    return {
-        .success = true,
-        .models = new_model_ptrs,
-        .textures{new_texture_ptrs},
-        .materials{new_material_ptrs},
-    };
-};
-
 /*
-ModelLoadResult AssetManager::loadModelsFromDisk2(
-    const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
-    std::string filename{filepath.basename()};
-    fs::path file_extension{filepath.fileExtension()};
+MaterialPtr AssetManager::createMaterialFromImport(
+const ImportedMaterial& imported_material,
+std::vector<TexturePtr>& texturePtrs) {
+MaterialPtr material{RenderingManager::get().createMaterial(
+MaterialType::DEFAULT_3D, imported_material.name)};
 
-    ImportedModelData imported_data;
-
-    if (file_extension == ".gltf" || file_extension == ".glb") {
-        GLTFLoader loader;
-        imported_data = loader.load(filepath, customNames);
-    }
-
-    PR_ASSERT(
-        imported_data.models.size() > 0,
-        std::format("No models could be found in {}.", filepath.string()));
-
-    std::vector<ModelPtr> new_model_ptrs(imported_data.models.size());
-    std::vector<MaterialPtr> new_material_ptrs(imported_data.materials.size());
-    std::vector<TexturePtr> new_texture_ptrs(imported_data.textures.size());
-
-    // Turn the textures into assets
-    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
-        ImportedTexture& texture{imported_data.textures[i]};
-        if (texture.name.empty()) {
-            PR_WARN(1
-                "Imported texture ({}x{}) has no name. Skipping this "
-                "import.",
-                texture.image.width, texture.image.height);
-            continue;
-        }
-
-        // TODO: Make this cache images that it gets from the import rather than
-        // create a new asset for each one
-        const auto& image_ptr{createImageAsset(texture.name, texture.image)};
-
-        new_texture_ptrs[i] =
-            RenderingManager::get().createTexture2D(image_ptr);
-    }
-
-    // Turn the materials into assets
-    for (std::size_t i{0}; i < new_material_ptrs.size(); ++i) {
-        new_material_ptrs[i] = createMaterialFromImport(
-            imported_data.materials[i], new_texture_ptrs);
-    }
-
-    // Turns the models into model assets (and subsequently their underlying
-    // meshes)
-
-    for (size_t i{0}; i < imported_data.models.size(); ++i) {
-        const auto& imported_model = imported_data.models[i];
-
-        auto new_name{i >= (customNames.size() - 1) ? customNames[i]
-                                                    : imported_model.name};
-
-        ModelPtr model{std::make_shared<ModelAsset>(new_name)};
-
-        const auto* pipeline_structure{
-            RenderingManager::get().getPipelineStructure(
-                PR_PIPELINE_DEFAULT_3D)};
-        PR_CORE_ASSERT(pipeline_structure != nullptr,
-                       "The pipeline structure of the default pipelines must "
-                       "not be nullptr.");
-
-        for (const auto& imported_mesh : imported_model.meshes) {
-            MeshPtr mesh{std::make_shared<MeshAsset>()};
-
-            mesh->setVertices(imported_mesh.attributes)
-                .setIndices(imported_mesh.indices);
-
-            // Make sure the material is loaded
-            if (imported_mesh.hasMaterial() &&
-                new_material_ptrs[imported_mesh.material_index] != nullptr) {
-                mesh->setDefaultMaterial(
-                    new_material_ptrs[imported_mesh.material_index]);
-            }
-            model->meshes_.push_back(mesh);
-        }
-
-        assets_[AssetType::MODEL][new_name] = model;
-        new_model_ptrs[i] = std::move(model);
-    }
-
-    return {
-        .success = true,
-        .models = new_model_ptrs,
-        .textures{new_texture_ptrs},
-        .materials{new_material_ptrs},
-    };
+material->setFromImport(imported_material, texturePtrs);
+return material;
 };
 */
 
@@ -305,5 +118,193 @@ Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
 
     return nullptr;
 };
+
+/*
+ModelLoadResult AssetManager::loadModelsFromDisk(
+    const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
+    std::string filename{filepath.basename()};
+    fs::path file_extension{filepath.fileExtension()};
+
+    ImportedModelData imported_data;
+
+    if (file_extension == ".gltf" || file_extension == ".glb") {
+        GLTFLoader loader;
+        imported_data = loader.load(filepath, customNames);
+    }
+
+    PR_ASSERT(
+        imported_data.models.size() > 0,
+        std::format("No models could be found in {}.", filepath.string()));
+
+    std::vector<ModelPtr> new_model_ptrs(imported_data.models.size());
+    std::vector<MaterialPtr> new_material_ptrs(imported_data.materials.size());
+    std::vector<TexturePtr> new_texture_ptrs(imported_data.textures.size());
+
+    // Turn the textures into assets
+    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
+        ImportedTexture& texture{imported_data.textures[i]};
+        if (texture.name.empty()) {
+            PR_WARN(
+                "Imported texture ({}x{}) has no name. Skipping this import.",
+                texture.image.width, texture.image.height);
+            continue;
+        }
+
+        // TODO: Make this cache images that it gets from the import rather than
+        // create a new asset for each one
+        const auto& image_ptr{createImageAsset(texture.name, texture.image)};
+
+        new_texture_ptrs[i] =
+            RenderingManager::get().createTexture2D(image_ptr);
+    }
+
+    // Turn the materials into assets
+    for (std::size_t i{0}; i < new_material_ptrs.size(); ++i) {
+        new_material_ptrs[i] = createMaterialFromImport(
+            imported_data.materials[i], new_texture_ptrs);
+    }
+
+    // Turns the models into model assets (and subsequently their underlying
+    // meshes)
+
+    for (size_t i{0}; i < imported_data.models.size(); ++i) {
+        const auto& imported_model = imported_data.models[i];
+
+        auto new_name{i >= (customNames.size() - 1) ? customNames[i]
+                                                    : imported_model.name};
+
+        ModelPtr model{std::make_shared<ModelAsset>(new_name)};
+
+        const PipelineStructure* pipeline_structure{
+            RenderingManager::get().getPipelineStructure(
+                PR_PIPELINE_DEFAULT_3D)};
+        PR_CORE_ASSERT(pipeline_structure != nullptr,
+                       "The pipeline structure of the default pipelines must "
+                       "not be nullptr.");
+
+        for (const ImportedMesh& imported_mesh : imported_model.meshes) {
+            MeshPtr mesh{std::make_shared<MeshAsset>()};
+
+            MeshData data{};
+
+            data.draw_mode = imported_mesh.draw_mode;
+            data.setVertices(imported_mesh.attributes);
+            data.indices = imported_mesh.indices;
+
+            mesh->setMeshData(std::move(data));
+
+            // Make sure the material is loaded
+            if (imported_mesh.hasMaterial() &&
+                new_material_ptrs[imported_mesh.material_index] != nullptr) {
+                mesh->setDefaultMaterial(
+                    new_material_ptrs[imported_mesh.material_index]);
+            }
+            model->meshes_.push_back(mesh);
+        }
+
+        assets_[AssetType::MODEL][new_name] = model;
+        new_model_ptrs[i] = std::move(model);
+    }
+
+    return {
+        .success = true,
+        .models = new_model_ptrs,
+        .textures{new_texture_ptrs},
+        .materials{new_material_ptrs},
+    };
+};
+*/
+
+/*
+ModelLoadResult AssetManager::loadModelsFromDisk2(
+    const AssetArg& filepath, const std::vector<asset_name_t>& customNames) {
+    std::string filename{filepath.basename()};
+    fs::path file_extension{filepath.fileExtension()};
+
+    ImportedModelData imported_data;
+
+    if (file_extension == ".gltf" || file_extension == ".glb") {
+        GLTFLoader loader;
+        imported_data = loader.load(filepath, customNames);
+    }
+
+    PR_ASSERT(
+        imported_data.models.size() > 0,
+        std::format("No models could be found in {}.", filepath.string()));
+
+    std::vector<ModelPtr> new_model_ptrs(imported_data.models.size());
+    std::vector<MaterialPtr> new_material_ptrs(imported_data.materials.size());
+    std::vector<TexturePtr> new_texture_ptrs(imported_data.textures.size());
+
+    // Turn the textures into assets
+    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
+        ImportedTexture& texture{imported_data.textures[i]};
+        if (texture.name.empty()) {
+            PR_WARN(1
+                "Imported texture ({}x{}) has no name. Skipping this "
+                "import.",
+                texture.image.width, texture.image.height);
+            continue;
+        }
+
+        // TODO: Make this cache images that it gets from the import rather than
+        // create a new asset for each one
+        const auto& image_ptr{createImageAsset(texture.name, texture.image)};
+
+        new_texture_ptrs[i] =
+            RenderingManager::get().createTexture2D(image_ptr);
+    }
+
+    // Turn the materials into assets
+    for (std::size_t i{0}; i < new_material_ptrs.size(); ++i) {
+        new_material_ptrs[i] = createMaterialFromImport(
+            imported_data.materials[i], new_texture_ptrs);
+    }
+
+    // Turns the models into model assets (and subsequently their underlying
+    // meshes)
+
+    for (size_t i{0}; i < imported_data.models.size(); ++i) {
+        const auto& imported_model = imported_data.models[i];
+
+        auto new_name{i >= (customNames.size() - 1) ? customNames[i]
+                                                    : imported_model.name};
+
+        ModelPtr model{std::make_shared<ModelAsset>(new_name)};
+
+        const auto* pipeline_structure{
+            RenderingManager::get().getPipelineStructure(
+                PR_PIPELINE_DEFAULT_3D)};
+        PR_CORE_ASSERT(pipeline_structure != nullptr,
+                       "The pipeline structure of the default pipelines must "
+                       "not be nullptr.");
+
+        for (const auto& imported_mesh : imported_model.meshes) {
+            MeshPtr mesh{std::make_shared<MeshAsset>()};
+
+            mesh->setVertices(imported_mesh.attributes)
+                .setIndices(imported_mesh.indices);
+
+            // Make sure the material is loaded
+            if (imported_mesh.hasMaterial() &&
+                new_material_ptrs[imported_mesh.material_index] != nullptr) {
+                mesh->setDefaultMaterial(
+                    new_material_ptrs[imported_mesh.material_index]);
+            }
+            model->meshes_.push_back(mesh);
+        }
+
+        assets_[AssetType::MODEL][new_name] = model;
+        new_model_ptrs[i] = std::move(model);
+    }
+
+    return {
+        .success = true,
+        .models = new_model_ptrs,
+        .textures{new_texture_ptrs},
+        .materials{new_material_ptrs},
+    };
+};
+*/
 
 }  // namespace Presto

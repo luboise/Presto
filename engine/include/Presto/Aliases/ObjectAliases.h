@@ -8,7 +8,6 @@ class CanvasComponent;
 class RenderComponent;
 
 // Subcomponents
-class ModelSubcomponent;
 
 }  // namespace Presto
 
@@ -21,4 +20,3 @@ using Canvas = Presto::CanvasComponent;
 using RenderComponent = Presto::RenderComponent;
 
 // Subcomponents
-using ModelSubcomponent = Presto::ModelSubcomponent;

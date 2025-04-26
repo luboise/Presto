@@ -12,7 +12,8 @@ BoundingBox ModelAsset::getBoundingBox() {
     BoundingBox box{};
 
     for (const MeshDraw& draw : draws_) {
-        box.merge(draw.mesh->getBoundingBox());
+        // TODO: Fix this to work with the new meshes
+        // box.merge(draw.mesh->getBoundingBox());
     }
 
     return box;
@@ -30,6 +31,6 @@ ModelAsset& ModelAsset::clear() {
     return *this;
 }
 
-Presto::size_t ModelAsset::meshCount() const { return this->a; };
+Presto::size_t ModelAsset::meshCount() const { return this->draws_.size(); };
 
 }  // namespace Presto

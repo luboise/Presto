@@ -5,7 +5,6 @@
 
 namespace Presto {
 
-struct ModelSubcomponent;
 struct QuadSubcomponent;
 
 class PRESTO_API RenderComponent final : public Component {
@@ -27,9 +26,7 @@ class PRESTO_API RenderComponent final : public Component {
 
     RenderComponent& addModel(const ModelPtr& model);
 
-    RenderComponent& addModel(const ModelSubcomponent& model);
-    RenderComponent& addModel(ModelSubcomponent&& model);
-    [[nodiscard]] std::vector<ModelSubcomponent>& getModels() const;
+    [[nodiscard]] std::vector<ModelPtr>& getModels() const;
 
    private:
     void onEnterScene() override;

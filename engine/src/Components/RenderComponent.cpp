@@ -1,23 +1,21 @@
 #include "Presto/Objects/Components/RenderComponent.h"
-#include "Presto/Objects/Components/Renderables/ModelSubcomponent.h"
 #include "Presto/Objects/Components/Renderables/QuadSubcomponent.h"
+
+#include "Presto/Assets/ModelAsset.h"  // IWYU pragma: export
 
 namespace Presto {
 
 struct RenderComponent::Impl {
     std::vector<QuadSubcomponent> quads;
-    std::vector<ModelSubcomponent> models;
+    std::vector<ModelPtr> models;
 };
 
 RenderComponent::RenderComponent() { impl_ = std::make_unique<Impl>(); };
 RenderComponent::~RenderComponent() = default;
 
 void RenderComponent::onEnterScene() {
-    // TODO: Fix
-    for (ModelSubcomponent& model : impl_->models) {
-        for (auto& draw : model.draws) {
-            draw.mesh->ensureLoaded();
-        }
+    for (ModelPtr& model : impl_->models) {
+        model->ensureLoaded();
     }
 
     // This might be needed later if selective material usage is implemented
@@ -50,28 +48,6 @@ RenderComponent& RenderComponent::addModel(const ModelPtr& model) {
         return *this;
     }
 
-    ModelSubcomponent subcomp{};
-    for (MeshPtr mesh : model->getMeshes()) {
-        subcomp.draws.push_back(
-            MeshDraw{.mesh = std::move(mesh),
-                     .material = std::move(mesh->defaultMaterial())});
-    }
-
-    this->addModel(std::move(subcomp));
-
-    return *this;
-};
-
-RenderComponent& RenderComponent::addModel(const ModelSubcomponent& model) {
-    // TODO: Add validation checks here for the subdraws
-    impl_->models.emplace_back(model);
-
-    return *this;
-};
-
-RenderComponent& RenderComponent::addModel(ModelSubcomponent&& model) {
-    impl_->models.emplace_back(std::move(model));
-
     return *this;
 };
 
@@ -79,7 +55,7 @@ std::vector<QuadSubcomponent>& RenderComponent::getQuads() const {
     return impl_->quads;
 };
 
-std::vector<ModelSubcomponent>& RenderComponent::getModels() const {
+std::vector<ModelPtr>& RenderComponent::getModels() const {
     return impl_->models;
 };
 

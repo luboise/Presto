@@ -307,7 +307,7 @@ void RenderingManager::update() {
             {.transform = drawStruct.transform->getModelView()});
 
         for (const auto& model : drawStruct.render->getModels()) {
-            for (const MeshDraw& draw : model.draws) {
+            for (const MeshDraw& draw : model->getDraws()) {
                 if (draw.material == nullptr) {
                     PR_ERROR(
                         "No material available to render in 3D. Skipping "
