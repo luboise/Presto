@@ -17,6 +17,23 @@ mat4 TransformData::asModelMat() const {
     return model;
 }
 
+mat4 TransformData::asViewMat() const {
+    return glm::inverse(asModelMat());
+
+    mat4 model{1.0F};
+
+    // Apply in reverse order to avoid gimbal lock
+    model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
+    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(1, 0, 0));
+    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(0, 1, 0));
+
+    model = glm::translate(model, -this->position);
+
+    model = glm::scale(model, this->scale);
+
+    return glm::inverse(model);
+}
+
 mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
                                         vec3 scale) {
     mat4 model{1.0F};

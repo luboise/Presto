@@ -72,7 +72,7 @@ void CameraComponent::recalculate() {
             viewMatrix_ =
                 glm::lookAt(transform_.position, focusPoint_, vec3(0, 1, 0));
         } else {
-            viewMatrix_ = glm::inverse(transform_.asModelMat());
+            viewMatrix_ = transform_.asViewMat();
         }
 
         projectionMatrix_ =
