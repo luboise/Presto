@@ -5,6 +5,7 @@
 #include <utility>
 
 // Public imports
+#include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
 #include "Presto/Objects/Components.h"
@@ -103,6 +104,11 @@ void RenderingManager::loadDefaults() {
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
 
+    TexturePtr fallback_tex{
+        this->createTexture2D(DEFAULT_TEXTURE_DATA, PR_TEX_DIFFUSE_FALLBACK)};
+    TexturePtr flat_shading_tex{
+        this->createTexture2D(DEFAULT_TEXTURE_DATA, PR_TEX_DIFFUSE_FLAT)};
+
     // Check that all of them loaded correctly
     std::ranges::for_each(
         default_pipelines, [](const Allocated<Pipeline>& default_pipeline) {
@@ -111,10 +117,6 @@ void RenderingManager::loadDefaults() {
                 "The default pipelines must be initialised correctly "
                 "when being used, not nullptr.");
         });
-
-    ImagePtr default_fallback{AssetManager::get().newAsset<ImageAsset>(
-        "Fallback2D", DEFAULT_TEXTURE)};
-    TexturePtr fallback_texture{this->createTexture2D(default_fallback)};
 
     for (Allocated<Pipeline>& default_pipeline : default_pipelines) {
         auto new_definition{
@@ -132,8 +134,7 @@ void RenderingManager::loadDefaults() {
             std::format("DEFAULT PIPELINE {}", default_pipeline->id()))};
 
         default_material->setProperty(
-            Presto::DefaultMaterialPropertyName::DIFFUSE_TEXTURE,
-            fallback_texture);
+            Presto::DefaultMaterialPropertyName::DIFFUSE_TEXTURE, fallback_tex);
 
         auto new_pipeline{
             std::make_unique<AllocatedPipeline>(
@@ -307,6 +308,31 @@ Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
 
     impl_->textures.emplace(new_id,
                             std::static_pointer_cast<Texture>(new_texture));
+
+    return new_texture;
+};
+
+[[nodiscard]] Ptr<Texture2D> RenderingManager::createTexture2D(
+    ImageData data, texture_id_t id) {
+    // TODO: Add width/height validation here
+    Ptr<Texture2D> new_texture{createTexture2D(data.width, data.height, id)};
+    new_texture->write(std::move(data.bytes));
+
+    return new_texture;
+};
+
+Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
+                                                 Presto::size_t height,
+                                                 texture_id_t id) {
+    if (!impl_->texture_ids.reserve(id)) {
+        PR_CORE_ERROR(
+            "Unable to reserve texture id {} as it is already in use.");
+        return nullptr;
+    };
+
+    Ptr<Texture2D> new_texture{impl_->texture_factory->new2D(width, height)};
+
+    impl_->textures.emplace(id, std::static_pointer_cast<Texture>(new_texture));
 
     return new_texture;
 };
@@ -688,6 +714,23 @@ void RenderingManager::switchMaterial(const MaterialPtr& material) {
         material->bindTo(*impl_->current.pipeline->pipeline);
         impl_->current.material = material;
     }
+};
+
+Ptr<Texture> RenderingManager::getDefaultTexture(const char* name) {
+    if (name == DefaultMaterialPropertyName::DIFFUSE_TEXTURE) {
+        return getTexture(PR_TEX_DIFFUSE_FALLBACK);
+    }
+
+    PR_ERROR("Unable to retrieve default texture \"{}\".", name);
+
+    return nullptr;
+};
+
+Ptr<Texture> RenderingManager::getTexture(texture_id_t textureId) {
+    if (!impl_->texture_ids.reserved(textureId)) {
+        return nullptr;
+    }
+    return impl_->textures[textureId];
 };
 
 }  // namespace Presto

@@ -3,8 +3,10 @@
 #include <utility>
 
 #include "Modules/RenderingManager.h"
+#include "Presto/Aliases/Handles.h"
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Assets/MaterialAsset.h"
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/ErasedBytes.h"
 #include "Presto/Rendering/MaterialTypes.h"
 
@@ -82,7 +84,14 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
             impl_->uniform_bindings[i].data.reset(
                 static_cast<ImportTypeOf<UniformVariableType::TEXTURE>>(
                     impl_->textures.size()));
-            impl_->textures.push_back(nullptr);
+
+            TexturePtr tex{nullptr};
+
+            if (binding.name == DefaultMaterialPropertyName::DIFFUSE_TEXTURE) {
+                tex = rm.getTexture(PR_TEX_DIFFUSE_FALLBACK);
+            }
+
+            impl_->textures.push_back(tex);
         }
     }
 }
@@ -152,10 +161,12 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
                 if (texture == nullptr) {
                     PR_TRACE(
                         "No texture specified at location {} in material "
-                        "instance. Skipping this write.",
+                        "instance. Using fallback instead.",
                         binding.location);
+
                     continue;
                 }
+
                 texture->bind(binding.location);
 
                 break;

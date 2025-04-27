@@ -10,6 +10,8 @@
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
+#include "Presto/Assets/ImportTypes.h"
+
 #include "Presto/Rendering/TextureTypes.h"
 #include "Presto/Types/MaterialTypes.h"
 #include "Rendering/MeshRegistrationData.h"
@@ -96,14 +98,17 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
         const Presto::string& name);
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(const ImagePtr& image_ptr);
-
     [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
                                                  Presto::size_t height);
+
+    Ptr<Texture> getDefaultTexture(const char* name);
 
     void drawLine(const Line&);
 
     void setUsingDebugCamera(bool isUsing);
     [[nodiscard]] bool& usingDebugCamera();
+
+    Ptr<Texture> getTexture(texture_id_t);
 
    private:
     // Static vars
@@ -121,7 +126,6 @@ void loadImageOnGpu(ImageAsset&);
     void setPipeline(pipeline_id_t, Pipeline pipeline);
     void setTexture(texture_id_t id, Texture texture);
 
-    Texture* getTexture(texture_id_t);
     texture_id_t addTexture(const Presto::ImageData& image);
     void removeTexture(texture_id_t);
 
@@ -134,6 +138,12 @@ void loadImageOnGpu(ImageAsset&);
     void switchPipeline(pipeline_id_t id);
 
     void switchMaterial(const MaterialPtr& material);
+
+    [[nodiscard]] Ptr<Texture2D> createTexture2D(ImageData data,
+                                                 texture_id_t id);
+    [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
+                                                 Presto::size_t height,
+                                                 texture_id_t id);
 
     template <typename T>
     Allocated<MeshRegistrationData> createMeshRegistration(

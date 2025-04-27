@@ -69,15 +69,15 @@ bool IsDefaultAttributeName(const Presto::string& str);
 
 namespace DefaultMaterialPropertyName {
 
-constexpr auto BASE_COLOUR = "u_baseColour";
+constexpr const char* BASE_COLOUR = "u_baseColour";
 // Alias for American english speakers
-constexpr auto BASE_COLOR = BASE_COLOUR;
+constexpr const char* BASE_COLOR = BASE_COLOUR;
 
-constexpr auto DIFFUSE_TEXTURE = "u_diffuseTexture";
+constexpr const char* DIFFUSE_TEXTURE = "u_diffuseTexture";
 
-constexpr auto UI_POSITION = "u_position";
-constexpr auto UI_SIZE = "u_size";
-constexpr auto UI_OFFSET = "u_offset";
+constexpr const char* UI_POSITION = "u_position";
+constexpr const char* UI_SIZE = "u_size";
+constexpr const char* UI_OFFSET = "u_offset";
 
 };  // namespace DefaultMaterialPropertyName
 

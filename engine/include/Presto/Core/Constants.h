@@ -43,7 +43,8 @@ constexpr pipeline_id_t PR_PIPELINE_NONE{static_cast<pipeline_id_t>(-1)};
 // Textures
 
 using texture_id_t = Presto::uint16_t;
-constexpr texture_id_t PR_DEFAULT_TEXTURE{9};
+constexpr texture_id_t PR_TEX_DIFFUSE_FALLBACK{9};
+constexpr texture_id_t PR_TEX_DIFFUSE_FLAT{10};
 
 constexpr mesh_registration_id_t PR_MESH_QUAD{1};
 constexpr mesh_registration_id_t PR_MESH_0_SQUARE{2};
