@@ -187,13 +187,20 @@ ModelPtr MeshSource::loadModel(Presto::string modelName, bool allowReload) {
 
         Ptr<Mesh> new_mesh{RenderingManager::get().loadMesh(data)};
 
-        // Use the material from the GLTF if one was present when adding it to
-        // the ModelAsset
-        MaterialPtr default_material =
-            (imported_mesh.hasMaterial() &&
-             materials_[imported_mesh.material_index].ptr != nullptr)
-                ? materials_[imported_mesh.material_index].ptr
-                : nullptr;
+        MaterialPtr default_material{nullptr};
+
+        // If the mesh has a material, try to load it
+        if (imported_mesh.hasMaterial()) {
+            if (!materials_.empty() &&
+                imported_mesh.material_index <= materials_.size()) {
+                LoadedMaterial& loaded_material{
+                    materials_[imported_mesh.material_index]};
+
+                // TODO: Make this not do the lookup and just load it on the
+                // spot if performance is bad
+                default_material = loadMaterial(loaded_material.name);
+            }
+        }
 
         model->ptr->addMesh(new_mesh, default_material);
     }
@@ -220,7 +227,8 @@ void MeshSource::unloadModel(const Presto::string& modelName) {
 
     if (model == nullptr) {
         PR_CORE_WARN(
-            "Unable to load {} as it couldn't be found in {}. Skipping this "
+            "Unable to load {} as it couldn't be found in {}. Skipping "
+            "this "
             "request.",
             modelName, this->path().string());
         return;
@@ -234,7 +242,8 @@ MaterialPtr MeshSource::loadMaterial(Presto::string materialName,
     LoadedMaterial* material{getLoadedMaterial(materialName)};
     if (material == nullptr) {
         PR_CORE_WARN(
-            "Unable to load {} as it couldn't be found in {}. Skipping this "
+            "Unable to load {} as it couldn't be found in {}. Skipping "
+            "this "
             "request.",
             materialName, this->path().string());
         return nullptr;
@@ -251,7 +260,8 @@ MaterialPtr MeshSource::loadMaterial(Presto::string materialName,
             MaterialType::DEFAULT_3D, material->name);
     }
 
-    // Update the existing material pointer with the new values from the file
+    // Update the existing material pointer with the new values from the
+    // file
     material->ptr->setFromImport(material->material_import, textures_);
     return material->ptr;
 }

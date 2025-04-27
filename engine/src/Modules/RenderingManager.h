@@ -36,6 +36,8 @@ struct Line;
 
 using layer_id_t = PR_NUMERIC_ID;
 
+struct AllocatedPipeline;
+
 class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
 
@@ -49,6 +51,10 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     // TODO: Get rid of this and move it into the constructor
     static void init();
+
+    // Loads the default Pipelines, default Materials for each pipeline and
+    // default Textures
+    void loadDefaults();
 
     void update() override;
     void clear();
@@ -122,9 +128,9 @@ void loadImageOnGpu(ImageAsset&);
     PipelineStructure addPipeline(Pipeline&& pipeline,
                                   pipeline_id_t id = PR_PIPELINE_ANY);
 
-    [[nodiscard]] Pipeline* getPipeline(pipeline_id_t id) const;
+    [[nodiscard]] AllocatedPipeline* getPipeline(pipeline_id_t id) const;
 
-    void switchPipeline(Pipeline* pipeline);
+    void switchPipeline(AllocatedPipeline* allocatedPipeline);
     void switchPipeline(pipeline_id_t id);
 
     void switchMaterial(const MaterialPtr& material);

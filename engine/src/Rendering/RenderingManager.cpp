@@ -22,6 +22,7 @@
 #include "Modules/EntityManagerImpl.h"
 #include "Modules/RenderingManager.h"
 #include "Rendering/DefaultMeshes.h"
+#include "Rendering/DefaultTextures.h"
 #include "Rendering/MeshRegistrationData.h"
 #include "Rendering/Renderer.h"
 #include "Utils/IDGenerator.h"
@@ -58,11 +59,9 @@ struct RenderingManager::Impl {
     ComponentPtr<CameraComponent> cam_debug;
     ComponentPtr<CameraComponent> cam_2d;
 
-    //  Member vars
-
     struct {
         Ref<MaterialInstance> material;
-        Pipeline* pipeline{nullptr};
+        AllocatedPipeline* pipeline{nullptr};
     } current;
 };
 
@@ -89,16 +88,35 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     impl_->cam_debug = NewComponent<CameraComponent>();
     impl_->cam_debug->setFOV(DEFAULT_FOV);
+};
+
+void RenderingManager::loadDefaults() {
+    if (!impl_->pipelines.empty()) {
+        PR_WARN(
+            "Attempted to initialise the default pipelines when they are "
+            "already set up. Ignoring this request.");
+        return;
+    }
+
+    AssetManager& am{AssetManager::get()};
 
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
 
-    AssetManager& am{AssetManager::get()};
+    // Check that all of them loaded correctly
+    std::ranges::for_each(
+        default_pipelines, [](const Allocated<Pipeline>& default_pipeline) {
+            PR_CORE_ASSERT(
+                default_pipeline != nullptr,
+                "The default pipelines must be initialised correctly "
+                "when being used, not nullptr.");
+        });
 
-    for (auto& default_pipeline : default_pipelines) {
-        PR_CORE_ASSERT(default_pipeline != nullptr,
-                       "The default pipelines must be initialised correctly "
-                       "when being used, not nullptr.");
+    ImagePtr default_fallback{AssetManager::get().newAsset<ImageAsset>(
+        "Fallback2D", DEFAULT_TEXTURE)};
+    TexturePtr fallback_texture{this->createTexture2D(default_fallback)};
+
+    for (Allocated<Pipeline>& default_pipeline : default_pipelines) {
         auto new_definition{
             am.createMaterialDefinition(std::to_string(default_pipeline->id()),
                                         default_pipeline->getStructure())};
@@ -108,7 +126,23 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
                   "different name.");
 
         auto new_id{default_pipeline->id()};
-        impl_->pipelines.alloc(std::move(default_pipeline), new_id);
+
+        auto default_material{this->createMaterial(
+            MaterialType::DEFAULT_3D,
+            std::format("DEFAULT PIPELINE {}", default_pipeline->id()))};
+
+        default_material->setProperty(
+            Presto::DefaultMaterialPropertyName::DIFFUSE_TEXTURE,
+            fallback_texture);
+
+        auto new_pipeline{
+            std::make_unique<AllocatedPipeline>(
+                AllocatedPipeline{.id = new_id,
+                                  .pipeline = std::move(default_pipeline),
+                                  .default_material{default_material}}),
+        };
+
+        impl_->pipelines.alloc(std::move(new_pipeline), new_id);
     }
 
     // Load the default quad (used for UI rendering)
@@ -204,16 +238,16 @@ Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
         pipelineId = PR_PIPELINE_DEFAULT_3D;
     }
 
-    Pipeline* pipeline{nullptr};
-
-    pipeline = getPipeline(pipelineId);
-    if (pipeline == nullptr) {
+    AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
+    if (allocated_pipeline == nullptr) {
         PR_ERROR(
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
             pipelineId);
         return nullptr;
     }
+
+    Pipeline* pipeline{allocated_pipeline->pipeline.get()};
 
     if (impl_->current_pipeline_id != pipelineId) {
         pipeline->bind();
@@ -306,18 +340,20 @@ void RenderingManager::update() {
         renderer_->setObjectData(
             {.transform = drawStruct.transform->getModelView()});
 
-        for (const auto& model : drawStruct.render->getModels()) {
+        for (const Ptr<ModelAsset>& model : drawStruct.render->getModels()) {
             for (const MeshDraw& draw : model->getDraws()) {
                 if (draw.material == nullptr) {
                     PR_ERROR(
-                        "No material available to render in 3D. Skipping "
-                        "draw.");
-                    continue;
+                        "No material available to render in 3D. Using the "
+                        "fallback material.");
+
+                    switchPipeline(PR_PIPELINE_DEFAULT_3D);
+                    switchMaterial(impl_->current.pipeline->default_material);
+                } else {
+                    switchMaterial(draw.material);
                 }
 
-                switchMaterial(draw.material);
-
-                auto* data{impl_->mesh_registrations.find(
+                MeshRegistrationData* data{impl_->mesh_registrations.find(
                     draw.mesh->registrationId())};
                 PR_CORE_ASSERT(
                     data != nullptr,
@@ -332,7 +368,7 @@ void RenderingManager::update() {
 
             if (quad.material == nullptr) {
                 PR_ERROR(
-                    "No material available to render in 3d. Using the "
+                    "No material available to render in 2D. Using the "
                     "fallback "
                     "material. ");
                 continue;
@@ -365,9 +401,9 @@ void RenderingManager::update() {
         std::views::filter(
             [](const auto& canvas) { return canvas != nullptr; })};
 
-    auto* ui_pipeline{getPipeline(PR_PIPELINE_DEFAULT_UI)};
+    AllocatedPipeline* ui_pipeline{getPipeline(PR_PIPELINE_DEFAULT_UI)};
 
-    ui_pipeline->bind();
+    ui_pipeline->pipeline->bind();
 
     auto* quad_registration{impl_->mesh_registrations.find(PR_MESH_QUAD)};
     PR_CORE_ASSERT(quad_registration != nullptr,
@@ -433,10 +469,10 @@ const PipelineStructure* RenderingManager::getPipelineStructure(
     pipeline_id_t id) const {
     auto transform_view{
         impl_->pipelines | std::views::values |
-        std::views::transform(
-            [](const Allocated<Pipeline>& val) -> const PipelineStructure& {
-                return val->getStructure();
-            })};
+        std::views::transform([](const Allocated<AllocatedPipeline>& val)
+                                  -> const PipelineStructure& {
+            return val->pipeline->getStructure();
+        })};
 
     for (const auto& view : transform_view) {
         if (view.pipeline_id == id) {
@@ -498,7 +534,7 @@ PipelineBuilder& RenderingManager::getPipelineBuilder() {
     return *impl_->pipeline_builder;
 };
 
-Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
+AllocatedPipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
     auto* pipeline{impl_->pipelines.find(id)};
     if (pipeline == nullptr) {
         PR_WARN(
@@ -511,6 +547,9 @@ Pipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
 
 Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
                                      mesh_registration_id_t customId) {
+    // TODO: Make sure this doesn't cause problems in the future
+    meshData.pipeline_id = PR_PIPELINE_DEFAULT_3D;
+
     PR_CORE_ASSERT(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
@@ -520,10 +559,10 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
         pipelineId = PR_PIPELINE_DEFAULT_3D;
     }
 
-    Pipeline* pipeline{nullptr};
+    AllocatedPipeline* allocated_pipeline{nullptr};
 
-    pipeline = getPipeline(pipelineId);
-    if (pipeline == nullptr) {
+    allocated_pipeline = getPipeline(pipelineId);
+    if (allocated_pipeline == nullptr) {
         PR_ERROR(
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
@@ -532,7 +571,7 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
     }
 
     if (impl_->current_pipeline_id != pipelineId) {
-        pipeline->bind();
+        allocated_pipeline->pipeline->bind();
         impl_->current_pipeline_id = pipelineId;
     }
 
@@ -549,8 +588,8 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
         return nullptr;
     }
 
-    bool success{
-        renderer_->createMeshContext(*details, pipeline->getStructure())};
+    bool success{renderer_->createMeshContext(
+        *details, allocated_pipeline->pipeline->getStructure())};
 
     if (!success) {
         PR_ERROR("Unable to create mesh context in renderer.");
@@ -619,11 +658,13 @@ return cam;
     */
 };
 
-void RenderingManager::switchPipeline(Pipeline* pipeline) {
+void RenderingManager::switchPipeline(AllocatedPipeline* allocatedPipeline) {
     // Update pipeline if changed
+    auto* pipeline = allocatedPipeline->pipeline.get();
+
     PR_ASSERT(pipeline != nullptr, "Unable to switch to null pipeline.");
     pipeline->bind();
-    impl_->current.pipeline = pipeline;
+    impl_->current.pipeline = allocatedPipeline;
     impl_->current_pipeline_id = pipeline->id();
 }
 
@@ -644,7 +685,7 @@ void RenderingManager::switchMaterial(const MaterialPtr& material) {
     // Update material if changed
     if (impl_->current.material.expired() ||
         impl_->current.material.lock() != material) {
-        material->bindTo(*impl_->current.pipeline);
+        material->bindTo(*impl_->current.pipeline->pipeline);
         impl_->current.material = material;
     }
 };

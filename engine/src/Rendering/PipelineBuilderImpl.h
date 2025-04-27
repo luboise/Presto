@@ -20,8 +20,8 @@ class PipelineBuilderImpl : public PipelineBuilder {
     };
 
    protected:
-    void addPipeline(Allocated<Pipeline> pipeline) {
-        pipelines_->alloc(std::move(pipeline));
+    void addPipeline(Allocated<AllocatedPipeline> allocatedPipeline) {
+        pipelines_->alloc(std::move(allocatedPipeline));
     };
 
    private:

@@ -74,10 +74,6 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
     pipelines[1] = builder.build();
 
     return pipelines;
-
-    // TODO: Implement default texture in the RenderingManager
-    // drawManager_->setTexture(PR_DEFAULT_TEXTURE,
-    // OpenGLTexture(DEFAULT_TEXTURE));
 };  // namespace Presto
 
 void OpenGLRenderer::nextFrame() {

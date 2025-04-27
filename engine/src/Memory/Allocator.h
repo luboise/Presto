@@ -23,6 +23,9 @@ class Allocator {
    public:
     explicit Allocator(K threshold = 1) : idGenerator_(threshold) {};
 
+    [[nodiscard]] std::size_t size() const { return entries_.size(); }
+    [[nodiscard]] bool empty() const { return entries_.size() == 0; }
+
     /**
      * @brief  Search for a value by key
      */

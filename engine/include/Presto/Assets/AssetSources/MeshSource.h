@@ -16,8 +16,9 @@ class MeshSource final : public AssetSource {
     explicit MeshSource(AssetPath filepath);
     ~MeshSource() override;
 
-    ModelPtr getModel(const Presto::string& name);
-    ModelPtr loadModel(Presto::string modelName, bool allowReload = true);
+    [[nodiscard]] ModelPtr getModel(const Presto::string& name);
+    [[nodiscard]] ModelPtr loadModel(Presto::string modelName,
+                                     bool allowReload = true);
     void unloadModel(const Presto::string& modelName);
 
     MaterialPtr getMaterial(const Presto::string& name);

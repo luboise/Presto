@@ -20,6 +20,13 @@ BoundingBox ModelAsset::getBoundingBox() {
 }
 
 ModelAsset& ModelAsset::addMesh(MeshPtr mesh, MaterialPtr material) {
+    PR_ASSERT(mesh != nullptr,
+              "An added mesh to a model asset must not be null.");
+
+    if (material == nullptr) {
+        PR_WARN("A mesh has been added to a ModelAsset without a material.");
+    }
+
     draws_.push_back(MeshDraw{.mesh{mesh}, .material{material}});
 
     return *this;

@@ -34,6 +34,7 @@ Application::Application() {
     EntityManagerImpl::init();
 
     RenderingManager::init();
+    RenderingManager::get().loadDefaults();
 
     // SceneManager::init();
     PhysicsManager::init();

@@ -29,9 +29,9 @@ class AssetSource {
     AssetSource() : path_(""), loaded_(false) {}
 
     void ensureUnloaded() {
-        if (loaded_) {
-            this->unload();
-        }
+        // if (loaded_) {
+            // this->unload();
+        // }
     }
 
     explicit AssetSource(AssetPath path, bool loaded)
