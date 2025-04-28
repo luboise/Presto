@@ -1,10 +1,10 @@
 #pragma once
 
+#include <map>
+
 #include "Component.h"
 
 #include "Presto/Objects/Components/ConductorComponent.h"
-
-#include <map>
 #include "Presto/Types/CoreTypes.h"
 
 namespace Presto {

@@ -9,10 +9,6 @@
 
 namespace Presto {
 
-template <typename T>
-    requires DerivedFrom<T, Event>
-using EventHandler = std::function<void(T&)>;
-
 class PRESTO_API EventManager final : public Module<EventManager> {
     MODULE_FUNCTIONS(EventManager);
 

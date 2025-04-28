@@ -12,7 +12,7 @@ class Entity;
 
 class PRESTO_API ConductorComponent : public Component {
     friend class EntityManagerImpl;
-    friend class EventManager;
+    friend class EventManagerImpl;
 
    private:
     virtual void start() {};

@@ -11,7 +11,7 @@
 #include "Presto/Runtime/Events/KeyEvents.h"
 #include "Presto/Runtime/Events/MouseEvents.h"
 
-#include "Presto/Runtime/WindowData.h"
+#include "Runtime/WindowData.h"
 
 namespace Presto {
 bool GLFWAppWindow::s_GLFWInitialised = false;

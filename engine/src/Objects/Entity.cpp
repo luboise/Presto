@@ -1,7 +1,7 @@
 #include "Presto/Objects/Entity.h"
 #include <memory>
 
-#include "Modules/EventManager.h"
+#include "Modules/EventManagerImpl.h"
 #include "Modules/PhysicsManager.h"
 #include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
 
@@ -37,7 +37,7 @@ void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
         std::dynamic_pointer_cast<ConductorComponent>(componentPtr)};
 
     if (conductor_ptr != nullptr) {
-        EventManager::get().registerCallbacks(this);
+        EventManagerImpl::get().registerCallbacks(this);
     }
 
     auto rigidbody_ptr{

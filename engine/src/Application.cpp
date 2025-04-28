@@ -17,7 +17,7 @@ Application::Application() {
     // TODO: Fix this to be injected
     this->appWindow_ = Window::create();
 
-    EventManager::init();
+    EventManagerImpl::init();
     this->initialiseEvents();  // Initialise application events in EventManager
 
     // this->_app_window = new GLFWAppWindow();
@@ -47,7 +47,7 @@ Application::~Application() { /*this->app_window->Shutdown();*/
     PR_DEBUG_ONLY_CODE(DebugUI::shutdown())
 
     PhysicsManager::shutdown();
-    EventManager::shutdown();
+    EventManagerImpl::shutdown();
     // SceneManager::shutdown();
     AssetManager::shutdown();
     EntityManagerImpl::shutdown();
@@ -121,7 +121,7 @@ void Application::run() {
 }
 
 void Application::initialiseEvents() {
-    auto& em{EventManager::get()};
+    auto& em{EventManagerImpl::get()};
 
     em.addHandler<WindowResizeEvent>(
         [this](WindowResizeEvent& e) { this->onWindowResize(e); });

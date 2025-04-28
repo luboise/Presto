@@ -1,18 +1,15 @@
-#include "EventManager.h"
-
-#include <memory>
-
-#include "Presto/Objects/Components/ConductorComponent.h"
+#include "EventManagerImpl.h"
 
 #include "Presto/Objects.h"
+#include "Presto/Objects/Components/ConductorComponent.h"
 
 namespace Presto {
 using ConductorPtr = ComponentPtr<ConductorComponent>;
 
 using MakeConductor = std::function<ConductorPtr(GenericComponentPtr& val)>;
 
-void EventManager::registerCallbacks(Entity* entity) {
-    for (const auto& conductor : entity->getConductors()) {
+void EventManagerImpl::registerCallbacks(Entity* entity) {
+    for (const Ptr<ConductorComponent>& conductor : entity->getConductors()) {
         if (conductor->registered_) {
             PR_ASSERT(entity == conductor->entity,
                       "A Conductor component has been assigned to multiple "
@@ -29,5 +26,7 @@ void EventManager::registerCallbacks(Entity* entity) {
         conductor->entity = entity;
     }
 }
+
+EventManager& EventManager::Get() { return EventManagerImpl::get(); };
 
 }  // namespace Presto

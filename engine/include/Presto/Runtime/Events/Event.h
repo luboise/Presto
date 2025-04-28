@@ -8,6 +8,7 @@
 #include <type_traits>
 
 namespace Presto {
+
 enum class EventType {
     None = 0,
     WindowClose,
@@ -87,6 +88,15 @@ class Event {
 template <typename T>
 concept EventInstanceType = std::is_base_of_v<Event, T>;
 
+template <typename T>
+    requires DerivedFrom<T, Event>
+using EventHandler = std::function<void(T&)>;
+
+inline std::ostream& operator<<(std::ostream& os, const Event& event) {
+    return os << event.toString();
+}
+
+/*
 class EventDispatcher {
     template <typename T>
     // Reserved function pointer for a function that returns a bool and
@@ -111,8 +121,5 @@ class EventDispatcher {
    private:
     Event& event;
 };
-
-inline std::ostream& operator<<(std::ostream& os, const Event& event) {
-    return os << event.toString();
-}
+*/
 }  // namespace Presto
