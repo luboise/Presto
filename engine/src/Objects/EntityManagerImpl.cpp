@@ -160,6 +160,7 @@ void EntityManagerImpl::instantiateEntities() {
                 component != nullptr,
                 "Null component found when instantiating new entities.");
             component->onEnterScene();
+            component->enteredScene_ = true;
         }
 
         impl_->entity_map.emplace(entity->id_, std::move(entity));

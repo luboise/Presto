@@ -16,7 +16,7 @@ class EventManagerImpl final : public Module<EventManagerImpl>,
    public:
     ~EventManagerImpl() override = default;
 
-    void update() override;
+    void update() override {};
     void registerCallbacks(Entity*);
 
     template <typename E>
@@ -32,6 +32,9 @@ class EventManagerImpl final : public Module<EventManagerImpl>,
             }
         }
     }
+
+   private:
+    EventManagerImpl();
 };
 
 }  // namespace Presto

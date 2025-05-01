@@ -28,6 +28,8 @@ class PRESTO_API Component {
         return dynamic_cast<SubClass*>(this) != nullptr;
     }
 
+    [[nodiscard]] bool enteredScene() const { return enteredScene_; }
+
     /*
 template <ComponentType SubClass>
 ComponentPtr<SubClass> as() {
@@ -48,6 +50,8 @@ return ComponentPtr<SubClass>{dynamic_cast<SubClass*>(this)};
 
    private:
     virtual void onEnterScene() {};
+
+    bool enteredScene_{false};
 
     component_id_t id_{UNASSIGNED_ID};
     bool renderable_ = false;

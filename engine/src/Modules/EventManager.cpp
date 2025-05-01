@@ -18,15 +18,19 @@ void EventManagerImpl::registerCallbacks(Entity* entity) {
             continue;
         }
 
-        if (conductor->handlesKeyEvents_) {
-            this->addHandler<KeyEvent>(
-                [conductor](KeyEvent& event) { conductor->on(event); });
-        }
+        /*
+if (conductor->handlesKeyEvents_) {
+    this->addHandler<KeyEvent>(
+        [conductor](KeyEvent& event) { conductor->on(event); });
+}
+        */
         conductor->registered_ = true;
         conductor->entity = entity;
     }
 }
 
 EventManager& EventManager::Get() { return EventManagerImpl::get(); };
+
+EventManagerImpl::EventManagerImpl() = default;
 
 }  // namespace Presto
