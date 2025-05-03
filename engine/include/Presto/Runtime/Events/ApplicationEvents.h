@@ -29,13 +29,17 @@ class WindowResizeEvent : public Event {
     unsigned width, height;
 };
 
+struct WindowData;
+
 class FramebufferResizedEvent : public Event {
    public:
-    FramebufferResizedEvent(unsigned new_width, unsigned new_height)
-        : width_(new_width), height_(new_height) {}
+    explicit FramebufferResizedEvent(const WindowData* data);
 
     [[nodiscard]] unsigned width() const { return width_; }
     [[nodiscard]] unsigned height() const { return height_; }
+
+    [[nodiscard]] const WindowData* windowData() const { return windowData_; }
+
     [[nodiscard]] VisualExtents extents() const {
         return {
             .width = static_cast<uint16_t>(width()),
@@ -51,6 +55,8 @@ class FramebufferResizedEvent : public Event {
     EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
 
    private:
+    const WindowData* windowData_;
+
     unsigned width_, height_;
 };
 

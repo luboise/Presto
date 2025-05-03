@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <cmath>
+
 #include "./OpenGLBuffer.h"
 #include "./OpenGLPipeline.h"
 #include "./OpenGLPipelineBuilder.h"
@@ -14,12 +16,14 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Runtime/Events/ApplicationEvents.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Utils/File.h"
 
 #include "Rendering/DefaultTextures.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/Utils/RenderingUtils.h"
+#include "Runtime/WindowData.h"
 
 namespace Presto {
 
@@ -117,14 +121,6 @@ void OpenGLRenderer::setupDebugLogging() {
     glDebugMessageCallback(debugCallback, nullptr);
 };
 
-void OpenGLRenderer::onFrameBufferResized() {
-    auto extents{_glfwWindow->getFramebufferSize()};
-    this->setExtents(extents);
-
-    glViewport(0, 0, static_cast<GLsizei>(extents.width),
-               static_cast<GLsizei>(extents.height));
-}
-
 void OpenGLRenderer::render(MeshRegistrationData& data) {
     OpenGLMeshContext* context{contexts_.find(data.context_id)};
     if (context == nullptr) {
@@ -217,4 +213,40 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
 
     return true;
 };
+
+void OpenGLRenderer::recalculateViewport() {
+    struct Pos {
+        int x;
+        int y;
+    };
+
+    auto desired_ratio{aspectRatio()};
+    double ratio{getExtents().getAspectRatio()};
+
+    const VisualExtents& extents{getExtents()};
+
+    VisualExtents out_extents{extents};
+
+    // Too wide
+    if (ratio > desired_ratio) {
+        out_extents.width =
+            std::floor(static_cast<double>(extents.height) * desired_ratio);
+    }
+    // Too tall
+    else if (ratio < desired_ratio) {
+        out_extents.height =
+            std::floor(static_cast<double>(extents.width) / desired_ratio);
+    }
+
+    glViewport((extents.width - out_extents.width) / 2,
+               (extents.height - out_extents.height) / 2,
+               static_cast<GLsizei>(out_extents.width),
+               static_cast<GLsizei>(out_extents.height));
+
+    /*
+    glViewport(0, 0, static_cast<GLsizei>(out_extents.width),
+                   static_cast<GLsizei>(out_extents.height));
+                               */
+};
+
 }  // namespace Presto

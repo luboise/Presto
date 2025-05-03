@@ -38,4 +38,14 @@ break;
     }
 }
 
+void Renderer::setAspectRatio(aspect_ratio_t ratio) {
+    aspectRatio_ = ratio;
+    this->recalculateViewport();
+};
+
+void Renderer::setExtents(VisualExtents extents) {
+    extents_ = extents;
+    this->recalculateViewport();
+};
+
 }  // namespace Presto

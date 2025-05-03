@@ -42,6 +42,10 @@ using FilePath = fs::path;
 struct VisualExtents {
     std::uint16_t width;
     std::uint16_t height;
+
+    [[nodiscard]] double getAspectRatio() const {
+        return (double)width / (double)height;
+    }
 };
 
 enum class ShaderDataSubType : uint8_t {

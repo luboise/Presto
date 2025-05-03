@@ -6,14 +6,16 @@ namespace Presto {
 
 class MouseMovedEvent : public Event {
    public:
-    MouseMovedEvent(float x, float y) : mouseX(x), mouseY(y) {}
+    MouseMovedEvent(float x, float y) : position_({.x = x, .y = y}) {}
 
-    [[nodiscard]] float GetMouseX() const { return this->mouseX; }
-    [[nodiscard]] float GetMouseY() const { return this->mouseY; }
+    [[nodiscard]] float mouseX() const { return position_.x; }
+    [[nodiscard]] float mouseY() const { return position_.y; }
+
+    [[nodiscard]] const auto& pos() const { return position_; }
 
     [[nodiscard]] std::string toString() const override {
-        return std::format("MouseMovedEvent: ({}, {})", this->mouseY,
-                           this->mouseX);
+        return std::format("MouseMovedEvent: ({}, {})", position_.x,
+                           position_.y);
     }
 
     EVENT_CLASS_TYPE(MouseMoved)
@@ -21,8 +23,9 @@ class MouseMovedEvent : public Event {
                          EventCategory::EventCategoryMouse)
 
    private:
-    float mouseX;
-    float mouseY;
+    struct Position {
+        float x, y;
+    } position_;
 };
 
 class MouseScrolledEvent : public Event {

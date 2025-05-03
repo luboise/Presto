@@ -24,6 +24,7 @@ target_sources(
           # Rendering/RenderLayer.cpp
           Rendering/RenderingManager.cpp
           Materials.cpp
+          Events.cpp
           Logging.cpp
           Objects.cpp
           Physics.cpp

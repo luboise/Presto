@@ -200,7 +200,7 @@ void GLFWAppWindow::SetCallbacks() {
                 .width = static_cast<std::uint16_t>(new_width),
                 .height = static_cast<std::uint16_t>(new_height),
             };
-            FramebufferResizedEvent e(new_width, new_height);
+            FramebufferResizedEvent e(&data);
             data.templated_event_callback(e);
         });
 }

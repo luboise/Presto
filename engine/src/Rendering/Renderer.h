@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include "Presto/Runtime/Events/ApplicationEvents.h"
 #include "Presto/Utils/LazyCalculator.h"
 
 #include "Presto/Rendering/RenderTypes.h"  // IWYU pragma: export
@@ -58,7 +59,7 @@ class Renderer : protected LazyCalculator {
 
     void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
 
-    void setExtents(VisualExtents extents) { extents_ = extents; };
+    void setExtents(VisualExtents extents);
     [[nodiscard]] VisualExtents getExtents() const { return extents_; }
 
     virtual void nextFrame() = 0;
@@ -69,7 +70,10 @@ class Renderer : protected LazyCalculator {
     void setObjectData(ObjectUniforms&&);
 
     void framebufferResized() { this->_framebufferResized = true; }
-    virtual void onFrameBufferResized() = 0;
+
+    using aspect_ratio_t = double;
+    [[nodiscard]] aspect_ratio_t aspectRatio() const { return aspectRatio_; };
+    void setAspectRatio(aspect_ratio_t ratio);
 
     /* [[nodiscard]] virtual std::vector<PipelineStructure>
        getPipelineStructures() const = 0;
@@ -86,6 +90,10 @@ class Renderer : protected LazyCalculator {
     bool _framebufferResized{false};
 
    private:
+    virtual void recalculateViewport() = 0;
+
     VisualExtents extents_{};
+    aspect_ratio_t aspectRatio_{16.0 / 9.0};
 };
+
 }  // namespace Presto

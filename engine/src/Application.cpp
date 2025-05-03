@@ -128,11 +128,6 @@ void Application::initialiseEvents() {
 
     em.addHandler<WindowCloseEvent>(
         [this](auto& e) -> bool { return this->onWindowClose(e); });
-
-    em.addHandler<FramebufferResizedEvent>([](auto& /*e*/) -> bool {
-        RenderingManager::get().resizeFramebuffer();
-        return true;
-    });
 }
 
 // TODO: Implement this

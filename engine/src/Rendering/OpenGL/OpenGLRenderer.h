@@ -62,9 +62,9 @@ class OpenGLRenderer final : public Renderer {
 
     void updateUniforms();
 
-    void onFrameBufferResized() override;
-
     void setupDebugLogging();
+
+    void recalculateViewport() override;
 
     static void debugCallback(GLenum source, GLenum type, GLuint id,
                               GLenum severity, GLsizei length,

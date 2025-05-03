@@ -1,4 +1,4 @@
-// STL imports
+// STL import
 #include <algorithm>
 #include <memory>
 #include <ranges>
@@ -92,10 +92,11 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
     impl_->cam_debug = NewComponent<CameraComponent>();
     impl_->cam_debug->setFOV(DEFAULT_FOV);
 
-    EventManagerImpl::get().addHandler<FramebufferResizedEvent>(
+    auto& evm{EventManagerImpl::get()};
+
+    evm.addHandler<FramebufferResizedEvent>(
         [this](FramebufferResizedEvent& event) {
-            impl_->cam_active_entity->getComponent<CameraComponent>()
-                ->setExtents(event.extents());
+            renderer_->setExtents(event.extents());
         });
 };
 
@@ -494,10 +495,6 @@ void RenderingManager::setMainCamera(const EntityPtr& mainCam) {
                    "uninitialised.")
     impl_->cam_active_entity = mainCam;
 }
-
-void RenderingManager::resizeFramebuffer() const {
-    renderer_->onFrameBufferResized();
-};
 
 const PipelineStructure* RenderingManager::getPipelineStructure(
     pipeline_id_t id) const {

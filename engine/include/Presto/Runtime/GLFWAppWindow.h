@@ -26,9 +26,9 @@ class GLFWAppWindow final : public Window {
 
     [[nodiscard]] void* getWindowHandle() const { return this->windowPtr_; }
 
-    GLFWAppWindow(const GLFWAppWindow&) = default;
+    GLFWAppWindow(const GLFWAppWindow&) = delete;
     GLFWAppWindow(GLFWAppWindow&&) = delete;
-    GLFWAppWindow& operator=(const GLFWAppWindow&) = default;
+    GLFWAppWindow& operator=(const GLFWAppWindow&) = delete;
     GLFWAppWindow& operator=(GLFWAppWindow&&) = delete;
 
    private:
