@@ -2,7 +2,10 @@
 
 A C++ game engine with some syntax inspiration from Unity.
 
-![Presto Example 1](/docs/example_1.png)
+## Showcase
+
+![Presto Example 1](docs/example_1.png)
+![Presto Example 2](docs/example_2.png)
 
 ## Features
 
