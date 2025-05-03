@@ -4,14 +4,29 @@
 
 namespace Presto {
 
-class MouseMovedEvent : public Event {
+struct MousePosition {
+    float x;
+    float y;
+};
+
+class MouseEvent : public Event {
+   public:
+    EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
+                         EventCategory::EventCategoryMouse)
+};
+
+class MouseMovedEvent : public MouseEvent {
    public:
     MouseMovedEvent(float x, float y) : position_({.x = x, .y = y}) {}
 
     [[nodiscard]] float mouseX() const { return position_.x; }
     [[nodiscard]] float mouseY() const { return position_.y; }
 
+    // TODO: Fix these to come from the window and not include black bars rather
+    // than from the framebuffer. The real issue is that its not mapping the
+    // screen space to the user, but the window space
     [[nodiscard]] const auto& pos() const { return position_; }
+    [[nodiscard]] MousePosition posNormalised() const;
 
     [[nodiscard]] std::string toString() const override {
         return std::format("MouseMovedEvent: ({}, {})", position_.x,
@@ -19,16 +34,12 @@ class MouseMovedEvent : public Event {
     }
 
     EVENT_CLASS_TYPE(MouseMoved)
-    EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
-                         EventCategory::EventCategoryMouse)
 
    private:
-    struct Position {
-        float x, y;
-    } position_;
+    MousePosition position_;
 };
 
-class MouseScrolledEvent : public Event {
+class MouseScrolledEvent : public MouseEvent {
    public:
     MouseScrolledEvent(float xOffset, float yOffset)
         : scrollXOffset(xOffset), scrollYOffset(yOffset) {}
@@ -42,15 +53,13 @@ class MouseScrolledEvent : public Event {
     }
 
     EVENT_CLASS_TYPE(MouseScrolled)
-    EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
-                         EventCategory::EventCategoryMouse)
 
    private:
     float scrollXOffset;
     float scrollYOffset;
 };
 
-class MouseButtonEvent : public Event {
+class MouseButtonEvent : public MouseEvent {
    public:
     [[nodiscard]] int GetMouseButton() const { return mouse_button; }
 
@@ -59,7 +68,7 @@ class MouseButtonEvent : public Event {
                          EventCategory::EventCategoryMouseButton)
 
    protected:
-    MouseButtonEvent(int button) : mouse_button(button) {}
+    explicit MouseButtonEvent(int button) : mouse_button(button) {}
     int mouse_button;
 };
 

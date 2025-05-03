@@ -10,8 +10,6 @@
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Types/CoreTypes.h"
 
-#include "Presto/Assets/ImportTypes.h"
-
 #include "Presto/Rendering/TextureTypes.h"
 #include "Presto/Types/MaterialTypes.h"
 #include "Rendering/MeshRegistrationData.h"
@@ -110,6 +108,8 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 
     Ptr<Texture> getTexture(texture_id_t);
 
+    [[nodiscard]] VisualExtents framebufferSize() const;
+
    private:
     // Static vars
     static RENDER_LIBRARY _library;
@@ -120,8 +120,6 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
 void loadImageOnGpu(const ImagePtr&);
 void loadImageOnGpu(ImageAsset&);
     */
-
-    void resizeFramebuffer() const;
 
     void setPipeline(pipeline_id_t, Pipeline pipeline);
     void setTexture(texture_id_t id, Texture texture);

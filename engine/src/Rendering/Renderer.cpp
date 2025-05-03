@@ -48,4 +48,9 @@ void Renderer::setExtents(VisualExtents extents) {
     this->recalculateViewport();
 };
 
+void Renderer::setWindow(GLFWAppWindow* window) {
+    this->_glfwWindow = window;
+    this->setExtents(window->framebufferSize());
+}
+
 }  // namespace Presto

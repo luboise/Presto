@@ -19,7 +19,7 @@ class GLFWAppWindow final : public Window {
     // Getters from WindowData
     [[nodiscard]] unsigned getWidth() const override;
     [[nodiscard]] unsigned getHeight() const override;
-    [[nodiscard]] const VisualExtents& getFramebufferSize() const;
+    [[nodiscard]] const VisualExtents& framebufferSize() const;
 
     void setVSync(bool vsync) override;
     bool vSyncEnabled() override;

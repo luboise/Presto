@@ -738,4 +738,8 @@ Ptr<Texture> RenderingManager::getTexture(texture_id_t textureId) {
     return impl_->textures[textureId];
 };
 
+VisualExtents RenderingManager::framebufferSize() const {
+    return renderer_->getExtents();
+}
+
 }  // namespace Presto

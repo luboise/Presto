@@ -235,7 +235,7 @@ Input::Key GLFWAppWindow::getPrestoKeyCode(int GLFWKeycode) {
     }
 };
 
-const VisualExtents& GLFWAppWindow::getFramebufferSize() const {
+const VisualExtents& GLFWAppWindow::framebufferSize() const {
     return windowData_->framebuffer_size;
 }
 

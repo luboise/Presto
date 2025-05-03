@@ -57,7 +57,7 @@ class Renderer : protected LazyCalculator {
                                    const PipelineStructure&) = 0;
     virtual void render(MeshRegistrationData&) = 0;
 
-    void setWindow(GLFWAppWindow* window) { this->_glfwWindow = window; }
+    void setWindow(GLFWAppWindow* window);
 
     void setExtents(VisualExtents extents);
     [[nodiscard]] VisualExtents getExtents() const { return extents_; }
