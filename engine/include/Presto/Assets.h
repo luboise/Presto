@@ -28,7 +28,7 @@ ImagePtr LoadImage(const AssetArg& path, Presto::string name = "");
  * @brief  Creates a new MeshSource object from a file path. This can be used to
  * load models and meshes.
  */
-Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath);
+[[nodiscard]] Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath);
 /**
  * @brief  Finds an existing (loaded) model, and returns a new handle to it.
  */
