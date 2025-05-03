@@ -5,6 +5,7 @@
 #include <utility>
 
 // Public imports
+#include "Modules/EventManagerImpl.h"
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
@@ -13,6 +14,7 @@
 #include "Presto/Rendering/MeshData.h"
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Runtime/Events/ApplicationEvents.h"
 #include "Presto/Runtime/GLFWAppWindow.h"
 #include "Presto/Types/CoreTypes.h"
 #include "Presto/Types/ObjectTypes.h"
@@ -89,6 +91,12 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
     impl_->cam_debug = NewComponent<CameraComponent>();
     impl_->cam_debug->setFOV(DEFAULT_FOV);
+
+    EventManagerImpl::get().addHandler<FramebufferResizedEvent>(
+        [this](FramebufferResizedEvent& event) {
+            impl_->cam_active_entity->getComponent<CameraComponent>()
+                ->setExtents(event.extents());
+        });
 };
 
 void RenderingManager::loadDefaults() {

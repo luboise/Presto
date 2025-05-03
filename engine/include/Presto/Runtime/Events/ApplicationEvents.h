@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "Presto/Types/CoreTypes.h"
 
 namespace Presto {
 /**
@@ -31,20 +32,26 @@ class WindowResizeEvent : public Event {
 class FramebufferResizedEvent : public Event {
    public:
     FramebufferResizedEvent(unsigned new_width, unsigned new_height)
-        : width(new_width), height(new_height) {}
+        : width_(new_width), height_(new_height) {}
 
-    [[nodiscard]] unsigned GetWidth() const { return width; }
-    [[nodiscard]] unsigned GetHeight() const { return height; }
+    [[nodiscard]] unsigned width() const { return width_; }
+    [[nodiscard]] unsigned height() const { return height_; }
+    [[nodiscard]] VisualExtents extents() const {
+        return {
+            .width = static_cast<uint16_t>(width()),
+            .height = static_cast<uint16_t>(height()),
+        };
+    }
 
     [[nodiscard]] std::string toString() const override {
-        return std::format("FramebufferResizedEvent: {}, {}", width, height);
+        return std::format("FramebufferResizedEvent: {}, {}", width_, height_);
     }
 
     EVENT_CLASS_TYPE(FramebufferResized)
     EVENT_CLASS_CATEGORY(EventCategory::EventCategoryApplication)
 
    private:
-    unsigned width, height;
+    unsigned width_, height_;
 };
 
 class WindowCloseEvent : public Event {
