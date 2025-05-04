@@ -1,4 +1,6 @@
 #include "Presto/Objects/Components/CameraComponent.h"
+#include "Presto/Collision/Shapes.h"
+#include "Presto/Objects/TransformData.h"
 
 namespace Presto {
 CameraComponent::CameraComponent() : LazyCalculator() { this->setDirty(); }
@@ -137,5 +139,31 @@ CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
 CameraComponent::camera_fov_t CameraComponent::FOV() const { return fov_; };
 
 Presto::vec3 CameraComponent::focus() const { return focusPoint_; };
+
+Rectangle CameraComponent::farRectangle() const {
+    // Create a right angled triangle from the origin to where half of the width
+    // of the rectangle would be in -z, ie,
+    // tan(FOV/2) = w/2  /  FAR
+    // Then solve that for w
+    auto rec_width = static_cast<float>(std::tan(glm::radians(fov_ / 2)) *
+                                        distances_.far * 2);
+    auto rec_height = static_cast<float>(rec_width / extents_.getAspectRatio());
+
+    vec3 top_left{-rec_width / 2, rec_height / 2, 0};
+    vec3 top_right = top_left + vec3{rec_width, 0, 0};
+    vec3 bottom_left = top_left + vec3{0, -rec_height, 0};
+
+    vec3 offset{transform_.forwards() * distances_.far};
+
+    top_left = applyTransformation(top_left, transform_.asModelMat()) + offset;
+    top_right =
+        applyTransformation(top_right, transform_.asModelMat()) + offset;
+    bottom_left =
+        applyTransformation(bottom_left, transform_.asModelMat()) + offset;
+
+    Rectangle rec{top_left, top_right, bottom_left};
+
+    return rec;
+}
 
 }  // namespace Presto

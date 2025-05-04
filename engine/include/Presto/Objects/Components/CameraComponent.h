@@ -1,7 +1,5 @@
 #pragma once
 
-#include <type_traits>
-#include "Presto/Core/Concepts.h"
 #include "Presto/Objects/Component.h"
 
 #include "Presto/Objects/TransformData.h"
@@ -11,6 +9,8 @@
 namespace Presto {
 
 enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
+
+struct Rectangle;
 
 class CameraComponent : public Component, LazyCalculator {
     using camera_fov_t = double;
@@ -73,6 +73,8 @@ class CameraComponent : public Component, LazyCalculator {
     CameraComponent& setRotation(Args&&... args) {
         return setRotation(glm::vec3{std::forward<Args>(args)...});
     }
+
+    [[nodiscard]] Rectangle farRectangle() const;
 
    private:
     CameraComponent();

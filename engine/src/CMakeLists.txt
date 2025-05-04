@@ -30,6 +30,7 @@ target_sources(
           Physics.cpp
           pch.cpp
           System.cpp
+          Collision.cpp
           GLFWAppWindow.cpp)
 
 # add_subdirectory(Platform)

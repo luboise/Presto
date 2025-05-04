@@ -1,4 +1,5 @@
 #include "Presto/Objects/Components/TransformComponent.h"
+#include "Presto/Objects/TransformData.h"
 
 namespace Presto {
 
@@ -9,30 +10,41 @@ mat4 TransformData::asModelMat() const {
 
     // Apply in reverse order to avoid gimbal lock
     model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(1, 0, 0));
-    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(0, 1, 0));
+    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
+    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
 
     model = glm::scale(model, this->scale);
 
     return model;
 }
 
-mat4 TransformData::asViewMat() const {
-    return glm::inverse(asModelMat());
-
+mat4 TransformData::asWorldMat() const {
     mat4 model{1.0F};
 
-    // Apply in reverse order to avoid gimbal lock
-    model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(1, 0, 0));
-    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(0, 1, 0));
+    model = glm::translate(model, this->position);
 
-    model = glm::translate(model, -this->position);
+    // yaw, pitch, roll
+    model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
+    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
+    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
 
     model = glm::scale(model, this->scale);
 
-    return glm::inverse(model);
+    /*
+model = glm::scale(model, this->scale);
+
+// Yaw then pitch then roll
+model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
+model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
+model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
+
+model = glm::translate(model, this->position);
+    */
+
+    return model;
 }
+
+mat4 TransformData::asViewMat() const { return glm::inverse(asModelMat()); }
 
 mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
                                         vec3 scale) {
@@ -115,4 +127,29 @@ TransformData& TransformData::scaleBy(Presto::vec3 s) {
     this->scale *= s;
     return *this;
 };
+
+Presto::vec3 TransformData::forwards() const {
+    return glm::normalize(applyRotations({0, 0, -1}, rotation));
+}
+
+vec3 applyRotations(const vec3& v, const vec3& rotations) {
+    mat4 transformation{1};
+
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.z), {0, 0, 1});
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.y), {0, 1, 0});
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.x), {1, 0, 0});
+
+    return applyTransformation(v, transformation);
+}
+
+vec3 applyTransformation(const vec3& v, const mat4& transformations) {
+    vec4 transformed = transformations * vec4{v, 1};
+    transformed /= transformed.w;
+
+    return vec3{transformed};
+};
+
 }  // namespace Presto

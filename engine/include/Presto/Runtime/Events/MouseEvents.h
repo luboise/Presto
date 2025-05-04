@@ -61,15 +61,15 @@ class MouseScrolledEvent : public MouseEvent {
 
 class MouseButtonEvent : public MouseEvent {
    public:
-    [[nodiscard]] int GetMouseButton() const { return mouse_button; }
+    [[nodiscard]] int button() const { return button_; }
 
     EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput |
                          EventCategory::EventCategoryMouse |
                          EventCategory::EventCategoryMouseButton)
 
    protected:
-    explicit MouseButtonEvent(int button) : mouse_button(button) {}
-    int mouse_button;
+    explicit MouseButtonEvent(int button) : button_(button) {}
+    int button_;
 };
 
 class MouseButtonPressedEvent : public MouseButtonEvent {
@@ -77,7 +77,7 @@ class MouseButtonPressedEvent : public MouseButtonEvent {
     explicit MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
     [[nodiscard]] std::string toString() const override {
-        return std::format("MouseButtonPressedEvent:  Button {}", mouse_button);
+        return std::format("MouseButtonPressedEvent:  Button {}", button_);
     }
 
     EVENT_CLASS_TYPE(MouseBtnPressed)
@@ -88,8 +88,7 @@ class MouseButtonReleasedEvent : public MouseButtonEvent {
     explicit MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
     [[nodiscard]] std::string toString() const override {
-        return std::format("MouseButtonReleasedEvent:  Button {}",
-                           mouse_button);
+        return std::format("MouseButtonReleasedEvent:  Button {}", button_);
     }
 
     EVENT_CLASS_TYPE(MouseBtnReleased)

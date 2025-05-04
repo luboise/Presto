@@ -2,6 +2,36 @@
 
 #include <glm/gtx/closest_point.hpp>
 
+Presto::Triangle& Presto::Triangle::operator*=(const Presto::mat4& other) {
+    *this = *this * other;
+    return *this;
+}
+
+Presto::Triangle Presto::Triangle::operator*(const Presto::mat4& other) const {
+    // TODO: Test the performance of this
+    return {
+        .p1 = vec3{vec4{this->p1, 1} * other},
+        .p2 = vec3{vec4{this->p2, 1} * other},
+        .p3 = vec3{vec4{this->p3, 1} * other},
+    };
+}
+
+template <>
+Presto::float32_t Presto::LineSegment::length() const {
+    return ShortestDistance(p1, p2);
+}
+Presto::float32_t Presto::ShortestDistance(const Point& p1, const Point& p2) {
+    return glm::length(p2 - p1);
+}
+
+Presto::Rectangle::Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft)
+    : top_left(topLeft), top_right(topRight), bottom_left(bottomLeft) {};
+
+Presto::vec3 Presto::Rectangle::at(float x, float y) const {
+    return top_left + x * (top_right - top_left) + y * (bottom_left - top_left);
+
+#if 0
+
 bool Presto::Intersects(const Presto::Cylinder& cylinder,
                         Presto::Triangle tri) {
     using namespace Presto;
@@ -68,35 +98,6 @@ return Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
                */
     return false;
 };
-
-Presto::Triangle& Presto::Triangle::operator*=(const Presto::mat4& other) {
-    *this = *this * other;
-    return *this;
-}
-
-Presto::Triangle Presto::Triangle::operator*(const Presto::mat4& other) const {
-    // TODO: Test the performance of this
-    return {
-        .p1 = vec3{vec4{this->p1, 1} * other},
-        .p2 = vec3{vec4{this->p2, 1} * other},
-        .p3 = vec3{vec4{this->p3, 1} * other},
-    };
-}
-
-template <>
-Presto::float32_t Presto::LineSegment::length() const {
-    return ShortestDistance(p1, p2);
-}
-Presto::float32_t Presto::ShortestDistance(const Point& p1, const Point& p2) {
-    return glm::length(p2 - p1);
-}
-
-/*
-Presto::vec2 Presto::ClosestPointTo(const LineSegment2D& segment,
-                                    const Point2D& point) {
-    auto norm{NormalOf(segment, point)};
-};
-*/
 
 Presto::vec3 Presto::ClosestPointTo(const LineSegment& segment,
                                     const Point& point) {
@@ -211,24 +212,5 @@ if ((p1_outcode & p2_outcode) != 0U) {
 uint top_outcode{std::max(p1_outcode, p2_outcode)};
     */
 };
-
-Presto::Rectangle::Rectangle(vec2 p1, vec2 p2) {
-    auto min_x{p1.x};
-    auto max_x{p2.x};
-    if (max_x < min_x) {
-        auto temp{min_x};
-        min_x = max_x;
-        min_x = temp;
-    }
-
-    auto min_y{p1.y};
-    auto max_y{p2.y};
-    if (max_y < min_y) {
-        auto temp{min_y};
-        min_y = max_y;
-        min_y = temp;
-    }
-
-    bottom_left = {min_x, min_y};
-    top_right = {max_x, max_y};
+#endif  // 0
 };

@@ -56,22 +56,60 @@ struct CollisionShape {
     explicit T(Args&&... args) : T(std::forward<Args>(args)...) {}
         */
 
+struct Plane : CollisionShape {
+    union {
+        vec3 normal{0, 1, 0};
+        vec3 N;
+    };
+    union {
+        vec3 point{0, 0, 0};
+        vec3 P;
+    };
+};
+
 struct Circle : CollisionShape {
     Presto::float32_t radius{1};
 };
 
 struct Ray {
-    vec3 position;
-    Presto::float32_t magnitude;
-    vec3 direction;
+    union {
+        vec3 origin;
+        vec3 O;
+    };
+
+    union {
+        Presto::float32_t magnitude;
+        Presto::float32_t t;
+    };
+
+    union {
+        vec3 direction;
+        vec3 D;
+    };
+
+    [[nodiscard]] bool contains(Presto::float32_t tVal) const {
+        return tVal >= 0 && tVal <= this->t;
+    }
+
+    [[nodiscard]] vec3 at(Presto::float32_t tVal) const { return O + tVal * D; }
+
+    static Ray fromAB(vec3 a, vec3 b) {
+        auto diff{b - a};
+
+        return Ray{.origin = a,
+                   .magnitude = glm::length(diff),
+                   .direction = glm::normalize(diff)};
+    };
 };
 
 struct Rectangle : CollisionShape {
-    // Give any 2 points
-    Rectangle(vec2 p1, vec2 p2);
+    Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft);
 
-    vec2 bottom_left{};
-    vec2 top_right{};
+    vec3 top_left{};
+    vec3 top_right{};
+    vec3 bottom_left{};
+
+    [[nodiscard]] vec3 at(float x, float y) const;
 
     COLLISION_FUNCTIONS(Rectangle)
 };
@@ -95,6 +133,7 @@ struct Cylinder : CollisionShape {
     COLLISION_FUNCTIONS(Cylinder)
 };
 
+/*
 // Checks if a cylinder intersects a triangle
 bool Intersects(const Cylinder&, Triangle);
 bool Intersects(const Circle&, const LineSegment&);
@@ -104,5 +143,6 @@ bool Intersects2D(const Rectangle& rect, LineSegment2D segment);
 
 vec3 ClosestPointTo(const LineSegment&, const Point&);
 // vec2 ClosestPointTo(const LineSegment2D&, const Point2D&);
+*/
 
 }  // namespace Presto
