@@ -14,6 +14,7 @@
 #include "./utils.h"
 
 #include "Presto/Core/Constants.h"
+#include "Presto/Platform.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
@@ -76,6 +77,18 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         .setShader(vert.c_str(), ShaderStage::VERTEX)
         .setShader(frag.c_str(), ShaderStage::FRAGMENT);
     pipelines[1] = builder.build();
+
+    PR_DEBUG_ONLY_CODE(
+        pipelines.resize(pipelines.size() + 1);
+        vert = Utils::File::ReadAssetFile(
+            "assets/shaders/default/opengl/debug_3d.vert");
+        frag = Utils::File::ReadAssetFile(
+            "assets/shaders/default/opengl/debug_3d.frag");
+        builder.setAttributesOverride(VertexDebug::getPipelineAttributes())
+            .setId(PR_PIPELINE_DEBUG_3D)
+            .setShader(vert.c_str(), ShaderStage::VERTEX)
+            .setShader(frag.c_str(), ShaderStage::FRAGMENT);
+        pipelines[pipelines.size() - 1] = builder.build())
 
     return pipelines;
 };  // namespace Presto

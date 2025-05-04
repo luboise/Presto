@@ -10,7 +10,6 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
 #include "Presto/Objects/Components.h"
-#include "Presto/Rendering/Drawables.h"
 #include "Presto/Rendering/MeshData.h"
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
@@ -236,6 +235,56 @@ mesh_registration_id_t RenderingManager::loadMesh(
 */
 
 struct AllocatedStuff {};
+
+template <typename T>
+    requires std::derived_from<T, Vertex> && (!std::is_same_v<T, Vertex>)
+Allocated<MeshRegistrationData> RenderingManager::allocateForDrawing(
+    pipeline_id_t pipelineId, Presto::size_t vertexCount,
+    Presto::size_t indexCount, MeshDrawMode drawMode) {
+    PR_CORE_ASSERT(renderer_ != nullptr,
+                   "The renderer must be initialised in order to load meshes.");
+
+    if (pipelineId == PR_PIPELINE_ANY) {
+        pipelineId = PR_PIPELINE_DEFAULT_3D;
+    }
+
+    AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
+    if (allocated_pipeline == nullptr) {
+        PR_ERROR(
+            "Unable to load mesh into pipeline #{}, as it is undefined. "
+            "Skipping this mesh load.",
+            pipelineId);
+        return nullptr;
+    }
+
+    Pipeline* pipeline{allocated_pipeline->pipeline.get()};
+
+    if (impl_->current_pipeline_id != pipelineId) {
+        pipeline->bind();
+        impl_->current_pipeline_id = pipelineId;
+    }
+
+    Presto::size_t vertex_buffer_size{vertexCount * sizeof(T)};
+    Presto::size_t index_buffer_size{indexCount * sizeof(Index)};
+
+    auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
+        .render_manager_id{},
+        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
+                                            vertex_buffer_size),
+        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
+                                           index_buffer_size),
+    })};
+
+    bool success{renderer_->createMeshContext(
+        *details, allocated_pipeline->pipeline->getStructure())};
+
+    if (!success) {
+        PR_ERROR("Unable to create mesh context in renderer.");
+        return nullptr;
+    }
+
+    return details;
+};
 
 template <typename T>
 Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
@@ -660,8 +709,6 @@ void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
 };
 
 PR_DEBUG_ONLY_CODE(
-    void RenderingManager::drawLine(const Line& line){};
-
     bool& RenderingManager::usingDebugCamera() {
         return impl_->using_debug_cam;
     }
@@ -740,6 +787,16 @@ Ptr<Texture> RenderingManager::getTexture(texture_id_t textureId) {
 
 VisualExtents RenderingManager::framebufferSize() const {
     return renderer_->getExtents();
+}
+
+void RenderingManager::drawFromAllocation(MeshRegistrationData& data) {
+    if (data.context_id == PR_UNREGISTERED) {
+        PR_ERROR(
+            "An unregistered allocation draw has been request. Ignoring this "
+            "draw.");
+        return;
+    }
+    renderer_->render(data);
 }
 
 }  // namespace Presto

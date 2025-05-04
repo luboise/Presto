@@ -31,6 +31,7 @@ target_sources(
           pch.cpp
           System.cpp
           Collision.cpp
+          Debugging.cpp
           GLFWAppWindow.cpp)
 
 # add_subdirectory(Platform)

@@ -46,5 +46,18 @@ std::vector<PipelineAttribute> VertexUI::getPipelineAttributes() {
 
     };
 };
+std::vector<PipelineAttribute> VertexDebug::getPipelineAttributes() {
+    return {
+        PipelineAttribute{.layout = 0,
+                          .type = ShaderDataType::VEC3,
+                          .name = DefaultAttributeName::POSITION,
+                          .offset = 0},
+        PipelineAttribute{.layout = 1,
+                          .type = ShaderDataType::VEC4,
+                          .name = DefaultAttributeName::COLOUR,
+                          .offset = 12},
+
+    };
+};
 
 }  // namespace Presto

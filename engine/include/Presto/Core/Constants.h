@@ -38,6 +38,11 @@ constexpr mesh_registration_id_t PR_MIN_RUNTIME_MESH_ID{10};
 constexpr pipeline_id_t PR_PIPELINE_ANY{0};
 constexpr pipeline_id_t PR_PIPELINE_DEFAULT_3D{1};
 constexpr pipeline_id_t PR_PIPELINE_DEFAULT_UI{2};
+
+#ifndef NDEBUG
+constexpr pipeline_id_t PR_PIPELINE_DEBUG_3D{3};
+#endif  // !NDEBUG
+
 constexpr pipeline_id_t PR_PIPELINE_NONE{static_cast<pipeline_id_t>(-1)};
 
 // Textures

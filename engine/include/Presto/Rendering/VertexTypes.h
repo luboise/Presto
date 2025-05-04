@@ -39,6 +39,15 @@ struct VertexUI : public Vertex {
     [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();
 };
 
+#ifndef NDEBUG
+struct VertexDebug : public Vertex {
+    Presto::vec3 vertexPosition;
+    Presto::vec4 colour{1, 1, 1, 1};
+
+    [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();
+};
+#endif
+
 using AnyVertexType = std::variant<Vertex3D, VertexUI>;
 using AnyVertexList =
     std::variant<std::vector<Vertex3D>, std::vector<VertexUI>>;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include "Module.h"
 
 #include "Presto/Assets/ImageAsset.h"
@@ -109,6 +110,14 @@ class PRESTO_API RenderingManager final : public Module<RenderingManager> {
     Ptr<Texture> getTexture(texture_id_t);
 
     [[nodiscard]] VisualExtents framebufferSize() const;
+
+    template <typename T>
+        requires std::derived_from<T, Vertex> && (!std::is_same_v<T, Vertex>)
+    [[nodiscard]] Allocated<MeshRegistrationData> allocateForDrawing(
+        pipeline_id_t pipelineId, Presto::size_t vertexCount,
+        Presto::size_t indexCount, MeshDrawMode drawMode);
+
+    void drawFromAllocation(MeshRegistrationData&);
 
    private:
     // Static vars

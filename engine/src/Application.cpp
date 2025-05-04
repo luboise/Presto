@@ -3,12 +3,13 @@
 #include "Managers.h"
 
 #include "Presto/Events.h"
+#include "Presto/Platform.h"
 #include "Presto/Runtime.h"
 
 #include "Utils/DebugTimer.h"
 
 #ifdef PR_DEBUG_BUILD
-#include "Debugging/DebugUI.h"
+#include "Modules/DebugManager.h"
 #endif
 
 namespace Presto {
@@ -40,11 +41,13 @@ Application::Application() {
     PhysicsManager::init();
     Time::init();
 
-    PR_DEBUG_ONLY_CODE(DebugUI::initialise(window, [this] { this->exit(); }))
+#ifdef PR_DEBUG_BUILD
+    DebugManager::init(window, [this] { this->exit(); });
+#endif
 }
 
 Application::~Application() { /*this->app_window->Shutdown();*/
-    PR_DEBUG_ONLY_CODE(DebugUI::shutdown())
+    PR_DEBUG_ONLY_CODE(DebugManager::shutdown());
 
     PhysicsManager::shutdown();
     EventManagerImpl::shutdown();
@@ -67,6 +70,8 @@ void Application::run() {
     RenderingManager& rendering = RenderingManager::get();
     EntityManagerImpl& entities = EntityManagerImpl::get();
     PhysicsManager& physics = PhysicsManager::get();
+
+    PR_DEBUG_ONLY_CODE(DebugManager& debugging = DebugManager::get())
 
     while (running_) {
         // Calculate delta
@@ -104,7 +109,7 @@ void Application::run() {
 
         // rendering_timer.printElapsed();
 
-        PR_DEBUG_ONLY_CODE(DebugUI::render())
+        PR_DEBUG_ONLY_CODE(debugging.update());
 
         // USER POST-LOOP LOGIC
         postLoop();
