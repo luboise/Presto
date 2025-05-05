@@ -74,7 +74,9 @@ class CameraComponent : public Component, LazyCalculator {
         return setRotation(glm::vec3{std::forward<Args>(args)...});
     }
 
+    [[nodiscard]] Rectangle distanceRect(camera_distance_t distance) const;
     [[nodiscard]] Rectangle farRectangle() const;
+    [[nodiscard]] Rectangle nearRectangle() const;
 
    private:
     CameraComponent();

@@ -38,10 +38,10 @@ DebugManager::DebugManager(Presto::Window* windowPtr,
     impl_->draw_data->draw_mode = MeshDrawMode::LINES;
 };
 
-void DebugManager::drawLine(vec3 from, vec3 to, vec4 colour) {
+void DebugManager::drawLine(vec3 from, vec3 to, DebugDrawProps props) {
     std::array<VertexDebug, 2> vertices = {
-        VertexDebug{.vertexPosition{from}, .colour{colour}},
-        VertexDebug{.vertexPosition{to}, .colour{colour}}};
+        VertexDebug{.vertexPosition{from}, .colour{props.colour}},
+        VertexDebug{.vertexPosition{to}, .colour{props.colour}}};
 
     Presto::size_t vertices_size{sizeof(vertices)};
 
@@ -131,7 +131,7 @@ void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
 
     auto& dm{DebugManager::get()};
 
-    dm.drawLine(from, to, colour);
+    dm.drawLine(from, to, {.colour{colour}});
 }
 
 void Presto::Draw(Camera camera) {
@@ -139,9 +139,19 @@ void Presto::Draw(Camera camera) {
 
     auto& dm{DebugManager::get()};
 
-    auto far_rect{camera.farRectangle()};
+    Rectangle far_rect{camera.farRectangle()};
+    Rectangle near_rect{camera.nearRectangle()};
 
-    dm.drawRect(far_rect);
+    dm.drawRect(far_rect, {.colour{Colour.BLUE}});
+    dm.drawRect(near_rect, {.colour{Colour.BLUE}});
+
+    vec3 pos{camera.position()};
+
+    DebugDrawProps line_props{.colour{Colour.WHITE}};
+    dm.drawLine(pos, far_rect.top_left, line_props);
+    dm.drawLine(pos, far_rect.top_right, line_props);
+    dm.drawLine(pos, far_rect.at(1, 1), line_props);
+    dm.drawLine(pos, far_rect.bottom_left, line_props);
 };
 
 void Presto::DebugMainCamera(bool enabled) {

@@ -22,8 +22,8 @@ class DebugManager final : public Module<DebugManager> {
 
     explicit DebugManager(Presto::Window*, std::function<void()>);
 
-    void drawLine(vec3 from, vec3 to, vec4 colour);
-    void drawCube(vec3 position, vec3 to, vec4 colour);
+    void drawLine(vec3 from, vec3 to, DebugDrawProps = {});
+    void drawCube(vec3 position, vec3 to, DebugDrawProps = {});
     void drawRect(const Rectangle&, DebugDrawProps = {});
 
     void setDrawMainCamera(bool enabled);
