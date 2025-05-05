@@ -153,8 +153,11 @@ void OpenGLRenderer::render(MeshRegistrationData& data) {
 
     context->vao.bind();
 
-    glDrawElements(context->draw_mode, context->index_count, GL_UNSIGNED_INT,
+    glDrawElements(OpenGLUtils::PrestoDrawModeToOpenGLDrawMode(data.draw_mode),
+                   static_cast<GLsizei>(data.index_draw_count), GL_UNSIGNED_INT,
                    nullptr);
+    // glDrawElements(context->draw_mode, context->index_count,
+    // GL_UNSIGNED_INT,nullptr);
 };
 
 void OpenGLRenderer::updateUniforms() {
@@ -208,9 +211,13 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
         .vao = {dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
                 dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
                 structure},
-        .index_count =
-            static_cast<GLsizei>(registration.indices->size() / sizeof(Index)),
+        // .index_count =
+        //     static_cast<GLsizei>(registration.indices->size() /
+        //     sizeof(Index)),
     }};
+
+    registration.index_draw_count =
+        static_cast<GLsizei>(registration.indices->size() / sizeof(Index)),
 
     new_context->draw_mode =
         OpenGLUtils::PrestoDrawModeToOpenGLDrawMode(registration.draw_mode);

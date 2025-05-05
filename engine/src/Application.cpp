@@ -9,6 +9,7 @@
 #include "Utils/DebugTimer.h"
 
 #ifdef PR_DEBUG_BUILD
+
 #include "Modules/DebugManager.h"
 #endif
 
@@ -85,9 +86,6 @@ void Application::run() {
 
         entities.instantiateEntities();
 
-        // Draw the debug UI
-        PR_DEBUG_ONLY_CODE(DebugUI::draw())
-
         // USER PRE-LOOP LOGIC
         preLoop();
 
@@ -105,14 +103,18 @@ void Application::run() {
 
         entities.update();
         physics.update();
+
         rendering.update();
 
         // rendering_timer.printElapsed();
 
-        PR_DEBUG_ONLY_CODE(debugging.update());
-
         // USER POST-LOOP LOGIC
         postLoop();
+
+        // TODO: Check if this is still needed
+        PR_DEBUG_ONLY_CODE(debugging.drawAll())
+
+        PR_DEBUG_ONLY_CODE(debugging.update());
 
         rendering.clear();
 

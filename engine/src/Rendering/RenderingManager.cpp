@@ -10,6 +10,7 @@
 #include "Presto/Core/Constants.h"
 #include "Presto/Objects.h"
 #include "Presto/Objects/Components.h"
+#include "Presto/Platform.h"
 #include "Presto/Rendering/MeshData.h"
 #include "Presto/Rendering/Pipeline.h"
 #include "Presto/Rendering/RenderTypes.h"
@@ -161,130 +162,7 @@ void RenderingManager::loadDefaults() {
 
 RenderingManager::~RenderingManager() = default;
 
-/*
-mesh_registration_id_t RenderingManager::loadMesh(
-    MeshData meshData, pipeline_id_t pipelineId,
-    mesh_registration_id_t customId) {
-    PR_CORE_ASSERT(renderer_ != nullptr,
-                   "The renderer must be initialised in order to load meshes.");
-
-    if (pipelineId == PR_PIPELINE_ANY) {
-        pipelineId = PR_PIPELINE_DEFAULT_3D;
-    }
-
-    Pipeline* pipeline{nullptr};
-
-    pipeline = getPipeline(pipelineId);
-    if (pipeline == nullptr) {
-        PR_ERROR(
-            "Unable to load mesh into pipeline #{}, as it is undefined. "
-            "Skipping this mesh load.",
-            pipelineId);
-        return PR_UNREGISTERED;
-    }
-
-    if (impl_->current_pipeline_id != pipelineId) {
-        pipeline->bind();
-        impl_->current_pipeline_id = pipelineId;
-    }
-
-    std::vector<Vertex3D>& vertex_bytes{meshData.vertex_data.vertices};
-    Presto::size_t vertex_buffer_size{vertex_bytes.size() * sizeof(Vertex3D)};
-    Presto::size_t index_buffer_size{meshData.indices.size() * sizeof(Index)};
-
-    auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
-        .render_manager_id{},
-        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
-                                            vertex_buffer_size),
-        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
-                                           index_buffer_size),
-    })};
-
-    auto& in_vertices{meshData.vertex_data.vertices};
-
-    details->vertices->write(
-        std::span<std::byte>(reinterpret_cast<std::byte*>(in_vertices.data()),
-                             sizeof(in_vertices[0]) * in_vertices.size()));
-
-    // TODO: Add more write functions here that are optimised for different data
-    // types instead of using ErasedBytes
-    details->indices->write(std::span<std::byte>(
-        reinterpret_cast<std::byte*>(meshData.indices.data()),
-        sizeof(meshData.indices[0]) * meshData.indices.size()));
-
-    bool success{
-        renderer_->createMeshContext(*details, pipeline->getStructure())};
-
-    if (!success) {
-        PR_ERROR("Unable to create mesh context in renderer.");
-        return -1;
-    }
-
-    if (customId == PR_UNREGISTERED) {
-        // Set it to the "define for me" allocation key
-        customId = 0;
-    }
-
-    auto pair{impl_->mesh_registrations.alloc(std::move(details), customId)};
-
-    mesh_registration_id_t registration_id{pair.first};
-    pair.second->render_manager_id = registration_id;
-
-    return registration_id;
-};
-*/
-
 struct AllocatedStuff {};
-
-template <typename T>
-    requires std::derived_from<T, Vertex> && (!std::is_same_v<T, Vertex>)
-Allocated<MeshRegistrationData> RenderingManager::allocateForDrawing(
-    pipeline_id_t pipelineId, Presto::size_t vertexCount,
-    Presto::size_t indexCount, MeshDrawMode drawMode) {
-    PR_CORE_ASSERT(renderer_ != nullptr,
-                   "The renderer must be initialised in order to load meshes.");
-
-    if (pipelineId == PR_PIPELINE_ANY) {
-        pipelineId = PR_PIPELINE_DEFAULT_3D;
-    }
-
-    AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
-    if (allocated_pipeline == nullptr) {
-        PR_ERROR(
-            "Unable to load mesh into pipeline #{}, as it is undefined. "
-            "Skipping this mesh load.",
-            pipelineId);
-        return nullptr;
-    }
-
-    Pipeline* pipeline{allocated_pipeline->pipeline.get()};
-
-    if (impl_->current_pipeline_id != pipelineId) {
-        pipeline->bind();
-        impl_->current_pipeline_id = pipelineId;
-    }
-
-    Presto::size_t vertex_buffer_size{vertexCount * sizeof(T)};
-    Presto::size_t index_buffer_size{indexCount * sizeof(Index)};
-
-    auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
-        .render_manager_id{},
-        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
-                                            vertex_buffer_size),
-        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
-                                           index_buffer_size),
-    })};
-
-    bool success{renderer_->createMeshContext(
-        *details, allocated_pipeline->pipeline->getStructure())};
-
-    if (!success) {
-        PR_ERROR("Unable to create mesh context in renderer.");
-        return nullptr;
-    }
-
-    return details;
-};
 
 template <typename T>
 Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
@@ -516,6 +394,13 @@ void RenderingManager::update() {
     impl_->current.pipeline = nullptr;
 
     impl_->current.material.reset();
+
+    PR_DEBUG_ONLY_CODE(
+        // TODO: Reset the current camera
+        renderer_->setCameraData(
+            *(impl_->using_debug_cam
+                  ? impl_->cam_debug
+                  : impl_->cam_active_entity->getComponent<CameraComponent>())))
 
     // TODO: Refactor this to cache in the RenderingManager if the
     // performance impact is too much
@@ -799,4 +684,55 @@ void RenderingManager::drawFromAllocation(MeshRegistrationData& data) {
     renderer_->render(data);
 }
 
+Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
+    pipeline_id_t pipelineId, Presto::size_t vertexSize,
+    Presto::size_t vertexCount, Presto::size_t indexCount) {
+    PR_CORE_ASSERT(renderer_ != nullptr,
+                   "The renderer must be initialised in order to load meshes.");
+
+    if (pipelineId == PR_PIPELINE_ANY) {
+        pipelineId = PR_PIPELINE_DEFAULT_3D;
+    }
+
+    AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
+    if (allocated_pipeline == nullptr) {
+        PR_ERROR(
+            "Unable to load mesh into pipeline #{}, as it is undefined. "
+            "Skipping this mesh load.",
+            pipelineId);
+        return nullptr;
+    }
+
+    Pipeline* pipeline{allocated_pipeline->pipeline.get()};
+
+    if (impl_->current_pipeline_id != pipelineId) {
+        pipeline->bind();
+        impl_->current_pipeline_id = pipelineId;
+    }
+
+    Presto::size_t vertex_buffer_size{vertexCount * vertexSize};
+    Presto::size_t index_buffer_size{indexCount * sizeof(Index)};
+
+    auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
+        .render_manager_id{},
+        .vertices = renderer_->createBuffer(Buffer::BufferType::VERTEX,
+                                            vertex_buffer_size),
+        .indices = renderer_->createBuffer(Buffer::BufferType::INDEX,
+                                           index_buffer_size),
+    })};
+
+    bool success{renderer_->createMeshContext(
+        *details, allocated_pipeline->pipeline->getStructure())};
+
+    if (!success) {
+        PR_ERROR("Unable to create mesh context in renderer.");
+        return nullptr;
+    }
+
+    return details;
+};
+
+void RenderingManager::usePipeline(pipeline_id_t id) {
+    getPipeline(id)->pipeline->bind();
+}
 }  // namespace Presto

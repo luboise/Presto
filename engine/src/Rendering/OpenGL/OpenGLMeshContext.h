@@ -11,7 +11,7 @@ struct OpenGLMeshContext {
     OpenGLVAO vao;
 
     GLenum draw_mode{GL_TRIANGLES};
-    GLsizei index_count{0};
+    // GLsizei index_count{0};
 };
 
 }  // namespace Presto

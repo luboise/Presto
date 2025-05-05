@@ -70,7 +70,7 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, Presto::size_t size)
     glBindBuffer(openGlBufferType_, buffer_);
 
     auto draw_type{type == BufferType::UNIFORM ? GL_DYNAMIC_DRAW
-                                               : GL_STATIC_DRAW};
+                                               : GL_DYNAMIC_DRAW};
 
     glBufferData(openGlBufferType_, static_cast<GLsizeiptr>(size), nullptr,
                  draw_type);
@@ -79,18 +79,20 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, Presto::size_t size)
 OpenGLBuffer::~OpenGLBuffer() { glDeleteBuffers(1, &buffer_); };
 
 void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
-    if (offset >= data.size()) {
+    if (data.size() + offset > this->size()) {
         PR_ERROR(
-            "Offset {} is out of range for input data of size {}. Skipping "
-            "this write.",
-            offset, data.size());
-
+            "Writing {} bytes to a buffer of size {} would cause an overrun of "
+            "size {}. Skipping this write.",
+            data.size(), this->size(), data.size() + offset - this->size());
         return;
     }
 
     this->bind();
 
-    void* ptr{glMapBuffer(openGlBufferType_, GL_WRITE_ONLY)};
+    // void* ptr{glMapBuffer(openGlBufferType_, GL_WRITE_ONLY)};
+    void* ptr{glMapBufferRange(openGlBufferType_, static_cast<GLintptr>(offset),
+                               static_cast<GLsizeiptr>(data.size()),
+                               GL_MAP_WRITE_BIT)};
     std::memcpy(ptr, data.data(), data.size());
     glUnmapBuffer(openGlBufferType_);
 

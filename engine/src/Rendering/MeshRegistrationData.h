@@ -9,6 +9,8 @@ struct MeshRegistrationData {
     Allocated<Buffer> vertices;
     Allocated<Buffer> indices;
 
+    Presto::size_t index_draw_count{0};
+
     MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
     // The ID that points to the internal details in the renderer
     mesh_context_id_t context_id{-1U};

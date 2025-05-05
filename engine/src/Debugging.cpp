@@ -6,6 +6,8 @@
 #include "Modules/RenderingManager.h"
 
 #include "Debugging/DebugUI.h"
+#include "Presto/Collision/Shapes.h"
+#include "Presto/Core/Constants.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Rendering/Buffer.h"
 
@@ -13,6 +15,116 @@ namespace Presto {
 
 constexpr Presto::size_t MAX_VERTEX_COUNT{100};
 constexpr Presto::size_t MAX_INDEX_COUNT{MAX_VERTEX_COUNT * 2};
+
+struct DebugManager::Impl {
+    bool draw_main_camera{false};
+
+    Allocated<MeshRegistrationData> draw_data{nullptr};
+    Presto::size_t line_count{0};
+
+    Presto::size_t vb_offset{0};
+    Presto::size_t ib_offset{0};
+};
+
+DebugManager::DebugManager(Presto::Window* windowPtr,
+                           std::function<void()> exitCallback) {
+    DebugUI::initialise(windowPtr, std::move(exitCallback));
+
+    impl_ = std::make_unique<Impl>();
+    impl_->draw_data = RenderingManager::get().allocateMeshRegistration(
+        PR_PIPELINE_DEBUG_3D, sizeof(VertexDebug), MAX_VERTEX_COUNT,
+        MAX_INDEX_COUNT);
+
+    impl_->draw_data->draw_mode = MeshDrawMode::LINES;
+};
+
+void DebugManager::drawLine(vec3 from, vec3 to, vec4 colour) {
+    std::array<VertexDebug, 2> vertices = {
+        VertexDebug{.vertexPosition{from}, .colour{colour}},
+        VertexDebug{.vertexPosition{to}, .colour{colour}}};
+
+    Presto::size_t vertices_size{sizeof(vertices)};
+
+    ByteArray bytes(vertices_size);
+    std::memcpy(bytes.data(), vertices.data(), vertices_size);
+
+    impl_->draw_data->vertices->write(bytes, impl_->vb_offset);
+    impl_->vb_offset += sizeof(vertices);
+
+    std::array<Index, 2> indices = {static_cast<Index>(impl_->line_count),
+                                    static_cast<Index>(impl_->line_count + 1)};
+
+    Presto::size_t indices_size{sizeof(indices)};
+
+    bytes.resize(indices_size);
+    std::memcpy(bytes.data(), indices.data(), indices_size);
+    impl_->draw_data->indices->write(bytes, impl_->ib_offset);
+
+    impl_->ib_offset += indices_size;
+
+    impl_->line_count += 1;
+};
+
+void DebugManager::drawRect(const Rectangle& rect, DebugDrawProps props) {
+    std::array<VertexDebug, 4> vertices = {
+        VertexDebug{.vertexPosition{rect.top_left}, .colour{props.colour}},
+        VertexDebug{.vertexPosition{rect.top_right}, .colour{props.colour}},
+        VertexDebug{.vertexPosition{rect.at(1, 1)}, .colour{props.colour}},
+        VertexDebug{.vertexPosition{rect.bottom_left}, .colour{props.colour}},
+    };
+
+    Presto::size_t vertices_size{sizeof(vertices)};
+
+    ByteArray bytes(vertices_size);
+    std::memcpy(bytes.data(), vertices.data(), vertices_size);
+
+    impl_->draw_data->vertices->write(bytes, impl_->vb_offset);
+    impl_->vb_offset += sizeof(vertices);
+
+    std::array<Index, 8> indices = {0, 1, 1, 2, 2, 3, 3, 4};
+    for (auto& val : indices) {
+        val += impl_->line_count;
+    }
+    impl_->line_count += 4;
+
+    Presto::size_t indices_size{sizeof(indices)};
+
+    bytes.resize(indices_size);
+    std::memcpy(bytes.data(), indices.data(), indices_size);
+    impl_->draw_data->indices->write(bytes, impl_->ib_offset);
+
+    impl_->ib_offset += indices_size;
+};
+
+void DebugManager::update() {
+    DebugUI::draw();
+    DebugUI::render();
+}
+
+DebugManager::~DebugManager() = default;
+
+void DebugManager::drawAll() {
+    auto& rm{RenderingManager::get()};
+
+    if (impl_->draw_main_camera) {
+        Draw(*rm.getMainCamera()->getComponent<Camera>());
+    }
+    rm.usePipeline(PR_PIPELINE_DEBUG_3D);
+
+    impl_->draw_data->index_draw_count = impl_->line_count * 2;
+
+    rm.drawFromAllocation(*impl_->draw_data);
+
+    impl_->vb_offset = 0;
+    impl_->ib_offset = 0;
+    impl_->line_count = 0;
+}
+
+void DebugManager::setDrawMainCamera(bool enabled) {
+    impl_->draw_main_camera = enabled;
+};
+
+}  // namespace Presto
 
 void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
     using namespace Presto;
@@ -22,48 +134,18 @@ void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
     dm.drawLine(from, to, colour);
 }
 
-struct DebugManager::Impl {
-    Allocated<MeshRegistrationData> draw_data;
-    Presto::size_t line_count{0};
+void Presto::Draw(Camera camera) {
+    using namespace Presto;
+
+    auto& dm{DebugManager::get()};
+
+    auto far_rect{camera.farRectangle()};
+
+    dm.drawRect(far_rect);
 };
 
-DebugManager::DebugManager(Presto::Window* windowPtr,
-                           std::function<void()> exitCallback) {
-    DebugUI::initialise(windowPtr, std::move(exitCallback));
+void Presto::DebugMainCamera(bool enabled) {
+    using namespace Presto;
 
-    impl_ = std::make_unique<Impl>();
-    impl_->draw_data = RenderingManager::get().allocateForDrawing<VertexDebug>(
-        PR_PIPELINE_DEBUG_3D, MAX_VERTEX_COUNT, MAX_INDEX_COUNT,
-        MeshDrawMode::LINES);
-};
-
-void DebugManager::drawLine(vec3 from, vec3 to, vec4 colour) {
-    std::array<VertexDebug, 2> vertices = {
-        VertexDebug{.vertexPosition{from}, .colour{colour}},
-        VertexDebug{.vertexPosition{from}, .colour{colour}}};
-
-    ByteArray bytes(sizeof(vertices));
-    std::memcpy(bytes.data(), vertices.data(), sizeof(vertices));
-
-    Presto::size_t offset{impl_->line_count * sizeof(VertexDebug)};
-    impl_->draw_data->vertices->write(bytes, offset);
-
-    std::array<Index, 2> indices = {static_cast<Index>(impl_->line_count),
-                                    static_cast<Index>(impl_->line_count)};
-
-    offset = 2 * impl_->line_count++ * sizeof(Index);
-
-    bytes.resize(sizeof(indices));
-    std::memcpy(bytes.data(), indices.data(), sizeof(indices));
-    impl_->draw_data->indices->write(bytes, offset);
-};
-
-void DebugManager::update() {
-    DebugUI::render();
-
-    for (const auto& draw : line) {
-        draw line;
-    }
+    DebugManager::get().setDrawMainCamera(enabled);
 }
-
-}  // namespace Presto
