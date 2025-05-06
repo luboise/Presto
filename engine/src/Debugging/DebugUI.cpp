@@ -19,6 +19,9 @@
 
 #include "DebugComponents.h"
 
+#include "Presto/Aliases/ObjectAliases.h"
+#include "Presto/Objects/Components/CameraComponent.h"
+
 namespace Presto {
 
 void DebugUI::initialise(Presto::Window* windowPtr,
@@ -219,6 +222,10 @@ void DebugUI::drawMainEditor() {
     if (showComponentBrowser_) {
         drawComponentBrowser();
     };
+
+    if (showCameraBrowser_) {
+        drawCameraBrowser();
+    }
 
     /*
 if (showCameraAdjuster_) {
@@ -459,64 +466,131 @@ void DebugUI::drawSelectedComponent() {
                    "component is null.");
 
     if (selectedComponent_->isOfType<CameraComponent>()) {
-        Ptr<CameraComponent> camera{
-            std::dynamic_pointer_cast<CameraComponent>(selectedComponent_)};
+        drawCameraModifier(
+            *std::dynamic_pointer_cast<Camera>(selectedComponent_));
+    }
+};
 
-        static bool& using_debug_cam{
-            RenderingManager::get().usingDebugCamera()};
+void DebugUI::drawCameraModifier(CameraComponent& camera) {
+    DebugComponents::EnumChooser(
+        camera.type(),
+        std::vector<EnumMember<CameraType>>{
+            {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
+            {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
+
+    auto& extents{camera.extents()};
+
+    DebugComponents::SliderChooser(
+        extents.width, "Extents width", 1, 3840,
+        [&camera, &extents](auto value) {
+            camera.setExtents({.width = value, .height = extents.height});
+        });
+
+    DebugComponents::SliderChooser(
+        extents.height, "Extents height", 1, 2160,
+        [&camera, &extents](auto value) {
+            camera.setExtents({.width = extents.width, .height = value});
+        });
+
+    auto distances{camera.distances()};
+
+    Presto::vec3 pos{camera.position()};
+    DebugComponents::Vec3Chooser(
+        pos, "Position",
+        [&camera](Presto::vec3 newPos) { camera.setPosition(newPos); });
+
+    Presto::vec3 rot{camera.rotation()};
+    DebugComponents::Vec3Chooser(rot, "Rotation", [&camera](Presto::vec3 rot) {
+        camera.setRotation(rot);
+    });
+
+    DebugComponents::SliderChooser(
+        distances.near, "Near", -1000.F, 3000.F,
+        [&camera, &distances](auto value) {
+            if (value > distances.far) {
+                return;
+            }
+
+            camera.setDistances({value, distances.far});
+        });
+
+    DebugComponents::SliderChooser(
+        distances.far, "Far", -1000.F, 3000.F,
+        [&camera, &distances](auto value) {
+            if (value < distances.near) {
+                return;
+            }
+            camera.setDistances({distances.near, value});
+        });
+};
+
+void DebugUI::drawCameraBrowser() {
+    auto& rm{RenderingManager::get()};
+
+    if (ImGui::Begin("Camera Browser")) {
+        Ptr<CameraComponent> main_camera{
+            rm.getMainCamera()->getComponent<Camera>()};
+
+        static bool& using_debug_cam{rm.usingDebugCamera()};
 
         DebugComponents::CheckboxChooser(using_debug_cam, "Use Debug Camera");
 
-        DebugComponents::EnumChooser(
-            camera->type(),
-            std::vector<EnumMember<CameraType>>{
-                {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
-                {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
+        ComponentSearchResults components{
+            EntityManager::Get().findComponentsWhere(
+                [](const GenericComponentPtr& component) {
+                    return component->template isOfType<Camera>();
+                })};
 
-        auto& extents{camera->extents()};
+        std::vector<Ptr<Camera>> cameras;
+        std::ranges::for_each(components, [&cameras](auto& component) {
+            cameras.push_back(std::dynamic_pointer_cast<Camera>(component));
+        });
 
-        DebugComponents::SliderChooser(
-            extents.width, "Extents width", 1, 3840,
-            [&camera, &extents](auto value) {
-                camera->setExtents({.width = value, .height = extents.height});
-            });
+        if (ImGui::BeginTable(
+                "Camera Browser", 4,
+                ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersH)) {
+            ImGui::TableSetupColumn("Main");
+            ImGui::TableSetupColumn("ID");
+            ImGui::TableSetupColumn("Type");
+            ImGui::TableSetupColumn("###Edit Button");
 
-        DebugComponents::SliderChooser(
-            extents.height, "Extents height", 1, 2160,
-            [&camera, &extents](auto value) {
-                camera->setExtents({.width = extents.width, .height = value});
-            });
+            ImGui::TableHeadersRow();
 
-        auto distances{camera->distances()};
+            std::ranges::for_each(cameras, [&main_camera](Ptr<Camera>& camera) {
+                ImGui::TableNextRow();
 
-        Presto::vec3 pos{camera->position()};
-        DebugComponents::Vec3Chooser(
-            pos, "Position",
-            [&camera](Presto::vec3 newPos) { camera->setPosition(newPos); });
+                bool camera_is_main{camera == main_camera};
 
-        Presto::vec3 rot{camera->rotation()};
-        DebugComponents::Vec3Chooser(
-            rot, "Rotation",
-            [&camera](Presto::vec3 rot) { camera->setRotation(rot); });
+                ImGui::PushID(static_cast<int>(camera->id()));
 
-        DebugComponents::SliderChooser(
-            distances.near, "Near", -1000.F, 3000.F,
-            [&camera, &distances](auto value) {
-                if (value > distances.far) {
-                    return;
+                auto camera_id{std::to_string(camera->id())};
+
+                ImGui::TableNextColumn();
+
+                if (ImGui::Checkbox("", &camera_is_main)) {
                 }
 
-                camera->setDistances({value, distances.far});
+                ImGui::TableNextColumn();
+
+                ImGui::Text("%u", camera->id());
+
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", camera->type() == CameraType::PERSPECTIVE
+                                      ? "Perspective"
+                                      : "Orthographic");
+
+                ImGui::TableNextColumn();
+
+                if (ImGui::Button("Edit")) {
+                    PR_TRACE("Button {} clicked.", camera_id);
+                }
+
+                ImGui::PopID();
             });
 
-        DebugComponents::SliderChooser(
-            distances.far, "Far", -1000.F, 3000.F,
-            [&camera, &distances](auto value) {
-                if (value < distances.near) {
-                    return;
-                }
-                camera->setDistances({distances.near, value});
-            });
+            ImGui::EndTable();
+        }
+        ImGui::End();
     }
 };
 

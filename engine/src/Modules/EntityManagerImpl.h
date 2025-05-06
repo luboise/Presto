@@ -2,6 +2,7 @@
 
 #include "Module.h"
 
+#include "Presto/Core/Concepts.h"
 #include "Presto/Core/ViewHandling.h"
 #include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
@@ -41,7 +42,8 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
                                                    [](auto&) { return true; });
 
     template <ComponentType T>
-    std::vector<ComponentPtr<T>>& findComponentsByType() {
+        requires DerivedFrom<T, Component, Strictness::STRICT>
+    [[nodiscard]] std::vector<ComponentPtr<T>>& findComponentsByType() {
         return *getComponentList<T>();
     }
 

@@ -35,10 +35,6 @@ class DebugUI {
    private:
     inline static bool visible_{false};
 
-    inline static bool showEntityBrowser_{true};
-    inline static bool showComponentBrowser_{true};
-    // inline static bool showCameraAdjuster_{true};
-
     inline static EditorState state_{EditorState::EDITING};
     inline static EntityPtr selectedEntity_{nullptr};
 
@@ -46,9 +42,16 @@ class DebugUI {
 
     static void drawMainEditor();
 
+    inline static bool showEntityBrowser_{true};
     static void drawEntityBrowser();
+
+    inline static bool showComponentBrowser_{true};
     static void drawComponentBrowser();
-    static void drawCameraAdjuster();
+
+    inline static bool showCameraBrowser_{true};
+    static void drawCameraBrowser();
+
+    static void drawCameraModifier(CameraComponent&);
 
     static void drawSelectedComponent();
 
