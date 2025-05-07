@@ -10,11 +10,7 @@ layout(std140, binding = 0) uniform GlobalUniforms {
     mat4 projection;
 };
 
-layout(std140, binding = 1) uniform ObjectUniforms {
-    mat4 model;
-};
-
 void main() {
-    gl_Position = projection * view * model * vec4(a_vertexPosition, 1.0);
+    gl_Position = projection * view * vec4(a_vertexPosition, 1.0);
     colour = a_colour;
 }
