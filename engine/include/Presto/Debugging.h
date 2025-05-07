@@ -12,7 +12,7 @@ void DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour);
 /**
  * @brief  Draw the debug shapes of a camera
  */
-void Draw(Camera camera);
+void Draw(Camera& camera);
 
 /**
  * @brief  Enable or disable the debug drawing of the main camera

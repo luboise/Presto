@@ -166,21 +166,16 @@ Rectangle CameraComponent::distanceRect(camera_distance_t distance) const {
     // of the rectangle would be in -z, ie,
     // tan(FOV/2) = w/2  /  FAR
     // Then solve that for w
-    auto rec_width =
-        static_cast<float>(std::tan(glm::radians(fov_ / 2)) * distance * 2);
+    auto rec_width = static_cast<float>(std::tan(fov_ / 2) * distance * 2);
     auto rec_height = static_cast<float>(rec_width / extents_.getAspectRatio());
 
-    vec3 top_left{-rec_width / 2, rec_height / 2, 0};
-    vec3 top_right = top_left + vec3{rec_width, 0, 0};
-    vec3 bottom_left = top_left + vec3{0, -rec_height, 0};
+    vec3 rec_center{transform_.position + transform_.forwards() * distance};
 
-    vec3 offset{transform_.forwards() * distance};
+    vec3 top_left{rec_center + rec_width * 0.5F * transform_.leftwards() +
+                  rec_height * transform_.upwards() * 0.5F};
 
-    top_left = applyTransformation(top_left, transform_.asModelMat()) + offset;
-    top_right =
-        applyTransformation(top_right, transform_.asModelMat()) + offset;
-    bottom_left =
-        applyTransformation(bottom_left, transform_.asModelMat()) + offset;
+    vec3 top_right{top_left + rec_width * transform_.rightwards()};
+    vec3 bottom_left{top_left + rec_height * transform_.downwards()};
 
     Rectangle rec{top_left, top_right, bottom_left};
 

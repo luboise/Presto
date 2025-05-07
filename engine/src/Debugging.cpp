@@ -20,7 +20,9 @@ struct DebugManager::Impl {
     bool draw_main_camera{false};
 
     Allocated<MeshRegistrationData> draw_data{nullptr};
+
     Presto::size_t line_count{0};
+    Presto::size_t vertex_count{0};
 
     Presto::size_t vb_offset{0};
     Presto::size_t ib_offset{0};
@@ -51,8 +53,9 @@ void DebugManager::drawLine(vec3 from, vec3 to, DebugDrawProps props) {
     impl_->draw_data->vertices->write(bytes, impl_->vb_offset);
     impl_->vb_offset += sizeof(vertices);
 
-    std::array<Index, 2> indices = {static_cast<Index>(impl_->line_count),
-                                    static_cast<Index>(impl_->line_count + 1)};
+    std::array<Index, 2> indices = {
+        static_cast<Index>(impl_->vertex_count),
+        static_cast<Index>(impl_->vertex_count + 1)};
 
     Presto::size_t indices_size{sizeof(indices)};
 
@@ -63,6 +66,7 @@ void DebugManager::drawLine(vec3 from, vec3 to, DebugDrawProps props) {
     impl_->ib_offset += indices_size;
 
     impl_->line_count += 1;
+    impl_->vertex_count += 2;
 };
 
 void DebugManager::drawRect(const Rectangle& rect, DebugDrawProps props) {
@@ -81,11 +85,12 @@ void DebugManager::drawRect(const Rectangle& rect, DebugDrawProps props) {
     impl_->draw_data->vertices->write(bytes, impl_->vb_offset);
     impl_->vb_offset += sizeof(vertices);
 
-    std::array<Index, 8> indices = {0, 1, 1, 2, 2, 3, 3, 4};
+    std::array<Index, 8> indices = {0, 1, 1, 2, 2, 3, 3, 0};
     for (auto& val : indices) {
-        val += impl_->line_count;
+        val += impl_->vertex_count;
     }
     impl_->line_count += 4;
+    impl_->vertex_count += 4;
 
     Presto::size_t indices_size{sizeof(indices)};
 
@@ -106,10 +111,11 @@ DebugManager::~DebugManager() = default;
 void DebugManager::drawAll() {
     auto& rm{RenderingManager::get()};
 
+    rm.usePipeline(PR_PIPELINE_DEBUG_3D);
+
     if (impl_->draw_main_camera) {
         Draw(*rm.getMainCamera()->getComponent<Camera>());
     }
-    rm.usePipeline(PR_PIPELINE_DEBUG_3D);
 
     impl_->draw_data->index_draw_count = impl_->line_count * 2;
 
@@ -117,7 +123,9 @@ void DebugManager::drawAll() {
 
     impl_->vb_offset = 0;
     impl_->ib_offset = 0;
+
     impl_->line_count = 0;
+    impl_->vertex_count = 0;
 }
 
 void DebugManager::setDrawMainCamera(bool enabled) {
@@ -134,7 +142,7 @@ void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
     dm.drawLine(from, to, {.colour{colour}});
 }
 
-void Presto::Draw(Camera camera) {
+void Presto::Draw(Camera& camera) {
     using namespace Presto;
 
     auto& dm{DebugManager::get()};
@@ -143,7 +151,7 @@ void Presto::Draw(Camera camera) {
     Rectangle near_rect{camera.nearRectangle()};
 
     dm.drawRect(far_rect, {.colour{Colour.BLUE}});
-    dm.drawRect(near_rect, {.colour{Colour.BLUE}});
+    dm.drawRect(near_rect, {.colour{Colour.RED}});
 
     vec3 pos{camera.position()};
 
