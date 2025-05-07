@@ -41,6 +41,8 @@ void DebugUI::initialise(Presto::Window* windowPtr,
     ImGui_ImplGlfw_InitForOpenGL(window, true);
 
     ImGui_ImplOpenGL3_Init();
+
+    debugCamera_ = DebugCameraListener(RenderingManager::get());
 }
 
 void DebugUI::shutdown() {
@@ -315,7 +317,9 @@ void DebugUI::handleInput() {
     static ImGuiIO& io = ImGui::GetIO();
     static float movement_speed{5};
 
-    if (usingDebugCamera_) {
+    if (debugCamera_.enabled()) {
+        Camera& camera{debugCamera_.camera()};
+
         if (ImGui::IsKeyPressed(ImGuiKey_7)) {
             movement_speed *= 2;
         }
@@ -326,27 +330,23 @@ void DebugUI::handleInput() {
         float delta_scale{movement_speed * io.DeltaTime};
 
         if (ImGui::IsKeyDown(ImGuiKey_W)) {
-            vec3 fwrds{debugCamera_->transformData().forwards()};
-            debugCamera_->setPosition(debugCamera_->position() +
-                                      delta_scale * fwrds);
+            vec3 fwrds{camera.transformData().forwards()};
+            camera.setPosition(camera.position() + delta_scale * fwrds);
         }
         if (ImGui::IsKeyDown(ImGuiKey_A)) {
-            vec3 lftwards{debugCamera_->transformData().leftwards()};
-            debugCamera_->setPosition(debugCamera_->position() +
-                                      delta_scale * lftwards);
+            vec3 lftwards{camera.transformData().leftwards()};
+            camera.setPosition(camera.position() + delta_scale * lftwards);
         }
         if (ImGui::IsKeyDown(ImGuiKey_S)) {
-            vec3 fwrds{debugCamera_->transformData().forwards()};
-            debugCamera_->setPosition(debugCamera_->position() -
-                                      delta_scale * fwrds);
+            vec3 fwrds{camera.transformData().forwards()};
+            camera.setPosition(camera.position() - delta_scale * fwrds);
         }
         if (ImGui::IsKeyDown(ImGuiKey_D)) {
-            vec3 lftwards{debugCamera_->transformData().leftwards()};
-            debugCamera_->setPosition(debugCamera_->position() -
-                                      delta_scale * lftwards);
+            vec3 lftwards{camera.transformData().leftwards()};
+            camera.setPosition(camera.position() - delta_scale * lftwards);
         }
 
-        auto new_rot{debugCamera_->rotation() +
+        auto new_rot{camera.rotation() +
                      0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0}};
 
         if (new_rot.x >= 90) {
@@ -355,11 +355,15 @@ void DebugUI::handleInput() {
             new_rot.x = -89.5;
         }
 
-        debugCamera_->setRotation(new_rot);
+        camera.setRotation(new_rot);
     }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Home, false)) {
         visible_ = !visible_;
+    }
+
+    if (ImGui::IsKeyPressed(ImGuiKey_End, false)) {
+        debugCamera_.toggle();
     }
 }
 
@@ -508,41 +512,45 @@ void DebugUI::drawSelectedComponent() {
     }
 };
 
-void DebugUI::drawCameraModifier(Ptr<CameraComponent> camera) {
-    if (camera == nullptr) {
+void DebugUI::drawCameraModifier(Ptr<Camera> cameraPtr) {
+    if (cameraPtr == nullptr) {
         ImGui::Text("No camera present.");
+        return;
     }
+    drawCameraModifier(*cameraPtr);
+}
 
+void DebugUI::drawCameraModifier(CameraComponent& camera) {
     DebugComponents::EnumChooser(
-        camera->type(),
+        camera.type(),
         std::vector<EnumMember<CameraType>>{
             {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
             {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
 
-    auto& extents{camera->extents()};
+    auto& extents{camera.extents()};
 
     DebugComponents::SliderChooser(
         extents.width, "Extents width", 1, 3840,
         [&camera, &extents](auto value) {
-            camera->setExtents({.width = value, .height = extents.height});
+            camera.setExtents({.width = value, .height = extents.height});
         });
 
     DebugComponents::SliderChooser(
         extents.height, "Extents height", 1, 2160,
         [&camera, &extents](auto value) {
-            camera->setExtents({.width = extents.width, .height = value});
+            camera.setExtents({.width = extents.width, .height = value});
         });
 
-    auto distances{camera->distances()};
+    auto distances{camera.distances()};
 
-    Presto::vec3 pos{camera->position()};
+    Presto::vec3 pos{camera.position()};
     DebugComponents::Vec3Chooser(
         pos, "Position",
-        [&camera](Presto::vec3 newPos) { camera->setPosition(newPos); });
+        [&camera](Presto::vec3 newPos) { camera.setPosition(newPos); });
 
-    Presto::vec3 rot{camera->rotation()};
+    Presto::vec3 rot{camera.rotation()};
     DebugComponents::Vec3Chooser(rot, "Rotation", [&camera](Presto::vec3 rot) {
-        camera->setRotation(rot);
+        camera.setRotation(rot);
     });
 
     DebugComponents::SliderChooser(
@@ -552,7 +560,7 @@ void DebugUI::drawCameraModifier(Ptr<CameraComponent> camera) {
                 return;
             }
 
-            camera->setDistances({value, distances.far});
+            camera.setDistances({value, distances.far});
         });
 
     DebugComponents::SliderChooser(
@@ -561,7 +569,7 @@ void DebugUI::drawCameraModifier(Ptr<CameraComponent> camera) {
             if (value < distances.near) {
                 return;
             }
-            camera->setDistances({distances.near, value});
+            camera.setDistances({distances.near, value});
         });
 };
 
@@ -573,17 +581,10 @@ void DebugUI::drawCameraBrowser() {
 
         static Ptr<Camera> current_camera{main_camera};
 
+        auto enabled{debugCamera_.enabled()};
         DebugComponents::CheckboxChooser(
-            usingDebugCamera_, "Use Debug Camera", [](bool newUsing) {
-                if (newUsing) {
-                    debugCamera_ = rm.getDebugCamera();
-                } else {
-                    debugCamera_ = nullptr;
-                }
-                rm.setUsingDebugCamera(newUsing);
-
-                usingDebugCamera_ = newUsing;
-            });
+            enabled, "Use Debug Camera",
+            [](bool /*unused*/) { debugCamera_.toggle(); });
 
         ComponentSearchResults components{
             EntityManager::Get().findComponentsWhere(
@@ -600,7 +601,7 @@ void DebugUI::drawCameraBrowser() {
                               ImGuiTableFlags_BordersV)) {
             ImGui::TableNextColumn();
 
-            ImGui::BeginDisabled(usingDebugCamera_);
+            ImGui::BeginDisabled(debugCamera_.enabled());
             if (ImGui::BeginTable("Camera Browser", 4,
                                   ImGuiTableFlags_SizingStretchProp |
                                       ImGuiTableFlags_BordersH)) {
@@ -648,8 +649,11 @@ void DebugUI::drawCameraBrowser() {
 
             ImGui::TableNextColumn();
 
-            drawCameraModifier(usingDebugCamera_ ? debugCamera_
-                                                 : current_camera);
+            if (debugCamera_.enabled()) {
+                drawCameraModifier(debugCamera_.camera());
+            } else {
+                drawCameraModifier(current_camera);
+            }
 
             ImGui::EndTable();
         }
@@ -658,4 +662,23 @@ void DebugUI::drawCameraBrowser() {
     }
 };
 
+DebugCameraListener::DebugCameraListener() { camera_ = nullptr; };
+
+DebugCameraListener::DebugCameraListener(RenderingManager& rm) {
+    camera_ = rm.getDebugCamera();
+};
+
+void DebugCameraListener::toggle() {
+    if (camera_ == nullptr) {
+        PR_CORE_ERROR("Unable to doggle debug camera on, as it is null.");
+        return;
+    }
+
+    enabled_ = !enabled_;
+    RenderingManager::get().setUsingDebugCamera(enabled_);
+};
+
+bool DebugCameraListener::enabled() const { return enabled_; };
+
+CameraComponent& DebugCameraListener::camera() { return *camera_; };
 }  // namespace Presto

@@ -9,6 +9,22 @@
 namespace Presto {
 
 class CameraComponent;
+class RenderingManager;
+
+class DebugCameraListener {
+   public:
+    DebugCameraListener();
+    explicit DebugCameraListener(RenderingManager&);
+    void toggle();
+
+    [[nodiscard]] bool enabled() const;
+
+    CameraComponent& camera();
+
+   private:
+    bool enabled_{false};
+    Ptr<CameraComponent> camera_;
+};
 
 class DebugUI {
    public:
@@ -33,6 +49,8 @@ class DebugUI {
     static void reloadState();
 
    private:
+    inline static DebugCameraListener debugCamera_;
+
     inline static bool visible_{false};
 
     inline static EditorState state_{EditorState::EDITING};
@@ -52,9 +70,7 @@ class DebugUI {
     static void drawCameraBrowser();
 
     static void drawCameraModifier(Ptr<CameraComponent>);
-
-    static inline bool usingDebugCamera_{false};
-    static inline Ptr<CameraComponent> debugCamera_{nullptr};
+    static void drawCameraModifier(CameraComponent&);
 
     static void drawSelectedComponent();
 
