@@ -13,6 +13,13 @@ namespace Presto {
 [[nodiscard]] EntityRef NewEntity();
 
 /**
+ * @brief  Returns a new entity which the consumer must keep track of and
+ * destroy themselves. It will still handle its own rendering and component
+ * calls, but its destruction is bound by the user.
+ */
+[[nodiscard]] EntityPtr NewSharedEntity();
+
+/**
  * @brief  Gets a reference to the main camera. This is whats used to generate
  * the view of the game world.
  */

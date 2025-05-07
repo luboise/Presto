@@ -15,6 +15,10 @@ Presto::EntityRef Presto::NewEntity() {
     return EntityManagerImpl::Get().newEntity();
 };
 
+Presto::EntityPtr Presto::NewSharedEntity() {
+    return EntityManagerImpl::Get().newEntity();
+};
+
 void Presto::SetDefaultCameraConductor(
     const ComponentPtr<ConductorComponent>& ptr) {
     EntityPtr main_camera{RenderingManager::get().getMainCamera()};

@@ -82,8 +82,6 @@ class PRESTO_API Entity {
     entity_tag_map tags_{};
 
     ComponentMap components_;
-    glm::vec3 _position{0, 0, 0};
-    glm::vec3 _rotation{0, 0, 0};
 };
 
 }  // namespace Presto
