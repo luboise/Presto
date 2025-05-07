@@ -37,7 +37,7 @@ class CameraComponent : public Component, LazyCalculator {
 
     CameraComponent& setExtents(VisualExtents newExtents);
 
-    // Sets the camera's FOV to a new value in degrees
+    // Sets the camera's vertical FOV to a new value in degrees
     CameraComponent& setFOV(camera_fov_t fovDegrees);
     [[nodiscard]] camera_fov_t FOV() const;
 
@@ -89,7 +89,7 @@ class CameraComponent : public Component, LazyCalculator {
     Presto::vec3 focusPoint_{0, 0, 0};
 
     // FOV of the camera (default of 90deg)
-    camera_fov_t fov_{glm::radians(90.0F)};
+    camera_fov_t verticalFov_{glm::radians(90.0F)};
     CameraDistances distances_{.near = 0.1, .far = 1000};
 
     // TODO: Move the default extents somewhere else

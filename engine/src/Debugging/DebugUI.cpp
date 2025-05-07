@@ -571,6 +571,11 @@ void DebugUI::drawCameraModifier(CameraComponent& camera) {
             }
             camera.setDistances({distances.near, value});
         });
+
+    auto fov{static_cast<float>(glm::degrees(camera.FOV()))};
+    DebugComponents::SliderChooser(
+        fov, "FOV", 1.0F, 179.0F,
+        [&camera](double value) { camera.setFOV(value); });
 };
 
 void DebugUI::drawCameraBrowser() {

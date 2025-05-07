@@ -77,11 +77,13 @@ void CameraComponent::recalculate() {
             viewMatrix_ = transform_.asViewMat();
         }
 
-        projectionMatrix_ =
-            glm::perspectiveFov<double>(fov_, extents_.width, extents_.height,
-                                        distances_.near, distances_.far);
+        projectionMatrix_ = glm::perspectiveFov<double>(
+            verticalFov_, extents_.width, extents_.height, distances_.near,
+            distances_.far);
     } else if (type_ == CameraType::ORTHOGRAPHIC) {
-        viewMatrix_ = mat4{1};
+        // viewMatrix_ = mat4{1};
+        viewMatrix_ = transform_.asViewMat();
+
         projectionMatrix_ =
             glm::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
                        -(extents_.height / 2.0F), (extents_.height / 2.0F),
@@ -90,7 +92,7 @@ void CameraComponent::recalculate() {
 }
 
 CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
-    fov_ = glm::radians(fovDegrees);
+    verticalFov_ = glm::radians(fovDegrees);
 
     setDirty();
     return *this;
@@ -157,7 +159,9 @@ CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
     return *this;
 };
 
-CameraComponent::camera_fov_t CameraComponent::FOV() const { return fov_; };
+CameraComponent::camera_fov_t CameraComponent::FOV() const {
+    return verticalFov_;
+};
 
 Presto::vec3 CameraComponent::focus() const { return focusPoint_; };
 
@@ -166,8 +170,9 @@ Rectangle CameraComponent::distanceRect(camera_distance_t distance) const {
     // of the rectangle would be in -z, ie,
     // tan(FOV/2) = w/2  /  FAR
     // Then solve that for w
-    auto rec_width = static_cast<float>(std::tan(fov_ / 2) * distance * 2);
-    auto rec_height = static_cast<float>(rec_width / extents_.getAspectRatio());
+    auto rec_height =
+        static_cast<float>(std::tan(verticalFov_ / 2) * distance * 2);
+    auto rec_width = static_cast<float>(rec_height * extents_.getAspectRatio());
 
     vec3 rec_center{transform_.position + transform_.forwards() * distance};
 
