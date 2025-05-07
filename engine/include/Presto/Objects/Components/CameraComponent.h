@@ -49,6 +49,8 @@ class CameraComponent : public Component, LazyCalculator {
     [[nodiscard]] VisualExtents& extents();
     [[nodiscard]] CameraType& type();
 
+    [[nodiscard]] TransformData transformData() const;
+
     CameraComponent& setYaw(double newYaw);
     CameraComponent& setPitch(double newPitch);
     CameraComponent& setRoll(double newRoll);

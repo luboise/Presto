@@ -104,7 +104,9 @@ void DebugUI::render() {
     {                                                            \
         /*ImVec2 proportions = ImGui::GetContentRegionAvail();*/ \
         if (ImGui::Begin(#Label)) {                              \
-            body ImGui::End();                                   \
+            body                                                 \
+                                                                 \
+            ImGui::End();                                        \
         }                                                        \
     }
 
@@ -215,9 +217,11 @@ void DebugUI::drawMainEditor() {
 
     */
 
-    if (showEntityBrowser_) {
-        drawEntityBrowser();
-    };
+    /*
+if (showEntityBrowser_) {
+    drawEntityBrowser();
+};
+    */
 
     if (showComponentBrowser_) {
         drawComponentBrowser();
@@ -228,29 +232,25 @@ void DebugUI::drawMainEditor() {
     }
 
     /*
-if (showCameraAdjuster_) {
-    drawCameraAdjuster();
-}
-    */
+        CHILD(Assets, 1, 0.5, {
+            ImGui::Text("Assets");
 
-    CHILD(Assets, 1, 0.5, {
-        ImGui::Text("Assets");
+            for (int i = 0; i < 100; i++) {
+                ImGui::Text("%04d: scrollable region", i);
+            }
+        });
 
-        for (int i = 0; i < 100; i++) {
-            ImGui::Text("%04d: scrollable region", i);
-        }
-    });
+        ImGui::SameLine();
 
-    ImGui::SameLine();
+        CHILD(Options, 0.3, 1, {
+            ImGui::Text("Options");
+            for (int i = 0; i < 100; i++) {
+                ImGui::Text("%04d: scrollable region", i);
+            }
+        });
 
-    CHILD(Options, 0.3, 1, {
-        ImGui::Text("Options");
-        for (int i = 0; i < 100; i++) {
-            ImGui::Text("%04d: scrollable region", i);
-        }
-    });
-
-    ImGui::SameLine();
+        ImGui::SameLine();
+            */
 
     if (ImGui::Begin(
             "Preview", nullptr,
@@ -312,17 +312,54 @@ void DebugUI::errorPopup(std::string message) {
 }
 
 void DebugUI::handleInput() {
-    for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END;
-         key = (ImGuiKey)(key + 1)) {
-        if (!ImGui::IsKeyPressed(key)) {
-            continue;
+    static ImGuiIO& io = ImGui::GetIO();
+    static float movement_speed{5};
+
+    if (usingDebugCamera_) {
+        if (ImGui::IsKeyPressed(ImGuiKey_7)) {
+            movement_speed *= 2;
+        }
+        if (ImGui::IsKeyPressed(ImGuiKey_6)) {
+            movement_speed = ImClamp(movement_speed / 2.0F, 0.3F, 9000.0F);
         }
 
-        std::string name{ImGui::GetKeyName(key)};
+        float delta_scale{movement_speed * io.DeltaTime};
 
-        if (name == "Home") {
-            visible_ = !visible_;
+        if (ImGui::IsKeyDown(ImGuiKey_W)) {
+            vec3 fwrds{debugCamera_->transformData().forwards()};
+            debugCamera_->setPosition(debugCamera_->position() +
+                                      delta_scale * fwrds);
         }
+        if (ImGui::IsKeyDown(ImGuiKey_A)) {
+            vec3 lftwards{debugCamera_->transformData().leftwards()};
+            debugCamera_->setPosition(debugCamera_->position() +
+                                      delta_scale * lftwards);
+        }
+        if (ImGui::IsKeyDown(ImGuiKey_S)) {
+            vec3 fwrds{debugCamera_->transformData().forwards()};
+            debugCamera_->setPosition(debugCamera_->position() -
+                                      delta_scale * fwrds);
+        }
+        if (ImGui::IsKeyDown(ImGuiKey_D)) {
+            vec3 lftwards{debugCamera_->transformData().leftwards()};
+            debugCamera_->setPosition(debugCamera_->position() -
+                                      delta_scale * lftwards);
+        }
+
+        auto new_rot{debugCamera_->rotation() +
+                     0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0}};
+
+        if (new_rot.x >= 90) {
+            new_rot.x = 89.5;
+        } else if (new_rot.x <= -90) {
+            new_rot.x = -89.5;
+        }
+
+        debugCamera_->setRotation(new_rot);
+    }
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Home, false)) {
+        visible_ = !visible_;
     }
 }
 
@@ -467,41 +504,45 @@ void DebugUI::drawSelectedComponent() {
 
     if (selectedComponent_->isOfType<CameraComponent>()) {
         drawCameraModifier(
-            *std::dynamic_pointer_cast<Camera>(selectedComponent_));
+            std::dynamic_pointer_cast<Camera>(selectedComponent_));
     }
 };
 
-void DebugUI::drawCameraModifier(CameraComponent& camera) {
+void DebugUI::drawCameraModifier(Ptr<CameraComponent> camera) {
+    if (camera == nullptr) {
+        ImGui::Text("No camera present.");
+    }
+
     DebugComponents::EnumChooser(
-        camera.type(),
+        camera->type(),
         std::vector<EnumMember<CameraType>>{
             {.value = CameraType::PERSPECTIVE, .label = "Perspective"},
             {.value = CameraType::ORTHOGRAPHIC, .label = "Orthographic"}});
 
-    auto& extents{camera.extents()};
+    auto& extents{camera->extents()};
 
     DebugComponents::SliderChooser(
         extents.width, "Extents width", 1, 3840,
         [&camera, &extents](auto value) {
-            camera.setExtents({.width = value, .height = extents.height});
+            camera->setExtents({.width = value, .height = extents.height});
         });
 
     DebugComponents::SliderChooser(
         extents.height, "Extents height", 1, 2160,
         [&camera, &extents](auto value) {
-            camera.setExtents({.width = extents.width, .height = value});
+            camera->setExtents({.width = extents.width, .height = value});
         });
 
-    auto distances{camera.distances()};
+    auto distances{camera->distances()};
 
-    Presto::vec3 pos{camera.position()};
+    Presto::vec3 pos{camera->position()};
     DebugComponents::Vec3Chooser(
         pos, "Position",
-        [&camera](Presto::vec3 newPos) { camera.setPosition(newPos); });
+        [&camera](Presto::vec3 newPos) { camera->setPosition(newPos); });
 
-    Presto::vec3 rot{camera.rotation()};
+    Presto::vec3 rot{camera->rotation()};
     DebugComponents::Vec3Chooser(rot, "Rotation", [&camera](Presto::vec3 rot) {
-        camera.setRotation(rot);
+        camera->setRotation(rot);
     });
 
     DebugComponents::SliderChooser(
@@ -511,7 +552,7 @@ void DebugUI::drawCameraModifier(CameraComponent& camera) {
                 return;
             }
 
-            camera.setDistances({value, distances.far});
+            camera->setDistances({value, distances.far});
         });
 
     DebugComponents::SliderChooser(
@@ -520,20 +561,29 @@ void DebugUI::drawCameraModifier(CameraComponent& camera) {
             if (value < distances.near) {
                 return;
             }
-            camera.setDistances({distances.near, value});
+            camera->setDistances({distances.near, value});
         });
 };
 
 void DebugUI::drawCameraBrowser() {
-    auto& rm{RenderingManager::get()};
+    static auto& rm{RenderingManager::get()};
 
     if (ImGui::Begin("Camera Browser")) {
-        Ptr<CameraComponent> main_camera{
-            rm.getMainCamera()->getComponent<Camera>()};
+        Ptr<Camera> main_camera{rm.getMainCamera()->getComponent<Camera>()};
 
-        static bool& using_debug_cam{rm.usingDebugCamera()};
+        static Ptr<Camera> current_camera{main_camera};
 
-        DebugComponents::CheckboxChooser(using_debug_cam, "Use Debug Camera");
+        DebugComponents::CheckboxChooser(
+            usingDebugCamera_, "Use Debug Camera", [](bool newUsing) {
+                if (newUsing) {
+                    debugCamera_ = rm.getDebugCamera();
+                } else {
+                    debugCamera_ = nullptr;
+                }
+                rm.setUsingDebugCamera(newUsing);
+
+                usingDebugCamera_ = newUsing;
+            });
 
         ComponentSearchResults components{
             EntityManager::Get().findComponentsWhere(
@@ -546,50 +596,64 @@ void DebugUI::drawCameraBrowser() {
             cameras.push_back(std::dynamic_pointer_cast<Camera>(component));
         });
 
-        if (ImGui::BeginTable(
-                "Camera Browser", 4,
-                ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_BordersH)) {
-            ImGui::TableSetupColumn("Main");
-            ImGui::TableSetupColumn("ID");
-            ImGui::TableSetupColumn("Type");
-            ImGui::TableSetupColumn("###Edit Button");
+        if (ImGui::BeginTable("Camera Browser Internals", 2,
+                              ImGuiTableFlags_BordersV)) {
+            ImGui::TableNextColumn();
 
-            ImGui::TableHeadersRow();
+            ImGui::BeginDisabled(usingDebugCamera_);
+            if (ImGui::BeginTable("Camera Browser", 4,
+                                  ImGuiTableFlags_SizingStretchProp |
+                                      ImGuiTableFlags_BordersH)) {
+                ImGui::TableSetupColumn("Main");
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Type");
+                ImGui::TableSetupColumn("###Edit Button");
 
-            std::ranges::for_each(cameras, [&main_camera](Ptr<Camera>& camera) {
-                ImGui::TableNextRow();
+                ImGui::TableHeadersRow();
 
-                bool camera_is_main{camera == main_camera};
+                std::ranges::for_each(cameras, [&main_camera](
+                                                   Ptr<Camera>& camera) {
+                    ImGui::TableNextRow();
 
-                ImGui::PushID(static_cast<int>(camera->id()));
+                    bool camera_is_main{camera == main_camera};
 
-                auto camera_id{std::to_string(camera->id())};
+                    ImGui::PushID(static_cast<int>(camera->id()));
 
-                ImGui::TableNextColumn();
+                    ImGui::TableNextColumn();
 
-                if (ImGui::Checkbox("", &camera_is_main)) {
-                }
+                    if (ImGui::Checkbox("", &camera_is_main)) {
+                    }
 
-                ImGui::TableNextColumn();
+                    ImGui::TableNextColumn();
 
-                ImGui::Text("%u", camera->id());
+                    ImGui::Text("%u", camera->id());
 
-                ImGui::TableNextColumn();
-                ImGui::Text("%s", camera->type() == CameraType::PERSPECTIVE
-                                      ? "Perspective"
-                                      : "Orthographic");
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%s", camera->type() == CameraType::PERSPECTIVE
+                                          ? "Perspective"
+                                          : "Orthographic");
 
-                ImGui::TableNextColumn();
+                    ImGui::TableNextColumn();
 
-                if (ImGui::Button("Edit")) {
-                    PR_TRACE("Button {} clicked.", camera_id);
-                }
+                    if (ImGui::Button("Edit")) {
+                        current_camera = camera;
+                    }
 
-                ImGui::PopID();
-            });
+                    ImGui::PopID();
+                });
+
+                ImGui::EndTable();
+            }
+            ImGui::EndDisabled();
+
+            ImGui::TableNextColumn();
+
+            drawCameraModifier(usingDebugCamera_ ? debugCamera_
+                                                 : current_camera);
 
             ImGui::EndTable();
         }
+
         ImGui::End();
     }
 };

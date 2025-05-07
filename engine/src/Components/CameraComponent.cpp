@@ -130,6 +130,27 @@ CameraType& CameraComponent::type() { return type_; };
 VisualExtents& CameraComponent::extents() { return extents_; };
 
 CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
+    while (rot.x > 180) {
+        rot.x -= 360;
+    }
+    while (rot.x < -180) {
+        rot.x += 360;
+    }
+
+    while (rot.y > 180) {
+        rot.y -= 360;
+    }
+    while (rot.y < -180) {
+        rot.y += 360;
+    }
+
+    while (rot.z > 180) {
+        rot.z -= 360;
+    }
+    while (rot.z < -180) {
+        rot.z += 360;
+    }
+
     transform_.rotation = rot;
 
     this->setDirty();
@@ -174,4 +195,5 @@ Rectangle CameraComponent::nearRectangle() const {
     return this->distanceRect(distances_.near);
 }
 
+TransformData CameraComponent::transformData() const { return transform_; }
 }  // namespace Presto

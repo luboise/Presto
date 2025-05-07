@@ -51,7 +51,10 @@ class DebugUI {
     inline static bool showCameraBrowser_{true};
     static void drawCameraBrowser();
 
-    static void drawCameraModifier(CameraComponent&);
+    static void drawCameraModifier(Ptr<CameraComponent>);
+
+    static inline bool usingDebugCamera_{false};
+    static inline Ptr<CameraComponent> debugCamera_{nullptr};
 
     static void drawSelectedComponent();
 

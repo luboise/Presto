@@ -131,6 +131,19 @@ TransformData& TransformData::scaleBy(Presto::vec3 s) {
 Presto::vec3 TransformData::forwards() const {
     return glm::normalize(applyRotations({0, 0, -1}, rotation));
 }
+Presto::vec3 TransformData::backwards() const { return -forwards(); }
+
+Presto::vec3 TransformData::leftwards() const {
+    return glm::normalize(applyRotations({-1, 0, 0}, rotation));
+}
+
+Presto::vec3 TransformData::rightwards() const { return -leftwards(); }
+
+Presto::vec3 TransformData::upwards() const {
+    return glm::normalize(applyRotations({0, 1, 0}, rotation));
+}
+
+Presto::vec3 TransformData::downwards() const { return -upwards(); }
 
 vec3 applyRotations(const vec3& v, const vec3& rotations) {
     mat4 transformation{1};

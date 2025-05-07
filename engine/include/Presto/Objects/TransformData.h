@@ -17,6 +17,13 @@ struct TransformData {
     [[nodiscard]] Presto::mat4 asViewMat() const;
 
     [[nodiscard]] Presto::vec3 forwards() const;
+    [[nodiscard]] Presto::vec3 backwards() const;
+
+    [[nodiscard]] Presto::vec3 leftwards() const;
+    [[nodiscard]] Presto::vec3 rightwards() const;
+
+    [[nodiscard]] Presto::vec3 upwards() const;
+    [[nodiscard]] Presto::vec3 downwards() const;
 
     TransformData& addRotation(Presto::vec3);
     TransformData& addTranslation(Presto::vec3);
