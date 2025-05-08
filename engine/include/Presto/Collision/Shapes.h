@@ -110,6 +110,7 @@ struct Rectangle : CollisionShape {
     vec3 bottom_left{};
 
     [[nodiscard]] vec3 at(float x, float y) const;
+    [[nodiscard]] vec3 at(vec2) const;
 
     COLLISION_FUNCTIONS(Rectangle)
 };

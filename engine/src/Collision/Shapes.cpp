@@ -2,12 +2,14 @@
 
 #include <glm/gtx/closest_point.hpp>
 
-Presto::Triangle& Presto::Triangle::operator*=(const Presto::mat4& other) {
+namespace Presto {
+
+Triangle& Triangle::operator*=(const mat4& other) {
     *this = *this * other;
     return *this;
 }
 
-Presto::Triangle Presto::Triangle::operator*(const Presto::mat4& other) const {
+Triangle Triangle::operator*(const mat4& other) const {
     // TODO: Test the performance of this
     return {
         .p1 = vec3{vec4{this->p1, 1} * other},
@@ -17,23 +19,28 @@ Presto::Triangle Presto::Triangle::operator*(const Presto::mat4& other) const {
 }
 
 template <>
-Presto::float32_t Presto::LineSegment::length() const {
+float32_t LineSegment::length() const {
     return ShortestDistance(p1, p2);
 }
-Presto::float32_t Presto::ShortestDistance(const Point& p1, const Point& p2) {
+float32_t ShortestDistance(const Point& p1, const Point& p2) {
     return glm::length(p2 - p1);
 }
 
-Presto::Rectangle::Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft)
+Rectangle::Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft)
     : top_left(topLeft), top_right(topRight), bottom_left(bottomLeft) {};
 
-Presto::vec3 Presto::Rectangle::at(float x, float y) const {
+vec3 Rectangle::at(float x, float y) const {
     return top_left + x * (top_right - top_left) + y * (bottom_left - top_left);
+};
+
+[[nodiscard]] vec3 Rectangle::at(vec2 v) const { return this->at(v.x, v.y); };
+
+}  // namespace Presto
 
 #if 0
 
-bool Presto::Intersects(const Presto::Cylinder& cylinder,
-                        Presto::Triangle tri) {
+bool Presto::Intersects(const Cylinder& cylinder,
+                        Triangle tri) {
     using namespace Presto;
 
     /*
@@ -44,7 +51,7 @@ rotmat = glm::inverse(rotmat);
 
 tri *= rotmat;
 
-Presto::Triangle copy{tri};
+Triangle copy{tri};
 
 // Remove y components (2d triangle)
 copy.p1.y = 0;
@@ -99,7 +106,7 @@ return Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
     return false;
 };
 
-Presto::vec3 Presto::ClosestPointTo(const LineSegment& segment,
+vec3 Presto::ClosestPointTo(const LineSegment& segment,
                                     const Point& point) {
     using namespace Presto;
 
@@ -111,7 +118,7 @@ Presto::vec3 Presto::ClosestPointTo(const LineSegment& segment,
 
     // Get the scalar projection of the point onto the line
     // 0 means its closest to the origin p1
-    Presto::float32_t scalar_projection{glm::dot(a, v) / glm::dot(v, v)};
+    float32_t scalar_projection{glm::dot(a, v) / glm::dot(v, v)};
 
     if (scalar_projection <= 0) {
         return segment.p1;
@@ -124,14 +131,14 @@ Presto::vec3 Presto::ClosestPointTo(const LineSegment& segment,
 };
 
 // Check if the point is inside of the rectangle
-bool Presto::Intersects2D(const Rectangle& rect, Point2D point) {
+bool Intersects2D(const Rectangle& rect, Point2D point) {
     return rect.bottom_left.x <= point.x &&  //
            rect.bottom_left.y <= point.y &&  //
            point.x <= rect.top_right.x &&    //
            point.y <= rect.top_right.y;
 };
 
-bool Presto::Intersects2D(const Rectangle& rect, LineSegment2D segment) {
+bool Intersects2D(const Rectangle& rect, LineSegment2D segment) {
     if (Intersects2D(rect, segment.p1) || Intersects2D(rect, segment.p2)) {
         return true;
     }
@@ -213,4 +220,3 @@ uint top_outcode{std::max(p1_outcode, p2_outcode)};
     */
 };
 #endif  // 0
-};

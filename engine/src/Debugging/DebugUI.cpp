@@ -22,6 +22,8 @@
 #include "Presto/Aliases/ObjectAliases.h"
 #include "Presto/Objects/Components/CameraComponent.h"
 
+#include "Modules/DebugManager.h"
+
 namespace Presto {
 
 void DebugUI::initialise(Presto::Window* windowPtr,
@@ -360,6 +362,7 @@ void DebugUI::handleInput() {
 
     if (ImGui::IsKeyPressed(ImGuiKey_Home, false)) {
         visible_ = !visible_;
+        DebugManager::get().setDrawMainCamera(visible_);
     }
 
     if (ImGui::IsKeyPressed(ImGuiKey_End, false)) {
