@@ -1,14 +1,13 @@
 #pragma once
 
+#include <list>
+
 #include "Presto/Core.h"
-#include "Presto/Core/Concepts.h"
 #include "Presto/Events.h"
 
 #include "Presto/Objects/Component.h"
 
 #include "Presto/Platform.h"
-#include "Presto/Runtime/EventManager.h"
-#include "Presto/Runtime/Events/Event.h"
 
 namespace Presto {
 class Entity;
@@ -18,18 +17,25 @@ class PRESTO_API ConductorComponent : public Component {
     friend class EventManagerImpl;
 
    private:
+    using pre_start_callback_t = std::function<void()>;
+
     virtual void start() {};
     virtual void update() {};
 
     // virtual void on(KeyEvent& /*unused*/) { handlesKeyEvents_ = false; };
     // bool handlesKeyEvents_{true};
 
-    void onEnterScene() override { this->start(); }
+    void onEnterScene() override;
 
     bool registered_{false};
 
+    std::list<pre_start_callback_t> preStartCallbacks_;
+
    protected:
     Entity* entity;
+
+    void addPreStartCallback(const pre_start_callback_t& callback);
+
     // Conductor() = default;
 
    public:
