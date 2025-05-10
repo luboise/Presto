@@ -12,8 +12,14 @@ class PRESTO_API RigidBodyComponent : public Component {
    public:
     RigidBodyComponent() = default;
 
+    [[nodiscard]] vec3 velocity() const;
     void addVelocity(vec3 vel);
+    void setVelocity(vec3 vel);
+
+    [[nodiscard]] vec3 angularVelocity() const;
     void addAngularVelocity(vec3 angularVel);
+    void setAngularVelocity(vec3 angularVel);
+
     void addForce(Force force);
 
     [[nodiscard]] float drag() const;
@@ -33,7 +39,7 @@ class PRESTO_API RigidBodyComponent : public Component {
 
    private:
     Force force_;
-    float drag_{0.2F};
+    float drag_{0.5F};
     // TypeMap<CollisionShape> colliders_;
 };
 

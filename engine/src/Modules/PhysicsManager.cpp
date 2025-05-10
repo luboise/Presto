@@ -11,7 +11,7 @@ PhysicsManager::PhysicsManager() = default;
 PhysicsManager::~PhysicsManager() { pairings_.clear(); }
 
 void PhysicsManager::update() {
-    auto delta{Time::deltaSeconds()};
+    auto delta{static_cast<float>(Time::deltaSeconds())};
 
     // Add all persistent forces
     for (PhysicsPairing& pairing : pairings_) {
@@ -19,13 +19,13 @@ void PhysicsManager::update() {
             pairing.body->addForce(persistent_force);
         }
 
-        Force force{pairing.body->calculateMovement() * delta};
+        Force force{pairing.body->calculateMovement()};
 
-        pairing.body->setForce(pairing.body->force() * pairing.body->drag());
+        pairing.body->setForce(force / ((1 + (delta * pairing.body->drag()))));
 
         pairing.entity->getComponent<TransformComponent>()
-            ->translate(force.velocity)
-            .rotate(force.angular_velocity);
+            ->translate(force.velocity * delta)
+            .rotate(force.angular_velocity * delta);
     }
 
     // Check collisions
