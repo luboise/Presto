@@ -5,6 +5,8 @@
 #include "Modules/PhysicsManager.h"
 #include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
 
+#include "Presto/Objects/EntityOwner.h"
+
 #include "Modules/EntityManagerImpl.h"
 
 using Presto::ObjectCreatedEvent;
@@ -62,5 +64,27 @@ std::vector<ComponentPtr<ConductorComponent>> Entity::getConductors() {
 }
 
 void Entity::destroy() { EntityManagerImpl::get().destroyEntity(this); }
+
+Entity* EntityOwner::operator->() { return entity_.get(); }
+
+EntityOwner::EntityOwner() { entity_ = EntityManagerImpl::get().newEntity(); };
+
+EntityOwner::~EntityOwner() {
+    if (entity_ != nullptr) {
+        entity_->destroy();
+    }
+};
+
+EntityOwner& EntityOwner::operator=(EntityOwner&& other) noexcept {
+    this->entity_ = other.entity_;
+    other.entity_ = nullptr;
+
+    return *this;
+};
+
+EntityOwner::EntityOwner(EntityOwner&& other) noexcept
+    : entity_(std::move(other.entity_)) {
+    other.entity_ = nullptr;
+};
 
 }  // namespace Presto

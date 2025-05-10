@@ -11,11 +11,13 @@ Presto::CameraComponent& Presto::GetDefaultCamera() {
                 ->getComponent<CameraComponent>();
 }
 
-Presto::EntityRef Presto::NewEntity() {
+Presto::EntityRef Presto::NewLooseEntity() {
     return EntityManagerImpl::Get().newEntity();
 };
 
-Presto::EntityPtr Presto::NewSharedEntity() {
+Presto::EntityOwner Presto::NewOwnedEntity() { return {}; };
+
+Presto::EntityPtr Presto::NewEntity() {
     return EntityManagerImpl::Get().newEntity();
 };
 

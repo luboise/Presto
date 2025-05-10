@@ -6,18 +6,21 @@
 #include "Presto/Objects/Entity.h"         // IWYU pragma: export
 #include "Presto/Objects/EntityManager.h"  // IWYU pragma: export
 
+#include "Presto/Objects/EntityOwner.h"
 #include "Presto/Types/ObjectTypes.h"  // IWYU pragma: export
 
 namespace Presto {
 
-[[nodiscard]] EntityRef NewEntity();
+[[nodiscard]] EntityRef NewLooseEntity();
+
+[[nodiscard]] EntityPtr NewEntity();
 
 /**
  * @brief  Returns a new entity which the consumer must keep track of and
  * destroy themselves. It will still handle its own rendering and component
  * calls, but its destruction is bound by the user.
  */
-[[nodiscard]] EntityPtr NewSharedEntity();
+[[nodiscard]] EntityOwner NewOwnedEntity();
 
 /**
  * @brief  Gets a reference to the main camera. This is whats used to generate
@@ -32,7 +35,7 @@ void SetDefaultCameraConductor(const ComponentPtr<ConductorComponent>&);
  * match the arguments of the private constructor of that component.
  */
 template <DerivedFrom<Component> T, typename... Args>
-ComponentPtr<T> NewComponent(Args... args) {
+[[nodiscard]] ComponentPtr<T> NewComponent(Args... args) {
     return EntityManager::Get().newComponent<T>(args...);
 };
 
