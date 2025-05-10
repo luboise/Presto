@@ -3,8 +3,8 @@
 namespace Presto {
 
 struct Force {
-    vec3 velocity{0};
-    vec3 angular_velocity{0};
+    vec3 velocity{0, 0, 0};
+    vec3 angular_velocity{0, 0, 0};
 };
 
 // TODO: Work out operator semantics

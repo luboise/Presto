@@ -27,4 +27,11 @@ for (auto a : colliders_) {
     return false;
 }
 
+const Force& RigidBodyComponent::force() const { return force_; };
+float RigidBodyComponent::drag() const { return drag_; };
+
+void RigidBodyComponent::setForce(Force f) { force_ = f; };
+
+void RigidBodyComponent::setDrag(float drag) { drag_ = drag; };
+
 }  // namespace Presto

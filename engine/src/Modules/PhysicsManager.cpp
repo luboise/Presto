@@ -21,6 +21,8 @@ void PhysicsManager::update() {
 
         Force force{pairing.body->calculateMovement() * delta};
 
+        pairing.body->setForce(pairing.body->force() * pairing.body->drag());
+
         pairing.entity->getComponent<TransformComponent>()
             ->translate(force.velocity)
             .rotate(force.angular_velocity);
