@@ -7,6 +7,8 @@ namespace Presto {
 struct MousePosition {
     float x;
     float y;
+
+    operator Presto::vec2() { return Presto::vec2{this->x, this->y}; }
 };
 
 class MouseEvent : public Event {

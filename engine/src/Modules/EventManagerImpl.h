@@ -20,18 +20,9 @@ class EventManagerImpl final : public Module<EventManagerImpl>,
     void registerCallbacks(Entity*);
 
     template <typename E>
-        requires DerivedFrom<E, Event>
-    void handle(E& event) {
-        std::vector<EventHandler<E>>& handlers{
-            handlerMap_.get<EventHandler<E>>()};
-        for (const EventHandler<E>& handler : handlers) {
-            try {
-                handler(event);
-            } catch (std::exception& e) {
-                PR_ERROR("Error handling key event: {}", e.what());
-            }
-        }
-    }
+    void dispatchInternal(E& event) {
+        handle(event);
+    };
 
    private:
     EventManagerImpl();

@@ -34,6 +34,8 @@ enum class EventType {
 
     ObjectCreated,
     ObjectDestroyed,
+
+    User,
 };
 
 using event_category_t = PR_BIT_TYPE;
@@ -48,7 +50,9 @@ enum EventCategory : event_category_t {
     EventCategoryMouse = AS_BIT(5),
     EventCategoryMouseButton = AS_BIT(6),
 
-    EventCategoryObject = AS_BIT(7)
+    EventCategoryObject = AS_BIT(7),
+
+    EventCategoryUser = AS_BIT(8)
 };
 
 // Defines that can be reused between child classes to get event types,
@@ -56,6 +60,11 @@ enum EventCategory : event_category_t {
 
 #define EVENT_CLASS_TYPE(type)                                             \
     static EventType getStaticType() { return EventType::type; }           \
+    virtual EventType getType() const override { return getStaticType(); } \
+    virtual const char* getName() const override { return #type; }
+
+#define EVENT_USER_CLASS_TYPE(type)                                        \
+    static EventType getStaticType() { return EventType::User; }           \
     virtual EventType getType() const override { return getStaticType(); } \
     virtual const char* getName() const override { return #type; }
 
