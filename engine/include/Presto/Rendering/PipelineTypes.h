@@ -39,6 +39,7 @@ struct PipelineStructure {
 
     bool uses_global_uniforms;
     bool uses_object_uniforms;
+    bool uses_alpha_channel;
 
     std::vector<PipelineAttribute> attributes;
     std::vector<PipelineUniform> uniforms;

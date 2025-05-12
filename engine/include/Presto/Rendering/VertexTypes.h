@@ -33,7 +33,7 @@ struct Vertex3D : public Vertex {
 
 struct VertexUI : public Vertex {
     Presto::vec2 vertexPosition;
-    Presto::vec3 colour;
+    Presto::vec4 colour;
     Presto::vec2 tex_coords;
 
     [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();

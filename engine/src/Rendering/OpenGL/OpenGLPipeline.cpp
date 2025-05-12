@@ -2,6 +2,7 @@
 #include <GL/glext.h>
 #include <algorithm>
 
+#include "Presto/Assets/ImportTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 #include "Rendering/OpenGL/utils.h"
 #include "Rendering/Utils/RenderingUtils.h"
@@ -29,6 +30,17 @@ OpenGLPipeline::OpenGLPipeline(
     } else {
         pipelineStructure_.attributes =
             Introspection::getAttributesFromShader(shaderProgram_);
+    }
+
+    auto color_attrib{std::ranges::find_if(
+        pipelineStructure_.attributes, [](PipelineAttribute& attrib) {
+            return attrib.name == DefaultAttributeName::COLOUR;
+        })};
+    if (color_attrib == pipelineStructure_.attributes.end()) {
+        pipelineStructure_.uses_alpha_channel = false;
+    } else {
+        pipelineStructure_.uses_alpha_channel =
+            color_attrib->type == ShaderDataType::VEC4;
     }
 
     pipelineStructure_.uniforms =
@@ -63,7 +75,16 @@ OpenGLPipeline::OpenGLPipeline(
                             });
 };
 
-void OpenGLPipeline::bind() { glUseProgram(shaderProgram_); }
+void OpenGLPipeline::bind() {
+    if (this->pipelineStructure_.uses_alpha_channel) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glDisable(GL_BLEND);
+    }
+
+    glUseProgram(shaderProgram_);
+}
 
 void OpenGLPipeline::unbind() { glUseProgram(0); }
 

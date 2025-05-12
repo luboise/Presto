@@ -36,7 +36,7 @@ std::vector<PipelineAttribute> VertexUI::getPipelineAttributes() {
                           .name = DefaultAttributeName::POSITION,
                           .offset = 0},
         PipelineAttribute{.layout = 1,
-                          .type = ShaderDataType::VEC3,
+                          .type = ShaderDataType::VEC4,
                           .name = DefaultAttributeName::COLOUR,
                           .offset = 8},
         PipelineAttribute{.layout = 2,

@@ -287,76 +287,72 @@ void RenderingManager::update() {
 
     auto& em{EntityManagerImpl::get()};
 
-    /*
-auto mesh_draws{
-    em.findAll() |
-    std::views::transform([](const EntityPtr& entity) -> DrawStruct {
-        return {.render = entity->getComponent<RenderComponent>(),
-                .transform = entity->getComponent<TransformComponent>()};
-    }) |
-    std::views::filter([](const DrawStruct& drawStruct) {
-        return drawStruct.render != nullptr &&
-               drawStruct.transform != nullptr;
-    })};
-            */
+    auto mesh_draws{
+        em.findAll() |
+        std::views::transform([](const EntityPtr& entity) -> DrawStruct {
+            return {.render = entity->getComponent<RenderComponent>(),
+                    .transform = entity->getComponent<TransformComponent>()};
+        }) |
+        std::views::filter([](const DrawStruct& drawStruct) {
+            return drawStruct.render != nullptr &&
+                   drawStruct.transform != nullptr;
+        })};
 
-    /*
-std::ranges::for_each(mesh_draws, [this](const DrawStruct& drawStruct) {
-renderer_->setObjectData(
-{.transform = drawStruct.transform->getModelView()});
+    std::ranges::for_each(mesh_draws, [this](const DrawStruct& drawStruct) {
+        renderer_->setObjectData(
+            {.transform = drawStruct.transform->getModelView()});
 
-for (const Ptr<ModelAsset>& model : drawStruct.render->getModels()) {
-for (const MeshDraw& draw : model->getDraws()) {
-    if (draw.material == nullptr) {
-        PR_ERROR(
-            "No material available to render in 3D. Using the "
-            "fallback material.");
+        for (const Ptr<ModelAsset>& model : drawStruct.render->getModels()) {
+            for (const MeshDraw& draw : model->getDraws()) {
+                if (draw.material == nullptr) {
+                    PR_ERROR(
+                        "No material available to render in 3D. Using the "
+                        "fallback material.");
 
-        switchPipeline(PR_PIPELINE_DEFAULT_3D);
-        switchMaterial(impl_->current.pipeline->default_material);
-    } else {
-        switchMaterial(draw.material);
-    }
+                    switchPipeline(PR_PIPELINE_DEFAULT_3D);
+                    switchMaterial(impl_->current.pipeline->default_material);
+                } else {
+                    switchMaterial(draw.material);
+                }
 
-    MeshRegistrationData* data{impl_->mesh_registrations.find(
-        draw.mesh->registrationId())};
-    PR_CORE_ASSERT(
-        data != nullptr,
-        "Mesh registrations can't be null at the draw phase.");
+                MeshRegistrationData* data{impl_->mesh_registrations.find(
+                    draw.mesh->registrationId())};
+                PR_CORE_ASSERT(
+                    data != nullptr,
+                    "Mesh registrations can't be null at the draw phase.");
 
-    renderer_->render(*data);
-}
-}
+                renderer_->render(*data);
+            }
+        }
 
-for (QuadSubcomponent& quad : drawStruct.render->getQuads()) {
-// for (std::size_t i = 0; i < model.draws.size(); i++) {
+        for (QuadSubcomponent& quad : drawStruct.render->getQuads()) {
+            // for (std::size_t i = 0; i < model.draws.size(); i++) {
 
-if (quad.material == nullptr) {
-    PR_ERROR(
-        "No material available to render in 2D. Using the "
-        "fallback "
-        "material. ");
-    continue;
-}
+            if (quad.material == nullptr) {
+                PR_ERROR(
+                    "No material available to render in 2D. Using the "
+                    "fallback "
+                    "material. ");
+                continue;
+            }
 
-switchMaterial(quad.material);
+            switchMaterial(quad.material);
 
-auto* data{impl_->mesh_registrations.find(PR_MESH_0_SQUARE)};
-PR_CORE_ASSERT(data != nullptr,
-               "The default quad can not be null.");
+            auto* data{impl_->mesh_registrations.find(PR_MESH_0_SQUARE)};
+            PR_CORE_ASSERT(data != nullptr,
+                           "The default quad can not be null.");
 
-// TODO: Move this somewhere else so it isn't calculated 7 million
-// times
-quad.transform.scale = vec3{quad.width, quad.height, 0};
+            // TODO: Move this somewhere else so it isn't calculated 7 million
+            // times
+            quad.transform.scale = vec3{quad.width, quad.height, 0};
 
-renderer_->setObjectData(
-    {.transform{drawStruct.transform->getModelView() *
-                quad.transform.asModelMat()}});
+            renderer_->setObjectData(
+                {.transform{drawStruct.transform->getModelView() *
+                            quad.transform.asModelMat()}});
 
-renderer_->render(*data);
-}
-});
-*/
+            renderer_->render(*data);
+        }
+    });
 
     auto canvas_draws{
         em.findAll() |
@@ -386,9 +382,9 @@ renderer_->render(*data);
                                    static_cast<float>(canvas_size.height), 0.F,
                                    -1.F, 1.F)}});
 
-        for (const CanvasGroup& group : ptr->groups_) {
+        for (CanvasGroup& group : ptr->groups_) {
             // Render each canvasitem where it should be
-            for (const CanvasItem& canvasItem : group.items()) {
+            for (CanvasItem& canvasItem : group.items_) {
                 if (canvasItem.texture() == nullptr) {
                     this->getTexture(PR_TEX_DIFFUSE_FALLBACK)->bind(2);
                 } else {

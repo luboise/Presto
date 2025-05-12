@@ -23,10 +23,12 @@ class PRESTO_API CanvasItem : LazyCalculator {
 
     virtual ~CanvasItem();
 
-    [[nodiscard]] UniformBuffer& buffer() const;
+    [[nodiscard]] UniformBuffer& buffer();
 
     [[nodiscard]] CanvasItemAttributes attributes() const;
     CanvasItem& setAttributes(CanvasItemAttributes attributes);
+
+    CanvasItem& setOpacity(Presto::float32_t);
 
     [[nodiscard]] const CanvasPosition& position() const;
     [[nodiscard]] const TexturePtr& texture() const;

@@ -5,6 +5,7 @@
 namespace Presto {
 class PRESTO_API CanvasGroup {
     friend class CanvasComponent;
+    friend class RenderingManager;
 
    public:
     ~CanvasGroup() = default;

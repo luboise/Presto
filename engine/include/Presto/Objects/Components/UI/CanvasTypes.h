@@ -6,7 +6,8 @@ struct CanvasItemAttributes {
     Presto::vec2 position{0, 0};
     Presto::vec2 offset{0, 0};
     Presto::vec2 scale{1, 1};
-    std::array<float, 2> padding{0, 0};
+    Presto::float32_t opacity{1};
+    Presto::float32_t padding{0};
 };
 
 using CanvasUnits = Presto::float32_t;

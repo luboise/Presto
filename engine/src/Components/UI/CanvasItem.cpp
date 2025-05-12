@@ -58,7 +58,6 @@ const CanvasPosition& CanvasItem::position() const {
 
 CanvasItem& CanvasItem::setAttributes(CanvasItemAttributes attributes) {
     impl_->attributes = attributes;
-    impl_->struct_buffer.write(impl_->attributes);
     setDirty();
 
     return *this;
@@ -92,7 +91,11 @@ void CanvasRect::setRectangle(Rectangle rect) {
 const Rectangle& CanvasRect::rectangle() const { return rect_; };
 */
 
-UniformBuffer& CanvasItem::buffer() const {
+UniformBuffer& CanvasItem::buffer() {
+    if (isDirty()) {
+        impl_->struct_buffer.write(impl_->attributes);
+        setDirty(false);
+    }
     return impl_->struct_buffer.buffer();
 }
 
@@ -115,5 +118,12 @@ void CanvasRect::setProps(CanvasRectProps props) {
 CanvasItemAttributes CanvasItem::attributes() const {
     return impl_->attributes;
 };
+
+CanvasItem& CanvasItem::setOpacity(Presto::float32_t opacity) {
+    impl_->attributes.opacity = std::clamp(opacity, 0.F, 1.F);
+    setDirty();
+
+    return *this;
+}
 
 }  // namespace Presto

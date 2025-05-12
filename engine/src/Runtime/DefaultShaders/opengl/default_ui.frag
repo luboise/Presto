@@ -8,4 +8,5 @@ layout(binding = 2) uniform sampler2D u_diffuseTexture;
 
 void main() {
     colour = texture(u_diffuseTexture, _tex_coords) * _colour;
+	colour.w = 0.4;
 }
