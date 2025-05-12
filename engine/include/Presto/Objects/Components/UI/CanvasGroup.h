@@ -10,7 +10,9 @@ class PRESTO_API CanvasGroup {
     ~CanvasGroup() = default;
 
     void addItem(CanvasItem item) { items_.emplace_back(std::move(item)); };
-    void addItem(CanvasItem&& item) { items_.emplace_back(std::move(item)); };
+    void setItem(Presto::size_t index, CanvasItem item) {
+        items_[index] = std::move(item);
+    }
 
     [[nodiscard]] const auto& items() const { return this->items_; }
 

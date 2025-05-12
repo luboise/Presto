@@ -35,6 +35,14 @@ vec3 Rectangle::at(float x, float y) const {
 
 [[nodiscard]] vec3 Rectangle::at(vec2 v) const { return this->at(v.x, v.y); };
 
+Presto::float32_t Rectangle::height() const {
+    return std::abs(top_right.y - bottom_left.y);
+};
+
+Presto::float32_t Rectangle::width() const {
+    return std::abs(top_right.x - top_left.x);
+};
+
 }  // namespace Presto
 
 #if 0

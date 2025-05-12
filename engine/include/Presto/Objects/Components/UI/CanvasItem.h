@@ -1,30 +1,50 @@
 #pragma once
 
 #include "Presto/Aliases/Handles.h"
-#include "Presto/Rendering/RenderTypes.h"
+#include "Presto/Core/Constants.h"
 #include "Presto/Types/CoreTypes.h"
-
 #include "Presto/Utils/LazyCalculator.h"
+
+#include "Presto/Objects/Components/UI/CanvasTypes.h"
 
 namespace Presto {
 
-class PRESTO_API CanvasItem : LazyCalculator {
-   public:
-    explicit CanvasItem(CanvasPosition position);
-    ~CanvasItem();
+struct CanvasDrawDetails;
+struct UniformBuffer;
+struct CanvasItemAttributes;
 
-    [[nodiscard]] CanvasItem& setAttributes(CanvasItemAttributes attributes);
+class PRESTO_API CanvasItem : LazyCalculator {
+    friend class RenderingManager;
+
+   public:
+    CanvasItem();
+    explicit CanvasItem(CanvasPosition position);
+    explicit CanvasItem(CanvasItemAttributes attributes);
+
+    virtual ~CanvasItem();
+
+    [[nodiscard]] UniformBuffer& buffer() const;
+
+    [[nodiscard]] CanvasItemAttributes attributes() const;
+    CanvasItem& setAttributes(CanvasItemAttributes attributes);
 
     [[nodiscard]] const CanvasPosition& position() const;
-
     [[nodiscard]] const TexturePtr& texture() const;
+
     CanvasItem& setTexture(const TexturePtr&);
 
     CanvasItem(CanvasItem&&) noexcept;
 
     CanvasItem(const CanvasItem&) = delete;
     CanvasItem& operator=(const CanvasItem&) = delete;
-    CanvasItem& operator=(CanvasItem&&) = delete;
+    CanvasItem& operator=(CanvasItem&&) noexcept;
+
+   protected:
+    // void setDrawDetails(CanvasDrawDetails);
+    // [[nodiscard]] virtual const CanvasDrawDetails& drawDetails() const;
+
+    void setMeshId(mesh_registration_id_t);
+    [[nodiscard]] mesh_registration_id_t meshId() const;
 
    private:
     struct Impl;

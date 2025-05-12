@@ -12,18 +12,19 @@ layout(std140, binding = 0) uniform GlobalUniforms {
     mat4 projection;
 };
 
-layout(std140, binding = 1) uniform UIUniforms {
-    vec2 u_position;
-    vec2 u_offset;
-    float u_size;
+layout(std140, binding = 2) uniform UIUniforms {
+    vec4 u_pos_ofs;
+    vec4 u_scale;
 };
 
 void main() {
-    gl_Position = projection * view * vec4(a_vertexPosition.x,
-                // Need to flip the Y pos as OpenGL has tex coords start in bottom left instead of top left
-                1 - a_vertexPosition.y,
-                0,
-                1.0);
+    vec2 pos = a_vertexPosition * u_scale.xy;
+    pos += u_pos_ofs.xy;
+    pos += u_pos_ofs.zw;
+
+    // Need to flip the Y pos as OpenGL has tex coords start in bottom left instead of top left
+    // TODO: Reflip it
+    gl_Position = projection * view * vec4(pos, 0, 1);
     colour = vec4(a_colour, 1.0);
     tex_coords = a_texcoords;
 }

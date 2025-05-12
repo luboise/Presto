@@ -12,4 +12,18 @@ CanvasGroup& CanvasComponent::newGroup() {
     return new_group;
 };
 
+CanvasComponent::CanvasComponent() = default;
+
+VisualExtents CanvasComponent::size() const { return size_; };
+
+void CanvasComponent::setSize(VisualExtents extents) { size_ = extents; }
+
+CanvasGroup* CanvasComponent::group(Presto::size_t index) {
+    if (index >= groups_.size()) {
+        return nullptr;
+    }
+
+    return &groups_[index];
+};
+
 }  // namespace Presto

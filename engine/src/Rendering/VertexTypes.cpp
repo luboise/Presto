@@ -40,7 +40,7 @@ std::vector<PipelineAttribute> VertexUI::getPipelineAttributes() {
                           .name = DefaultAttributeName::COLOUR,
                           .offset = 8},
         PipelineAttribute{.layout = 2,
-                          .type = ShaderDataType::VEC3,
+                          .type = ShaderDataType::VEC2,
                           .name = DefaultAttributeName::TEXCOORDS,
                           .offset = 20},
 

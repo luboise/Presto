@@ -103,14 +103,18 @@ struct Ray {
 };
 
 struct Rectangle : CollisionShape {
+    Rectangle() = default;
     Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft);
 
-    vec3 top_left{};
-    vec3 top_right{};
-    vec3 bottom_left{};
+    vec3 top_left{0, 1, 0};
+    vec3 top_right{1, 1, 0};
+    vec3 bottom_left{0, 0, 0};
 
     [[nodiscard]] vec3 at(float x, float y) const;
     [[nodiscard]] vec3 at(vec2) const;
+
+    [[nodiscard]] Presto::float32_t width() const;
+    [[nodiscard]] Presto::float32_t height() const;
 
     COLLISION_FUNCTIONS(Rectangle)
 };

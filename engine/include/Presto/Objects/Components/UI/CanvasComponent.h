@@ -14,6 +14,8 @@ class CanvasComponent : public Component {
     // ~CanvasComponent() override;
     CanvasGroup& addGroup(CanvasGroup = {});
 
+    CanvasGroup* group(Presto::size_t index = 0);
+
     /**
      * @brief  Creates a new canvas group and returns it. The new canvas group
      * can be configured by chaining calls together.
@@ -22,9 +24,13 @@ class CanvasComponent : public Component {
      */
     CanvasGroup& newGroup();
 
-   private:
-    CanvasComponent() = default;
+    [[nodiscard]] VisualExtents size() const;
+    void setSize(VisualExtents);
 
+   private:
+    CanvasComponent();
+
+    VisualExtents size_{.width = 1, .height = 1};
     std::vector<CanvasGroup> groups_;
 };
 }  // namespace Presto

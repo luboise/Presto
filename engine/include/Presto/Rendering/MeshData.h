@@ -8,7 +8,7 @@
 namespace Presto {
 
 struct MeshData {
-    pipeline_id_t pipeline_id{PR_PIPELINE_NONE};
+    pipeline_id_t pipeline_id{PR_PIPELINE_ANY};
 
     MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
     AnyVertexList vertices;
