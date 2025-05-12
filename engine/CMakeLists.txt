@@ -74,7 +74,9 @@ target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS})
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-if("${CMAKE_BINARY_DIR}")
+# if("${CMAKE_BINARY_DIR}")
+
+if(NOT "${CMAKE_SOURCE_DIR}/engine" STREQUAL PROJECT_SOURCE_DIR)
   set(PRESTO_BASE_SHADER_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
   compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
@@ -83,7 +85,8 @@ if("${CMAKE_BINARY_DIR}")
     message(FATAL_ERROR "Failed to compile default shaders. Unable to build.")
   endif()
 else()
-  message(STATUS "No binary dir specified. Skipping shader compilation.")
+  message(
+    STATUS "Library is being built in isolation. Skipping shader building.")
 endif()
 
 if(PRESTO_ENABLE_TESTS)

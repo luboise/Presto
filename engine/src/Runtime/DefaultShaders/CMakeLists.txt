@@ -88,15 +88,22 @@ macro(compile_shaders_for_target target_name IN_SHADER_DIR OUT_SHADER_SUFFIX)
       get_filename_component(OUT_SHADER_DIR_PARENT ${OUT_FILE} DIRECTORY)
 
       add_custom_command(
-        TARGET ${target_name}
-        PRE_BUILD
+        OUTPUT ${OUT_FILE} #
         COMMAND ${CMAKE_COMMAND} -E make_directory ${OUT_SHADER_DIR_PARENT}
         COMMAND ${GLSLC_PATH} "${IN_SHADER_DIR}/${SHADER_FILE}" -o ${OUT_FILE}
         COMMENT "Compiling  ${SHADER_FILE}  to  ${OUT_FILE}")
+
+      list(APPEND COMPILED_SHADERS ${OUT_FILE})
     endforeach()
 
     set(PRESTO_SHADERS_COMPILED_SUCCESSFULLY true)
   endforeach()
 
   list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+  add_custom_target(
+    bruh ALL #
+    DEPENDS ${COMPILED_SHADERS}
+    COMMENT "ok")
+
 endmacro()
