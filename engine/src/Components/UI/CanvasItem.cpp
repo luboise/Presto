@@ -58,7 +58,7 @@ const CanvasPosition& CanvasItem::position() const {
 
 CanvasItem& CanvasItem::setAttributes(CanvasItemAttributes attributes) {
     impl_->attributes = attributes;
-    impl_->struct_buffer.write(attributes);
+    impl_->struct_buffer.write(impl_->attributes);
     setDirty();
 
     return *this;
@@ -81,6 +81,7 @@ CanvasItem::CanvasItem(CanvasItem&&) noexcept = default;
 
 void CanvasItem::setMeshId(mesh_registration_id_t id) { impl_->mesh_id = id; };
 
+/*
 void CanvasRect::setRectangle(Rectangle rect) {
     rect_ = rect;
 
@@ -89,6 +90,7 @@ void CanvasRect::setRectangle(Rectangle rect) {
 };
 
 const Rectangle& CanvasRect::rectangle() const { return rect_; };
+*/
 
 UniformBuffer& CanvasItem::buffer() const {
     return impl_->struct_buffer.buffer();

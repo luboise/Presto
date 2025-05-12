@@ -382,9 +382,9 @@ renderer_->render(*data);
         impl_->cam_2d->setExtents(canvas_size);
         renderer_->setCameraData(GlobalUniforms{
             .view{mat4{1}},
-            .projection{glm::ortho(0, static_cast<int>(canvas_size.width),
-                                   static_cast<int>(canvas_size.height), 0, -1,
-                                   1)}});
+            .projection{glm::ortho(0.F, static_cast<float>(canvas_size.width),
+                                   static_cast<float>(canvas_size.height), 0.F,
+                                   -1.F, 1.F)}});
 
         for (const CanvasGroup& group : ptr->groups_) {
             // Render each canvasitem where it should be

@@ -18,8 +18,8 @@ class CanvasRect final : public CanvasItem {
     explicit CanvasRect(CanvasRectProps);
     void setProps(CanvasRectProps);
 
-    [[nodiscard]] const Rectangle& rectangle() const;
-    void setRectangle(Rectangle rect);
+    // [[nodiscard]] const Rectangle& rectangle() const;
+    // void setRectangle(Rectangle rect);
 
    private:
     Rectangle rect_;
