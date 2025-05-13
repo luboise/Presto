@@ -23,6 +23,8 @@ class PRESTO_API TransformComponent : public Component {
         return this->translate(vec3{x, y, z});
     }
 
+    [[nodiscard]] const TransformData& data() const;
+
     TransformComponent& rotate(vec3 rotation);
     TransformComponent& rotate(double x = 0, double y = 0, double z = 0);
 

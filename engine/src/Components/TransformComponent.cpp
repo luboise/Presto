@@ -165,4 +165,5 @@ vec3 applyTransformation(const vec3& v, const mat4& transformations) {
     return vec3{transformed};
 };
 
+const TransformData& TransformComponent::data() const { return transformData_; }
 }  // namespace Presto
