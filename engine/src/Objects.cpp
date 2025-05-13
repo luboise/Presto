@@ -15,10 +15,18 @@ Presto::EntityRef Presto::NewLooseEntity() {
     return EntityManagerImpl::Get().newEntity();
 };
 
-Presto::EntityOwner Presto::NewOwnedEntity() { return {}; };
+Presto::EntityOwner Presto::NewOwnedEntity(Presto::vec3 pos) {
+    EntityOwner new_owner{};
+    new_owner->getComponent<TransformComponent>()->setTranslation(pos);
 
-Presto::EntityPtr Presto::NewEntity() {
-    return EntityManagerImpl::Get().newEntity();
+    return new_owner;
+};
+
+Presto::EntityPtr Presto::NewEntity(Presto::vec3 pos) {
+    auto new_entity{EntityManagerImpl::Get().newEntity()};
+
+    new_entity->getComponent<TransformComponent>()->setTranslation(pos);
+    return new_entity;
 };
 
 void Presto::SetDefaultCameraConductor(

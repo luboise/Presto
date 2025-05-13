@@ -13,14 +13,14 @@ namespace Presto {
 
 [[nodiscard]] EntityRef NewLooseEntity();
 
-[[nodiscard]] EntityPtr NewEntity();
+[[nodiscard]] EntityPtr NewEntity(Presto::vec3 pos = {});
 
 /**
  * @brief  Returns a new entity which the consumer must keep track of and
  * destroy themselves. It will still handle its own rendering and component
  * calls, but its destruction is bound by the user.
  */
-[[nodiscard]] EntityOwner NewOwnedEntity();
+[[nodiscard]] EntityOwner NewOwnedEntity(Presto::vec3 pos = {});
 
 /**
  * @brief  Gets a reference to the main camera. This is whats used to generate

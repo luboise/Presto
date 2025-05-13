@@ -6,7 +6,6 @@
 # Engine definitions
 add_library(${PRESTO_ENGINE_NAME} SHARED)
 
-
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -23,7 +22,7 @@ target_include_directories(
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
 
-target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
+# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
 
