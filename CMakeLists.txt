@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
+
+project(Presto)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS Off)
@@ -58,23 +61,14 @@ include_directories(${Vulkan_INCLUDE_DIR})
 
 # OpenGL Libraries
 find_package(OpenGL REQUIRED)
+
+# add_subdirectory(ext/GLEW/build/cmake)
 find_package(GLEW REQUIRED)
 
 add_subdirectory(ext/glm)
 
 set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
 add_subdirectory(ext/TinyGLTF)
-
-# add_subdirectory(ext/gtl)
-add_subdirectory(ext/GTE/GTE)
-
-# add_subdirectory(ext/eigen)
-find_package(Eigen3 REQUIRED NO_MODULE)
-
-# find_package(Chrono REQUIRED CONFIG)
-
-# if(NOT Chrono_FOUND) message("Could not find Chrono or one of its required
-# modules") return() endif()
 
 if(WIN32)
   set(PLATFORM Windows)
@@ -96,8 +90,6 @@ else()
   message(FATAL_ERROR "Platform not selected."
                       "Expected Windows or Unix platform for compilation.")
 endif()
-
-add_subdirectory(ext/GLFW)
 
 add_subdirectory(engine)
 

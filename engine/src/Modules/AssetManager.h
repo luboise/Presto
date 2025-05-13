@@ -93,7 +93,7 @@ ModelLoadResult loadModelsFromDisk(
         Presto::string name, const PipelineStructure& structure);
 
     template <typename T>
-        requires DerivedFrom<T, AssetSource, Strictness::STRICT>
+        requires DerivedFrom<T, AssetSource, Strictness::STRICTLY_DERIVED>
     Ptr<T> addAssetSource(const AssetArg& filepath) {
         Ptr<T> new_source{std::make_shared<T>(filepath)};
 

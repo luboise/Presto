@@ -6,7 +6,7 @@
 namespace Presto {
 
 template <typename T>
-    requires DerivedFrom<T, Component, Strictness::STRICT>
+    requires DerivedFrom<T, Component, Strictness::STRICTLY_DERIVED>
 struct Subcomponent {
     using super_t = T;
 };

@@ -1,5 +1,3 @@
-project(Presto)
-
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
 
@@ -7,6 +5,7 @@ project(Presto)
 
 # Engine definitions
 add_library(${PRESTO_ENGINE_NAME} SHARED)
+
 
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -28,17 +27,11 @@ target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
 
-# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
-if(PLATFORM STREQUAL "Windows")
-  target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE dwmapi.lib
-                                                      XInput9_1_0.lib)
-endif()
-
 # Needed for shared library
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
-target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
+# target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
 
 add_subdirectory(src)
 
@@ -76,7 +69,7 @@ set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # if("${CMAKE_BINARY_DIR}")
 
-if(NOT "${CMAKE_SOURCE_DIR}/engine" STREQUAL PROJECT_SOURCE_DIR)
+if(NOT ${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
   set(PRESTO_BASE_SHADER_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
   compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"

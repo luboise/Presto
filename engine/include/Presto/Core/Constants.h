@@ -54,7 +54,7 @@ constexpr texture_id_t PR_TEX_DIFFUSE_FLAT{10};
 constexpr mesh_registration_id_t PR_MESH_QUAD{1};
 constexpr mesh_registration_id_t PR_MESH_0_SQUARE{2};
 
-constexpr PR_STRING_ID PR_ANY_NAME{"PRESTO_ANY_NAME"};
+constexpr const char* PR_ANY_NAME{"PRESTO_ANY_NAME"};
 
 constexpr auto DEFAULT_FOV = 120;
 }  // namespace Presto

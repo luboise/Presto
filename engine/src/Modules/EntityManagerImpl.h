@@ -42,7 +42,7 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
                                                    [](auto&) { return true; });
 
     template <ComponentType T>
-        requires DerivedFrom<T, Component, Strictness::STRICT>
+        requires DerivedFrom<T, Component, Strictness::STRICTLY_DERIVED>
     [[nodiscard]] std::vector<ComponentPtr<T>>& findComponentsByType() {
         return *getComponentList<T>();
     }

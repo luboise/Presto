@@ -1,14 +1,14 @@
 #pragma once
 
 namespace Presto {
-enum class Strictness { STRICT, LOOSE };
-using Strictness::LOOSE;
-using Strictness::STRICT;
+enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
+using Strictness::LOOSELY_DERIVED;
+using Strictness::STRICTLY_DERIVED;
 
 template <typename Derived, typename Base,
-          Strictness Strict = Strictness::LOOSE>
+          Strictness Strict = Strictness::LOOSELY_DERIVED>
 concept DerivedFrom = std::is_base_of_v<Base, Derived> && requires {
-    (Strict == Strictness::STRICT)
+    (Strict == Strictness::STRICTLY_DERIVED)
         ?
         // Perform this check only if the strictness is STRICT
         (requires {
