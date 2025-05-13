@@ -159,10 +159,12 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
                 const TexturePtr& texture{impl_->textures[texture_index]};
 
                 if (texture == nullptr) {
-                    PR_TRACE(
-                        "No texture specified at location {} in material "
-                        "instance. Using fallback instead.",
-                        binding.location);
+                    /*
+PR_TRACE(
+    "No texture specified at location {} in material "
+    "instance. Using fallback instead.",
+    binding.location);
+                            */
 
                     continue;
                 }

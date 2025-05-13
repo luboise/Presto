@@ -86,7 +86,7 @@ void MeshSource::reloadFile() {
         const ImagePtr& image_ptr{
             am.newAsset<ImageAsset>(texture.name, texture.image)};
 
-        textures_.push_back(rm.createTexture2D(image_ptr));
+        textures_[0] = rm.createTexture2D(image_ptr);
     }
 
     // Store the material imports
@@ -119,6 +119,14 @@ void MeshSource::reloadFile() {
 
         // Put the meshes into the LoadedModel structure
         for (const ImportedMesh& imported_mesh : imported_model.meshes) {
+            if (imported_mesh.hasMaterial()) {
+                auto index{imported_mesh.material_index};
+                if (materials_[index].ptr == nullptr) {
+                    // TODO: Make this import directly instead of doing the name
+                    // search
+                    loadMaterial(materials_[index].name);
+                }
+            };
             loaded_model->mesh_imports.push_back(imported_mesh);
         }
     }

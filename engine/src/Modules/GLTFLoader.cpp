@@ -361,6 +361,7 @@ Presto::vec4 vec4FromVector(std::vector<T> vec) {
 ImportedMaterial importMaterialFromGLTF(const tinygltf::Material& material,
                                         std::set<int>& texturesToLoad) {
     ImportedMaterial imported;
+    imported.name = material.name;
 
     const auto& pbr{material.pbrMetallicRoughness};
 
