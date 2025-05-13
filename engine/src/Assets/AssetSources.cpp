@@ -86,7 +86,7 @@ void MeshSource::reloadFile() {
         const ImagePtr& image_ptr{
             am.newAsset<ImageAsset>(texture.name, texture.image)};
 
-        textures_[0] = rm.createTexture2D(image_ptr);
+        textures_[i] = rm.createTexture2D(image_ptr);
     }
 
     // Store the material imports
