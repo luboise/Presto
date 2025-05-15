@@ -21,24 +21,6 @@ Presto::mat4 CameraComponent::getProjectionMatrix() {
     return projectionMatrix_;
 };
 
-CameraComponent& CameraComponent::setYaw(double newYaw) {
-    transform_.rotation.y = newYaw;
-
-    setDirty();
-    return *this;
-}
-CameraComponent& CameraComponent::setPitch(double newPitch) {
-    transform_.rotation.x = newPitch;
-
-    setDirty();
-    return *this;
-}
-CameraComponent& CameraComponent::setRoll(double newRoll) {
-    transform_.rotation.z = newRoll;
-
-    setDirty();
-    return *this;
-}
 CameraComponent& CameraComponent::setPosition(vec3 newPos) {
     transform_.position = newPos;
 
@@ -61,11 +43,10 @@ CameraComponent& CameraComponent::setFocus(vec3 newPos) {
     return *this;
 }
 
-double CameraComponent::yaw() const { return transform_.rotation.y; }
-double CameraComponent::pitch() const { return transform_.rotation.x; }
-double CameraComponent::roll() const { return transform_.rotation.z; }
 vec3 CameraComponent::position() const { return transform_.position; }
-vec3 CameraComponent::rotation() const { return transform_.rotation; }
+Presto::Quaternion CameraComponent::rotation() const {
+    return transform_.rotation;
+}
 
 void CameraComponent::recalculate() {
     // Calculate offset pointing at origin with the y axis up
@@ -132,28 +113,14 @@ CameraType& CameraComponent::type() { return type_; };
 VisualExtents& CameraComponent::extents() { return extents_; };
 
 CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
-    while (rot.x > 180) {
-        rot.x -= 360;
-    }
-    while (rot.x < -180) {
-        rot.x += 360;
-    }
+    transform_.rotation = Quaternion::fromEuler(rot);
 
-    while (rot.y > 180) {
-        rot.y -= 360;
-    }
-    while (rot.y < -180) {
-        rot.y += 360;
-    }
+    this->setDirty();
+    return *this;
+};
 
-    while (rot.z > 180) {
-        rot.z -= 360;
-    }
-    while (rot.z < -180) {
-        rot.z += 360;
-    }
-
-    transform_.rotation = rot;
+CameraComponent& CameraComponent::rotate(Presto::vec3 rot) {
+    transform_.rotation = Quaternion::fromEuler(rot) * transform_.rotation;
 
     this->setDirty();
     return *this;
@@ -196,4 +163,5 @@ Rectangle CameraComponent::nearRectangle() const {
 }
 
 TransformData CameraComponent::transformData() const { return transform_; }
+
 }  // namespace Presto

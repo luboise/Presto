@@ -348,7 +348,7 @@ void DebugUI::handleInput() {
             camera.setPosition(camera.position() - delta_scale * lftwards);
         }
 
-        auto new_rot{camera.rotation() +
+        auto new_rot{camera.rotation().toEuler() +
                      0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0}};
 
         if (new_rot.x >= 90) {
@@ -551,7 +551,7 @@ void DebugUI::drawCameraModifier(CameraComponent& camera) {
         pos, "Position",
         [&camera](Presto::vec3 newPos) { camera.setPosition(newPos); });
 
-    Presto::vec3 rot{camera.rotation()};
+    Presto::vec3 rot{camera.rotation().toEuler()};
     DebugComponents::Vec3Chooser(rot, "Rotation", [&camera](Presto::vec3 rot) {
         camera.setRotation(rot);
     });

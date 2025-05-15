@@ -27,6 +27,7 @@ target_sources(
           Events.cpp
           Logging.cpp
           Objects.cpp
+          Math.cpp
           Physics.cpp
           pch.cpp
           System.cpp

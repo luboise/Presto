@@ -8,38 +8,16 @@ mat4 TransformData::asModelMat() const {
 
     model = glm::translate(model, this->position);
 
-    // Apply in reverse order to avoid gimbal lock
-    model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
-    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
-
-    model = glm::scale(model, this->scale);
-
-    return model;
-}
-
-mat4 TransformData::asWorldMat() const {
-    mat4 model{1.0F};
-
-    model = glm::translate(model, this->position);
-
-    // yaw, pitch, roll
-    model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-    model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
-    model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
-
-    model = glm::scale(model, this->scale);
+    model = model * rotation.toMat4();
 
     /*
-model = glm::scale(model, this->scale);
-
-// Yaw then pitch then roll
-model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
-model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
+// Apply in reverse order to avoid gimbal lock
 model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-
-model = glm::translate(model, this->position);
+model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
+model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
     */
+
+    model = glm::scale(model, this->scale);
 
     return model;
 }
@@ -109,16 +87,23 @@ TransformComponent& TransformComponent::setTranslation(vec3 translation) {
 };
 
 TransformComponent& TransformComponent::setRotation(vec3 yawPitchRoll) {
-    transformData_.rotation = yawPitchRoll;
+    transformData_.rotation = Quaternion::fromEuler(yawPitchRoll);
     return *this;
 };
-vec3 TransformComponent::getRotation() const {
+
+Quaternion TransformComponent::getRotation() const {
     return transformData_.rotation;
 };
+
 TransformData& TransformData::addRotation(Presto::vec3 r) {
-    this->rotation += r;
+    this->rotation = Quaternion::fromEuler(r) * this->rotation;
     return *this;
 };
+
+TransformData& TransformData::addRotation(Presto::Quaternion quat) {
+    this->rotation = quat * this->rotation;
+};
+
 TransformData& TransformData::addTranslation(Presto::vec3 t) {
     this->position += t;
     return *this;
@@ -129,24 +114,27 @@ TransformData& TransformData::scaleBy(Presto::vec3 s) {
 };
 
 Presto::vec3 TransformData::forwards() const {
-    return glm::normalize(applyRotations({0, 0, -1}, rotation));
+    return glm::normalize(rotation * vec3{0, 0, -1});
 }
+
 Presto::vec3 TransformData::backwards() const { return -forwards(); }
 
 Presto::vec3 TransformData::leftwards() const {
-    return glm::normalize(applyRotations({-1, 0, 0}, rotation));
+    return glm::normalize(rotation * vec3{-1, 0, 0});
 }
 
 Presto::vec3 TransformData::rightwards() const { return -leftwards(); }
 
 Presto::vec3 TransformData::upwards() const {
-    return glm::normalize(applyRotations({0, 1, 0}, rotation));
+    return glm::normalize(rotation * vec3{0, 1, 0});
 }
 
 Presto::vec3 TransformData::downwards() const { return -upwards(); }
 
 vec3 applyRotations(const vec3& v, const vec3& rotations) {
     mat4 transformation{1};
+
+    return rotations * v;
 
     transformation =
         glm::rotate(transformation, glm::radians(rotations.z), {0, 0, 1});
@@ -166,4 +154,13 @@ vec3 applyTransformation(const vec3& v, const mat4& transformations) {
 };
 
 const TransformData& TransformComponent::data() const { return transformData_; }
+
+TransformData::TransformData() : TransformData({0, 0, 0}, Quaternion{}) {};
+
+TransformData::TransformData(Presto::vec3 position, Quaternion rotation)
+    : position{position}, rotation{rotation} {};
+
+TransformData::TransformData(Presto::vec3 position, Presto::vec3 rotation)
+    : position{position}, rotation{Quaternion::fromEuler(rotation)} {};
+
 }  // namespace Presto

@@ -12,7 +12,7 @@ struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
     float width;
     float height;
 
-    TransformData transform{};
+    TransformData transform;
     MaterialPtr material;
 };
 

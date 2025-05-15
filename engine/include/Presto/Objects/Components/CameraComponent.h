@@ -51,13 +51,6 @@ class CameraComponent : public Component, LazyCalculator {
 
     [[nodiscard]] TransformData transformData() const;
 
-    CameraComponent& setYaw(double newYaw);
-    CameraComponent& setPitch(double newPitch);
-    CameraComponent& setRoll(double newRoll);
-    [[nodiscard]] double yaw() const;
-    [[nodiscard]] double pitch() const;
-    [[nodiscard]] double roll() const;
-
     [[nodiscard]] Presto::vec3 position() const;
     CameraComponent& setPosition(vec3 newPos);
 
@@ -67,7 +60,9 @@ class CameraComponent : public Component, LazyCalculator {
         return setPosition(glm::vec3{std::forward<Args>(args)...});
     }
 
-    [[nodiscard]] Presto::vec3 rotation() const;
+    CameraComponent& rotate(Presto::vec3 rot);
+
+    [[nodiscard]] Quaternion rotation() const;
     CameraComponent& setRotation(Presto::vec3 rot);
 
     template <typename... Args>

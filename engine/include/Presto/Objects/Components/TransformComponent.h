@@ -39,8 +39,7 @@ class PRESTO_API TransformComponent : public Component {
 
     [[nodiscard]] vec3 getPosition() const;
 
-    // Returns (yaw,pitch,roll)
-    [[nodiscard]] vec3 getRotation() const;
+    [[nodiscard]] Quaternion getRotation() const;
 
     [[nodiscard]] vec3 getYaw() const;
     [[nodiscard]] vec3 getPitch() const;
@@ -54,7 +53,7 @@ class PRESTO_API TransformComponent : public Component {
         return transformData_.asModelMat();
     };
 
-    TransformData transformData_{};
+    TransformData transformData_;
 
     // std::array<bool, 3> useRounding_{false};
 
