@@ -75,7 +75,7 @@ class IDGenerator {
      * @brief	 Unreserves an ID so that it can be reused.
      */
     bool release(T id) {
-        bool didErase{ids_.erase(id)};
+        bool didErase = ids_.erase(id);
 
         if (didErase && id >= minGeneratedThreshold_) {
             releasedIds_.push(id);

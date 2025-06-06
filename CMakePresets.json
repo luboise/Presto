@@ -10,7 +10,11 @@
       "name": "base",
       "hidden": true,
 
-      "binaryDir": "${sourceDir}/build"
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
     },
     {
       "name": "base-debug",

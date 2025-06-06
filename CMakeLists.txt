@@ -12,6 +12,7 @@ set(CMAKE_CONFIGURATION_TYPES
     "Debug;Release;Dist"
     CACHE STRING "Build Configurations" FORCE)
 
+
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX
       "${CMAKE_BINARY_DIR}/install"

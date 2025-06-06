@@ -1,17 +1,16 @@
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
-# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../lib)
-
-# find_package(glm REQUIRED PATHS ./ext/glm)
-
-# Engine definitions
 add_library(${PRESTO_ENGINE_NAME} SHARED)
 
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Tell GLM to build with C++ 20
+target_compile_definitions(PrestoEngine PUBLIC GLM_ENABLE_CXX_20)
+
 target_include_directories(
   ${PRESTO_ENGINE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
                                ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
+
+
 
 target_include_directories(
   ${PRESTO_ENGINE_NAME}
@@ -21,6 +20,8 @@ target_include_directories(
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
+
+
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
 
