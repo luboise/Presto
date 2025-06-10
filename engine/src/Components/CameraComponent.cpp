@@ -121,6 +121,7 @@ CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
 
 CameraComponent& CameraComponent::rotate(Presto::vec3 rot) {
     transform_.rotation = Quaternion::fromEuler(rot) * transform_.rotation;
+    // transform_.rotation = transform_.rotation * Quaternion::fromEuler(rot);
 
     this->setDirty();
     return *this;

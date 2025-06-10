@@ -32,12 +32,18 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
 Quaternion Quaternion::fromEuler(Presto::float32_t xPitch,
                                  Presto::float32_t yYaw,
                                  Presto::float32_t zRoll) {
-    Quaternion pitch{xPitch, {1, 0, 0}};
-    Quaternion yaw{yYaw, {0, 1, 0}};
-    Quaternion roll{zRoll, {0, 0, 1}};
+    glm::vec3 e = glm::radians(glm::vec3(xPitch, yYaw, zRoll));
 
-    // Roll will be applied first to p
-    return yaw * pitch * roll;
+    glm::vec3 c = glm::cos(e * 0.5F);
+    glm::vec3 s = glm::sin(e * 0.5F);
+
+    Quaternion q;
+    q.w = c.x * c.y * c.z + s.x * s.y * s.z;
+    q.xyz.x = s.x * c.y * c.z - c.x * s.y * s.z;
+    q.xyz.y = c.x * s.y * c.z + s.x * c.y * s.z;
+    q.xyz.z = c.x * c.y * s.z - s.x * s.y * c.z;
+
+    return q;
 }
 
 Quaternion Quaternion::fromEuler(Presto::vec3 v) {
@@ -59,6 +65,7 @@ Presto::mat3 Quaternion::toMat3() const {  // Precompute products
     float wy = w * y2;
     float wz = w * z2;
 
+    // Transpose because glm is column order
     return glm::transpose(mat3{
         {1.0F - (yy + zz), xy - wz, xz + wy},
         {xy + wz, 1.0F - (xx + zz), yz - wx},

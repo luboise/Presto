@@ -348,16 +348,20 @@ void DebugUI::handleInput() {
             camera.setPosition(camera.position() - delta_scale * lftwards);
         }
 
-        auto new_rot{camera.rotation().toEuler() +
-                     0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0}};
+        camera.rotate(0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0});
 
-        if (new_rot.x >= 90) {
-            new_rot.x = 89.5;
-        } else if (new_rot.x <= -90) {
-            new_rot.x = -89.5;
-        }
+        // auto new_rot{camera.rotation().toEuler() +
+        // 0.5F * vec3{-io.MouseDelta.y, -io.MouseDelta.x, 0}};
 
-        camera.setRotation(new_rot);
+        /*
+if (new_rot.x >= 90) {
+    new_rot.x = 89.5;
+} else if (new_rot.x <= -90) {
+    new_rot.x = -89.5;
+}
+        */
+
+        // camera.setRotation(new_rot);
     }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Home, false)) {
