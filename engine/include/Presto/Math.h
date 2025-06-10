@@ -3,11 +3,11 @@
 namespace Presto {
 
 struct Quaternion {
-    float w;
-    Presto::vec3 xyz;
+    float w{};
+    Presto::vec3 xyz{};
 
     Quaternion();
-    explicit Quaternion(float angleDeg, Presto::vec3 axis);
+    Quaternion(float angleDeg, Presto::vec3 axis);
 
     Quaternion operator*(const Quaternion& q) const;
 
@@ -16,8 +16,8 @@ struct Quaternion {
     static Quaternion newNonUnit(Presto::vec3 v);
 
     static Quaternion fromEuler(Presto::vec3 v);
-    static Quaternion fromEuler(Presto::float32_t xYaw,
-                                Presto::float32_t yPitch,
+    static Quaternion fromEuler(Presto::float32_t xPitch,
+                                Presto::float32_t yYaw,
                                 Presto::float32_t zRoll);
 
     [[nodiscard]] Presto::vec3 toEuler() const;

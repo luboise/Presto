@@ -9,8 +9,8 @@ Quaternion::Quaternion() : Quaternion(0, {1, 0, 0}) {};
 Quaternion::Quaternion(float angleDeg, Presto::vec3 axis) {
     float half_angle{glm::radians(angleDeg / 2)};
 
-    this->w = std::sin(half_angle);
-    this->xyz = std::cos(half_angle) * glm::normalize(axis);
+    this->w = std::cos(half_angle);
+    this->xyz = std::sin(half_angle) * glm::normalize(axis);
 };
 
 Quaternion Quaternion::operator*(const Quaternion& q) const {
@@ -20,7 +20,7 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
     float new_w{(p.w * q.w) - glm::dot(p.xyz, q.xyz)};
     vec3 new_xyz{p.w * q.xyz + q.w * p.xyz};
 
-    new_xyz += glm::cross(q.xyz, p.xyz);
+    new_xyz += glm::cross(p.xyz, q.xyz);
 
     Quaternion ret{};
     ret.w = new_w;
@@ -29,11 +29,11 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
     return ret;
 }
 
-Quaternion Quaternion::fromEuler(Presto::float32_t xYaw,
-                                 Presto::float32_t yPitch,
+Quaternion Quaternion::fromEuler(Presto::float32_t xPitch,
+                                 Presto::float32_t yYaw,
                                  Presto::float32_t zRoll) {
-    Quaternion yaw{xYaw, {1, 0, 0}};
-    Quaternion pitch{yPitch, {0, 1, 0}};
+    Quaternion pitch{xPitch, {1, 0, 0}};
+    Quaternion yaw{yYaw, {0, 1, 0}};
     Quaternion roll{zRoll, {0, 0, 1}};
 
     // Roll will be applied first to p
@@ -59,11 +59,11 @@ Presto::mat3 Quaternion::toMat3() const {  // Precompute products
     float wy = w * y2;
     float wz = w * z2;
 
-    return {
+    return glm::transpose(mat3{
         {1.0F - (yy + zz), xy - wz, xz + wy},
         {xy + wz, 1.0F - (xx + zz), yz - wx},
         {xz - wy, yz + wx, 1.0F - (xx + yy)},
-    };
+    });
 };
 
 Presto::mat4 Quaternion::toMat4() const {  // Precompute products

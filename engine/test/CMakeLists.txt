@@ -15,14 +15,13 @@ FetchContent_MakeAvailable(googletest)
 
 set(PRESTO_TEST_TARGET "${PROJECT_NAME}Tests")
 
-add_executable(${PRESTO_TEST_TARGET} main.cpp pch.cpp)
+add_executable(${PRESTO_TEST_TARGET} main.cpp pch.cpp quaternions.cpp)
 
 target_precompile_headers(${PRESTO_TEST_TARGET} PRIVATE pch.h)
 target_link_libraries(${PRESTO_TEST_TARGET} PRIVATE ${PRESTO_ENGINE_NAME}
                                                     GTest::gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(${PRESTO_TEST_TARGET})
+# include(GoogleTest)
 
 add_test(NAME ${PRESTO_TEST_TARGET} COMMAND ${PRESTO_TEST_TARGET})
 
