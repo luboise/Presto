@@ -13,6 +13,18 @@ Figure::Figure(figure_size_t size) {
     entities_ = EntityManagerImpl::get().newEntities(size);
 }
 
+Figure::Figure(Figure&& other) noexcept
+    : entities_(std::move(other.entities_)) {
+    other.entities_.clear();
+};
+
+Figure& Figure::operator=(Figure&& other) noexcept {
+    this->entities_ = std::move(other.entities_);
+    other.entities_.clear();
+
+    return *this;
+};
+
 Figure::~Figure() {
     for (auto& ptr : entities_) {
         ptr->destroy();
@@ -20,9 +32,10 @@ Figure::~Figure() {
 }
 
 Entity& Figure::getEntity(std::size_t index) {
-    PR_ASSERT(
-        index < entities_.size(),
-        std::format("Index out of acccepted bounds [1, {}]", entities_.size()));
+    PR_ASSERT(index < entities_.size(),
+              std::format("Index out of acccepted bounds [0, {}]",
+                          entities_.size() - 1));
     return *entities_[index];
 };
+
 }  // namespace Presto

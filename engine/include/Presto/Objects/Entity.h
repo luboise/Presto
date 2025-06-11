@@ -26,6 +26,12 @@ class PRESTO_API Entity {
     friend class EventManager;
 
    public:
+    Entity() = delete;
+    Entity(const Entity&) = delete;
+    Entity(Entity&&) = delete;
+    Entity& operator=(const Entity&) = delete;
+    Entity& operator=(Entity&&) = delete;
+
     using ComponentMap = std::map<class_id_t, ComponentPtr<Component>>;
 
     static constexpr auto UNASSIGNED_ID{static_cast<entity_id_t>(-1)};

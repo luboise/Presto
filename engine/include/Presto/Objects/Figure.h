@@ -12,7 +12,13 @@ using figure_size_t = PR_SIZE;
 
 class Figure {
    public:
+    Figure(const Figure&) = delete;
+    Figure& operator=(const Figure&) = delete;
     explicit Figure(figure_size_t size);
+
+    Figure(Figure&&) noexcept;
+    Figure& operator=(Figure&&) noexcept;
+
     ~Figure();
 
     Entity& getEntity(std::size_t index = 0);

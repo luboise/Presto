@@ -12,10 +12,13 @@
 using Presto::ObjectCreatedEvent;
 
 namespace Presto {
+
 Entity::Entity(entity_id_t id, entity_name_t name)
     : name_(std::move(name)), id_(id) {
     ObjectCreatedEvent(this);
 }
+
+Entity::~Entity() = default;
 
 void Entity::addTag(const entity_tag_name_t& tagName) {
     const entity_tag_id_t tag_id{EntityManagerImpl::get().getTagId(tagName)};
@@ -28,8 +31,6 @@ void Entity::addTag(const entity_tag_name_t& tagName) {
 }
 
 void Entity::addTag(entity_tag_id_t tag) { tags_[tag] = true; };
-
-Entity::~Entity() = default;
 
 Entity::ComponentMap& Entity::getComponents() { return components_; }
 
