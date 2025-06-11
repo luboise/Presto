@@ -119,6 +119,14 @@ struct Rectangle : CollisionShape {
     COLLISION_FUNCTIONS(Rectangle)
 };
 
+struct Cube : CollisionShape {
+    Cube() = default;
+    explicit Cube(vec3 pos);
+    [[nodiscard]] std::array<vec3, 8> vertices() const;
+
+    COLLISION_FUNCTIONS(Cube)
+};
+
 struct Triangle : CollisionShape {
     Point p1;
     Point p2;

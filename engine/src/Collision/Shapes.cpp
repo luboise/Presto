@@ -43,6 +43,30 @@ Presto::float32_t Rectangle::width() const {
     return std::abs(top_right.x - top_left.x);
 };
 
+Cube::Cube(vec3 pos) { this->data.position = pos; };
+
+std::array<vec3, 8> Cube::vertices() const {
+    constexpr float a = 0.5;
+
+    std::array<vec3, 8> vertices = {
+        vec3{-a, -a, -a},
+        vec3{a, -a, -a},
+        vec3{a, a, -a},
+        vec3{-a, a, -a},
+        //
+        vec3{-a, -a, a},
+        vec3{a, -a, a},
+        vec3{a, a, a},
+        vec3{-a, a, a},
+    };
+
+    for (auto& v : vertices) {
+        v += data.position;
+    }
+
+    return vertices;
+};
+
 }  // namespace Presto
 
 #if 0

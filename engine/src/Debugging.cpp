@@ -134,6 +134,29 @@ void DebugManager::setDrawMainCamera(bool enabled) {
 
 }  // namespace Presto
 
+void Presto::Draw(const Presto::Cube& cube, Presto::vec4 colour) {
+    using namespace Presto;
+
+    static auto& dm{DebugManager::get()};
+
+    const auto vertices{cube.vertices()};
+    // Front face
+    dm.drawLine(vertices[0], vertices[1], {.colour = colour});
+    dm.drawLine(vertices[1], vertices[2], {.colour = colour});
+    dm.drawLine(vertices[2], vertices[3], {.colour = colour});
+    dm.drawLine(vertices[3], vertices[0], {.colour = colour});
+    // Back face
+    dm.drawLine(vertices[4], vertices[5], {.colour = colour});
+    dm.drawLine(vertices[5], vertices[6], {.colour = colour});
+    dm.drawLine(vertices[6], vertices[7], {.colour = colour});
+    dm.drawLine(vertices[7], vertices[4], {.colour = colour});
+    // Connecting edges
+    dm.drawLine(vertices[0], vertices[4], {.colour = colour});
+    dm.drawLine(vertices[1], vertices[5], {.colour = colour});
+    dm.drawLine(vertices[2], vertices[6], {.colour = colour});
+    dm.drawLine(vertices[3], vertices[7], {.colour = colour});
+};
+
 void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
     using namespace Presto;
 
