@@ -7,4 +7,5 @@ target_sources(
           ModelAsset.cpp
           MaterialAsset.cpp
           MaterialInstanceAsset.cpp
-          ImageAsset.cpp)
+          ImageAsset.cpp
+          FontAsset.cpp)

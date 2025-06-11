@@ -5,7 +5,13 @@
 namespace Presto {
 
 using asset_name_t = PR_STRING_ID;
-enum class AssetType : std::uint8_t { MESH, MODEL, MATERIAL_DEFINITION, IMAGE };
+enum class AssetType : std::uint8_t {
+    MESH,
+    MODEL,
+    MATERIAL_DEFINITION,
+    IMAGE,
+    FONT
+};
 
 using AssetArg = AssetPath;
 
