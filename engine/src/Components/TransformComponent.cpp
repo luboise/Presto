@@ -102,6 +102,7 @@ TransformData& TransformData::addRotation(Presto::vec3 r) {
 
 TransformData& TransformData::addRotation(Presto::Quaternion quat) {
     this->rotation = quat * this->rotation;
+    return *this;
 };
 
 TransformData& TransformData::addTranslation(Presto::vec3 t) {

@@ -3,7 +3,9 @@
 #include "Modules/RenderingManager.h"
 
 #include "Modules/GLTFLoader.h"
+
 #include "Presto/Assets/AssetSources/MeshSource.h"
+
 #include "Presto/Rendering/MeshData.h"
 
 namespace Presto {

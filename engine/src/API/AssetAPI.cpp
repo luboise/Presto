@@ -32,4 +32,8 @@ Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<MeshSource>(filepath);
 }
 
+Ptr<FontSource> CreateFontSource(const AssetArg& filepath) {
+    return AssetManager::get().addAssetSource<FontSource>(filepath);
+};
+
 }  // namespace Presto

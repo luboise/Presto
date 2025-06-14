@@ -21,6 +21,8 @@ class ImageAsset;
 using ImagePtr = Ptr<ImageAsset>;
 class ModelAsset;
 using ModelPtr = Ptr<ModelAsset>;
+class FontAsset;
+using FontPtr = Ptr<FontAsset>;
 
 class Mesh;
 using MeshPtr = Ptr<Mesh>;

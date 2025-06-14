@@ -8,6 +8,7 @@
 #include "Presto/Assets/ModelAsset.h"     // IWYU pragma: export
 */
 #include "Presto/Assets/AssetSources/AssetSource.h"  // IWYU pragma: export
+#include "Presto/Assets/AssetSources/FontSource.h"   // IWYU pragma: export
 #include "Presto/Assets/AssetSources/MeshSource.h"   // IWYU pragma: export
 
 #include "Presto/Types/AssetTypes.h"
@@ -17,6 +18,7 @@
 namespace Presto {
 
 class MeshSource;
+class FontSource;
 
 /**
  * @brief Loads an image from the disk, and creates a new ImageAsset out of it.
@@ -29,6 +31,12 @@ ImagePtr LoadImage(const AssetArg& path, Presto::string name = "");
  * load models and meshes.
  */
 [[nodiscard]] Ptr<MeshSource> CreateMeshSource(const AssetArg& filepath);
+
+/**
+ * @brief  Creates a new FontSource object from a file path. This can be used to
+ * load fonts from a .ttc file.
+ */
+[[nodiscard]] Ptr<FontSource> CreateFontSource(const AssetArg& filepath);
 
 /**
  * @brief  Finds an existing (loaded) model, and returns a new handle to it.
