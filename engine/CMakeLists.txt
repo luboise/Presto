@@ -7,10 +7,8 @@ target_include_directories(${PRESTO_ENGINE_NAME}
 target_compile_definitions(PrestoEngine PUBLIC GLM_ENABLE_CXX_20)
 
 target_include_directories(
-  ${PRESTO_ENGINE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
+	${PRESTO_ENGINE_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
                                ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
-
-
 
 target_include_directories(
   ${PRESTO_ENGINE_NAME}
@@ -31,6 +29,10 @@ target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
+
+# target_compile_options(${PRESTO_ENGINE_NAME} PUBLIC -stdlib=libc++ -fno-implicit-modules)
+# target_link_options(${PRESTO_ENGINE_NAME} PUBLIC -stdlib=libc++ -fno-implicit-modules)
+
 # target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
 
 add_subdirectory(src)
@@ -68,6 +70,8 @@ set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # if("${CMAKE_BINARY_DIR}")
+
+add_subdirectory(modules)
 
 if(NOT ${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
   set(PRESTO_BASE_SHADER_DIR

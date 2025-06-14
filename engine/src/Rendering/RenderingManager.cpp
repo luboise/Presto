@@ -598,11 +598,14 @@ void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
         return;
     }
 
-    if (!ptr.unique()) {
-        PR_WARN("Unable to unload mesh with id {} as it is currently in use.",
-                ptr->registrationId());
-        return;
-    }
+    // TODO: Figure out how to reimplement this since it was removed in cpp20
+    /*
+if (!ptr.unique()) {
+    PR_WARN("Unable to unload mesh with id {} as it is currently in use.",
+            ptr->registrationId());
+    return;
+}
+    */
 
     impl_->mesh_registrations.release(ptr->registrationId());
 };

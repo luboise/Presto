@@ -31,6 +31,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(PRESTO_ENGINE_NAME "PrestoEngine")
 
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   message(STATUS "Creating a debug build of Presto")
   set(PRESTO_DEBUG_BUILD ON)
