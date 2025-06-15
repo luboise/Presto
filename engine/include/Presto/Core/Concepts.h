@@ -1,9 +1,20 @@
 #pragma once
 
+#include <iterator>
+
 namespace Presto {
+
 enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
 using Strictness::LOOSELY_DERIVED;
 using Strictness::STRICTLY_DERIVED;
+
+template <typename M>
+concept MapLike = requires(M m) {
+    { m.begin() } -> std::input_iterator;
+    { m.end() } -> std::input_iterator;
+    typename M::key_type;
+    typename M::mapped_type;
+};
 
 template <typename Derived, typename Base,
           Strictness Strict = Strictness::LOOSELY_DERIVED>
@@ -29,4 +40,5 @@ concept Scalable = requires(T a, Scalar b) {
     { a* b } -> std::convertible_to<T>;
     { a / b } -> std::convertible_to<T>;
 };
+
 }  // namespace Presto

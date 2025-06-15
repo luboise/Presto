@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Presto/Types/CoreTypes.h"
+
 namespace Presto {
 
-enum class UniformVariableType : uint8_t {
+enum class UniformVariableType : Presto::uint8_t {
     INT = 1,
     UINT = 2,
     FLOAT = 3,

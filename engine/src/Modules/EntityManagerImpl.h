@@ -3,7 +3,6 @@
 #include "Module.h"
 
 #include "Presto/Core/Concepts.h"
-#include "Presto/Core/ViewHandling.h"
 #include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
 

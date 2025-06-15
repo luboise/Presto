@@ -4,9 +4,10 @@
 #include <map>
 #include <ranges>
 
-#include "Presto/Objects/Component.h"
+#include "Presto/Core/Concepts.h"
 
 namespace Presto {
+
 using namespace std::ranges;
 using namespace std::views;
 
@@ -15,17 +16,7 @@ using Filter = std::function<bool(V&)>;
 
 /** A template for results from filtering a map. Used when querying for
  * entities and components to provide a non-owning view.
- *
  */
-
-template <typename M>
-concept MapLike = requires(M m) {
-    { m.begin() } -> std::input_iterator;
-    { m.end() } -> std::input_iterator;
-    typename M::key_type;
-    typename M::mapped_type;
-};
-
 template <MapLike M>
 using MapFilter = Filter<typename M::mapped_type>;
 
@@ -45,12 +36,4 @@ using FilterView = std::ranges::filter_view<
 template <MapLike M>
 using MapFilterView = FilterView<typename M::key_type, typename M::mapped_type>;
 
-using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
-
-using ComponentList = std::vector<GenericComponentPtr>;
-using ComponentDatabase = std::map<class_id_t, ComponentList>;
-
-using ComponentSearchResults =
-    filter_view<all_t<join_view<elements_view<ref_view<ComponentDatabase>, 1>>>,
-                ComponentFilter>;
 }  // namespace Presto

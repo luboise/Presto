@@ -1,12 +1,26 @@
 #pragma once
 
-#include "Presto/Core/ViewHandling.h"
 #include "Presto/Objects/Component.h"
 #include "Presto/Objects/Entity.h"
 
 #include "Presto/Objects/Figure.h"
 
+#include <ranges>
+
 namespace Presto {
+
+using namespace std::ranges;
+using namespace std::views;
+
+// Used by EntityManager.h
+using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
+
+using ComponentList = std::vector<GenericComponentPtr>;
+using ComponentDatabase = std::map<class_id_t, ComponentList>;
+using ComponentSearchResults =
+    filter_view<all_t<join_view<elements_view<ref_view<ComponentDatabase>, 1>>>,
+                ComponentFilter>;
+
 class PRESTO_API EntityManager {
     friend class Application;
 
