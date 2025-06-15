@@ -35,4 +35,7 @@ target_sources(
           Debugging.cpp
           GLFWAppWindow.cpp)
 
+
+add_subdirectory(cppmodules)
+
 # add_subdirectory(Platform)
