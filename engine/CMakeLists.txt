@@ -1,5 +1,8 @@
 add_library(${PRESTO_ENGINE_NAME} SHARED)
 
+target_compile_features(${PRESTO_ENGINE_NAME} PUBLIC cxx_std_23)
+set_target_properties(${PRESTO_ENGINE_NAME} PROPERTIES CXX_MODULE_STD STD)
+
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -57,6 +60,8 @@ set(TINYGLTF_INSTALL
 
 set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+add_subdirectory(modules)
+
 # target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC
 # ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
 
@@ -71,7 +76,6 @@ set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # if("${CMAKE_BINARY_DIR}")
 
-add_subdirectory(modules)
 
 if(NOT ${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
   set(PRESTO_BASE_SHADER_DIR
@@ -89,3 +93,4 @@ endif()
 if(PRESTO_ENABLE_TESTS)
   add_subdirectory(test)
 endif()
+

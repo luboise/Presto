@@ -1,6 +1,3 @@
-target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE
-                          ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
-
 add_subdirectory(API)
 
 add_subdirectory(Assets)
@@ -15,24 +12,26 @@ add_subdirectory(Runtime)
 add_subdirectory(Utils)
 
 if(PRESTO_DEBUG_BUILD)
-  add_subdirectory(Debugging)
+	add_subdirectory(Debugging)
 endif()
 
+add_subdirectory(cppmodules)
+
 target_sources(
-  ${PRESTO_ENGINE_NAME}
-  PRIVATE Application.cpp
-          # Rendering/RenderLayer.cpp
-          Rendering/RenderingManager.cpp
-          Materials.cpp
-          Events.cpp
-          Logging.cpp
-          Objects.cpp
-          Math.cpp
-          Physics.cpp
-          pch.cpp
-          System.cpp
-          Collision.cpp
-          Debugging.cpp
-          GLFWAppWindow.cpp)
+		${PRESTO_ENGINE_NAME}
+		PRIVATE Application.cpp
+										# Rendering/RenderLayer.cpp
+										Rendering/RenderingManager.cpp
+										Materials.cpp
+										Events.cpp
+										Logging.cpp
+										Objects.cpp
+										Math.cpp
+										Physics.cpp
+										# pch.cpp
+										System.cpp
+										Collision.cpp
+										Debugging.cpp
+										GLFWAppWindow.cpp)
 
 # add_subdirectory(Platform)

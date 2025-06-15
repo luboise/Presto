@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+import presto.common;
+
 #include "Presto/Rendering/UniformBuffer.h"
 
 namespace Presto {

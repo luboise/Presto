@@ -1,8 +1,8 @@
-#pragma once
+#include <cstdint>
 
-#include "Presto/Types/CoreTypes.h"
+export module presto.common:constants;
 
-namespace Presto {
+export namespace Presto {
 
 using PR_NUMERIC_ID = std::uint32_t;
 using PR_SIZE = std::size_t;

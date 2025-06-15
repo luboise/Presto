@@ -1,5 +1,7 @@
 #pragma once
 
+import presto.common;
+
 namespace Presto {
 
 class UniformBuffer {

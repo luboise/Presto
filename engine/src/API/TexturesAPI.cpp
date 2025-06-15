@@ -3,6 +3,8 @@
 
 #include "Modules/RenderingManager.h"
 
+import presto.common;
+
 namespace Presto {
 
 Ptr<Texture2D> NewTexture2D(AssetArg path) {
