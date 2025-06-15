@@ -16,7 +16,7 @@ bool Asset::ensureLoaded() {
     return loaded_;
 };
 
-Asset::Asset(PR_STRING_ID name) : name_(std::move(name)) {};
+Asset::Asset(Presto::string name) : name_(std::move(name)) {};
 
 Asset::~Asset() = default;
 }  // namespace Presto

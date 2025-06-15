@@ -21,14 +21,12 @@
 
 // Internal imports
 #include "Memory/AllocatorTypes.h"
-#include "Modules/AssetManager.h"
-#include "Modules/EntityManagerImpl.h"
-#include "Modules/RenderingManager.h"
-#include "Rendering/DefaultMeshes.h"
-#include "Rendering/DefaultTextures.h"
+
 #include "Rendering/MeshRegistrationData.h"
 #include "Rendering/Renderer.h"
 #include "Utils/IDGenerator.h"
+
+import presto.internal;
 
 namespace Presto {
 

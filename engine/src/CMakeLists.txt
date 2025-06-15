@@ -25,7 +25,6 @@ target_sources(
           Rendering/RenderingManager.cpp
           Materials.cpp
           Events.cpp
-          Logging.cpp
           Objects.cpp
           Math.cpp
           Physics.cpp
@@ -35,6 +34,7 @@ target_sources(
           Debugging.cpp
           GLFWAppWindow.cpp)
 
+internal_modules(core.logging.cpp)
 
 add_subdirectory(cppmodules)
 

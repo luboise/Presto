@@ -82,7 +82,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
     return ShaderDataType::FLOAT;
 };
 
-PR_STRING_ID tinygltfNameToPrestoName(const PR_STRING_ID& name) {
+Presto::string tinygltfNameToPrestoName(const Presto::string& name) {
     if (name == "POSITION") {
         return DefaultAttributeName::POSITION;
     }

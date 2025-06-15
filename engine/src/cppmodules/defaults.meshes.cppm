@@ -1,4 +1,4 @@
-export module presto.defaults.meshes;
+export module presto.internal.defaults.meshes;
 
 #include "Presto/Core/Constants.h"
 #include "Presto/Rendering/MeshData.h"

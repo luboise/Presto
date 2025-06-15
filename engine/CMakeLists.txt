@@ -33,6 +33,9 @@ set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
 # target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+include(functions)
+
 add_subdirectory(src)
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
@@ -85,3 +88,5 @@ endif()
 if(PRESTO_ENABLE_TESTS)
   add_subdirectory(test)
 endif()
+
+add_subdirectory(modules)

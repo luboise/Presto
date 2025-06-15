@@ -10,7 +10,7 @@
 namespace Presto {
 class OpenGLShader final : public Shader {
    public:
-    using shader_property_key_t = PR_STRING_ID;
+    using shader_property_key_t = Presto::string;
 
     using opengl_shader_ptr_t = std::shared_ptr<OpenGLShader>;
 

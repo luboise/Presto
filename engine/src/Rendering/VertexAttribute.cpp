@@ -40,7 +40,7 @@ void AttributeSet::addAttribute(VertexAttribute attrib) {
 };
 
 const VertexAttribute* AttributeSet::getAttribute(
-    const PR_STRING_ID& name) const {
+    const Presto::string& name) const {
     auto found{std::ranges::find_if(attributes_, [name](const auto& pair) {
         return pair.second.name == name;
     })};

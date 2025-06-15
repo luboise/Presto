@@ -30,7 +30,7 @@ property = *in_property;
 
 
 const MaterialProperty* UniformStructure::getProperty(
-const PR_STRING_ID& name) const {
+const Presto::string& name) const {
 if (const auto property{
     std::ranges::find_if(this->properties,
                          [name](const MaterialProperty& prop) -> bool {
