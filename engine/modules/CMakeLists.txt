@@ -19,8 +19,12 @@ api_modules(
 	core/constants.cppm
 	core/assert.cppm
 	core/event.cppm
+	core/platform.cppm
 	#
 	objects.cppm
+	objects/components.cppm
+	objects/components/transform.cppm
+	objects/components/rigidbody.cppm
 	#
 	math.cppm
 	math/shapes.cppm

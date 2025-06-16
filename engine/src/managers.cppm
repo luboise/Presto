@@ -1,5 +1,6 @@
 export module presto.internal.managers;
 
-#include "Modules/AssetManager.h"       // IWYU pragma: export
-#include "Modules/EntityManagerImpl.h"  // IWYU pragma: export
-#include "Modules/RenderingManager.h"   // IWYU pragma: export
+export import :physics;
+export import :asset;
+export import :entityimpl;
+export import :rendering;

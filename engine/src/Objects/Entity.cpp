@@ -3,7 +3,7 @@
 
 #include "Modules/EventManagerImpl.h"
 #include "Modules/PhysicsManager.h"
-#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
+import presto.objects.components;
 
 #include "Presto/Objects/EntityOwner.h"
 

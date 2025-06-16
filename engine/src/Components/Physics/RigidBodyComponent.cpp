@@ -1,4 +1,4 @@
-#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
+import presto.components;
 
 namespace Presto {
 

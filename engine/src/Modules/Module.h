@@ -7,9 +7,7 @@
 #include <memory>
 #include <type_traits>
 
-import presto.core.assert;
-
-#include "Presto/Platform.h"
+import presto.core;
 
 #define MODULE_FUNCTIONS(Type)                                      \
                                                                     \

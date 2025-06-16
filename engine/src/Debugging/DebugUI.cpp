@@ -1,3 +1,5 @@
+import presto.internal;
+/*
 #include "Debugging/ComponentBits.h"
 #include "Modules/EntityManagerImpl.h"
 
@@ -6,6 +8,7 @@
 
 #include "Presto/Objects/Entity.h"
 #include "Presto/Runtime/Window.h"
+*/
 
 #include "DebugUI.h"
 

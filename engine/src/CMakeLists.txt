@@ -19,6 +19,11 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 internal_modules(
     managers.cppm
+	managers/asset.cppm
+	managers/physics.cppm
+	managers/rendering.cppm
+	managers/entityimpl.cppm
+	#
     pch.cppm
     common.cppm
     common.types.cppm

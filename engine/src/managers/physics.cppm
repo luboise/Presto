@@ -1,11 +1,8 @@
-#pragma once
+export module presto.internal.managers:physics;
 
-#include "Module.h"
+import presto.interal;
 
-#include "Presto/Objects/Components/Physics/RigidBodyComponent.h"
-#include "Presto/Objects/Entity.h"
-
-namespace Presto {
+export namespace Presto {
 
 class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);
