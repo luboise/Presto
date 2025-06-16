@@ -2,13 +2,37 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
 api_modules(
 	presto.cppm
+	entry.cppm
+	#
+	asset.cppm
+	asset/image.cppm 
+	asset/model.cppm 
+	asset/material.cppm 
+	asset/types.cppm
+	#
+	aliases.cppm
+	aliases/asset.cppm
 	#
 	core.cppm
-	core.types.cppm
-	core.constants.cppm
-	core.assert.cppm
+	core/types.cppm
+	core/logging.cppm
+	core/constants.cppm
+	core/assert.cppm
+	core/event.cppm
 	#
-	assets.cppm
+	objects.cppm
+	#
+	math.cppm
+	math/shapes.cppm
+	#
+	input.cppm
+	input/events.cppm
+	input/keycodes.cppm
+	#
+	utils.cppm
+	utils/file.cppm
+	#
+	debugging.cppm
+	#
+	materials.cppm
 )
-
-add_subdirectory(assets)

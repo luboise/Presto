@@ -1,9 +1,6 @@
-target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE
-                          ${CMAKE_CURRENT_SOURCE_DIR}/pch.h)
-
 add_subdirectory(API)
 
-add_subdirectory(Assets)
+# add_subdirectory(assets)
 add_subdirectory(Collision)
 add_subdirectory(Common)
 add_subdirectory(Components)
@@ -18,23 +15,18 @@ if(PRESTO_DEBUG_BUILD)
   add_subdirectory(Debugging)
 endif()
 
-target_sources(
-  ${PRESTO_ENGINE_NAME}
-  PRIVATE Application.cpp
-          # Rendering/RenderLayer.cpp
-          Rendering/RenderingManager.cpp
-          Materials.cpp
-          Events.cpp
-          Objects.cpp
-          Math.cpp
-          Physics.cpp
-          pch.cpp
-          System.cpp
-          Collision.cpp
-          Debugging.cpp
-          GLFWAppWindow.cpp)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-internal_modules(core.logging.cpp)
+internal_modules(
+    managers.cppm
+    pch.cppm
+    common.cppm
+    common.types.cppm
+    defaults.cppm
+    defaults.meshes.cppm
+    defaults.textures.cppm)
+
+# internal_modules(core.logging.cpp)
 
 add_subdirectory(cppmodules)
 

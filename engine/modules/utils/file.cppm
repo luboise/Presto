@@ -1,3 +1,4 @@
+export module presto.utils:file;
 #pragma once
 
 #include <nlohmann/json.hpp>

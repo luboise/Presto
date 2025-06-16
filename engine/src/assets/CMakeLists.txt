@@ -11,3 +11,5 @@ target_sources(
           # Asset Sources
           AssetSources/MeshSource.cpp
           AssetSources/FontSource.cpp)
+
+internal_modules(image.cpp)

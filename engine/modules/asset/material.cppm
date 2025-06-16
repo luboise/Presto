@@ -1,15 +1,8 @@
-#pragma once
+export module presto.assets.material;
 
 #include <memory>
 
-#include "Presto/Assets/Asset.h"
-
-#include "Presto/Assets/ImageAsset.h"
-#include "Presto/Rendering/MaterialTypes.h"
-
-#include "Presto/Rendering/MaterialInstance.h"
-
-namespace Presto {
+export namespace Presto {
 
 class MaterialAsset final :
     // Enables MaterialAsset to be able to get its own shared pointer, needed
@@ -51,7 +44,5 @@ class MaterialAsset final :
     std::vector<MaterialInstance> instances_;
     // std::vector<MaterialProperty> properties_;
 };
-
-using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
 
 }  // namespace Presto

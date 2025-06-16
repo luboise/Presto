@@ -1,8 +1,7 @@
-#include "Presto/Assets/ImageAsset.h"
+module presto.assets.image;
 
-#include "Modules/RenderingManager.h"
+export namespace Presto {
 
-namespace Presto {
 bool ImageAsset::load() {
     /*
  RenderingManager::get().loadImageOnGpu(*this);
@@ -10,4 +9,5 @@ bool ImageAsset::load() {
      */
     return true;
 }
+
 }  // namespace Presto

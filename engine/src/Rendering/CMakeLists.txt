@@ -5,6 +5,7 @@ target_sources(
   ${PRESTO_ENGINE_NAME}
   PRIVATE BoundingBox.cpp
           Renderer.cpp
+          RenderingManager.cpp
           Utils/RenderingUtils.cpp
           RenderTypes.cpp
           VertexAttribute.cpp

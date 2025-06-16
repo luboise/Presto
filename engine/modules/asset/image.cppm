@@ -1,11 +1,23 @@
-#pragma once
+export module presto.assets.image;
 
-#include "Presto/Assets/Asset.h"
-#include "Presto/Assets/ImageData.h"
+import presto.assets.types;
 
-// #include "Presto/Rendering/Renderer.h"
+export namespace Presto {
+struct ImageData {
+    using image_data_t = ByteArray;
 
-namespace Presto {
+    std::size_t width;
+    std::size_t height;
+    image_data_t bytes;
+
+    static constexpr auto PIXEL_BYTE_LENGTH = 4;
+
+    // 4 bytes since assumed RGBA, 1 for each channel
+    [[nodiscard]] std::size_t size() const {
+        return width * height * PIXEL_BYTE_LENGTH;
+    };
+};
+
 class ImageAsset final : public Asset {
     friend class RenderingManager;
 
