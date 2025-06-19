@@ -1,6 +1,7 @@
 export module presto.component:component;
 
 import presto.core.types;
+import presto.core.concepts;
 
 export namespace Presto {
 // using component_class_t = std::uint32_t;
@@ -53,6 +54,12 @@ return ComponentPtr<SubClass>{dynamic_cast<SubClass*>(this)};
 
     component_id_t id_{UNASSIGNED_ID};
     bool renderable_ = false;
+};
+
+template <typename T>
+    requires DerivedFrom<T, Component, Strictness::STRICTLY_DERIVED>
+struct Subcomponent {
+    using super_t = T;
 };
 
 using GenericComponentPtr = ComponentPtr<Component>;

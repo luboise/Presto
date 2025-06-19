@@ -1,5 +1,4 @@
 export module presto.assets.image;
-
 import presto.assets.types;
 
 export namespace Presto {

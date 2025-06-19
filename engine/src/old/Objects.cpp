@@ -34,14 +34,3 @@ void Presto::SetDefaultCameraConductor(
     EntityPtr main_camera{RenderingManager::get().getMainCamera()};
     main_camera->setComponent<ConductorComponent>(ptr);
 };
-
-void Presto::ConductorComponent::onEnterScene() {
-    for (const auto& callback : preStartCallbacks_) {
-        callback();
-    }
-    this->start();
-}
-void Presto::ConductorComponent::addPreStartCallback(
-    const pre_start_callback_t& callback) {
-    preStartCallbacks_.push_back(callback);
-}
