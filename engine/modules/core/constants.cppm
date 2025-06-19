@@ -10,13 +10,7 @@ enum RENDER_LIBRARY { UNSET, VULKAN, OPENGL, DIRECTX };
 
 using Presto::PR_NUMERIC_ID;
 
-enum PR_RESULT {
-    PR_SUCCESS = 0,
-    PR_FAILURE = 1,
-};
-
 using PR_BIT_TYPE = std::uint16_t;
-
 constexpr PR_BIT_TYPE AS_BIT(std::uint8_t x) { return 1U << x; }
 
 constexpr double PR_MIN_NEAR_DISTANCE{0.1};

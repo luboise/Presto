@@ -25,6 +25,8 @@ api_modules(
 	objects/components.cppm
 	objects/components/transform.cppm
 	objects/components/rigidbody.cppm
+	objects/components/canvas.cppm
+	objects/components/canvasitems.cppm
 	#
 	math.cppm
 	math/shapes.cppm
