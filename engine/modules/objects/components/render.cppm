@@ -31,4 +31,19 @@ class PRESTO_API RenderComponent final : public Component {
     struct Impl;
     Allocated<Impl> impl_;
 };
+
+struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
+    float width;
+    float height;
+
+    TransformData transform;
+    MaterialPtr material;
+};
+
+struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
+    std::vector<MeshDraw> draws;
+
+    [[nodiscard]] PR_SIZE meshCount() const { return draws.size(); }
+};
+
 }  // namespace Presto

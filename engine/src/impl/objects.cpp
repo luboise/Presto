@@ -1,6 +1,62 @@
 export module presto.objects;
 
+import presto.core.types;
+
 namespace Presto {
+
+Presto::CameraComponent& Presto::GetDefaultCamera() {
+    using namespace Presto;
+
+    return *RenderingManager::get()
+                .getMainCamera()
+                ->getComponent<CameraComponent>();
+}
+
+Presto::EntityRef Presto::NewLooseEntity() {
+    return EntityManagerImpl::Get().newEntity();
+};
+
+Presto::EntityOwner Presto::NewOwnedEntity(Presto::vec3 pos) {
+    EntityOwner new_owner{};
+    new_owner->getComponent<TransformComponent>()->setTranslation(pos);
+
+    return new_owner;
+};
+
+Presto::EntityPtr Presto::NewEntity(Presto::vec3 pos) {
+    auto new_entity{EntityManagerImpl::Get().newEntity()};
+
+    new_entity->getComponent<TransformComponent>()->setTranslation(pos);
+    return new_entity;
+};
+
+void Presto::SetDefaultCameraConductor(
+    const ComponentPtr<ConductorComponent>& ptr) {
+    EntityPtr main_camera{RenderingManager::get().getMainCamera()};
+    main_camera->setComponent<ConductorComponent>(ptr);
+};
+
+vec3 applyTransformation(const vec3& v, const mat4& transformations) {
+    vec4 transformed = transformations * vec4{v, 1};
+    transformed /= transformed.w;
+
+    return vec3{transformed};
+};
+
+vec3 applyRotations(const vec3& v, const vec3& rotations) {
+    mat4 transformation{1};
+
+    return rotations * v;
+
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.z), {0, 0, 1});
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.y), {0, 1, 0});
+    transformation =
+        glm::rotate(transformation, glm::radians(rotations.x), {1, 0, 0});
+
+    return applyTransformation(v, transformation);
+}
 
 entity_id_t EntityManager::reserveId() {
     return EntityManagerImpl::get().reserveId();
@@ -54,19 +110,12 @@ Presto::vec3 TransformData::upwards() const {
 
 Presto::vec3 TransformData::downwards() const { return -upwards(); }
 
-vec3 applyRotations(const vec3& v, const vec3& rotations) {
-    mat4 transformation{1};
+TransformData::TransformData() : TransformData({0, 0, 0}, Quaternion{}) {};
 
-    return rotations * v;
+TransformData::TransformData(Presto::vec3 position, Quaternion rotation)
+    : position{position}, rotation{rotation} {};
 
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.z), {0, 0, 1});
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.y), {0, 1, 0});
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.x), {1, 0, 0});
-
-    return applyTransformation(v, transformation);
-}
+TransformData::TransformData(Presto::vec3 position, Presto::vec3 rotation)
+    : position{position}, rotation{Quaternion::fromEuler(rotation)} {};
 
 }  // namespace Presto

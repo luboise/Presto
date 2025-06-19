@@ -1,4 +1,4 @@
-export module presto.internal.managers:physics;
+export module presto.internal.managers.physics;
 
 import presto.interal;
 

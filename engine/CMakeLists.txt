@@ -36,6 +36,7 @@ target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(functions)
 
+add_subdirectory(modules)
 add_subdirectory(src)
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
@@ -74,7 +75,7 @@ set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if(NOT ${CMAKE_SOURCE_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
   set(PRESTO_BASE_SHADER_DIR
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/Runtime/DefaultShaders)
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/resources/default_shaders)
   compile_shaders_for_target(${PRESTO_ENGINE_NAME} "${PRESTO_BASE_SHADER_DIR}"
                              "assets/shaders/default")
   if(NOT PRESTO_SHADERS_COMPILED_SUCCESSFULLY)
@@ -88,5 +89,3 @@ endif()
 if(PRESTO_ENABLE_TESTS)
   add_subdirectory(test)
 endif()
-
-add_subdirectory(modules)

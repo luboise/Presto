@@ -1,4 +1,4 @@
-module presto.internal.managers:entityimpl;
+module presto.internal.managers.entityimpl;
 
 import presto.objects;
 import presto.internal;

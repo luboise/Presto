@@ -1,6 +1,6 @@
 target_sources(
   ${PRESTO_ENGINE_NAME}
-  PRIVATE Application.cpp
+  PRIVATE
           Materials.cpp
           Events.cpp
           Objects.cpp

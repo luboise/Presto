@@ -5,3 +5,4 @@ export import :entityimpl;
 export import :eventimpl;
 export import :physics;
 export import :rendering;
+export import :input;

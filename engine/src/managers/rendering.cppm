@@ -1,4 +1,4 @@
-export module presto.internal.managers:rendering;
+export module presto.internal.managers.rendering;
 
 export namespace Presto {
 

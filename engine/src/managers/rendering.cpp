@@ -1,4 +1,4 @@
-module presto.internal.managers:rendering;
+module presto.internal.managers.rendering;
 
 import presto.internal;
 

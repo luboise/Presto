@@ -1,25 +1,25 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-api_modules(
-	presto.cppm
-	entry.cppm
-	#
-	asset.cppm
-	asset/image.cppm 
-	asset/model.cppm 
-	asset/material.cppm 
-	asset/types.cppm
-	#
-	aliases.cppm
-	aliases/asset.cppm
-	#
-	core.cppm
+api_header_modules(
 	core/types.cppm
 	core/logging.cppm
 	core/constants.cppm
 	core/assert.cppm
 	core/event.cppm
 	core/platform.cppm
+	core.cppm
+)
+
+api_modules(
+	assets/font.cppm 
+	assets/image.cppm 
+	assets/model.cppm 
+	assets/material.cppm 
+	assets/types.cppm
+	assets.cppm
+	#
+	aliases.cppm
+	aliases/asset.cppm
 	#
 	objects.cppm
 	objects/components.cppm
@@ -37,8 +37,18 @@ api_modules(
 	#
 	utils.cppm
 	utils/file.cppm
+	utils/interpolation.cppm
+	utils/typemap.cppm
 	#
 	debugging.cppm
 	#
 	materials.cppm
+	materialtypes.cppm
+	#
+)
+
+api_header_modules(
+	presto.cppm
+	entry.cppm
+
 )

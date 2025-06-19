@@ -2,6 +2,7 @@ module presto.objects.components.canvas:canvasitems;
 
 // export module presto.objects.components:canvas;
 
+namespace Presto {
 struct CanvasItem::Impl {
     StructUniformBuffer<CanvasItemAttributes> struct_buffer{};
     CanvasItemAttributes attributes{};
@@ -108,3 +109,11 @@ CanvasItem& CanvasItem::setOpacity(Presto::float32_t opacity) {
 
     return *this;
 }
+
+CanvasButton::CanvasButton(CanvasPosition position)
+    : CanvasItem(position) {
+
+      };
+
+void CanvasButton::setImage(const ImagePtr& image) { image_ = image; };
+}  // namespace Presto

@@ -1,4 +1,4 @@
-module presto.internal.managers:asset;
+module presto.internal.managers.asset;
 
 namespace Presto {
 
@@ -55,16 +55,6 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
     new_image.height = y;
 
     auto new_resource{std::make_shared<ImageAsset>(customName, new_image)};
-
-    /*
-auto* new_mr{new ModelAsset()};
-
-auto default_cube = Meshes::Cube({0, 0, 0}, 1, {1, 1, 1});
-
-new_mr->name = filename;
-new_mr->vertices = default_cube.vertices;
-new_mr->indices = default_cube.indices;
-    */
 
     const auto key = new_resource->name();
 

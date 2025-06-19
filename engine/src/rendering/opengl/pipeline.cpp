@@ -7,7 +7,6 @@ module presto.internal.rendering.opengl:pipeline;
 #include "Presto/Assets/ImportTypes.h"
 #include "Presto/Rendering/UniformTypes.h"
 #include "Rendering/OpenGL/utils.h"
-#include "Rendering/Utils/RenderingUtils.h"
 
 #include "Presto/Rendering/UniformBuffer.h"
 

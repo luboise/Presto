@@ -1,5 +1,9 @@
-#include "Presto/Assets.h"
-#include "Modules/AssetManager.h"
+module presto.internal.assets;
+
+import presto.internal.managers;
+import presto.assets;
+
+#include <utility>
 
 namespace Presto {
 
@@ -53,4 +57,16 @@ Ptr<FontSource> CreateFontSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<FontSource>(filepath);
 };
 
+Presto::MaterialPtr Presto::NewMaterial(MaterialType type,
+                                        Presto::string name) {
+    using namespace Presto;
+
+    return RenderingManager::get().createMaterial(type, std::move(name));
+};
+
+Presto::MaterialPtr Presto::FindMaterial(const Presto::string& name) {
+    using namespace Presto;
+
+    return RenderingManager::get().findMaterial(name);
+};
 }  // namespace Presto

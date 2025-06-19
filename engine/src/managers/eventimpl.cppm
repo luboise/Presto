@@ -1,4 +1,5 @@
-export module presto.internal.managers:eventimpl;
+export module presto.internal.managers.eventimpl;
+import :event;
 
 export namespace Presto {
 

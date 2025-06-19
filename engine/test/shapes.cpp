@@ -1,8 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "Presto/Collision/Shapes.h"
-#include "Presto/Presto.h"
+import presto.math;
 
 using namespace Presto;
 

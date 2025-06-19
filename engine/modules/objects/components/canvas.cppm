@@ -1,5 +1,6 @@
 export module presto.objects.components.canvas;
 export import :canvasitems;
+export import :types;
 
 import presto.core;
 
@@ -107,8 +108,3 @@ class CanvasComponent : public Component {
 };
 
 };  // namespace Presto
-
-#include "Objects/Components/UI/CanvasButton.h"  // IWYU pragma: export
-#include "Objects/Components/UI/CanvasGroup.h"   // IWYU pragma: export
-#include "Objects/Components/UI/CanvasItem.h"    // IWYU pragma: export
-#include "Objects/Components/UI/CanvasRect.h"    // IWYU pragma: export

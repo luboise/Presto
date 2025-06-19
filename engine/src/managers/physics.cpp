@@ -1,4 +1,4 @@
-module presto.internal.managers:physics;
+module presto.internal.managers.physics;
 
 namespace Presto {
 
@@ -42,5 +42,4 @@ void PhysicsManager::addPairing(const PhysicsPairing& pairing) {
 void PhysicsManager::addPersistentForce(Force force) {
     persistentForces_.push_back(force);
 };
-
 }  // namespace Presto

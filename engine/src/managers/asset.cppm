@@ -1,4 +1,4 @@
-export module presto.internal.managers:asset;
+export module presto.internal.managers.asset;
 
 import presto.assets;
 import presto.internal;

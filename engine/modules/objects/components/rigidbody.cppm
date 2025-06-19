@@ -38,7 +38,6 @@ class PRESTO_API RigidBodyComponent : public Component {
    private:
     Force force_;
     float drag_{0.5F};
-    // TypeMap<CollisionShape> colliders_;
 };
 
 }  // namespace Presto

@@ -25,8 +25,6 @@ module presto.internal.rendering.opengl;
 
 #include "Rendering/DefaultTextures.h"
 #include "Rendering/Renderer.h"
-#include "Rendering/Utils/RenderingUtils.h"
-#include "Runtime/WindowData.h"
 
 namespace Presto {
 

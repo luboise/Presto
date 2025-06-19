@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Presto/Presto.h"
-
-#include "Presto/Math.h"
+import presto;
+import presto.math;
 
 using namespace Presto;
 

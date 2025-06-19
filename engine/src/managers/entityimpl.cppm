@@ -1,4 +1,4 @@
-export module presto.internal.managers:entityimpl;
+export module presto.internal.managers.entityimpl;
 
 import presto.core;
 import presto.internal;
