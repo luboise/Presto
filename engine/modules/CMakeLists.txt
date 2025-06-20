@@ -1,54 +1,46 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-api_header_modules(
-	core/types.cppm
-	core/logging.cppm
-	core/constants.cppm
-	core/assert.cppm
-	core/event.cppm
-	core/platform.cppm
-	core.cppm
-)
-
 api_modules(
-	assets/font.cppm 
-	assets/image.cppm 
-	assets/model.cppm 
-	assets/material.cppm 
-	assets/types.cppm
-	assets.cppm
-	#
-	aliases.cppm
-	aliases/asset.cppm
-	#
-	objects.cppm
-	objects/components.cppm
-	objects/components/transform.cppm
-	objects/components/rigidbody.cppm
-	objects/components/canvas.cppm
-	objects/components/canvasitems.cppm
-	#
-	math.cppm
-	math/shapes.cppm
-	#
-	input.cppm
-	input/events.cppm
-	input/keycodes.cppm
-	#
-	utils.cppm
-	utils/file.cppm
-	utils/interpolation.cppm
-	utils/typemap.cppm
-	#
-	debugging.cppm
-	#
-	materials.cppm
-	materialtypes.cppm
-	#
-)
-
-api_header_modules(
-	presto.cppm
-	entry.cppm
-
-)
+  core/types.cppm
+  core/logging.cppm
+  core/constants.cppm
+  core/assert.cppm
+  core/event.cppm
+  core/platform.cppm
+  core.cppm
+  assets/types.cppm
+  assets.cppm
+  assets/font.cppm
+  assets/image.cppm
+  assets/model.cppm
+  assets/material.cppm
+  #
+  aliases.cppm
+  aliases/asset.cppm
+  #
+  objects.cppm
+  objects/components.cppm
+  objects/components/transform.cppm
+  objects/components/rigidbody.cppm
+  objects/components/canvas.cppm
+  objects/components/canvasitems.cppm
+  #
+  math.cppm
+  math/shapes.cppm
+  #
+  input.cppm
+  input/events.cppm
+  input/keycodes.cppm
+  #
+  utils.cppm
+  utils/file.cppm
+  utils/interpolation.cppm
+  utils/typemap.cppm
+  #
+  debugging.cppm
+  #
+  materials.cppm
+  materialtypes.cppm
+  #
+  presto.cppm
+  entry.cppm)

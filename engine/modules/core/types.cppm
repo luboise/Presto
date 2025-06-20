@@ -1,4 +1,4 @@
-export module presto.core.types;
+module;
 
 #include <cstdint>
 #include <filesystem>
@@ -6,10 +6,12 @@ export module presto.core.types;
 #include <string>
 #include <vector>
 
+export module presto.core.types;
+
 export {
     namespace a {
 
-    using fs = std::filesystem;
+    namespace fs = std::filesystem;
     using ByteArray = std::vector<std::byte>;
 
     using int16_t = std::int16_t;

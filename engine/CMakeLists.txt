@@ -10,8 +10,6 @@ target_include_directories(
   ${PRESTO_ENGINE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
                                ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
 
-
-
 target_include_directories(
   ${PRESTO_ENGINE_NAME}
   PRIVATE ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIRS}
@@ -20,8 +18,6 @@ target_include_directories(
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
-
-
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
 
@@ -35,6 +31,15 @@ target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(functions)
+
+target_sources(
+  ${PRESTO_ENGINE_NAME}
+  PUBLIC FILE_SET presto_modules TYPE CXX_MODULES BASE_DIRS
+         "${CMAKE_CURRENT_SOURCE_DIR}/../modules")
+target_sources(
+  ${PRESTO_ENGINE_NAME}
+  PRIVATE FILE_SET presto_internal_modules TYPE CXX_MODULES BASE_DIRS
+          "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 add_subdirectory(modules)
 add_subdirectory(src)

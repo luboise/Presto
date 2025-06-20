@@ -1,5 +1,5 @@
 export module presto.assets.font;
-import :types;
+import presto.assets;
 
 export namespace Presto {
 class FontAsset final : public Asset {
