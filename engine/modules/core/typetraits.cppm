@@ -1,5 +1,5 @@
-#pragma once
-#include "CoreTypes.h"
+export module presto.core.types:typetraits;
+import :base;
 
 namespace Presto {
 
@@ -11,9 +11,9 @@ constexpr Presto::size_t shaderDataSubTypeSize(
         case ShaderDataSubType::USHORT:
             return sizeof(Presto::uint16_t);
         case ShaderDataSubType::INT:
-            return sizeof(std::int32_t);
+            return sizeof(Presto::int32_t);
         case ShaderDataSubType::UINT:
-            return sizeof(std::uint32_t);
+            return sizeof(Presto::uint32_t);
         case ShaderDataSubType::FLOAT:
             return sizeof(Presto::float32_t);
         case ShaderDataSubType::DOUBLE:

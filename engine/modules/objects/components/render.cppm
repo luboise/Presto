@@ -1,4 +1,5 @@
 export module presto.objects.components.render;
+import presto.core.platform;
 import presto.objects.component;
 
 export namespace Presto {

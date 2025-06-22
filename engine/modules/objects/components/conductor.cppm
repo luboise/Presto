@@ -1,4 +1,5 @@
 export module presto.objects.components.conductor;
+import presto.objects.component;
 
 export namespace Presto {
 

@@ -5,8 +5,6 @@ import presto.objects.components;
 import presto.internal.rendering.opengl;
 import presto.internal.glfw;
 
-#include "Presto/Runtime/GLFWAppWindow.h"
-
 export namespace Presto {
 void Renderer::setCameraData(CameraComponent& camera) {
     globalUniforms_ = {.view = camera.getViewMatrix(),

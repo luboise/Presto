@@ -4,7 +4,7 @@ import presto.core.types;
 
 export namespace Presto {
 
-enum class MaterialType : std::uint8_t {
+enum class MaterialType : Presto::uint8_t {
     DEFAULT_3D,
     DEFAULT_UI,
     /*SHADER*/

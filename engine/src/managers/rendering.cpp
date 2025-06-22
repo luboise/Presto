@@ -1,6 +1,14 @@
 module presto.internal.managers.rendering;
 
+import :types;
+import :pipeline;
+
 import presto.internal;
+import presto.internal.glfw;
+import presto.objects;
+
+import presto.internal.managers;
+import presto.objects.components;
 
 // STL import
 #include <algorithm>
@@ -9,19 +17,7 @@ import presto.internal;
 #include <utility>
 
 // Public imports
-#include "Modules/EventManagerImpl.h"
 #include "Presto/Assets/ImportTypes.h"
-#include "Presto/Core/Constants.h"
-#include "Presto/Objects.h"
-#include "Presto/Objects/Components.h"
-#include "Presto/Platform.h"
-#include "Presto/Rendering/MeshData.h"
-#include "Presto/Rendering/Pipeline.h"
-#include "Presto/Rendering/RenderTypes.h"
-#include "Presto/Runtime/Events/ApplicationEvents.h"
-#include "Presto/Runtime/GLFWAppWindow.h"
-#include "Presto/Types/CoreTypes.h"
-#include "Presto/Types/ObjectTypes.h"
 
 // Internal imports
 #include "Memory/AllocatorTypes.h"

@@ -1,22 +1,17 @@
 module presto.internal.rendering.opengl;
 
-#include "./OpenGLRenderer.h"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <cmath>
 
-#include "./OpenGLBuffer.h"
-#include "./OpenGLPipeline.h"
-#include "./OpenGLPipelineBuilder.h"
-#include "./OpenGLTextureFactory.h"
-#include "./OpenGLUniformBuffer.h"
-#include "./OpenGLVAO.h"
-#include "./utils.h"
+import :buffer;
+import :pipeline;
+import :shader;
+import :texture;
 
-#include "Presto/Core/Constants.h"
-#include "Presto/Platform.h"
+import presto.core.constants;
+// #include "./utils.h"
 #include "Presto/Rendering/PipelineTypes.h"
 #include "Presto/Rendering/RenderTypes.h"
 #include "Presto/Runtime/Events/ApplicationEvents.h"
@@ -77,7 +72,6 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         .setShader(vert.c_str(), ShaderStage::VERTEX)
         .setShader(frag.c_str(), ShaderStage::FRAGMENT);
     pipelines[1] = builder.build();
-
     PR_DEBUG_ONLY_CODE(
         pipelines.resize(pipelines.size() + 1);
         vert = Utils::File::ReadAssetFile(

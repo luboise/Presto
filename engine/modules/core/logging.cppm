@@ -1,6 +1,5 @@
 module;
-
-#include "spdlog/spdlog.h"
+#include <memory>
 
 export module presto.core.logging;
 

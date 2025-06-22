@@ -66,6 +66,9 @@ set(TINYGLTF_INSTALL
 
 set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC 
+   "${CMAKE_CURRENT_SOURCE_DIR}/headers")
+
 # target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC
 # ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
 

@@ -1,3 +1,6 @@
+module;
+#include <iostream>
+
 export module presto.core.event;
 
 import presto.core.constants;

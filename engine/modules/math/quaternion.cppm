@@ -1,6 +1,6 @@
 export module presto.math:quaternion;
 
-import presto.internal;
+import presto.core.types;
 
 namespace Presto {
 

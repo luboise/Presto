@@ -1,6 +1,5 @@
 export module presto.objects.components:rigidbody;
-
-import presto.internal;
+import presto.objects.component;
 
 export namespace Presto {
 

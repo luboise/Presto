@@ -1,7 +1,8 @@
 export module presto.internal.rendering.opengl:pipeline;
-import presto.internal.rendering.opengl;
 
-import presto.internal.rendering:base;
+// import presto.internal.rendering.opengl;
+
+import presto.internal.rendering;
 
 export namespace Presto {
 

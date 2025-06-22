@@ -1,7 +1,14 @@
 export module presto.internal.pch;
 
+export import presto.core;
+export import presto.math;
+
+export import presto.asset.types;
+
+export {
 // Utility stuff
 #include <algorithm>  // IWYU pragma: export
+#include <chrono>     // IWYU pragma: export
 #include <iostream>   // IWYU pragma: export
 #include <memory>     // IWYU pragma: export
 #include <numeric>    // IWYU pragma: export
@@ -22,12 +29,4 @@ export module presto.internal.pch;
 #include <Windows.h>
 #include <Xinput.h>
 #endif
-
-#include "Presto/Platform.h"  // IWYU pragma: export
-#include "Utils/Math.h"       // IWYU pragma: export
-
-#include "Presto/Assets/AssetPath.h"  // IWYU pragma: export
-
-#include "Presto/Core/Assert.h"     // IWYU pragma: export
-#include "Presto/Core/Constants.h"  // IWYU pragma: export
-#include "Presto/Core/Logging.h"    // IWYU pragma: export
+}

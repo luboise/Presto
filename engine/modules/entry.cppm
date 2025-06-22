@@ -1,8 +1,11 @@
+module;
+#include <memory>
+
 export module presto.entry;
 
-// #ifdef PR_PLATFORM_WINDOWS
+import presto.runtime.application;
 
-#include <memory>
+// #ifdef PR_PLATFORM_WINDOWS
 
 export {
     using AppHandle = std::unique_ptr<Presto::Application>;

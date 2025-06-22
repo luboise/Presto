@@ -48,7 +48,7 @@ class OpenGLShader final : public Shader {
 };
 
 class OpenGLVAO {
-    using attribute_offset_t = std::int64_t;
+    using attribute_offset_t = Presto::int64_t;
 
    public:
     OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,

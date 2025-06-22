@@ -1,8 +1,10 @@
 export module presto.runtime.time;
 
+import presto.core.platform;
+
 export namespace Presto {
 
-class Time {
+class PRESTO_API Time {
     friend class Application;
 
    public:

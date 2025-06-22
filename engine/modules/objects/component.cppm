@@ -1,10 +1,17 @@
-export module presto.component:component;
+module;
+#include <concepts>
+#include <typeinfo>
+
+export module presto.component;
+
+export import presto.core.platform;
+// #include "presto/platform.h"
 
 import presto.core.types;
 import presto.core.concepts;
 
 export namespace Presto {
-// using component_class_t = std::uint32_t;
+// using component_class_t = Presto::uint32_t;
 
 using class_id_t = Presto::size_t;
 
@@ -15,7 +22,7 @@ class PRESTO_API Component {
     friend class EntityManager;
     friend class EntityManagerImpl;
 
-    using ComponentIDBit = std::uint32_t;
+    using ComponentIDBit = Presto::uint32_t;
 
     static constexpr auto UNASSIGNED_ID{static_cast<component_id_t>(-1)};
 
@@ -63,5 +70,16 @@ struct Subcomponent {
 };
 
 using GenericComponentPtr = ComponentPtr<Component>;
+
+using component_id_t = PR_NUMERIC_ID;
+
+template <typename T>
+concept ComponentType = std::derived_from<T, Component>;
+
+template <ComponentType T>
+using ComponentPtr = Ptr<T>;
+
+template <ComponentType T>
+using ComponentRef = Ref<T>;
 
 }  // namespace Presto

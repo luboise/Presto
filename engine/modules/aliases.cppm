@@ -1,7 +1,7 @@
 export module presto.aliases;
 
-export import :asset;
-export import :object;
-export import :ui;
+export import presto.aliases.asset;
+export import presto.aliases.object;
+export import presto.aliases.ui;
 
 using namespace Presto::DefaultMaterialPropertyName;

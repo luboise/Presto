@@ -1,4 +1,25 @@
-#pragma once
+export module presto.scripting;
+
+import presto.core;
+import presto.core.eventmanager;
+import presto.core.concepts;
+import presto.objects;
+import presto.objects.components;
+
+// TODO: Check this
+// #include "Presto/Debugging.h"  // IWYU pragma: export
+
+export namespace Presto {
+
+class EventListener {
+   public:
+    // Adds a new listener to the group
+    template <typename E>
+        requires DerivedFrom<E, Event>
+    void on(EventHandler<E> handler) {
+        EventManager::Get().addHandler(std::move(handler));
+    };
+};
 
 #define FETCHED(TYPE, NAME)                                                    \
     Presto::Ptr<TYPE> NAME {                                                   \
@@ -20,3 +41,5 @@
         });                                                                \
         return nullptr;                                                    \
     }()
+
+}  // namespace Presto

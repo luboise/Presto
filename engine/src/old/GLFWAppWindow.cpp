@@ -1,17 +1,14 @@
-#include "Presto/Runtime/GLFWAppWindow.h"
-#include <memory>
-#include "Presto/Core/Logging.h"
+module presto.internal.glfw;
+
+import presto.core;
+import presto.runtime;
+import presto.internal.events;
+import presto.internal.windowdata;
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "Presto/Core/KeyCodes.h"
-#include "Presto/Runtime.h"
-#include "Presto/Runtime/Events/ApplicationEvents.h"
-#include "Presto/Runtime/Events/KeyEvents.h"
-#include "Presto/Runtime/Events/MouseEvents.h"
-
-#include "Runtime/WindowData.h"
+// #include <memory>
 
 namespace Presto {
 bool GLFWAppWindow::s_GLFWInitialised = false;
@@ -185,8 +182,8 @@ void GLFWAppWindow::SetCallbacks() {
             WindowResizeEvent e(new_width, new_height);
 
             data.window_size = {
-                .width = static_cast<std::uint16_t>(new_width),
-                .height = static_cast<std::uint16_t>(new_height),
+                .width = static_cast<Presto::uint16_t>(new_width),
+                .height = static_cast<Presto::uint16_t>(new_height),
             };
             data.templated_event_callback(e);
         });
@@ -197,8 +194,8 @@ void GLFWAppWindow::SetCallbacks() {
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
 
             data.framebuffer_size = {
-                .width = static_cast<std::uint16_t>(new_width),
-                .height = static_cast<std::uint16_t>(new_height),
+                .width = static_cast<Presto::uint16_t>(new_width),
+                .height = static_cast<Presto::uint16_t>(new_height),
             };
             FramebufferResizedEvent e(&data);
             data.templated_event_callback(e);

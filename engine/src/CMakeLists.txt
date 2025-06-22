@@ -34,8 +34,6 @@ internal_modules(
   managers/entityimpl.cppm
   managers.cppm
   #
-  pch.cppm
-  #
   common.cppm
   common.types.cppm
   #

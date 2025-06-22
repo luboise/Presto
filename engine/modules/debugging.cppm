@@ -1,9 +1,6 @@
 export module presto.debugging;
 
-import presto.core.types;
-
-// #include "Presto/Aliases/ObjectAliases.h"
-// #include "Presto/Core/Colours.h"
+import presto.core;
 
 namespace Presto {
 struct Cube;

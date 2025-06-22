@@ -1,6 +1,6 @@
 export module presto.objects.entity;
 
-import presto.internal;
+import presto.core.constants;
 
 export namespace Presto {
 // Forward declaration
@@ -84,5 +84,8 @@ class PRESTO_API Entity {
 
     ComponentMap components_;
 };
+
+using EntityPtr = Ptr<Entity>;
+using EntityRef = Ref<Entity>;
 
 }  // namespace Presto

@@ -59,7 +59,7 @@ using AnyVertexType = std::variant<Vertex3D, VertexUI>;
 using AnyVertexList =
     std::variant<std::vector<Vertex3D>, std::vector<VertexUI>>;
 
-using vertex_binding_t = std::uint16_t;
+using vertex_binding_t = Presto::uint16_t;
 
 struct VertexAttribute {
     // AttributeTypeDetails typeDetails;

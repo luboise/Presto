@@ -1,7 +1,6 @@
 module presto.runtime.time;
 
-#include <chrono>
-#include <memory>
+import presto.internal.pch;
 
 using Clock = std::chrono::high_resolution_clock;
 using Duration = std::chrono::nanoseconds;

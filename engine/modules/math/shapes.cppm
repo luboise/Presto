@@ -1,4 +1,22 @@
+module;
+#include <concepts>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+
+/*
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+*/
+
 export module presto.math:shapes;
+
+import presto.core.types;
+import presto.objects;
 
 export namespace Presto {
 
@@ -55,12 +73,12 @@ struct CollisionShape {
 
 struct Plane : CollisionShape {
     union {
-        vec3 normal{0, 1, 0};
-        vec3 N;
+        Presto::vec3 normal{0, 1, 0};
+        Presto::vec3 N;
     };
     union {
-        vec3 point{0, 0, 0};
-        vec3 P;
+        Presto::vec3 point{0, 0, 0};
+        Presto::vec3 P;
     };
 };
 
@@ -70,8 +88,8 @@ struct Circle : CollisionShape {
 
 struct Ray {
     union {
-        vec3 origin;
-        vec3 O;
+        Presto::vec3 origin;
+        Presto::vec3 O;
     };
 
     union {
@@ -80,17 +98,19 @@ struct Ray {
     };
 
     union {
-        vec3 direction;
-        vec3 D;
+        Presto::vec3 direction;
+        Presto::vec3 D;
     };
 
     [[nodiscard]] bool contains(Presto::float32_t tVal) const {
         return tVal >= 0 && tVal <= this->t;
     }
 
-    [[nodiscard]] vec3 at(Presto::float32_t tVal) const { return O + tVal * D; }
+    [[nodiscard]] Presto::vec3 at(Presto::float32_t tVal) const {
+        return O + tVal * D;
+    }
 
-    static Ray fromAB(vec3 a, vec3 b) {
+    static Ray fromAB(Presto::vec3 a, Presto::vec3 b) {
         auto diff{b - a};
 
         return Ray{.origin = a,
@@ -101,14 +121,15 @@ struct Ray {
 
 struct Rectangle : CollisionShape {
     Rectangle() = default;
-    Rectangle(vec3 topLeft, vec3 topRight, vec3 bottomLeft);
+    Rectangle(Presto::vec3 topLeft, Presto::vec3 topRight,
+              Presto::vec3 bottomLeft);
 
-    vec3 top_left{0, 1, 0};
-    vec3 top_right{1, 1, 0};
-    vec3 bottom_left{0, 0, 0};
+    Presto::vec3 top_left{0, 1, 0};
+    Presto::vec3 top_right{1, 1, 0};
+    Presto::vec3 bottom_left{0, 0, 0};
 
-    [[nodiscard]] vec3 at(float x, float y) const;
-    [[nodiscard]] vec3 at(vec2) const;
+    [[nodiscard]] Presto::vec3 at(float x, float y) const;
+    [[nodiscard]] Presto::vec3 at(vec2) const;
 
     [[nodiscard]] Presto::float32_t width() const;
     [[nodiscard]] Presto::float32_t height() const;

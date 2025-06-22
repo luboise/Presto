@@ -5,7 +5,7 @@ import presto.core;
 export namespace Presto {
 
 using asset_name_t = Presto::string;
-enum class AssetType : std::uint8_t {
+enum class AssetType : Presto::uint8_t {
     MESH,
     MODEL,
     MATERIAL_DEFINITION,

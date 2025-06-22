@@ -36,7 +36,7 @@ void OpenGLTexture::unload() {
 
 OpenGLTexture::~OpenGLTexture() { this->unload(); }
 
-void OpenGLTexture::bind(std::uint8_t slot) const {
+void OpenGLTexture::bind(Presto::uint8_t slot) const {
     constexpr auto MAX_SLOT = 31;
 
     PR_CORE_ASSERT(

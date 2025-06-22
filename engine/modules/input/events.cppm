@@ -1,4 +1,7 @@
 export module presto.input:events;
+
+import presto.core.event;
+
 import :keycodes;
 
 export namespace Presto {

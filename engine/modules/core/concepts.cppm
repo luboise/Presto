@@ -1,3 +1,8 @@
+module;
+#include <concepts>
+#include <iterator>
+#include <type_traits>
+
 export module presto.core.concepts;
 
 export namespace Presto {

@@ -1,10 +1,12 @@
 export module presto.objects.components.camera;
 
+import presto.objects.component;
+
 export namespace Presto {
 
 enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 
-class CameraComponent : public Component, LazyCalculator {
+class PRESTO_API CameraComponent : public Component, LazyCalculator {
     using camera_fov_t = double;
     using camera_distance_t = float;
 

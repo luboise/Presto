@@ -2,6 +2,7 @@ export module presto.objects.components.canvas;
 export import :canvasitems;
 export import :types;
 
+import presto.objects.component;
 import presto.core;
 
 export namespace Presto {

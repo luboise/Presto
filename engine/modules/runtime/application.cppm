@@ -1,6 +1,6 @@
 export module presto.runtime.application;
 
-import presto.core:platform;
+import presto.core.platform;
 
 import presto.runtime.window;
 

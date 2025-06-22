@@ -1,5 +1,6 @@
 export module presto.utils:interpolation;
 
+import presto.core.platform;
 import presto.core.concepts;
 
 export namespace Presto {

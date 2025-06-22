@@ -1,44 +1,65 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
+internal_modules(../src/pch.cppm)
+
 target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
                                               CXX_MODULES
 											  FILES 
+  core/platform.cppm
+  core/typetraits.cppm
+  core/typesbase.cppm
   core/types.cppm
+  #
+  core/concepts.cppm
   core/logging.cppm
   core/constants.cppm
   core/assert.cppm
   core/event.cppm
-  core/platform.cppm
+  core/eventmanager.cppm
   #
   core.cppm
-  assets/types.cppm
-  assets.cppm
-  assets/font.cppm
-  assets/image.cppm
-  assets/model.cppm
-  assets/material.cppm
-  #
-  aliases.cppm
-  aliases/asset.cppm
   #
   objects.cppm
-  objects/components.cppm
+  objects/entity.cppm
+  objects/component.cppm
   objects/components/transform.cppm
-  objects/components/rigidbody.cppm
+  objects/components/conductor.cppm
   objects/components/canvas.cppm
   objects/components/canvasitems.cppm
+  objects/components/render.cppm
+  objects/components/rigidbody.cppm
+  objects/components.cppm
   #
-  math.cppm
+  assets/types.cppm
+  assets/font.cppm
+  assets/image.cppm
+  assets/mesh.cppm
+  assets/model.cppm
+  assets/material.cppm
+  assets.cppm
+  #
+  aliases/asset.cppm
+  aliases/object.cppm
+  aliases/ui.cppm
+  aliases.cppm
+    #
+  runtime/window.cppm
+  runtime/time.cppm
+  runtime/application.cppm
+  runtime.cppm
+  #
   math/shapes.cppm
+  math/quaternion.cppm
+  math.cppm
   #
   input.cppm
   input/events.cppm
   input/keycodes.cppm
   #
-  utils.cppm
   utils/file.cppm
   utils/interpolation.cppm
   utils/typemap.cppm
+  utils.cppm
   #
   debugging.cppm
   #

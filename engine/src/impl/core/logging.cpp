@@ -1,6 +1,8 @@
 module;
 
-#include "spdlog/sinks/stdout_color_sinks.h"
+#include <spdlog/spdlog.h>
+// DO NOT REORDER
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 module presto.core.logging;
 

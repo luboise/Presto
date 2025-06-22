@@ -1,10 +1,13 @@
+module;
+#include <memory>
+
 export module presto.assets.material;
 
-#include <memory>
+import presto.core.platform;
 
 export namespace Presto {
 
-class MaterialAsset final :
+class PRESTO_API MaterialAsset final :
     // Enables MaterialAsset to be able to get its own shared pointer, needed
     // for giving the instances a weak reference
     public std::enable_shared_from_this<MaterialAsset>,

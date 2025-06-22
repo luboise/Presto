@@ -56,7 +56,7 @@ class OpenGLTexture : public Texture {
     void load(const Presto::ImageData& data);
     void unload();
 
-    void bind(std::uint8_t slot) override;
+    void bind(Presto::uint8_t slot) override;
 
     OpenGLTexture& operator=(const OpenGLTexture&) = delete;
     OpenGLTexture(OpenGLTexture& other);

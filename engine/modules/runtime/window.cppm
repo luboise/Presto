@@ -1,12 +1,11 @@
-export module presto.runtime.window;
+module;
 
 #include <functional>
 #include <memory>
 
-#include "Presto/Core/Constants.h"
-#include "Presto/Types/CoreTypes.h"
+export module presto.runtime.window;
 
-// #include "Presto/Event.h"
+import presto.core;
 
 constexpr auto DEFAULT_WIDTH = 2560;
 constexpr auto DEFAULT_HEIGHT = 1440;

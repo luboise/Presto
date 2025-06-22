@@ -1,6 +1,6 @@
 export module presto.materials;
 
-import export :types;
+export import :types;
 
 export namespace Presto {
 
