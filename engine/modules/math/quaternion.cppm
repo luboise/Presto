@@ -2,7 +2,7 @@ export module presto.math:quaternion;
 
 import presto.core.types;
 
-namespace Presto {
+export namespace Presto {
 
 struct Quaternion {
     float w{};

@@ -1,9 +1,10 @@
-#pragma once
-
+module;
 #include <memory>
-#include "Presto/Core/Concepts.h"
 
-namespace Presto {
+export module presto.core.types:handles;
+import presto.core.concepts;
+
+export namespace Presto {
 
 // Handle types
 template <typename T>

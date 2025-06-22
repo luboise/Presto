@@ -1,3 +1,5 @@
+#pragma once
+
 import presto.core.logging;
 
 #ifndef NDEBUG

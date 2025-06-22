@@ -1,6 +1,6 @@
 export module presto.assets.model;
 
-import presto.asset.types;
+import presto.assets.types;
 
 export namespace Presto {
 

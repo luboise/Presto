@@ -3,7 +3,7 @@ export module presto.internal.pch;
 export import presto.core;
 export import presto.math;
 
-export import presto.asset.types;
+export import presto.assets.types;
 
 export {
 // Utility stuff

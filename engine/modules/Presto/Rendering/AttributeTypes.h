@@ -3,7 +3,7 @@
 #include "Presto/Types/CoreTypeTraits.h"
 #include "Presto/Types/CoreTypes.h"
 
-namespace Presto {
+export namespace Presto {
 
 using attribute_size_t = Presto::size_t;
 

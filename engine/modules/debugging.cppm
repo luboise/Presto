@@ -2,7 +2,7 @@ export module presto.debugging;
 
 import presto.core;
 
-namespace Presto {
+export namespace Presto {
 struct Cube;
 
 /**

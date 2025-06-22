@@ -1,7 +1,7 @@
-export module presto.core.types:typetraits;
+export module presto.core.types:traits;
 import :base;
 
-namespace Presto {
+export namespace Presto {
 
 constexpr Presto::size_t shaderDataSubTypeSize(
     ShaderDataSubType subType) noexcept {

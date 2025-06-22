@@ -1,22 +1,32 @@
 module;
 #include <concepts>
 #include <typeinfo>
+#include "presto/platform.h"
 
-export module presto.component;
+export module presto.objects.component;
 
-export import presto.core.platform;
-// #include "presto/platform.h"
-
-import presto.core.types;
+import presto.core;
 import presto.core.concepts;
 
 export namespace Presto {
 // using component_class_t = Presto::uint32_t;
 
 using class_id_t = Presto::size_t;
-
 template <typename T>
 const class_id_t ClassID = typeid(T).hash_code();
+
+using component_id_t = PR_NUMERIC_ID;
+
+class Component;
+
+template <typename T>
+concept ComponentType = std::derived_from<T, Component>;
+
+template <ComponentType T>
+using ComponentPtr = Ptr<T>;
+
+template <ComponentType T>
+using ComponentRef = Ref<T>;
 
 class PRESTO_API Component {
     friend class EntityManager;
@@ -70,16 +80,5 @@ struct Subcomponent {
 };
 
 using GenericComponentPtr = ComponentPtr<Component>;
-
-using component_id_t = PR_NUMERIC_ID;
-
-template <typename T>
-concept ComponentType = std::derived_from<T, Component>;
-
-template <ComponentType T>
-using ComponentPtr = Ptr<T>;
-
-template <ComponentType T>
-using ComponentRef = Ref<T>;
 
 }  // namespace Presto

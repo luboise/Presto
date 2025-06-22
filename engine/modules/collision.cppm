@@ -4,7 +4,7 @@ export module presto.collision;
 
 #include "Collision/Shapes.h"
 
-namespace Presto {
+export namespace Presto {
 
 struct CollisionResult {
     bool colliding{false};

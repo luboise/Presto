@@ -5,17 +5,23 @@ internal_modules(../src/pch.cppm)
 target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
                                               CXX_MODULES
 											  FILES 
-  core/platform.cppm
-  core/typetraits.cppm
+  core/concepts.cppm
+  #
   core/typesbase.cppm
+  core/typetraits.cppm
+  core/typehandles.cppm
   core/types.cppm
   #
-  core/concepts.cppm
-  core/logging.cppm
   core/constants.cppm
+  #
+  core/platform.cppm
+  #
+  core/logging.cppm
   core/assert.cppm
-  core/event.cppm
+  core/eventbase.cppm
+  core/eventuser.cppm
   core/eventmanager.cppm
+  core/event.cppm
   #
   core.cppm
   #
@@ -65,42 +71,7 @@ target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
   #
   materials.cppm
   materialtypes.cppm
-  #
+  # Main API importables
   presto.cppm
   entry.cppm
-
-	PRIVATE
-../src/impl/core/logging.cpp
-../src/impl/core/eventmanager.cpp
-#
-../src/impl/assets/types.cpp
-../src/impl/assets.cpp
-../src/impl/assets/font.cpp
-../src/impl/assets/image.cpp
-../src/impl/assets/mesh.cpp
-../src/impl/assets/model.cpp
-../src/impl/assets/material.cpp
-#
-# ../src/impl/math.cpp
-../src/impl/math/shapes.cpp
-#
-../src/impl/objects.cpp
-../src/impl/objects/entity.cpp
-../src/impl/objects/figure.cpp
-../src/impl/objects/components/camera.cpp
-../src/impl/objects/components/canvas.cpp
-../src/impl/objects/components/canvasitems.cpp
-../src/impl/objects/components/canvastypes.cpp
-../src/impl/objects/components/conductor.cpp
-../src/impl/objects/components/render.cpp
-../src/impl/objects/components/rendersubcomps.cpp
-../src/impl/objects/components/rigidbody.cpp
-../src/impl/objects/components/transform.cpp
-#
-../src/impl/runtime.cpp
-../src/impl/runtime/application.cpp
-../src/impl/runtime/time.cpp
-#
-../src/impl/utils/file.cpp
-#
-../src/impl/materials.cpp)
+  system.cppm)

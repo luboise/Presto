@@ -1,9 +1,14 @@
 module;
 #include <memory>
+#include "presto/platform.h"
 
 export module presto.assets.material;
+import presto.assets.types;
 
-import presto.core.platform;
+// Private fwd declarations
+namespace Presto {
+struct PipelineStructure;
+}
 
 export namespace Presto {
 

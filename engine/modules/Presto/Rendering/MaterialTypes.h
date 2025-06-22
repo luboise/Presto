@@ -2,7 +2,7 @@
 
 #include "Presto/Rendering/UniformTypes.h"
 
-namespace Presto {
+export namespace Presto {
 
 struct UniformLayout {
     std::vector<UniformBinding> bindings;

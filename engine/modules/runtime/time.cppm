@@ -1,6 +1,9 @@
+module;
+#include "presto/platform.h"
+
 export module presto.runtime.time;
 
-import presto.core.platform;
+import presto.core;
 
 export namespace Presto {
 
@@ -21,7 +24,7 @@ class PRESTO_API Time {
     static void init();
 
     struct Impl;
-    static std::unique_ptr<Impl> impl_;
+    static Allocated<Impl> impl_;
 };
 
 class PRESTO_API Timer {

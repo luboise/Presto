@@ -1,5 +1,5 @@
 export module presto.core.eventmanager;
-import presto.core.event;
+import presto.core.event.base;
 
 export namespace Presto {
 

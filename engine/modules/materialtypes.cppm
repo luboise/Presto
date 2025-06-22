@@ -1,6 +1,7 @@
 export module presto.materials:types;
 
 import presto.core.types;
+import presto.assets.types;
 
 export namespace Presto {
 
@@ -18,19 +19,19 @@ struct MaterialTypeTraits {
 template <>
 struct MaterialTypeTraits<MaterialType::DEFAULT_3D> {
     struct property_list {
-        vec4 colour{1, 1, 1, 1};
-        ImagePtr diffuse_texture{nullptr};
+        Presto::vec4 colour{1, 1, 1, 1};
+        Presto::ImagePtr diffuse_texture{nullptr};
 
-        float32_t metallic{0};
-        float32_t rough{0};
+        Presto::float32_t metallic{0};
+        Presto::float32_t rough{0};
 
-        ImagePtr normal_map{nullptr};
-        ImagePtr bump_map{nullptr};
+        Presto::ImagePtr normal_map{nullptr};
+        Presto::ImagePtr bump_map{nullptr};
 
-        float32_t specular;
-        vec3 specular_tint{1, 1, 1};
+        Presto::float32_t specular;
+        Presto::vec3 specular_tint{1, 1, 1};
 
-        ImagePtr emission_map{nullptr};
+        Presto::ImagePtr emission_map{nullptr};
     };
 };
 

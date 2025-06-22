@@ -1,8 +1,8 @@
-#pragma once
+export module presto.system;
 
-#include "Presto/Types/CoreTypes.h"
+import presto.core.types;
 
-namespace Presto {
+export namespace Presto {
 
 VisualExtents WindowSize();
 VisualExtents FramebufferSize();

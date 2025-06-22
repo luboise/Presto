@@ -1,3 +1,6 @@
+module;
+#include "presto/events.h"
+
 export module presto.internal.events;
 
 import presto.core.event;

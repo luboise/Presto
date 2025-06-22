@@ -2,7 +2,7 @@ export module presto.aliases.ui;
 
 import presto.core.types;
 
-namespace Presto {
+export namespace Presto {
 class CanvasItem;
 
 class CanvasGroup;

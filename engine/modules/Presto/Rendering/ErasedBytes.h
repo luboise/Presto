@@ -10,6 +10,7 @@
 #include <type_traits>
 
 namespace Presto {
+
 class ErasedBytes {
    public:
     ErasedBytes() { reset(Presto::float32_t{0}); };

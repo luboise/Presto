@@ -1,6 +1,10 @@
+module;
+#include <algorithm>
+#include "presto/platform.h"
+
+import presto.runtime;
 export module presto.utils:interpolation;
 
-import presto.core.platform;
 import presto.core.concepts;
 
 export namespace Presto {

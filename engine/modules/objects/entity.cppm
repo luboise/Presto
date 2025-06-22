@@ -1,6 +1,9 @@
+module;
+#include <array>
+
 export module presto.objects.entity;
 
-import presto.core.constants;
+import presto.core;
 
 export namespace Presto {
 // Forward declaration

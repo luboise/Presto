@@ -6,7 +6,7 @@ import presto.internal.rendering;
 
 #include <GL/glew.h>
 
-namespace Presto {
+export namespace Presto {
 class OpenGLShader final : public Shader {
    public:
     using shader_property_key_t = Presto::string;

@@ -1,5 +1,4 @@
-#ifndef PRESTO_PLATFORM_H
-#define PRESTO_PLATFORM_H
+#pragma once
 
 #if defined(PR_PLATFORM_WINDOWS)
 #ifdef PR_BUILD_LIB
@@ -25,6 +24,4 @@
 #define PR_DEBUG_ONLY_CODE(x) x;
 #else
 #define PR_DEBUG_ONLY_CODE(x)
-#endif
-
 #endif

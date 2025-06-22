@@ -5,7 +5,7 @@ export module presto.core.constants;
 
 import presto.core.types;
 
-namespace Presto {
+export namespace Presto {
 
 using PR_NUMERIC_ID = Presto::uint32_t;
 using PR_SIZE = std::size_t;

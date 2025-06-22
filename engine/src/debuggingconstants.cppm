@@ -1,10 +1,10 @@
 module presto.internal.debugging:constants;
 
-import presto.core.constants;
+import presto.core;
 
-namespace Presto {
+export namespace Presto {
 
-using CheckedComponentBits = uint32_t;
+using CheckedComponentBits = Presto::uint32_t;
 using CheckedComponentBit = CheckedComponentBits;
 
 constexpr CheckedComponentBit TRANSFORM_BIT = AS_BIT(0);

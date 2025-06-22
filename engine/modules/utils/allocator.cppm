@@ -1,9 +1,4 @@
-export module presto.utils:allocator;
-
-import presto.core.constants;
-import presto.utils;
-
-// #include "Utils/IDGenerator.h"
+module;
 
 #include <algorithm>
 #include <concepts>
@@ -11,7 +6,14 @@ import presto.utils;
 #include <ranges>
 #include <type_traits>
 
-namespace Presto {
+export module presto.utils:allocator;
+
+import presto.core.constants;
+import presto.utils;
+
+// #include "Utils/IDGenerator.h"
+export namespace Presto {
+
 using allocator_id_t = PR_NUMERIC_ID;
 
 template <typename K, typename V,
