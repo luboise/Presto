@@ -1,6 +1,5 @@
 export module presto.core.assert;
-
-#include "Presto/Core/Logging.h"
+import presto.core.logging;
 
 // Mandatory libraries
 // #include <cstdint>

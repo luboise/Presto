@@ -1,6 +1,8 @@
-module presto.core.logging;
+module;
 
 #include "spdlog/sinks/stdout_color_sinks.h"
+
+module presto.core.logging;
 
 namespace Presto {
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;

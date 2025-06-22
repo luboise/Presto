@@ -1,4 +1,5 @@
-module presto.objects.components:transform;
+module presto.objects.components;
+import :transform;
 
 namespace Presto {
 mat4 TransformData::asModelMat() const {

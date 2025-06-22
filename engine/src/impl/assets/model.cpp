@@ -1,8 +1,8 @@
 module presto.assets.model;
 
-#include <utility>
+import presto.internal.rendering.types;
 
-#include "Presto/Rendering/MeshData.h"
+#include <utility>
 
 namespace Presto {
 bool ModelAsset::load() { return true; };

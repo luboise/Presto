@@ -1,4 +1,5 @@
-module presto.internal.rendering.opengl:types;
+module presto.internal.rendering.opengl;
+import :types;
 
 constexpr GLenum Presto::OpenGLTypeFromPrestoType(Presto::ShaderDataType type) {
     using namespace Presto;

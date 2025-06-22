@@ -1,12 +1,15 @@
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-api_modules(
+target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
+                                              CXX_MODULES
+											  FILES 
   core/types.cppm
   core/logging.cppm
   core/constants.cppm
   core/assert.cppm
   core/event.cppm
   core/platform.cppm
+  #
   core.cppm
   assets/types.cppm
   assets.cppm
@@ -43,4 +46,40 @@ api_modules(
   materialtypes.cppm
   #
   presto.cppm
-  entry.cppm)
+  entry.cppm
+
+	PRIVATE
+../src/impl/core/logging.cpp
+../src/impl/core/eventmanager.cpp
+#
+../src/impl/assets/types.cpp
+../src/impl/assets.cpp
+../src/impl/assets/font.cpp
+../src/impl/assets/image.cpp
+../src/impl/assets/mesh.cpp
+../src/impl/assets/model.cpp
+../src/impl/assets/material.cpp
+#
+# ../src/impl/math.cpp
+../src/impl/math/shapes.cpp
+#
+../src/impl/objects.cpp
+../src/impl/objects/entity.cpp
+../src/impl/objects/figure.cpp
+../src/impl/objects/components/camera.cpp
+../src/impl/objects/components/canvas.cpp
+../src/impl/objects/components/canvasitems.cpp
+../src/impl/objects/components/canvastypes.cpp
+../src/impl/objects/components/conductor.cpp
+../src/impl/objects/components/render.cpp
+../src/impl/objects/components/rendersubcomps.cpp
+../src/impl/objects/components/rigidbody.cpp
+../src/impl/objects/components/transform.cpp
+#
+../src/impl/runtime.cpp
+../src/impl/runtime/application.cpp
+../src/impl/runtime/time.cpp
+#
+../src/impl/utils/file.cpp
+#
+../src/impl/materials.cpp)

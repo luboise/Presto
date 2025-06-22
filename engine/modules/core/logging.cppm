@@ -1,6 +1,8 @@
-export module presto.core.logging;
+module;
 
 #include "spdlog/spdlog.h"
+
+export module presto.core.logging;
 
 namespace spdlog {
 class logger;

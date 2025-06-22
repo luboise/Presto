@@ -1,13 +1,7 @@
 module presto.assets.mesh;
 
-#include "Presto/Assets/MeshAsset.h"
-
-#include "Modules/RenderingManager.h"
-#include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MeshData.h"
-#include "Presto/Types/CoreTypes.h"
-
-#include "Rendering/VertexProcessing.h"
+import presto.internal.managers.rendering;
+import presto.internal;
 
 export namespace Presto {
 

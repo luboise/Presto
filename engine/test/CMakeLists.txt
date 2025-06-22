@@ -17,7 +17,7 @@ set(PRESTO_TEST_TARGET "${PROJECT_NAME}Tests")
 
 add_executable(${PRESTO_TEST_TARGET} main.cpp pch.cpp quaternions.cpp shapes.cpp)
 
-target_precompile_headers(${PRESTO_TEST_TARGET} PRIVATE pch.h)
+# target_precompile_headers(${PRESTO_TEST_TARGET} PRIVATE pch.h)
 target_link_libraries(${PRESTO_TEST_TARGET} PRIVATE ${PRESTO_ENGINE_NAME}
                                                     GTest::gtest_main)
 

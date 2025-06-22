@@ -1,4 +1,5 @@
-export module presto.objects.entity:figure;
+module presto.objects.entity;
+import :figure;
 
 export namespace Presto {
 Figure::Figure(figure_size_t size) {

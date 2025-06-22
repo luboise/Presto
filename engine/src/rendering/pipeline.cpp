@@ -1,4 +1,5 @@
-module presto.internal.rendering:pipeline;
+module presto.internal.rendering;
+import :pipeline;
 
 import presto.core;
 

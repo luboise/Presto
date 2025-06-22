@@ -1,9 +1,9 @@
 module presto.internal.rendering;
 
-#include "Rendering/Renderer.h"
-
-#include "Presto/Objects/Components/CameraComponent.h"
-#include "Rendering/OpenGL/OpenGLRenderer.h"
+import :base;
+import presto.objects.components;
+import presto.internal.rendering.opengl;
+import presto.internal.glfw;
 
 #include "Presto/Runtime/GLFWAppWindow.h"
 

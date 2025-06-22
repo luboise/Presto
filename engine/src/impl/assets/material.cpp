@@ -1,11 +1,8 @@
 module presto.assets.material;
 
+import presto.internal.managers.rendering;
+
 #include <utility>
-
-#include "Presto/Assets/MaterialAsset.h"
-
-#include "Modules/RenderingManager.h"
-#include "Presto/Rendering/PipelineTypes.h"
 
 namespace Presto {
 MaterialAsset::MaterialAsset(Presto::string name, const PipelineStructure& ps)

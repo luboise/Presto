@@ -1,4 +1,5 @@
-module presto.internal.rendering.opengl:pipeline;
+module presto.internal.rendering.opengl;
+import :pipeline;
 
 #include <GL/glext.h>
 #include <algorithm>

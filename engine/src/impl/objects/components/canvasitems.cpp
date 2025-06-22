@@ -1,4 +1,5 @@
-module presto.objects.components.canvas:canvasitems;
+module presto.objects.components.canvas;
+import :canvasitems;
 
 // export module presto.objects.components:canvas;
 

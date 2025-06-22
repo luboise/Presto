@@ -35,14 +35,16 @@ include(functions)
 target_sources(
   ${PRESTO_ENGINE_NAME}
   PUBLIC FILE_SET presto_modules TYPE CXX_MODULES BASE_DIRS
-         "${CMAKE_CURRENT_SOURCE_DIR}/../modules")
+         "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+add_subdirectory(modules)
+
 target_sources(
   ${PRESTO_ENGINE_NAME}
   PRIVATE FILE_SET presto_internal_modules TYPE CXX_MODULES BASE_DIRS
           "${CMAKE_CURRENT_SOURCE_DIR}/src")
-
-add_subdirectory(modules)
 add_subdirectory(src)
+
+
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")

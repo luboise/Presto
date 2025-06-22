@@ -1,11 +1,11 @@
-export module presto.utils:file;
-
-#pragma once
+module;
 
 #include <nlohmann/json.hpp>
 
-#include "Presto/Types/AssetTypes.h"
-#include "Presto/Types/CoreTypes.h"
+export module presto.utils:file;
+
+export module presto.core.types;
+export module presto.assets.types;
 
 using json = nlohmann::json;
 

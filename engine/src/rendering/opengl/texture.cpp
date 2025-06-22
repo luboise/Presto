@@ -1,4 +1,5 @@
-module presto.internal.rendering.opengl:texture;
+module presto.internal.rendering.opengl;
+import :texture;
 
 namespace Presto {
 

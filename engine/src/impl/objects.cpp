@@ -1,4 +1,4 @@
-export module presto.objects;
+module presto.objects;
 
 import presto.core.types;
 

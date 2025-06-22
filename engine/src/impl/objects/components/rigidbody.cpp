@@ -1,4 +1,5 @@
-module presto.objects.components:rigidbody;
+module presto.objects.components;
+import :rigidbody;
 
 namespace Presto {
 

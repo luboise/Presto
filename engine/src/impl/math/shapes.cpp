@@ -1,6 +1,5 @@
-module presto.math:shapes;
-
-#include <glm/gtx/closest_point.hpp>
+module presto.math;
+import :shapes;
 
 namespace Presto {
 

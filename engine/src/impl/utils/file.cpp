@@ -1,4 +1,5 @@
-module presto.utils:file;
+module presto.utils;
+import :file;
 
 namespace Presto::Utils {
 

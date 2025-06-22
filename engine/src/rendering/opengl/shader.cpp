@@ -1,4 +1,5 @@
-module presto.internal.rendering.opengl:shader;
+module presto.internal.rendering.opengl;
+import :shader;
 
 import presto.utils;
 

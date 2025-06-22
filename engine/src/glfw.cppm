@@ -1,4 +1,5 @@
 export module presto.internal.glfw;
+export import presto.internal.windowdata;
 
 import presto.input;
 import presto.runtime.window;
@@ -6,8 +7,6 @@ import presto.runtime.window;
 export namespace Presto {
 
 class Renderer;
-
-struct WindowData;
 
 class GLFWAppWindow final : public Window {
    public:

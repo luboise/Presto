@@ -1,4 +1,5 @@
-module presto.internal.rendering:buffer;
+module presto.internal.rendering;
+import :buffer;
 
 namespace Presto {
 

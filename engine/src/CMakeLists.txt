@@ -52,6 +52,8 @@ internal_modules(
   rendering/opengl/opengl.cppm
   rendering/opengl/pipeline.cppm
   rendering/opengl/shader.cppm
-  rendering/opengl/texture.cppm)
+  rendering/opengl/texture.cppm
+  #
+  windowdata.cppm)
 
 add_subdirectory(resources)

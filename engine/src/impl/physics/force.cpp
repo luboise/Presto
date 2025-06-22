@@ -1,4 +1,5 @@
-module presto.physics:force;
+module presto.physics;
+import :force;
 
 namespace Presto {
 Force operator+(Force& left, Force& right) {

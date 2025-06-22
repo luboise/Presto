@@ -1,4 +1,5 @@
-module presto.internal.rendering.opengl:buffer;
+module presto.internal.rendering.opengl;
+import :buffer;
 import presto.internal;
 
 namespace Presto {

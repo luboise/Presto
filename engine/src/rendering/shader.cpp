@@ -1,4 +1,5 @@
-module presto.internal.rendering:shader;
+module presto.internal.rendering;
+import :shader;
 
 namespace Presto {
 // TODO: Fix this up to be using a reference of some kind

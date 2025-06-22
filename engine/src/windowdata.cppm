@@ -1,4 +1,4 @@
-#pragma once
+export module presto.internal.windowdata;
 
 // For types/concepts
 import presto.core;

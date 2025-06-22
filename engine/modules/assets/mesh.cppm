@@ -1,15 +1,14 @@
 export module presto.assets.mesh;
-
-#include "Presto/Aliases/Handles.h"
-#include "Presto/Assets/Asset.h"
-
-#include "Presto/Core/Constants.h"
-
-#include "Presto/Rendering/BoundingBox.h"
-
-#include "ImportTypes.h"
+import presto.assets.types;
 
 export namespace Presto {
+
+// TODO: Move these
+class MaterialInstance;
+using MaterialPtr = Ptr<MaterialInstance>;
+
+class Texture;
+using TexturePtr = Ptr<Texture>;
 
 class Mesh {
     friend class RenderingManager;

@@ -1,4 +1,5 @@
-module presto.objects.components.canvas:types;
+module presto.objects.components.canvas;
+import :types;
 
 // export module presto.objects.components:canvas;
 

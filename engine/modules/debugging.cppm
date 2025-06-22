@@ -2,8 +2,6 @@ export module presto.debugging;
 
 import presto.core.types;
 
-#pragma once
-
 // #include "Presto/Aliases/ObjectAliases.h"
 // #include "Presto/Core/Colours.h"
 

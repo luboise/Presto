@@ -1,4 +1,5 @@
-module presto.internal.rendering:types;
+module presto.internal.rendering;
+import :types;
 
 namespace Presto {
 void MeshData::setVertices(const ImportedAttributeList& attributes) {

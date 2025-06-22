@@ -1,11 +1,11 @@
-export module presto.utils:typemap;
-
-import presto.objects.component;
+module;
 
 #include <any>
 #include <unordered_map>
 
-#include "Presto/Objects/Component.h"
+export module presto.utils:typemap;
+
+import presto.objects.component;
 
 export namespace Presto {
 

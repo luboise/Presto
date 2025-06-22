@@ -5,7 +5,7 @@ import presto.core.platform;
 import presto.internal.managers;
 
 #ifdef PR_DEBUG_BUILD
-#include "Modules/DebugManager.h"
+import presto.internal.managers.debug;
 #endif
 
 namespace Presto {
