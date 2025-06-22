@@ -1,8 +1,7 @@
 export module presto.internal.defaults.meshes;
 
-#include "Presto/Core/Constants.h"
-#include "Presto/Rendering/MeshData.h"
-#include "Presto/Rendering/RenderTypes.h"
+import presto.core.constants;
+import presto.internal.rendering;
 
 export {
     using namespace Presto;

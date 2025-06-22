@@ -1,6 +1,6 @@
 export module presto.internal.rendering:types;
 
-import presto.core.types;
+import presto.core;
 
 export namespace Presto {
 

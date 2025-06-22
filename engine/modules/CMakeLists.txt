@@ -18,6 +18,7 @@ target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
   #
   core/logging.cppm
   core/assert.cppm
+  core/manager.cppm
   core/eventbase.cppm
   core/eventuser.cppm
   core/eventmanager.cppm

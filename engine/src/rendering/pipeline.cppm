@@ -1,5 +1,7 @@
 export module presto.internal.rendering:pipeline;
 
+import presto.core;
+
 export namespace Presto {
 
 struct PipelineAttribute {

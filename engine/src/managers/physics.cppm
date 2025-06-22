@@ -1,10 +1,12 @@
-export module presto.internal.managers.physics;
+module;
+#include "presto/internal/module.h"
 
-import presto.interal;
+export module presto.internal.managers.physics;
+import presto.objects;
 
 export namespace Presto {
 
-class PRESTO_API PhysicsManager final : public Module<PhysicsManager> {
+class PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);
 
     friend void Entity::checkNewComponent(GenericComponentPtr);

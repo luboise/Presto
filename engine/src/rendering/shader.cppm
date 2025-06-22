@@ -1,5 +1,7 @@
 export module presto.internal.rendering:shader;
 
+import :vertex;
+
 export namespace Presto {
 
 struct ShaderInfo {

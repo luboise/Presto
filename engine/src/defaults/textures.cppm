@@ -1,7 +1,7 @@
 export module presto.internal.defaults.textures;
 
-#include "Presto/Assets/ImageData.h"
-#include "Presto/Types/CoreTypes.h"
+import presto.assets.image;
+import presto.core.types;
 
 export {
 #define BLACK_PIXEL std::byte{0}, std::byte{0}, std::byte{0}, std::byte{255}

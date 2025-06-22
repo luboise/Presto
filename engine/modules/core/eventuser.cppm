@@ -2,7 +2,7 @@ module;
 #include "presto/events.h"
 #include "presto/platform.h"
 
-export module presto.core.event:userevent;
+export module presto.core.event.userevent;
 
 import presto.core.event.base;
 import presto.core.eventmanager;

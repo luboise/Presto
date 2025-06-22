@@ -1,5 +1,12 @@
+module;
+#include <functional>
+#include "presto/platform.h"
+
 export module presto.core.eventmanager;
+
 import presto.core.event.base;
+import presto.core.concepts;
+import presto.utils;
 
 export namespace Presto {
 

@@ -1,13 +1,12 @@
-export module presto.internal.rendering:vertex;
-
-import presto.core.types;
-
-#include "AttributeTypes.h"
-
-#include "Presto/Rendering/ShaderTypes.h"
-
+module;
 #include <map>
 #include <variant>
+#include <vector>
+
+export module presto.internal.rendering:vertex;
+import :base;
+
+import presto.core.types;
 
 export namespace Presto {
 
@@ -99,4 +98,25 @@ class AttributeSet {
 
     std::map<vertex_binding_t, VertexAttribute> attributes_;
 };
+
+using attribute_size_t = Presto::size_t;
+
+struct BaseAttributeTypeDetails {
+    Presto::size_t subtype_size;
+    Presto::size_t count;
+    Presto::size_t size;
+};
+
+template <typename T>
+// TODO: Fix this constraint
+// requires requires { SubTypeDetails<T>::subtype; }
+struct AttributeTypeDetails : BaseAttributeTypeDetails {
+    using details = SubTypeDetails<T>;
+    using subtype = details::subtype;
+
+    static constexpr Presto::size_t subtype_size = sizeof(subtype);
+    static constexpr Presto::size_t count{details::subtype_count};
+    static constexpr Presto::size_t size = subtype_size * count;
+};
+
 }  // namespace Presto

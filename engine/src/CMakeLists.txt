@@ -1,4 +1,7 @@
 add_subdirectory(impl)
+target_include_directories(${PRESTO_ENGINE_NAME} PRIVATE
+  "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
 
 # add_subdirectory(assets)
 
@@ -27,68 +30,71 @@ endif()
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
-internal_modules(
-  managers/asset.cppm
-  managers/physics.cppm
-  managers/rendering.cppm
-  managers/entityimpl.cppm
-  managers.cppm
-  #
+target_sources(${PRESTO_ENGINE_NAME} PRIVATE FILE_SET presto_internal_modules
+                                               TYPE CXX_MODULES FILES 
   common.cppm
   common.types.cppm
   #
   defaults.cppm
-  defaults.meshes.cppm
-  defaults.textures.cppm
+  defaults/meshes.cppm
+  defaults/textures.cppm
   #
-  rendering/base.cppm
   rendering/types.cppm
+  rendering/vertex.cppm
+  rendering/base.cppm
   rendering/buffer.cppm
   rendering/shader.cppm
   rendering/pipeline.cppm
+  rendering.cppm
   rendering/opengl/buffer.cppm
   rendering/opengl/opengl.cppm
   rendering/opengl/pipeline.cppm
   rendering/opengl/shader.cppm
   rendering/opengl/texture.cppm
   #
+  managers/asset.cppm
+  managers/physics.cppm
+  managers/rendering.cppm
+  managers/entityimpl.cppm
+  managers.cppm
+  #
   windowdata.cppm)
 
 target_sources(${PRESTO_ENGINE_NAME} 	PRIVATE
-../src/impl/core/logging.cpp
-../src/impl/core/eventmanager.cpp
+impl/core/logging.cpp
+impl/core/eventmanager.cpp
 #
-../src/impl/assets/types.cpp
-../src/impl/assets.cpp
-../src/impl/assets/font.cpp
-../src/impl/assets/image.cpp
-../src/impl/assets/mesh.cpp
-../src/impl/assets/model.cpp
-../src/impl/assets/material.cpp
+impl/assets/types.cpp
+impl/assets.cpp
+impl/assets/font.cpp
+impl/assets/image.cpp
+impl/assets/mesh.cpp
+impl/assets/model.cpp
+impl/assets/material.cpp
 #
-# ../src/impl/math.cpp
-../src/impl/math/shapes.cpp
+# impl/math.cpp
+impl/math/shapes.cpp
 #
-../src/impl/objects.cpp
-../src/impl/objects/entity.cpp
-../src/impl/objects/figure.cpp
-../src/impl/objects/components/camera.cpp
-../src/impl/objects/components/canvas.cpp
-../src/impl/objects/components/canvasitems.cpp
-../src/impl/objects/components/canvastypes.cpp
-../src/impl/objects/components/conductor.cpp
-../src/impl/objects/components/render.cpp
-../src/impl/objects/components/rendersubcomps.cpp
-../src/impl/objects/components/rigidbody.cpp
-../src/impl/objects/components/transform.cpp
+impl/objects.cpp
+impl/objects/entity.cpp
+impl/objects/figure.cpp
+impl/objects/components/camera.cpp
+impl/objects/components/canvas.cpp
+impl/objects/components/canvasitems.cpp
+impl/objects/components/canvastypes.cpp
+impl/objects/components/conductor.cpp
+impl/objects/components/render.cpp
+impl/objects/components/rendersubcomps.cpp
+impl/objects/components/rigidbody.cpp
+impl/objects/components/transform.cpp
 #
-../src/impl/runtime.cpp
-../src/impl/runtime/application.cpp
-../src/impl/runtime/time.cpp
+impl/runtime.cpp
+impl/runtime/application.cpp
+impl/runtime/time.cpp
 #
-../src/impl/utils/file.cpp
+impl/utils/file.cpp
 #
-../src/impl/materials.cpp
-../src/impl/system.cpp)
+impl/materials.cpp
+impl/system.cpp)
 
 add_subdirectory(resources)

@@ -1,3 +1,6 @@
+module;
+#include <GL/glew.h>
+
 export module presto.internal.rendering.opengl;
 
 import presto.internal;
@@ -5,11 +8,7 @@ import presto.internal;
 import :types;
 import :base;
 
-#include <GL/glew.h>
-#include "Memory/Allocator.h"
-// #include "Rendering/OpenGL/OpenGLDrawManager/OpenGLDrawManager.h"
-
-// #include "OpenGLMeshContext.h"
+import presto.utils;
 
 export namespace Presto {
 class GLFWAppWindow;

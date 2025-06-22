@@ -1,4 +1,8 @@
+module;
+#include "presto/internal/module.h"
+
 export module presto.internal.managers.rendering;
+import presto.core.manager;
 
 export namespace Presto {
 
@@ -23,7 +27,7 @@ using layer_id_t = PR_NUMERIC_ID;
 
 struct AllocatedPipeline;
 
-class PRESTO_API RenderingManager final : public Module<RenderingManager> {
+class RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
 
     friend bool ImageAsset::load();
