@@ -1,5 +1,10 @@
+module;
+#include <format>
+#include "presto/events.h"
+
 export module presto.input:events;
 
+import presto.core.types;
 import presto.core.event;
 
 import :keycodes;
@@ -33,7 +38,7 @@ class KeyEvent : public Event {
                          EventCategory::EventCategoryInput)
     EVENT_CLASS_TYPE(Key)
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("KeyEvent: Key ", Input::CodeOf(this->keyCode_));
     }
 
@@ -73,7 +78,7 @@ class MouseMovedEvent : public MouseEvent {
     [[nodiscard]] const auto& pos() const { return position_; }
     [[nodiscard]] MousePosition posNormalised() const;
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("MouseMovedEvent: ({}, {})", position_.x,
                            position_.y);
     }
@@ -92,7 +97,7 @@ class MouseScrolledEvent : public MouseEvent {
     [[nodiscard]] float GetXOffset() const { return this->scrollXOffset; }
     [[nodiscard]] float GetYOffset() const { return this->scrollYOffset; }
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("MouseScrolledEvent:  (x: {}, y: {})", scrollXOffset,
                            scrollYOffset);
     }
@@ -121,7 +126,7 @@ class MouseButtonPressedEvent : public MouseButtonEvent {
    public:
     explicit MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("MouseButtonPressedEvent:  Button {}", button_);
     }
 
@@ -132,7 +137,7 @@ class MouseButtonReleasedEvent : public MouseButtonEvent {
    public:
     explicit MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("MouseButtonReleasedEvent:  Button {}", button_);
     }
 

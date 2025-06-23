@@ -3,6 +3,7 @@ export module presto.internal.windowdata;
 // For types/concepts
 import presto.core;
 import presto.core.event;
+
 import presto.runtime.window;
 import presto.internal.managers;
 
@@ -10,7 +11,7 @@ epoxrt namespace Presto {
     class Renderer;
 
     struct WindowData {
-        std::string title;
+        Presto::string title;
 
         VisualExtents window_size;
         VisualExtents framebuffer_size;

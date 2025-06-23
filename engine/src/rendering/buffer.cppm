@@ -1,3 +1,7 @@
+module;
+#include <span>
+#include <utility>
+
 export module presto.internal.rendering:buffer;
 
 import presto.core.types;

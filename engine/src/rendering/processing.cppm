@@ -1,3 +1,6 @@
+module;
+#include <span>
+
 export module presto.internal.rendering:processing;
 
 export namespace Presto {

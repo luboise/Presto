@@ -4,6 +4,7 @@ module;
 
 export module presto.core.event.base;
 
+import presto.core.types;
 import presto.core.constants;
 import presto.core.concepts;
 
@@ -64,7 +65,7 @@ class Event {
     [[nodiscard]] virtual EventType getType() const = 0;
     [[nodiscard]] virtual const char* getName() const = 0;
     [[nodiscard]] virtual event_category_t getCategories() const = 0;
-    [[nodiscard]] virtual std::string toString() const { return getName(); };
+    [[nodiscard]] virtual Presto::string toString() const { return getName(); };
 
     [[nodiscard]] bool inCategory(EventCategory category) const {
         return (getCategories() & category) != 0;

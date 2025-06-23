@@ -1,6 +1,8 @@
 module presto.internal.rendering;
 import :types;
 
+#include <utility>
+
 namespace Presto {
 void MeshData::setVertices(const ImportedAttributeList& attributes) {
     auto processed{processVertices<Vertex3D>(attributes)};

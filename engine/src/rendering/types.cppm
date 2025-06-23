@@ -1,6 +1,10 @@
+module;
+#include <vector>
+
 export module presto.internal.rendering:types;
 
 import presto.core;
+import presto.objects;
 
 export namespace Presto {
 
@@ -59,12 +63,12 @@ struct ObjectUniforms {
 };
 
 struct DrawInfo {
-    std::size_t vertex_count = 0;
+    Presto::size_t vertex_count = 0;
 
     // Vulkan uses signed int for the offset
     int32_t vertex_offset = 0;
 
-    std::size_t index_count = 0;
+    Presto::size_t index_count = 0;
     uint32_t index_offset = 0;
 };
 
@@ -267,20 +271,6 @@ Presto::BaseAttributeTypeDetails Presto::getShaderTypeDetails(
     return {};
 }
 
-// Uniform variable types
-
-enum class UniformVariableType : Presto::uint8_t {
-    INT = 1,
-    UINT = 2,
-    FLOAT = 3,
-    VEC2 = 4,
-    VEC3 = 5,
-    VEC4 = 6,
-    MAT3 = 7,
-    MAT4 = 8,
-    TEXTURE = 9,
-};
-
 template <UniformVariableType T>
 struct UniformVariableTypeTraits {
     static_assert(false, "No type trait instantiation defined.");
@@ -356,35 +346,6 @@ constexpr Presto::size_t SizeOfType(UniformVariableType type) noexcept {
         }
     }
 #undef SWITCH_CASE
-};
-
-using uniform_name_t = Presto::string;
-
-using uniform_index_t = Presto::uint8_t;
-constexpr uniform_index_t PR_INVALID_UNIFORM = -1;
-
-struct UniformBinding {
-    enum : Presto::uint8_t { SINGLE, BLOCK };
-
-    Presto::uint8_t bind_type;
-    UniformVariableType data_type;
-    uniform_name_t name;
-
-    union {
-        Presto::uint32_t location;
-        Presto::uint32_t offset;
-    };
-
-    [[nodiscard]] Presto::size_t size() const;
-};
-
-struct UniformBlock {
-    uniform_index_t bind_point;
-    uniform_name_t name;
-
-    std::vector<UniformBinding> bindings;
-
-    [[nodiscard]] Presto::size_t size() const;
 };
 
 }  // namespace Presto

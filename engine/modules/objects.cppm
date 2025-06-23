@@ -1,3 +1,6 @@
+module;
+#include <utility>
+
 export module presto.objects;
 
 export import presto.objects.entity;
@@ -67,7 +70,7 @@ class PRESTO_API EntityManager {
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<EntityPtr> newEntities(PR_SIZE count);
+    std::vector<EntityPtr> newEntities(Presto::size_t count);
 
     EntityPtr getEntityByID(entity_id_t id);
 

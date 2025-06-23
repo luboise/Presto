@@ -3,6 +3,10 @@ export module presto.utils;
 export import :file;
 export import :interpolation;
 
+import presto.core.types;
+
+import presto.runtime.time;
+
 export namespace Presto {
 
 template <class T>
@@ -29,7 +33,7 @@ class LazyCalculator {
 
 class DebugTimer {
    public:
-    explicit DebugTimer(std::string name);
+    explicit DebugTimer(Presto::string name);
 
     void printElapsed(bool resetTimer = false);
     void reset();
@@ -37,7 +41,7 @@ class DebugTimer {
     ~DebugTimer() = default;
 
    private:
-    std::string name;
+    Presto::string name;
     Time::Milliseconds time_started{0};
     Time::Milliseconds time_ended{0};
 };

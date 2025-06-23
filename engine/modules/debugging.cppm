@@ -1,6 +1,7 @@
 export module presto.debugging;
 
 import presto.core;
+import presto.aliases.object;
 
 export namespace Presto {
 struct Cube;

@@ -1,5 +1,7 @@
 export module presto.assets.mesh;
+
 import presto.assets.types;
+import presto.core;
 
 export namespace Presto {
 

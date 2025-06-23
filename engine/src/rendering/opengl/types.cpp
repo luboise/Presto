@@ -1,5 +1,9 @@
 module presto.internal.rendering.opengl;
+
 import :types;
+import presto.core;
+
+#include <utility>
 
 constexpr GLenum Presto::OpenGLTypeFromPrestoType(Presto::ShaderDataType type) {
     using namespace Presto;
@@ -60,7 +64,7 @@ bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
         GLint logLength = 0;
         glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 
-        std::string message("", logLength);
+        Presto::string message("", logLength);
         glGetProgramInfoLog(shaderProgram, logLength, &logLength,
                             message.data());
 
@@ -197,7 +201,7 @@ std::vector<PipelineAttribute> Introspection::getAttributesFromShader(
         PipelineAttribute attribute{
             .layout = static_cast<PR_NUMERIC_ID>(values[0]),
             .type = getShaderDataType(values[1], values[2]),
-            .name = std::string(name.data()),
+            .name = Presto::string(name.data()),
             .offset = running_offset};
         running_offset += attribute.size();
 
@@ -248,7 +252,7 @@ std::vector<PipelineUniform> Introspection::getUniformsFromShader(
         PipelineUniform uniform{
             .location = static_cast<PR_NUMERIC_ID>(values[0]),
             .data_type = getUniformVariableType(values[1], values[2]),
-            .name = std::string(name.data()),
+            .name = Presto::string(name.data()),
             .offset = running_offset};
 
         running_offset += uniform.size();
@@ -358,7 +362,7 @@ std::vector<PipelineUniform> Introspection::getUniforms(GLuint program,
         PipelineUniform uniform{
             .location = static_cast<PR_NUMERIC_ID>(values[0]),
             .data_type = getUniformVariableType(values[1], values[2]),
-            .name = std::string(name.data()),
+            .name = Presto::string(name.data()),
             .offset = running_offset};
         running_offset += uniform.size();
 

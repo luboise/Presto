@@ -2,6 +2,7 @@ module;
 
 #include <any>
 #include <unordered_map>
+#include <vector>
 
 export module presto.utils:typemap;
 

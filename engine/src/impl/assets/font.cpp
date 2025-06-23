@@ -1,5 +1,8 @@
 module presto.assets.font;
 
+#include <span>
+#include <utility>
+
 namespace Presto {
 
 FontAsset::FontAsset(Presto::string name) : Asset(std::move(name)) {}

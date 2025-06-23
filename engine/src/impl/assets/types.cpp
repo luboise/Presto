@@ -1,5 +1,7 @@
 module presto.assets.types;
 
+#include <utility>
+
 namespace Presto {
 
 bool Asset::ensureLoaded() {

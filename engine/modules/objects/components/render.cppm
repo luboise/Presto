@@ -1,6 +1,11 @@
+module;
+#include <vector>
+#include "presto/platform.h"
+
 export module presto.objects.components.render;
 import presto.core.platform;
 import presto.objects.component;
+import presto.assets.types;
 
 export namespace Presto {
 struct QuadSubcomponent;
@@ -44,7 +49,7 @@ struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
 struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
     std::vector<MeshDraw> draws;
 
-    [[nodiscard]] PR_SIZE meshCount() const { return draws.size(); }
+    [[nodiscard]] Presto::size_t meshCount() const { return draws.size(); }
 };
 
 }  // namespace Presto

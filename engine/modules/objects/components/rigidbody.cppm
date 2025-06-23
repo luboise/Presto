@@ -1,5 +1,11 @@
+module;
+#include "presto/platform.h"
+
 export module presto.objects.components:rigidbody;
 import presto.objects.component;
+
+import presto.core;
+import presto.physics;
 
 export namespace Presto {
 
@@ -9,13 +15,13 @@ class PRESTO_API RigidBodyComponent : public Component {
    public:
     RigidBodyComponent() = default;
 
-    [[nodiscard]] vec3 velocity() const;
-    void addVelocity(vec3 vel);
-    void setVelocity(vec3 vel);
+    [[nodiscard]] Presto::vec3 velocity() const;
+    void addVelocity(Presto::vec3 vel);
+    void setVelocity(Presto::vec3 vel);
 
-    [[nodiscard]] vec3 angularVelocity() const;
-    void addAngularVelocity(vec3 angularVel);
-    void setAngularVelocity(vec3 angularVel);
+    [[nodiscard]] Presto::vec3 angularVelocity() const;
+    void addAngularVelocity(Presto::vec3 angularVel);
+    void setAngularVelocity(Presto::vec3 angularVel);
 
     void addForce(Force force);
 
@@ -28,8 +34,8 @@ class PRESTO_API RigidBodyComponent : public Component {
     [[nodiscard]] bool collidingWith(const RigidBodyComponent& other) const;
 
     struct PhysicsMovement {
-        vec3 pos_offset;
-        vec3 angular_offset;
+        Presto::vec3 pos_offset;
+        Presto::vec3 angular_offset;
     };
 
     [[nodiscard]] Force calculateMovement() const;

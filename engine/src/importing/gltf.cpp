@@ -1,5 +1,10 @@
 module presto.internal.gltf;
 
+#include <span>
+#include <utility>
+
+import presto.core;
+
 namespace Presto {
 
 ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
@@ -417,8 +422,8 @@ ImportedModelData GLTFLoader::load(
 
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
-    std::string err;
-    std::string warn;
+    Presto::string err;
+    Presto::string warn;
 
     // TODO: Implement full path/cwd system for engine to find it at
     // runtime, or have the user change it (would help the editor)
@@ -434,8 +439,8 @@ ImportedModelData GLTFLoader::load(
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, full_asset_path);
     }
 
-    PR_CORE_ASSERT(
-        ret, std::string("Failed to read asset ") + full_asset_path.string());
+    PR_CORE_ASSERT(ret, Presto::string("Failed to read asset ") +
+                            full_asset_path.string());
 
     std::set<int> textureIndices;
 

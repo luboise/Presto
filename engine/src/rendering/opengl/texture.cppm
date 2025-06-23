@@ -82,8 +82,8 @@ class OpenGLTexture2D final : public Texture2D {
 
     void load() override;
 
-    [[nodiscard]] std::size_t height() const override;
-    [[nodiscard]] std::size_t width() const override;
+    [[nodiscard]] Presto::size_t height() const override;
+    [[nodiscard]] Presto::size_t width() const override;
 
     void write(ByteArray bytes) override;
 

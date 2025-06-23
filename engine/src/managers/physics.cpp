@@ -26,9 +26,9 @@ void PhysicsManager::update() {
 
     // Check collisions
     /*
-for (std::size_t i = 0; i < pairings_.size(); i++) {
+for (Presto::size_t i = 0; i < pairings_.size(); i++) {
     ComponentPtr<RigidBodyComponent>& pairing_a{pairings_[i].body};
-    for (std::size_t j = i + 1; j < pairings_.size(); j++) {
+    for (Presto::size_t j = i + 1; j < pairings_.size(); j++) {
         ComponentPtr<RigidBodyComponent>& pairing_b{pairings_[j].body};
     }
 }

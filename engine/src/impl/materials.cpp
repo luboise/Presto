@@ -1,5 +1,7 @@
 module presto.materials;
 
+#include <utility>
+
 namespace Presto {
 
 struct UniformBufferExtra {

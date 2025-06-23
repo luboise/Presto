@@ -1,7 +1,11 @@
 module presto.assets.mesh;
 
+#include <utility>
+
 import presto.internal.managers.rendering;
 import presto.internal;
+
+import presto.core.types;
 
 export namespace Presto {
 
@@ -92,7 +96,7 @@ void MeshSource::reloadFile() {
                    "The pipeline structure of the default pipelines must "
                    "not be nullptr.");
 
-    std::string filename{path().basename()};
+    Presto::string filename{path().basename()};
     fs::path file_extension{path().fileExtension()};
 
     ImportedModelData imported_data;
@@ -108,7 +112,7 @@ void MeshSource::reloadFile() {
 
     // Turn the textures into assets
     textures_.resize(imported_data.textures.size());
-    for (std::size_t i{0}; i < imported_data.textures.size(); ++i) {
+    for (Presto::size_t i{0}; i < imported_data.textures.size(); ++i) {
         ImportedTexture& texture{imported_data.textures[i]};
         if (texture.name.empty()) {
             PR_WARN(
@@ -131,7 +135,7 @@ void MeshSource::reloadFile() {
 
     // Store the material imports
     materials_.resize(imported_data.materials.size());
-    for (std::size_t i{0}; i < materials_.size(); ++i) {
+    for (Presto::size_t i{0}; i < materials_.size(); ++i) {
         ImportedMaterial& mat{imported_data.materials[i]};
 
         materials_[i] = {.name{mat.name}, .material_import{std::move(mat)}};

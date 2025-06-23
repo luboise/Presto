@@ -17,7 +17,6 @@ target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
   core/platform.cppm
   #
   core/logging.cppm
-  core/assert.cppm
   core/manager.cppm
   core/eventbase.cppm
   core/eventuser.cppm
@@ -26,13 +25,17 @@ target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
   #
   core.cppm
   #
+  physics.cppm
+  #
   objects.cppm
   objects/entity.cppm
   objects/component.cppm
   objects/components/transform.cppm
   objects/components/conductor.cppm
-  objects/components/canvas.cppm
+  objects/components/canvastypes.cppm
+  objects/components/canvasbase.cppm
   objects/components/canvasitems.cppm
+  objects/components/canvas.cppm
   objects/components/render.cppm
   objects/components/rigidbody.cppm
   objects/components.cppm
@@ -44,6 +47,8 @@ target_sources(${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE
   assets/model.cppm
   assets/material.cppm
   assets.cppm
+  #
+  handles.cppm
   #
   aliases/asset.cppm
   aliases/object.cppm

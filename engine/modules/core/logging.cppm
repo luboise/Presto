@@ -6,7 +6,6 @@ export module presto.core.logging;
 namespace spdlog {
 class logger;
 }
-
 export namespace Presto {
 class Log {
    public:
@@ -25,6 +24,7 @@ class Log {
 };
 }  // namespace Presto
 
+export {
 // Core log macros
 #define PR_CORE_TRACE(...) ::Presto::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define PR_CORE_INFO(...) ::Presto::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -39,3 +39,4 @@ class Log {
 #define PR_WARN(...) ::Presto::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define PR_ERROR(...) ::Presto::Log::GetClientLogger()->error(__VA_ARGS__)
 #define PR_CRITICAL(...) ::Presto::Log::GetClientLogger()->critical(__VA_ARGS__)
+}

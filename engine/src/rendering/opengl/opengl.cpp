@@ -4,22 +4,21 @@ module presto.internal.rendering.opengl;
 #include <GLFW/glfw3.h>
 
 #include <cmath>
+#include <span>
+#include <utility>
 
 import :buffer;
 import :pipeline;
 import :shader;
 import :texture;
+import :types;
 
+import presto.internal.rendering;
+import presto.internal.events;
+import presto.internal.glfw;
 import presto.core.constants;
-// #include "./utils.h"
-#include "Presto/Rendering/PipelineTypes.h"
-#include "Presto/Rendering/RenderTypes.h"
-#include "Presto/Runtime/Events/ApplicationEvents.h"
-#include "Presto/Runtime/GLFWAppWindow.h"
-#include "Presto/Utils/File.h"
-
-#include "Rendering/DefaultTextures.h"
-#include "Rendering/Renderer.h"
+import presto.utils;
+import presto.defaults.textures;
 
 namespace Presto {
 

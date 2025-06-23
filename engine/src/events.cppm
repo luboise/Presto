@@ -3,8 +3,7 @@ module;
 
 export module presto.internal.events;
 
-import presto.core.event;
-import presto.core.types;
+import presto.core;
 
 export namespace Presto {
 
@@ -22,7 +21,7 @@ class WindowResizeEvent : public Event {
     [[nodiscard]] unsigned GetWidth() const { return width; }
     [[nodiscard]] unsigned GetHeight() const { return height; }
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("WindowResizeEvent: {}, {}", width, height);
     }
 
@@ -51,7 +50,7 @@ class FramebufferResizedEvent : public Event {
         };
     }
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("FramebufferResizedEvent: {}, {}", width_, height_);
     }
 
@@ -116,7 +115,7 @@ class ObjectCreatedEvent : public ObjectEvent {
     template <typename T>
     explicit ObjectCreatedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("Entity created at address 0x{}", _objectPtr);
     }
 };
@@ -128,7 +127,7 @@ class ObjectDestroyedEvent : public ObjectEvent {
     template <typename T>
     explicit ObjectDestroyedEvent(T* objectPtr) : ObjectEvent(objectPtr) {}
 
-    [[nodiscard]] std::string toString() const override {
+    [[nodiscard]] Presto::string toString() const override {
         return std::format("Entity destroyed at address 0x{}", _objectPtr);
     }
 };

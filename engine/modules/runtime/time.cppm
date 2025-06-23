@@ -4,6 +4,7 @@ module;
 export module presto.runtime.time;
 
 import presto.core;
+import presto.core.concepts;
 
 export namespace Presto {
 

@@ -1,3 +1,6 @@
+module;
+#include <utility>
+
 export module presto.assets.image;
 import presto.assets.types;
 
@@ -5,14 +8,14 @@ export namespace Presto {
 struct ImageData {
     using image_data_t = ByteArray;
 
-    std::size_t width;
-    std::size_t height;
+    Presto::size_t width;
+    Presto::size_t height;
     image_data_t bytes;
 
     static constexpr auto PIXEL_BYTE_LENGTH = 4;
 
     // 4 bytes since assumed RGBA, 1 for each channel
-    [[nodiscard]] std::size_t size() const {
+    [[nodiscard]] Presto::size_t size() const {
         return width * height * PIXEL_BYTE_LENGTH;
     };
 };
@@ -32,14 +35,14 @@ class ImageAsset final : public Asset {
 
     [[nodiscard]] const Presto::ImageData& data() const { return image_; }
 
-    [[nodiscard]] std::size_t width() const { return image_.width; }
-    [[nodiscard]] std::size_t height() const { return image_.height; }
+    [[nodiscard]] Presto::size_t width() const { return image_.width; }
+    [[nodiscard]] Presto::size_t height() const { return image_.height; }
     [[nodiscard]] auto getData() const -> const ImageData::image_data_t& {
         return image_.bytes;
     }
 
     // 4 bytes since assumed RGBA, 1 for each channel
-    [[nodiscard]] std::size_t size() const { return image_.size(); };
+    [[nodiscard]] Presto::size_t size() const { return image_.size(); };
 
    private:
     bool load() override;

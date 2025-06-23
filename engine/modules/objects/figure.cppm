@@ -6,7 +6,7 @@ export namespace Presto {
 class Entity;
 
 constexpr auto PRESTO_FIGURE_MAX_ENTITY_COUNT = 20;
-using figure_size_t = PR_SIZE;
+using figure_size_t = Presto::size_t;
 
 class Figure {
    public:
@@ -19,7 +19,7 @@ class Figure {
 
     ~Figure();
 
-    Entity& getEntity(std::size_t index = 0);
+    Entity& getEntity(Presto::size_t index = 0);
 
    private:
     std::vector<EntityPtr> entities_;

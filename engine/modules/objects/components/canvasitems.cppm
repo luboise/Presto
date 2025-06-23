@@ -1,4 +1,8 @@
+module;
+#include "presto/platform.h"
+
 export module presto.objects.components.canvas:canvasitems;
+import :base;
 
 import presto.core;
 

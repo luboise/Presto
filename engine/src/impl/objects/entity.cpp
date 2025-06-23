@@ -1,5 +1,7 @@
 module presto.objects.entity;
 
+#include <utility>
+
 namespace Presto {
 
 Entity::Entity(entity_id_t id, entity_name_t name)

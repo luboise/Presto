@@ -75,6 +75,8 @@ impl/assets/material.cpp
 # impl/math.cpp
 impl/math/shapes.cpp
 #
+impl/physics.cpp
+#
 impl/objects.cpp
 impl/objects/entity.cpp
 impl/objects/figure.cpp

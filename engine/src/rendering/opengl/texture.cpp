@@ -114,8 +114,8 @@ OpenGLTexture2D::OpenGLTexture2D(opengl_dim_t width, opengl_dim_t height)
     reloadInstances();
 }
 
-std::size_t OpenGLTexture2D::width() const { return width_; }
-std::size_t OpenGLTexture2D::height() const { return height_; }
+Presto::size_t OpenGLTexture2D::width() const { return width_; }
+Presto::size_t OpenGLTexture2D::height() const { return height_; }
 
 void OpenGLTexture2D::reloadInstances() {
     // Update the height and width if they have been changed

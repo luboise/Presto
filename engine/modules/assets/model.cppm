@@ -1,10 +1,13 @@
+module;
+#include <vector>
+
 export module presto.assets.model;
 
+import presto.assets.mesh;
 import presto.assets.types;
+import presto.core;
 
 export namespace Presto {
-
-class MeshSource;
 struct MeshDraw;
 
 class ModelAsset final : public Asset {
@@ -23,7 +26,7 @@ class ModelAsset final : public Asset {
 
     BoundingBox getBoundingBox();
 
-    ModelAsset& addMesh(MeshPtr, MaterialPtr = nullptr);
+    ModelAsset& addMesh(AssetPtr<MeshAsset>, AssetPtr<MaterialAsset> = nullptr);
 
     ModelAsset& clear();
 

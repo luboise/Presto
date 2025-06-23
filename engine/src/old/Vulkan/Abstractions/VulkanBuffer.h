@@ -14,7 +14,7 @@ class MemoryAllocation;
 /*
 struct OpenGLBufferArgs {
     ByteArray bytes;
-    std::size_t vertex_count;
+        Presto::size_t vertex_count;
     AttributeSet attributes;
 };
 

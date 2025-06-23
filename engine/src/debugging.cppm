@@ -1,6 +1,7 @@
 export module presto.internal.debugging;
 
 export import :constants;
+import presto.core.types;
 
 export namespace Presto {
 
@@ -33,8 +34,8 @@ class DebugUI {
     static void initialise(Presto::Window* windowPtr,
                            std::function<void()> exitCallback);
 
-    static void modalPopup(std::string message);
-    static void errorPopup(std::string message);
+    static void modalPopup(Presto::string message);
+    static void errorPopup(Presto::string message);
 
     static void shutdown();
 
@@ -52,7 +53,7 @@ class DebugUI {
     inline static EditorState state_{EditorState::EDITING};
     inline static EntityPtr selectedEntity_{nullptr};
 
-    inline static std::vector<std::string> errorMessages_;
+    inline static std::vector<Presto::string> errorMessages_;
 
     static void drawMainEditor();
 

@@ -1,6 +1,10 @@
+module;
+#include <utility>
+
 export module presto.assets.types;
 
 import presto.core;
+import presto.core.concepts;
 
 export namespace Presto {
 
@@ -12,20 +16,6 @@ enum class AssetType : Presto::uint8_t {
     IMAGE,
     FONT
 };
-
-using AssetArg = AssetPath;
-
-class MaterialAsset;
-using MaterialDefinitionPtr = Ptr<MaterialAsset>;
-class ImageAsset;
-using ImagePtr = Ptr<ImageAsset>;
-class ModelAsset;
-using ModelPtr = Ptr<ModelAsset>;
-class FontAsset;
-using FontPtr = Ptr<FontAsset>;
-
-class Mesh;
-using MeshPtr = Ptr<Mesh>;
 
 class AssetPath {
    public:
@@ -50,6 +40,8 @@ class AssetPath {
    private:
     FilePath path_;
 };
+
+using AssetArg = AssetPath;
 
 class Asset {
     friend class AssetManager;
@@ -84,7 +76,8 @@ class Asset {
     bool loaded_{false};
 };
 
-export namespace Presto {
+template <DerivedFrom<Asset> T>
+using AssetPtr = Ptr<T>;
 
 class AssetSource {
    public:
@@ -122,5 +115,4 @@ class AssetSource {
     bool loaded_;
 };
 
-}  // namespace Presto
 }  // namespace Presto

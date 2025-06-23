@@ -1,3 +1,6 @@
+module;
+#include "presto/platform.h"
+
 export module presto.runtime.application;
 
 import presto.core.platform;

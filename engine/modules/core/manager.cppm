@@ -1,11 +1,14 @@
-export module presto.core.manager;
+module;
+#include "presto/assert.h"
+#include "presto/module.h"
+#include "presto/platform.h"
 
-// #include "Presto/Core.h"
 #include <format>
-
 #include <functional>
 #include <memory>
 #include <type_traits>
+
+export module presto.core.manager;
 
 import presto.core;
 

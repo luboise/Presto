@@ -1,5 +1,5 @@
 export module presto.internal.rendering:base;
-export import presto.internal.rendering.types;
+import :types;
 
 import presto.core.types;
 

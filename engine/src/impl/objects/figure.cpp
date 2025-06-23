@@ -1,5 +1,6 @@
 module presto.objects.entity;
 import :figure;
+#include <utility>
 
 export namespace Presto {
 Figure::Figure(figure_size_t size) {
@@ -29,7 +30,7 @@ Figure::~Figure() {
     }
 }
 
-Entity& Figure::getEntity(std::size_t index) {
+Entity& Figure::getEntity(Presto::size_t index) {
     PR_ASSERT(index < entities_.size(),
               std::format("Index out of acccepted bounds [0, {}]",
                           entities_.size() - 1));

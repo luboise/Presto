@@ -68,7 +68,7 @@ struct VertexAttribute {
     vertex_binding_t index;
     Presto::size_t offset{0};
 
-    [[nodiscard]] std::size_t size() const noexcept {
+    [[nodiscard]] Presto::size_t size() const noexcept {
         return SizeOfShaderType(type);
     };
 };
@@ -82,16 +82,16 @@ class AttributeSet {
 
     [[nodiscard]] const auto& getAttributes() const;
 
-    [[nodiscard]] std::size_t size();
+    [[nodiscard]] Presto::size_t size();
 
     bool lock(bool calculateOffsets = false);
 
     [[nodiscard]] bool locked() const { return locked_; }
 
-    [[nodiscard]] std::size_t bytesRequired() const;
+    [[nodiscard]] Presto::size_t bytesRequired() const;
 
     // Alias of bytesRequired
-    [[nodiscard]] std::size_t stride() const { return bytesRequired(); }
+    [[nodiscard]] Presto::size_t stride() const { return bytesRequired(); }
 
    private:
     bool locked_{false};

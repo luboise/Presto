@@ -1,5 +1,5 @@
 module;
-#include "presto/internal/module.h"
+#include "presto/module.h"
 
 export module presto.internal.managers.physics;
 import presto.objects;

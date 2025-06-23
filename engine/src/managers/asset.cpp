@@ -1,4 +1,6 @@
-module presto.internal.managers.asset;
+import module presto.internal.managers.asset;
+
+#include <span>
 
 namespace Presto {
 

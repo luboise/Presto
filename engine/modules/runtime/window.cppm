@@ -12,10 +12,8 @@ constexpr auto DEFAULT_HEIGHT = 1440;
 
 export namespace Presto {
 
-class Event;
-
 struct WindowProperties {
-    std::string title{"Untitled Presto application"};
+    Presto::string title{"Untitled Presto application"};
     VisualExtents extents{.width = DEFAULT_WIDTH, .height = DEFAULT_HEIGHT};
     RENDER_LIBRARY render_library{UNSET};
 };

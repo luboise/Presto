@@ -1,6 +1,10 @@
 module presto.internal.utils;
 
-DebugTimer::DebugTimer(std::string name)
+#include <utility>
+
+import presto.core;
+
+DebugTimer::DebugTimer(Presto::string name)
     : name(std::move(name)), time_started(Time::totalSecondsSinceStart()) {}
 
 void DebugTimer::printElapsed(bool resetTimer) {

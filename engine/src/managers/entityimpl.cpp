@@ -130,12 +130,12 @@ bool EntityManagerImpl::exists(entity_id_t id) const {
                                 [id](auto& key) { return key == id; });
 };
 
-std::vector<EntityPtr> EntityManagerImpl::newEntities(PR_SIZE count) {
+std::vector<EntityPtr> EntityManagerImpl::newEntities(Presto::size_t count) {
     PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
                    "Invalid entity count construction requested.");
     std::vector<EntityPtr> entities(count);
 
-    for (PR_SIZE i = 0; i < count; i++) {
+    for (Presto::size_t i = 0; i < count; i++) {
         entities[i] = newEntity("Entity");
     }
 

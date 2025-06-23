@@ -1,4 +1,10 @@
+module;
+
+#include <list>
+#include "presto/platform.h"
+
 export module presto.objects.components.conductor;
+import presto.objects.entity;
 import presto.objects.component;
 
 export namespace Presto {

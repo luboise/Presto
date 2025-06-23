@@ -1,7 +1,5 @@
 #pragma once
 
-import presto.core.logging;
-
 #ifndef NDEBUG
 #if defined(PR_PLATFORM_WINDOWS)
 #define TRIP_DEBUGGER() __debugbreak()

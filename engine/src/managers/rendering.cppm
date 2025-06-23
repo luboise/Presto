@@ -1,5 +1,5 @@
 module;
-#include "presto/internal/module.h"
+#include "presto/module.h"
 
 export module presto.internal.managers.rendering;
 import presto.core.manager;

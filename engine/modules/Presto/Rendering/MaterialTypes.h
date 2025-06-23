@@ -4,21 +4,6 @@
 
 export namespace Presto {
 
-struct UniformLayout {
-    std::vector<UniformBinding> bindings;
-    std::vector<UniformBlock> blocks;
-};
-
-struct MaterialProperty {
-    Presto::string name;
-    UniformVariableType type;
-
-    Presto::size_t binding;
-    Presto::uint8_t offset;
-
-    static bool compatible(const MaterialProperty&, const MaterialProperty&);
-};
-
 struct MaterialBlockProperty;
 
 struct PipelineStructure;

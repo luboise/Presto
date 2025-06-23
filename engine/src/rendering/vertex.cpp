@@ -112,13 +112,13 @@ const auto& AttributeSet::getAttributes() const { return attributes_; };
 
 std::size_t AttributeSet::size() { return attributes_.size(); }
 
-std::size_t AttributeSet::bytesRequired() const {
+Presto::size_t AttributeSet::bytesRequired() const {
     PR_ASSERT(this->locked(),
               "Unable to obtain stride on an unlocked AttributeSet.");
 
     return std::accumulate(
         attributes_.begin(), attributes_.end(), 0,
-        [](std::size_t sum, const auto& pair) -> std::size_t {
+        [](Presto::size_t sum, const auto& pair) -> Presto::size_t {
             return sum + pair.second.size();
         });
 }

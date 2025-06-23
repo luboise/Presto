@@ -42,9 +42,11 @@ class Texture2D : public Texture {
 
     [[nodiscard]] ImagePtr image() const { return image_; }
 
-    [[nodiscard]] virtual std::size_t width() const = 0;
-    [[nodiscard]] virtual std::size_t height() const = 0;
-    [[nodiscard]] std::size_t pixelCount() const { return width() * height(); };
+    [[nodiscard]] virtual Presto::size_t width() const = 0;
+    [[nodiscard]] virtual Presto::size_t height() const = 0;
+    [[nodiscard]] Presto::size_t pixelCount() const {
+        return width() * height();
+    };
 
    private:
     ImagePtr image_;

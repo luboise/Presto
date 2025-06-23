@@ -14,6 +14,7 @@ import presto.objects.components;
 #include <algorithm>
 #include <memory>
 #include <ranges>
+#include <span>
 #include <utility>
 
 // Public imports
@@ -322,7 +323,7 @@ void RenderingManager::update() {
         }
 
         for (QuadSubcomponent& quad : drawStruct.render->getQuads()) {
-            // for (std::size_t i = 0; i < model.draws.size(); i++) {
+            // for (Presto::size_t i = 0; i < model.draws.size(); i++) {
 
             if (quad.material == nullptr) {
                 PR_ERROR(

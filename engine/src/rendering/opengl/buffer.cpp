@@ -2,6 +2,8 @@ module presto.internal.rendering.opengl;
 import :buffer;
 import presto.internal;
 
+#include <span>
+
 namespace Presto {
 
 void OpenGLBuffer::bind() { glBindBuffer(openGlBufferType_, buffer_); }

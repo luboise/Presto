@@ -1,14 +1,17 @@
 module;
 #include <array>
+#include <map>
+#include <vector>
+
+#include "presto/platform.h"
 
 export module presto.objects.entity;
 
 import presto.core;
+import presto.objects.component;
 
 export namespace Presto {
 // Forward declaration
-class EntityManager;
-
 using entity_id_t = PR_NUMERIC_ID;
 using entity_name_t = Presto::string;
 
