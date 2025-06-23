@@ -1,10 +1,10 @@
-module presto.internal.debugging;
-import presto.internal;
+#include "presto/internal/debugging.h"
+#include "presto/internal.h"
 
-import presto.aliases.object;
-import presto.internal.managers;
-import presto.objects;
-import presto.runtime.window;
+#include "presto/aliases/object.h"
+#include "presto/internal/managers.h"
+#include "presto/objects.h"
+#include "presto/runtime/window.h"
 
 #include <algorithm>
 #include <memory>

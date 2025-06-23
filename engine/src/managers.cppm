@@ -1,8 +1,6 @@
-export module presto.internal.managers;
-
-export import presto.internal.managers.asset;
-export import presto.internal.managers.entityimpl;
-export import presto.internal.managers.eventimpl;
-export import presto.internal.managers.physics;
-export import presto.internal.managers.rendering;
-export import presto.internal.managers.input;
+#include "presto/internal/managers/asset.h"       // IWYU pragma: export
+#include "presto/internal/managers/entityimpl.h"  // IWYU pragma: export
+#include "presto/internal/managers/eventimpl.h"   // IWYU pragma: export
+#include "presto/internal/managers/input.h"       // IWYU pragma: export
+#include "presto/internal/managers/physics.h"     // IWYU pragma: export
+#include "presto/internal/managers/rendering.h"   // IWYU pragma: export

@@ -1,4 +1,4 @@
-module presto.internal.rendering;
+#include "presto/internal/rendering.h"
 import :shader;
 
 namespace Presto {

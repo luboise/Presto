@@ -1,9 +1,7 @@
-export module presto.internal;
+#include "presto/core.h"           // IWYU pragma: export
+#include "presto/core/concepts.h"  // IWYU pragma: export
 
-export import presto.core;
-export import presto.core.concepts;
+#include "presto/internal/common.h"    // IWYU pragma: export
+#include "presto/internal/defaults.h"  // IWYU pragma: export
 
-export import presto.internal.defaults;
-export import presto.internal.common;
-
-export import presto.internal.events;
+#include "presto/internal/events.h"  // IWYU pragma: export

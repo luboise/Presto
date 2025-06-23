@@ -1,7 +1,6 @@
-export module presto.internal.managers.eventimpl;
 import :event;
 
-export namespace Presto {
+namespace Presto {
 
 class EventManagerImpl final : public Module<EventManagerImpl>,
                                public EventManager {

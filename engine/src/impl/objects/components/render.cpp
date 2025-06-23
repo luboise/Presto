@@ -1,4 +1,4 @@
-module presto.objects.components.render;
+#include "presto/objects/components/render.h"
 #include <utility>
 
 namespace Presto {

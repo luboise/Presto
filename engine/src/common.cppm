@@ -1,3 +1,2 @@
-export module presto.internal.common;
-export import presto.internal.common.types;
-export import presto.internal.pch;
+#include "presto/internal/common/types.h"  // IWYU pragma: export
+#include "presto/internal/pch.h"           // IWYU pragma: export

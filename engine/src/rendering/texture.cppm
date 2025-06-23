@@ -1,8 +1,6 @@
-export module presto.internal.rendering:texture;
+#include "presto/internal.h"
 
-import presto.internal;
-
-export namespace Presto {
+namespace Presto {
 
 // TODO: Implement other texture types here
 enum class TextureType : Presto::uint8_t { TEX2D };

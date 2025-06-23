@@ -1,11 +1,11 @@
-module presto.runtime.application;
+#include "presto/runtime/application.h"
 
-import presto.core.event;
-import presto.core.platform;
-import presto.internal.managers;
+#include "presto/core/event.h"
+#include "presto/core/platform.h"
+#include "presto/internal/managers.h"
 
 #ifdef PR_DEBUG_BUILD
-import presto.internal.managers.debug;
+#include "presto/internal/managers/debug.h"
 #endif
 
 namespace Presto {

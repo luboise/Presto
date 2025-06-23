@@ -1,9 +1,6 @@
-module;
 #include <span>
 
-export module presto.internal.rendering:processing;
-
-export namespace Presto {
+namespace Presto {
 
 template <typename T>
     requires requires { T::vertexPosition; }

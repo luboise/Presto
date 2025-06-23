@@ -1,4 +1,4 @@
-module presto.objects.components;
+#include "presto/objects/components.h"
 import :transform;
 
 namespace Presto {

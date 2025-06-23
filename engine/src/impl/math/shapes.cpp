@@ -1,4 +1,4 @@
-module presto.math;
+#include "presto/math.h"
 import :shapes;
 
 namespace Presto {

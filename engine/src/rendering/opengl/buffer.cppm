@@ -1,10 +1,8 @@
-module;
 #include <span>
 
-export module presto.internal.rendering.opengl:buffer;
-import presto.internal.rendering;
+#include "presto/internal/rendering.h"
 
-export namespace Presto {
+namespace Presto {
 
 class OpenGLBuffer final : public Buffer {
     using HandleType = GLuint;

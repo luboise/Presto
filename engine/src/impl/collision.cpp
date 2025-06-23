@@ -1,4 +1,4 @@
-module presto.collision;
+#include "presto/collision.h"
 
 Presto::CollisionResult Presto::Colliding(const Ray& ray, const Plane& plane) {
     using namespace Presto;

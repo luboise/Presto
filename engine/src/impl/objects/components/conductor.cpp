@@ -1,4 +1,4 @@
-module presto.objects.components.conductor;
+#include "presto/objects/components/conductor.h"
 
 void Presto::ConductorComponent::onEnterScene() {
     for (const auto& callback : preStartCallbacks_) {

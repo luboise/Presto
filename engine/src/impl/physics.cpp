@@ -1,6 +1,6 @@
-module presto.physics;
+#include "presto/physics.h"
 
-import presto.internal.managers;
+#include "presto/internal/managers.h"
 
 namespace Presto {
 

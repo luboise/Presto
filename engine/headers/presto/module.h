@@ -1,5 +1,5 @@
 #pragma once
-#include "presto/platform.h"  // IWYU pragma: export
+#include "presto/platform/h"  // IWYU pragma: export
 
 #define MODULE_FUNCTIONS(Type)                                      \
                                                                     \

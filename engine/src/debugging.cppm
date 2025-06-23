@@ -1,9 +1,7 @@
-export module presto.internal.debugging;
-
 export import :constants;
-import presto.core.types;
+#include "presto/core/types.h"
 
-export namespace Presto {
+namespace Presto {
 
 class CameraComponent;
 class RenderingManager;

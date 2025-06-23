@@ -1,13 +1,10 @@
-module;
 #include <span>
 #include <utility>
 
-export module presto.internal.rendering:buffer;
+#include "presto/core/types.h"
+#include "presto/utils.h"
 
-import presto.core.types;
-import presto.utils;
-
-export namespace Presto {
+namespace Presto {
 
 class Buffer {
    public:

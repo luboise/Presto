@@ -1,14 +1,12 @@
-module;
 #include <map>
 #include <variant>
 #include <vector>
 
-export module presto.internal.rendering:vertex;
 import :base;
 
-import presto.core.types;
+#include "presto/core/types.h"
 
-export namespace Presto {
+namespace Presto {
 
 struct PipelineAttribute;
 

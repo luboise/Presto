@@ -1,4 +1,4 @@
-module presto.objects.entity;
+#include "presto/objects/entity.h"
 
 #include <utility>
 

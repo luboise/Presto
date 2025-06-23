@@ -1,8 +1,6 @@
-export module presto.internal.rendering.opengl:texture;
+#include "presto/internal/rendering:texture.h"
 
-import presto.internal.rendering:texture;
-
-export namespace Presto {
+namespace Presto {
 
 constexpr int OPENGL_PIXEL_FORMAT{GL_RGBA};
 constexpr int OPENGL_TEXTURE_DATA_TYPE{GL_UNSIGNED_BYTE};

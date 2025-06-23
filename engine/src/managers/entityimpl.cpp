@@ -1,7 +1,7 @@
-module presto.internal.managers.entityimpl;
+#include "presto/internal/managers/entityimpl.h"
 
-import presto.objects;
-import presto.internal;
+#include "presto/internal.h"
+#include "presto/objects.h"
 
 namespace Presto {
 // Static member declarations

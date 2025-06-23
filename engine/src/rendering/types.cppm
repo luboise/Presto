@@ -1,12 +1,9 @@
-module;
 #include <vector>
 
-export module presto.internal.rendering:types;
+#include "presto/core.h"
+#include "presto/objects.h"
 
-import presto.core;
-import presto.objects;
-
-export namespace Presto {
+namespace Presto {
 
 struct CanvasDrawDetails {
     mesh_registration_id_t mesh;

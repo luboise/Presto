@@ -1,14 +1,11 @@
-module;
 #include <utility>
-
-export module presto.internal.utils;
 
 #include <concepts>
 #include <queue>
 #include <type_traits>
 #include <unordered_set>
 
-export namespace Presto {
+namespace Presto {
 
 /**
  * A class for generating and tracking IDs. This is to ensure there is no ID

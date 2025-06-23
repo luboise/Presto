@@ -1,10 +1,8 @@
-module;
 #include "presto/module.h"
 
-export module presto.internal.managers.rendering;
-import presto.core.manager;
+#include "presto/core/manager.h"
 
-export namespace Presto {
+namespace Presto {
 
 class GLFWAppWindow;
 

@@ -1,11 +1,9 @@
-export module presto.internal.windowdata;
-
 // For types/concepts
-import presto.core;
-import presto.core.event;
+#include "presto/core.h"
+#include "presto/core/event.h"
 
-import presto.runtime.window;
-import presto.internal.managers;
+#include "presto/internal/managers.h"
+#include "presto/runtime/window.h"
 
 epoxrt namespace Presto {
     class Renderer;

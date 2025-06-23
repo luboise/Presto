@@ -1,6 +1,6 @@
-module presto.internal.rendering.opengl;
+#include "presto/internal/rendering/opengl.h"
 import :buffer;
-import presto.internal;
+#include "presto/internal.h"
 
 #include <span>
 

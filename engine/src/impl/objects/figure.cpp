@@ -1,8 +1,8 @@
-module presto.objects.entity;
+#include "presto/objects/entity.h"
 import :figure;
 #include <utility>
 
-export namespace Presto {
+namespace Presto {
 Figure::Figure(figure_size_t size) {
     PR_CORE_ASSERT(
         size > 0 && size < PRESTO_FIGURE_MAX_ENTITY_COUNT,

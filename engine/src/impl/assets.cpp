@@ -1,7 +1,7 @@
-module presto.internal.assets;
+#include "presto/internal/assets.h"
 
-import presto.internal.managers;
-import presto.assets;
+#include "presto/assets.h"
+#include "presto/internal/managers.h"
 
 #include <utility>
 

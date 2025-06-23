@@ -1,11 +1,8 @@
-module;
 #include "presto/events.h"
 
-export module presto.internal.events;
+#include "presto/core.h"
 
-import presto.core;
-
-export namespace Presto {
+namespace Presto {
 
 /**
  * WindowResizeEvent

@@ -1,14 +1,14 @@
-module presto.internal.managers.rendering;
+#include "presto/internal/managers/rendering.h"
 
 import :types;
 import :pipeline;
 
-import presto.internal;
-import presto.internal.glfw;
-import presto.objects;
+#include "presto/internal.h"
+#include "presto/internal/glfw.h"
+#include "presto/objects.h"
 
-import presto.internal.managers;
-import presto.objects.components;
+#include "presto/internal/managers.h"
+#include "presto/objects/components.h"
 
 // STL import
 #include <algorithm>

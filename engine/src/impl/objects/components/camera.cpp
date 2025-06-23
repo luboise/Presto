@@ -1,7 +1,7 @@
-module presto.objects.components.camera;
+#include "presto/objects/components/camera.h"
 
-import presto.math;
-import presto.objects;
+#include "presto/math.h"
+#include "presto/objects.h"
 
 namespace Presto {
 CameraComponent::CameraComponent() : LazyCalculator() { this->setDirty(); }

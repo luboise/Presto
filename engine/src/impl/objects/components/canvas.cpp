@@ -1,8 +1,8 @@
-module presto.objects.components.canvas;
+#include "presto/objects/components/canvas.h"
 
 #include <utility>
 
-export namespace Presto {
+namespace Presto {
 
 CanvasGroup& CanvasComponent::addGroup(CanvasGroup group) {
     CanvasGroup& new_group{groups_.emplace_back(std::move(group))};

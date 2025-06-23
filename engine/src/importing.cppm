@@ -1,6 +1,4 @@
-export module presto.internal.importing;
-
-export namespace Presto {
+namespace Presto {
 
 struct ImportedVertexAttribute {
     Presto::string name;

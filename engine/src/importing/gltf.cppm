@@ -1,8 +1,6 @@
-export module presto.internal.gltf;
+#include "presto/internal/importing.h"
 
-import presto.internal.importing;
-
-export namespace Presto {
+namespace Presto {
 
 class GLTFLoader : public ModelLoader {
    public:

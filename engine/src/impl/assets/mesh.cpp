@@ -1,13 +1,13 @@
-module presto.assets.mesh;
+#include "presto/assets/mesh.h"
 
 #include <utility>
 
-import presto.internal.managers.rendering;
-import presto.internal;
+#include "presto/internal.h"
+#include "presto/internal/managers/rendering.h"
 
-import presto.core.types;
+#include "presto/core/types.h"
 
-export namespace Presto {
+namespace Presto {
 
 struct MeshAsset::Impl {
     MeshData mesh_data;

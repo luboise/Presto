@@ -1,7 +1,7 @@
-module presto.internal.rendering.opengl;
+#include "presto/internal/rendering/opengl.h"
 
 import :types;
-import presto.core;
+#include "presto/core.h"
 
 #include <utility>
 

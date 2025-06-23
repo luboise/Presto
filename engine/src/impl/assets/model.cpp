@@ -1,6 +1,6 @@
-module presto.assets.model;
+#include "presto/assets/model.h"
 
-import presto.internal.rendering.types;
+#include "presto/internal/rendering/types.h"
 
 #include <utility>
 

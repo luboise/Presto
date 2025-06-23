@@ -1,10 +1,8 @@
-module;
 #include "presto/module.h"
 
-export module presto.internal.managers.physics;
-import presto.objects;
+#include "presto/objects.h"
 
-export namespace Presto {
+namespace Presto {
 
 class PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);

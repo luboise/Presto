@@ -1,12 +1,9 @@
-module;
 #include <memory>
 
-export module presto.internal.managers.asset;
+#include "presto/assets.h"
+#include "presto/internal.h"
 
-import presto.assets;
-import presto.internal;
-
-export namespace Presto {
+namespace Presto {
 // enum class ResourceType { JSON, RAW };
 
 template <AssetType Type>

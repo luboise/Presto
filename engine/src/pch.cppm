@@ -1,9 +1,7 @@
-export module presto.internal.pch;
+#include "presto/core.h"  // IWYU pragma: export
+#include "presto/math.h"  // IWYU pragma: export
 
-export import presto.core;
-export import presto.math;
-
-export import presto.assets.types;
+#include "presto/assets/types.h"  // IWYU pragma: export
 
 export {
 // Utility stuff

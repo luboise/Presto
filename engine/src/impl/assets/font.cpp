@@ -1,4 +1,4 @@
-module presto.assets.font;
+#include "presto/assets/font.h"
 
 #include <span>
 #include <utility>

@@ -1,10 +1,9 @@
-export module presto.internal.glfw;
-export import presto.internal.windowdata;
+#include "presto/internal/windowdata.h"  // IWYU pragma: export
 
-import presto.input;
-import presto.runtime.window;
+#include "presto/input.h"
+#include "presto/runtime/window.h"
 
-export namespace Presto {
+namespace Presto {
 
 class Renderer;
 

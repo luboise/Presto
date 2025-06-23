@@ -1,8 +1,8 @@
-module presto.internal.utils;
+#include "presto/internal/utils.h"
 
 #include <utility>
 
-import presto.core;
+#include "presto/core.h"
 
 DebugTimer::DebugTimer(Presto::string name)
     : name(std::move(name)), time_started(Time::totalSecondsSinceStart()) {}

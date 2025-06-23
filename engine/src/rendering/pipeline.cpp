@@ -1,7 +1,7 @@
-module presto.internal.rendering;
+#include "presto/internal/rendering.h"
 import :pipeline;
 
-import presto.core;
+#include "presto/core.h"
 
 #include <numeric>
 

@@ -1,10 +1,8 @@
-export module presto.internal.rendering.opengl:pipeline;
-
 // import presto.internal.rendering.opengl;
 
-import presto.internal.rendering;
+#include "presto/internal/rendering.h"
 
-export namespace Presto {
+namespace Presto {
 
 class OpenGLPipeline final : public Pipeline {
     friend class OpenGLRenderer;

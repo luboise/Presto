@@ -1,9 +1,9 @@
-module presto.utils;
+#include "presto/utils.h"
 import :file;
 
 #include <fstream>
 
-import presto.core.types;
+#include "presto/core/types.h"
 
 namespace Presto::Utils {
 

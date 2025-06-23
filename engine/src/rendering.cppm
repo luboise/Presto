@@ -1,6 +1,4 @@
-export module presto.internal.rendering;
-
-export import presto.core.types;
+#include "presto/core/types.h"  // IWYU pragma: export
 
 export import :base;
 export import :vertex;
@@ -8,6 +6,6 @@ export import :buffer;
 export import :pipeline;
 export import :shader;
 export import :texture;
-export import presto.internal.rendering.types;
+#include "presto/internal/rendering/types.h"  // IWYU pragma: export
 
 // import presto.utils;

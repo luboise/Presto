@@ -1,6 +1,6 @@
-module presto.internal.managers.eventimpl;
+#include "presto/internal/managers/eventimpl.h"
 
-export namespace Presto {
+namespace Presto {
 
 using ConductorPtr = ComponentPtr<ConductorComponent>;
 

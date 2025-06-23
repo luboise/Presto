@@ -1,12 +1,10 @@
-export module presto.internal.rendering.opengl:shader;
-
-import presto.internal.rendering;
+#include "presto/internal/rendering.h"
 
 #include <map>
 
 #include <GL/glew.h>
 
-export namespace Presto {
+namespace Presto {
 class OpenGLShader final : public Shader {
    public:
     using shader_property_key_t = Presto::string;

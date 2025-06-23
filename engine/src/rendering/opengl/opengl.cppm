@@ -1,16 +1,13 @@
-module;
 #include <GL/glew.h>
 
-export module presto.internal.rendering.opengl;
-
-import presto.internal;
+#include "presto/internal.h"
 
 import :types;
 import :base;
 
-import presto.utils;
+#include "presto/utils.h"
 
-export namespace Presto {
+namespace Presto {
 class GLFWAppWindow;
 class OpenGLPipeline;
 /*

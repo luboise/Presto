@@ -1,9 +1,8 @@
-export module presto.internal.rendering:base;
 import :types;
 
-import presto.core.types;
+#include "presto/core/types.h"
 
-export namespace Presto {
+namespace Presto {
 
 class GLFWAppWindow;
 class CameraComponent;

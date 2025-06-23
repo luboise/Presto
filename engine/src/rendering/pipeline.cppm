@@ -1,13 +1,11 @@
-module;
 #include <memory>
 #include <vector>
 
-export module presto.internal.rendering:pipeline;
 import :types;
 
-import presto.core;
+#include "presto/core.h"
 
-export namespace Presto {
+namespace Presto {
 
 struct PipelineAttribute {
     // Index of the attribute

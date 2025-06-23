@@ -1,5 +1,5 @@
-module presto.system;
-import presto.internal.managers.rendering;
+#include "presto/system.h"
+#include "presto/internal/managers/rendering.h"
 
 Presto::VisualExtents Presto::WindowSize() {
     using namespace Presto;

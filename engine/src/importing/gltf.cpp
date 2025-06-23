@@ -1,9 +1,9 @@
-module presto.internal.gltf;
+#include "presto/internal/gltf.h"
 
 #include <span>
 #include <utility>
 
-import presto.core;
+#include "presto/core.h"
 
 namespace Presto {
 

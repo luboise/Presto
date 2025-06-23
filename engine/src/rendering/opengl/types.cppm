@@ -1,6 +1,4 @@
-export module presto.internal.rendering.opengl:types;
-
-export namespace Presto {
+namespace Presto {
 
 constexpr GLenum OpenGLTypeFromPrestoType(ShaderDataType type) {
     switch (type) {

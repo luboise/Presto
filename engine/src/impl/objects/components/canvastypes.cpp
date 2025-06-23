@@ -1,4 +1,4 @@
-module presto.objects.components.canvas;
+#include "presto/objects/components/canvas.h"
 import :types;
 
 // export module presto.objects.components:canvas;

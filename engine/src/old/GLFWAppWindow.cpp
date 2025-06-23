@@ -1,9 +1,9 @@
-module presto.internal.glfw;
+#include "presto/internal/glfw.h"
 
-import presto.core;
-import presto.runtime;
-import presto.internal.events;
-import presto.internal.windowdata;
+#include "presto/core.h"
+#include "presto/internal/events.h"
+#include "presto/internal/windowdata.h"
+#include "presto/runtime.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

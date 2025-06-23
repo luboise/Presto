@@ -1,6 +1,6 @@
-module presto.assets.material;
+#include "presto/assets/material.h"
 
-import presto.internal.managers.rendering;
+#include "presto/internal/managers/rendering.h"
 
 #include <utility>
 

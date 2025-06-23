@@ -1,10 +1,8 @@
-module;
-
 #include <spdlog/spdlog.h>
 // DO NOT REORDER
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-module presto.core.logging;
+#include "presto/core/logging.h"
 
 namespace Presto {
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;

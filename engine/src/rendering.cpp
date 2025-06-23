@@ -1,11 +1,11 @@
-module presto.internal.rendering;
+#include "presto/internal/rendering.h"
 
 import :base;
-import presto.objects.components;
-import presto.internal.rendering.opengl;
-import presto.internal.glfw;
+#include "presto/internal/glfw.h"
+#include "presto/internal/rendering/opengl.h"
+#include "presto/objects/components.h"
 
-export namespace Presto {
+namespace Presto {
 void Renderer::setCameraData(CameraComponent& camera) {
     globalUniforms_ = {.view = camera.getViewMatrix(),
                        .projection = camera.getProjectionMatrix()};

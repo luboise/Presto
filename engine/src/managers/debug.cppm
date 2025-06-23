@@ -1,8 +1,6 @@
-export module presto.internal.managers.debug;
+#include "presto/core/types.h"
 
-import presto.core.types;
-
-export namespace Presto {
+namespace Presto {
 
 struct DebugDrawProps {
     vec4 colour{1, 1, 1, 1};

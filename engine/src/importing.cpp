@@ -1,4 +1,4 @@
-module presto.internal.importing;
+#include "presto/internal/importing.h"
 
 Presto::size_t ImportedVertexAttribute::dataSize() const {
     return ShaderTypeSize(type);

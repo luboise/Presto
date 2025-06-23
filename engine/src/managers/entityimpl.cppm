@@ -1,11 +1,8 @@
-module;
 #include "presto/module.h"
 
-export module presto.internal.managers.entityimpl;
+#include "presto/core/manager.h"
 
-import presto.core.manager;
-
-export namespace Presto {
+namespace Presto {
 class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
                                            public EntityManager {
     MODULE_FUNCTIONS(EntityManagerImpl);

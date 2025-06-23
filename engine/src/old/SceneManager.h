@@ -4,7 +4,7 @@
 
 #include "Modules/Module.h"
 
-#include <nlohmann/json.hpp>
+#include <nlohmann/json/hpp>
 using nlohmann::json;
 
 namespace Presto {

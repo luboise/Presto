@@ -1,4 +1,4 @@
-module presto.internal.rendering.opengl;
+#include "presto/internal/rendering/opengl.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -13,12 +13,12 @@ import :shader;
 import :texture;
 import :types;
 
-import presto.internal.rendering;
-import presto.internal.events;
-import presto.internal.glfw;
-import presto.core.constants;
-import presto.utils;
-import presto.defaults.textures;
+#include "presto/core/constants.h"
+#include "presto/defaults/textures.h"
+#include "presto/internal/events.h"
+#include "presto/internal/glfw.h"
+#include "presto/internal/rendering.h"
+#include "presto/utils.h"
 
 namespace Presto {
 

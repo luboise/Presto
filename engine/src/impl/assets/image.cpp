@@ -1,6 +1,6 @@
-module presto.assets.image;
+#include "presto/assets/image.h"
 
-export namespace Presto {
+namespace Presto {
 
 bool ImageAsset::load() {
     /*

@@ -1,6 +1,6 @@
-module presto.objects;
+#include "presto/objects.h"
 
-import presto.core.types;
+#include "presto/core/types.h"
 
 namespace Presto {
 

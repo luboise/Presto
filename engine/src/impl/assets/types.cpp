@@ -1,4 +1,4 @@
-module presto.assets.types;
+#include "presto/assets/types.h"
 
 #include <utility>
 
