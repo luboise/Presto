@@ -1,5 +1,5 @@
+#include "./buffer.h"
 #include "internal/rendering.h"
-import :buffer;
 
 namespace Pr {
 

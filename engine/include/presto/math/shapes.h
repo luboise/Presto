@@ -17,6 +17,8 @@
 #include "presto/core/types.h"
 #include "presto/objects.h"
 
+#include "./transform_data.h"
+
 namespace Pr {
 
 struct Cylinder;

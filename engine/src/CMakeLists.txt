@@ -49,13 +49,14 @@ target_sources(
           objects/figure.cpp
           objects/components/camera.cpp
           objects/components/canvas.cpp
-          objects/components/canvasitems.cpp
-          objects/components/canvastypes.cpp
+          objects/components/canvas_items.cpp
+          objects/components/canvas_types.cpp
           objects/components/conductor.cpp
           objects/components/render.cpp
-          objects/components/rendersubcomps.cpp
           objects/components/rigidbody.cpp
           objects/components/transform.cpp
+          #
+          importing/gltf.cpp
           #
           runtime.cpp
           runtime/application.cpp

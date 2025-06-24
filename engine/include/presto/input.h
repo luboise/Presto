@@ -1,2 +1,2 @@
-export import :keycodes;
-export import :events;
+#include "input/events.h"
+#include "input/keycodes.h"

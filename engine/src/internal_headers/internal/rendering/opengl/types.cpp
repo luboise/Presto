@@ -1,6 +1,6 @@
 #include "internal/rendering/opengl.h"
 
-import :types;
+#include "./types.h"
 #include "presto/core.h"
 
 #include <utility>

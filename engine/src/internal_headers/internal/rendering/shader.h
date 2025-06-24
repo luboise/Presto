@@ -1,4 +1,4 @@
-import :vertex;
+#include "./vertex.h"
 
 namespace Pr {
 

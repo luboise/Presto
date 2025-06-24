@@ -1,5 +1,4 @@
-#include "presto/math.h"
-import :shapes;
+#include "presto/math/shapes.h"
 
 namespace Pr {
 

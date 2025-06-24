@@ -1,6 +1,6 @@
 #include "internal/rendering.h"
 
-import :base;
+#include "./base.h"
 #include "internal/glfw.h"
 #include "internal/rendering/opengl.h"
 #include "presto/objects/components.h"

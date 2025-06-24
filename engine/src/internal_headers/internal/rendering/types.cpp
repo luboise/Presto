@@ -1,5 +1,5 @@
+#include "./types.h"
 #include "internal/rendering.h"
-import :types;
 
 #include <utility>
 

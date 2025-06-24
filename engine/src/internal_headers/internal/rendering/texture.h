@@ -1,3 +1,5 @@
+#pragma once
+
 #include "presto/core/constants.h"
 #include "presto/core/platform.h"
 #include "presto/core/types.h"

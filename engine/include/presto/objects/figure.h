@@ -1,3 +1,5 @@
+#pragma once
+
 #include "presto/core/types.h"
 
 #include "presto/handles/object_handles.h"

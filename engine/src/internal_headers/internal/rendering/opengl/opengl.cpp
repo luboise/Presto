@@ -7,11 +7,11 @@
 #include <span>
 #include <utility>
 
-import :buffer;
-import :pipeline;
-import :shader;
-import :texture;
-import :types;
+#include "./buffer.h"
+#include "./pipeline.h"
+#include "./shader.h"
+#include "./texture.h"
+#include "./types.h"
 
 #include "internal/events.h"
 #include "internal/glfw.h"

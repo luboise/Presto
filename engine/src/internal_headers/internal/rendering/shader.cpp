@@ -1,5 +1,5 @@
+#include "./shader.h"
 #include "internal/rendering.h"
-import :shader;
 
 namespace Pr {
 // TODO: Fix this up to be using a reference of some kind

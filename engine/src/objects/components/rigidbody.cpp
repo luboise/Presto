@@ -1,5 +1,4 @@
-#include "presto/objects/components.h"
-import :rigidbody;
+#include "presto/objects/components/rigidbody.h"
 
 namespace Pr {
 

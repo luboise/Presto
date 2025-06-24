@@ -1,11 +1,11 @@
+#include "./shader.h"
 #include "internal/rendering/opengl.h"
-import :shader;
 
 #include "presto/utils.h"
 
 #include "Rendering/OpenGL/utils.h"
 
-import :types;
+#include "./types.h"
 
 namespace Pr {
 OpenGLShader::OpenGLShader() : shaderProgram_(glCreateProgram()) {};

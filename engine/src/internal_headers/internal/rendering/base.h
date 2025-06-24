@@ -2,15 +2,18 @@
 #include "presto/handles/core_handles.h"
 #include "presto/utils.h"
 
-#include "internal/rendering/texture.h"
-#include "internal/rendering/types.h"
+#include "./buffer.h"
+#include "./texture.h"
+#include "./types.h"
 
 namespace Pr {
 
 class GLFWAppWindow;
 class CameraComponent;
 class ImageData;
-class UniformLayout;
+
+struct UniformLayout;
+
 struct ImportedMesh;
 
 class Pipeline;

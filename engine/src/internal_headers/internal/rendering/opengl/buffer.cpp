@@ -1,5 +1,5 @@
+#include "./buffer.h"
 #include "internal/rendering/opengl.h"
-import :buffer;
 #include "presto/internal.h"
 
 #include <span>

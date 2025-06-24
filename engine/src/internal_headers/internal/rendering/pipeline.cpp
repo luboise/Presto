@@ -1,5 +1,5 @@
+#include "./pipeline.h"
 #include "internal/rendering.h"
-import :pipeline;
 
 #include "presto/core.h"
 

@@ -2,7 +2,8 @@
 #include "presto/core/platform.h"
 
 #include "presto/assets/asset.h"
-#include "presto/core/platform.h"
+#include "presto/handles/asset_handles.h"
+#include "presto/math/transform_data.h"
 #include "presto/objects/component.h"
 
 namespace Pr {

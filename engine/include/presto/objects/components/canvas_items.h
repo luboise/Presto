@@ -1,8 +1,10 @@
+#pragma once
+
 #include "presto/core/platform.h"
 
-#include ":base.h"
-
+#include "./canvas_base.h"
 #include "presto/core.h"
+#include "presto/math/shapes.h"
 
 namespace Pr {
 

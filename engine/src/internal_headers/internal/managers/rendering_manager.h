@@ -4,7 +4,7 @@
 #include "presto/assets/image.h"
 #include "presto/assets/material.h"
 
-#include "internal/rendering/pipeline.h"
+#include "internal/rendering.h"
 
 #include "presto/core/types.h"
 #include "presto/handles/object_handles.h"

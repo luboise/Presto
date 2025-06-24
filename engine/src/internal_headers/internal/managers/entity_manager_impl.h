@@ -1,5 +1,7 @@
-#include "presto/core/entity_manager.h"
+#pragma once
+
 #include "presto/core/manager.h"
+#include "presto/objects/entity_manager.h"
 
 namespace Pr {
 class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,

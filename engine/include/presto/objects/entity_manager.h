@@ -4,10 +4,10 @@
 
 #include <utility>
 
-#include "presto/core/platform.h"
-#include "presto/objects/figure.h"
-
 #include "entity.h"
+#include "figure.h"
+
+#include "presto/core/platform.h"
 
 namespace Pr {
 

@@ -1,5 +1,5 @@
+#include "./texture.h"
 #include "internal/rendering/opengl.h"
-import :texture;
 
 namespace Pr {
 

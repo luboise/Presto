@@ -1,3 +1,5 @@
+#pragma once
+
 #include "presto/core/types.h"
 
 namespace Pr {

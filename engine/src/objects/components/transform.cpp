@@ -1,5 +1,6 @@
+#include "presto/objects/components/transform.h"
+
 #include "presto/objects/components.h"
-import :transform;
 
 namespace Pr {
 mat4 TransformData::asModelMat() const {

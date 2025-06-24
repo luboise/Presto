@@ -1,10 +1,11 @@
 #include <format>
-#include "presto/events.h"
 
 #include "presto/core/event.h"
+#include "presto/core/event_macros.h"
+
 #include "presto/core/types.h"
 
-#include ":keycodes.h"
+#include "keycodes.h"
 
 namespace Pr {
 using KeyCode = Input::Key;
@@ -53,7 +54,7 @@ struct MousePosition {
     float x;
     float y;
 
-    operator Pr::vec2() { return Pr::vec2{this->x, this->y}; }
+    explicit operator Pr::vec2() const { return Pr::vec2{this->x, this->y}; }
 };
 
 class MouseEvent : public Event {

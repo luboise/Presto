@@ -1,5 +1,5 @@
+#include "./pipeline.h"
 #include "internal/rendering/opengl/opengl.h"
-import :pipeline;
 
 #include <GL/glext.h>
 #include <algorithm>

@@ -1,4 +1,5 @@
 #include "presto/objects/component.h"
+#include "presto/utils.h"
 
 namespace Pr {
 

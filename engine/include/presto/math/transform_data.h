@@ -1,3 +1,5 @@
+#pragma once
+
 #include "./quaternion.h"
 
 namespace Pr {

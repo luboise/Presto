@@ -1,8 +1,12 @@
+#pragma once
+
 #include <span>
 #include <utility>
 
 #include "presto/core/types.h"
 #include "presto/utils.h"
+
+#include "internal/managers/rendering_manager.h"
 
 namespace Pr {
 

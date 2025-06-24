@@ -25,7 +25,7 @@ class ModelAsset final : public Asset {
 
     BoundingBox getBoundingBox();
 
-    ModelAsset& addMesh(AssetPtr<MeshAsset>, AssetPtr<MaterialAsset> = nullptr);
+    ModelAsset& addMesh(Ptr<MeshAsset>, Ptr<MaterialAsset> = nullptr);
 
     ModelAsset& clear();
 

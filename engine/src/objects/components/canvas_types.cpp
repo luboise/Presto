@@ -1,5 +1,6 @@
-#include "presto/objects/components/canvas.h"
-import :types;
+#include "presto/objects/components/canvas_types.h"
+
+#include <algorithm>
 
 // export module presto.objects.components:canvas;
 

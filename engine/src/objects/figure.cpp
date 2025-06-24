@@ -1,6 +1,10 @@
-#include "presto/objects/entity.h"
-import :figure;
+#include "presto/objects/figure.h"
+#include "presto/core/assert.h"
+
 #include <utility>
+#include "presto/objects/entity.h"
+
+#include "internal/managers/entity_manager_impl.h"
 
 namespace Pr {
 Figure::Figure(figure_size_t size) {

@@ -1,5 +1,5 @@
+#include "presto/objects/components/canvas_items.h"
 #include "presto/objects/components/canvas.h"
-import :canvasitems;
 
 // export module presto.objects.components:canvas;
 

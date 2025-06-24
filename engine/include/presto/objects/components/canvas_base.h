@@ -1,12 +1,15 @@
-#include <utility>
+#pragma once
+
 #include "presto/core/platform.h"
 
-#include ":types.h"
+#include "presto/objects/components/canvas_types.h"
 
 #include "presto/assets/mesh.h"
 #include "presto/core.h"
 #include "presto/objects/component.h"
 #include "presto/utils.h"
+
+#include <utility>
 
 namespace Pr {
 
