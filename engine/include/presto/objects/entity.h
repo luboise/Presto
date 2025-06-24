@@ -1,20 +1,23 @@
-#include "presto/core/platform.h"
+#pragma once
 
-#include <array>
-#include <map>
-#include <vector>
+#include "presto/core/platform.h"
 
 #include "presto/core.h"
 #include "presto/objects/component.h"
 
-namespace Presto {
+#include <map>
+#include <vector>
+
+namespace Pr {
 // Forward declaration
+class ConductorComponent;
+
 using entity_id_t = PR_NUMERIC_ID;
-using entity_name_t = Presto::string;
+using entity_name_t = Pr::string;
 
 constexpr size_t MAX_TAG_COUNT = 20;
 using entity_tag_id_t = int8_t;
-using entity_tag_name_t = Presto::string;
+using entity_tag_name_t = Pr::string;
 using entity_tag_map = std::array<bool, MAX_TAG_COUNT>;
 
 constexpr entity_tag_id_t INVALID_TAG_ID = -1;
@@ -48,7 +51,7 @@ class PRESTO_API Entity {
         checkNewComponent(component_ptr);
     }
 
-    [[nodiscard]] std::vector<ComponentPtr<ConductorComponent>> getConductors();
+    [[nodiscard]] std::vector<Ptr<ConductorComponent>> getConductors();
 
     template <ComponentType ComponentClass>
     ComponentPtr<ComponentClass> getComponent() {
@@ -88,7 +91,4 @@ class PRESTO_API Entity {
     ComponentMap components_;
 };
 
-using EntityPtr = Ptr<Entity>;
-using EntityRef = Ref<Entity>;
-
-}  // namespace Presto
+}  // namespace Pr

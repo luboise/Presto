@@ -1,8 +1,8 @@
+#include "internal/rendering.h"
 #include "presto/core/constants.h"
-#include "presto/internal/rendering.h"
 
 export {
-    using namespace Presto;
+    using namespace Pr;
 
     const MeshData Quad =  // Default quad
         {.pipeline_id = PR_PIPELINE_DEFAULT_UI,

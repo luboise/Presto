@@ -1,9 +1,10 @@
+#pragma once
 // #include "presto/core/platform.h"
 
 #include "presto/core.h"
 #include "presto/core/concepts.h"
 
-namespace Presto {
+namespace Pr {
 
 class PRESTO_API Time {
     friend class Application;
@@ -55,4 +56,4 @@ class PRESTO_API Timer {
     Time::Seconds startTime_{0};
 };
 
-}  // namespace Presto
+}  // namespace Pr

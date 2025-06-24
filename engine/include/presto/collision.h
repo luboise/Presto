@@ -2,7 +2,7 @@
 
 #include "Collision/Shapes.h"
 
-namespace Presto {
+namespace Pr {
 
 struct CollisionResult {
     bool colliding{false};
@@ -13,4 +13,4 @@ struct CollisionResult {
 
 CollisionResult Colliding(const Ray&, const Plane&);
 
-}  // namespace Presto
+}  // namespace Pr

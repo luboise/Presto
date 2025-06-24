@@ -6,10 +6,10 @@ export {
 #define WHITE_PIXEL \
     std::byte{255}, std::byte{255}, std::byte{255}, std::byte{255}
 
-    const Presto::ByteArray default_texture_bytes{BLACK_PIXEL, WHITE_PIXEL,
-                                                  WHITE_PIXEL, BLACK_PIXEL};
+    const Pr::ByteArray default_texture_bytes{BLACK_PIXEL, WHITE_PIXEL,
+                                              WHITE_PIXEL, BLACK_PIXEL};
 
-    const Presto::ImageData DEFAULT_TEXTURE_DATA{
+    const Pr::ImageData DEFAULT_TEXTURE_DATA{
         .width = 2,
         .height = 2,
         .bytes{default_texture_bytes.begin(), default_texture_bytes.end()}};

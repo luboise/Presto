@@ -1,11 +1,14 @@
-export import :file;
-export import :interpolation;
+#pragma once
+
+#include "presto/utils/file.h"           // IWYU pragma: export
+#include "presto/utils/interpolation.h"  // IWYU pragma: export
+#include "presto/utils/typemap.h"        // IWYU pragma: export
 
 #include "presto/core/types.h"
 
 #include "presto/runtime/time.h"
 
-namespace Presto {
+namespace Pr {
 
 template <class T>
 class Singleton {
@@ -31,7 +34,7 @@ class LazyCalculator {
 
 class DebugTimer {
    public:
-    explicit DebugTimer(Presto::string name);
+    explicit DebugTimer(Pr::string name);
 
     void printElapsed(bool resetTimer = false);
     void reset();
@@ -39,9 +42,9 @@ class DebugTimer {
     ~DebugTimer() = default;
 
    private:
-    Presto::string name;
+    Pr::string name;
     Time::Milliseconds time_started{0};
     Time::Milliseconds time_ended{0};
 };
 
-}  // namespace Presto
+}  // namespace Pr

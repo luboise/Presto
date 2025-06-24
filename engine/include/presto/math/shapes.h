@@ -7,17 +7,17 @@
 #include <glm/glm.hpp>
 
 /*
-#include <glm/glm/hpp>
-#include <glm/gtc/constants/hpp>
-#include <glm/gtc/matrix_transform/hpp>
-#include <glm/gtc/type_ptr/hpp>
-#include <glm/gtx/rotate_vector/hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 */
 
 #include "presto/core/types.h"
 #include "presto/objects.h"
 
-namespace Presto {
+namespace Pr {
 
 struct Cylinder;
 struct Triangle;
@@ -28,9 +28,7 @@ struct LineSegmentBase {
     T p1;
     T p2;
 
-    [[nodiscard]] Presto::float32_t length() const {
-        return glm::length(p2 - p1);
-    }
+    [[nodiscard]] Pr::float32_t length() const { return glm::length(p2 - p1); }
 };
 
 using LineSegment = LineSegmentBase<vec3>;
@@ -39,9 +37,9 @@ using LineSegment2D = LineSegmentBase<vec2>;
 using Point2D = vec2;
 using Point = vec3;
 
-Presto::float32_t ShortestDistance(const Point& p1, const Point& p2);
+Pr::float32_t ShortestDistance(const Point& p1, const Point& p2);
 
-Presto::vec2 NormalOf(LineSegment2D segment);
+Pr::vec2 NormalOf(LineSegment2D segment);
 
 template <typename A, typename B>
 concept IntersectableWith = requires(const A& a, const B& b) {
@@ -72,44 +70,42 @@ struct CollisionShape {
 
 struct Plane : CollisionShape {
     union {
-        Presto::vec3 normal{0, 1, 0};
-        Presto::vec3 N;
+        Pr::vec3 normal{0, 1, 0};
+        Pr::vec3 N;
     };
     union {
-        Presto::vec3 point{0, 0, 0};
-        Presto::vec3 P;
+        Pr::vec3 point{0, 0, 0};
+        Pr::vec3 P;
     };
 };
 
 struct Circle : CollisionShape {
-    Presto::float32_t radius{1};
+    Pr::float32_t radius{1};
 };
 
 struct Ray {
     union {
-        Presto::vec3 origin;
-        Presto::vec3 O;
+        Pr::vec3 origin;
+        Pr::vec3 O;
     };
 
     union {
-        Presto::float32_t magnitude;
-        Presto::float32_t t;
+        Pr::float32_t magnitude;
+        Pr::float32_t t;
     };
 
     union {
-        Presto::vec3 direction;
-        Presto::vec3 D;
+        Pr::vec3 direction;
+        Pr::vec3 D;
     };
 
-    [[nodiscard]] bool contains(Presto::float32_t tVal) const {
+    [[nodiscard]] bool contains(Pr::float32_t tVal) const {
         return tVal >= 0 && tVal <= this->t;
     }
 
-    [[nodiscard]] Presto::vec3 at(Presto::float32_t tVal) const {
-        return O + tVal * D;
-    }
+    [[nodiscard]] Pr::vec3 at(Pr::float32_t tVal) const { return O + tVal * D; }
 
-    static Ray fromAB(Presto::vec3 a, Presto::vec3 b) {
+    static Ray fromAB(Pr::vec3 a, Pr::vec3 b) {
         auto diff{b - a};
 
         return Ray{.origin = a,
@@ -120,18 +116,17 @@ struct Ray {
 
 struct Rectangle : CollisionShape {
     Rectangle() = default;
-    Rectangle(Presto::vec3 topLeft, Presto::vec3 topRight,
-              Presto::vec3 bottomLeft);
+    Rectangle(Pr::vec3 topLeft, Pr::vec3 topRight, Pr::vec3 bottomLeft);
 
-    Presto::vec3 top_left{0, 1, 0};
-    Presto::vec3 top_right{1, 1, 0};
-    Presto::vec3 bottom_left{0, 0, 0};
+    Pr::vec3 top_left{0, 1, 0};
+    Pr::vec3 top_right{1, 1, 0};
+    Pr::vec3 bottom_left{0, 0, 0};
 
-    [[nodiscard]] Presto::vec3 at(float x, float y) const;
-    [[nodiscard]] Presto::vec3 at(vec2) const;
+    [[nodiscard]] Pr::vec3 at(float x, float y) const;
+    [[nodiscard]] Pr::vec3 at(vec2) const;
 
-    [[nodiscard]] Presto::float32_t width() const;
-    [[nodiscard]] Presto::float32_t height() const;
+    [[nodiscard]] Pr::float32_t width() const;
+    [[nodiscard]] Pr::float32_t height() const;
 
     COLLISION_FUNCTIONS(Rectangle)
 };
@@ -149,16 +144,16 @@ struct Triangle : CollisionShape {
     Point p2;
     Point p3;
 
-    [[nodiscard]] Triangle operator*(const Presto::mat4& other) const;
-    Triangle& operator*=(const Presto::mat4& other);
+    [[nodiscard]] Triangle operator*(const Pr::mat4& other) const;
+    Triangle& operator*=(const Pr::mat4& other);
 
     COLLISION_FUNCTIONS(Triangle)
 };
 
 // A cylinder shape, assumed to be pointing straight upwards (towards y)
 struct Cylinder : CollisionShape {
-    Presto::float32_t radius{0.5};
-    Presto::float32_t height{2};
+    Pr::float32_t radius{0.5};
+    Pr::float32_t height{2};
 
     COLLISION_FUNCTIONS(Cylinder)
 };
@@ -175,4 +170,4 @@ vec3 ClosestPointTo(const LineSegment&, const Point&);
 // vec2 ClosestPointTo(const LineSegment2D&, const Point2D&);
 */
 
-}  // namespace Presto
+}  // namespace Pr

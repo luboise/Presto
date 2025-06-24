@@ -8,11 +8,18 @@
 #include <utility>    // IWYU pragma: export
 #include <variant>    // IWYU pragma: export
 
+// Typing
+#include <concepts>     // IWYU pragma: export
+#include <type_traits>  // IWYU pragma: export
+
 // Data
-#include <fstream>  // IWYU pragma: export
-#include <sstream>  // IWYU pragma: export
-#include <string>   // IWYU pragma: export
-#include <vector>   // IWYU pragma: export
+#include <fstream>        // IWYU pragma: export
+#include <map>            // IWYU pragma: export
+#include <queue>          // IWYU pragma: export
+#include <sstream>        // IWYU pragma: export
+#include <string>         // IWYU pragma: export
+#include <unordered_set>  // IWYU pragma: export
+#include <vector>         // IWYU pragma: export
 
 // Program Control
 #include <stdexcept>  // IWYU pragma: export

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <concepts>
 #include <typeinfo>
 #include "presto/core/platform.h"
@@ -5,10 +7,10 @@
 #include "presto/core.h"
 #include "presto/core/concepts.h"
 
-namespace Presto {
-// using component_class_t = Presto::uint32_t;
+namespace Pr {
+// using component_class_t = Pr::uint32_t;
 
-using class_id_t = Presto::size_t;
+using class_id_t = Pr::size_t;
 template <typename T>
 const class_id_t ClassID = typeid(T).hash_code();
 
@@ -29,7 +31,7 @@ class PRESTO_API Component {
     friend class EntityManager;
     friend class EntityManagerImpl;
 
-    using ComponentIDBit = Presto::uint32_t;
+    using ComponentIDBit = Pr::uint32_t;
 
     static constexpr auto UNASSIGNED_ID{static_cast<component_id_t>(-1)};
 
@@ -78,4 +80,4 @@ struct Subcomponent {
 
 using GenericComponentPtr = ComponentPtr<Component>;
 
-}  // namespace Presto
+}  // namespace Pr

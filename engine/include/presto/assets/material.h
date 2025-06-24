@@ -1,18 +1,23 @@
+#pragma once
+
 #include <memory>
 #include <vector>
+
+#include "./material_types.h"
+
 #include "presto/core/platform.h"
 
-#include "presto/assets/types.h"
+#include "presto/assets/asset.h"
 #include "presto/core/types.h"
 
-#include "presto/assets/material/types.h"
-
 // Private fwd declarations
-namespace Presto {
+namespace Pr {
 struct PipelineStructure;
-}  // namespace Presto
+class MaterialInstance;
+struct UniformLayout;
+}  // namespace Pr
 
-namespace Presto {
+namespace Pr {
 
 class PRESTO_API MaterialAsset final :
     // Enables MaterialAsset to be able to get its own shared pointer, needed
@@ -22,7 +27,7 @@ class PRESTO_API MaterialAsset final :
    public:
     friend class RenderingManager;
 
-    MaterialAsset(Presto::string name, const PipelineStructure& structure);
+    MaterialAsset(Pr::string name, const PipelineStructure& structure);
 
     ~MaterialAsset() override = default;
 
@@ -57,4 +62,4 @@ class PRESTO_API MaterialAsset final :
 
 // using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
 
-}  // namespace Presto
+}  // namespace Pr

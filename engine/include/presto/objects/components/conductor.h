@@ -4,7 +4,7 @@
 #include "presto/objects/component.h"
 #include "presto/objects/entity.h"
 
-namespace Presto {
+namespace Pr {
 
 class PRESTO_API ConductorComponent : public Component {
     friend class EntityManagerImpl;
@@ -36,4 +36,4 @@ class PRESTO_API ConductorComponent : public Component {
     // ~Conductor() override = default;
 };
 
-}  // namespace Presto
+}  // namespace Pr

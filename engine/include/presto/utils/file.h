@@ -1,22 +1,22 @@
-#include <nlohmann/json/hpp>
+#include <nlohmann/json.hpp>
 
-#include "presto/assets/types.h"
+#include "presto/assets/asset.h"
 #include "presto/core/types.h"
 
 using json = nlohmann::json;
 
-namespace Presto::Utils::File {
-// static Mesh* LoadMesh(const Presto::string&);
+namespace Pr::Utils::File {
+// static Mesh* LoadMesh(const Pr::string&);
 
 const FilePath executableDirectory{std::filesystem::current_path()};
 
-FilePath getFullPath(const Presto::string& path);
+FilePath getFullPath(const Pr::string& path);
 
-Presto::string ReadAssetFile(const AssetArg&);
+Pr::string ReadAssetFile(const AssetArg&);
 
-Presto::string ReadFile(const FilePath& path);
+Pr::string ReadFile(const FilePath& path);
 ByteArray ReadBinaryFile(const FilePath& path);
 
-json GetJSON(const Presto::string& text);
+json GetJSON(const Pr::string& text);
 json GetJSON(const fs::path& path);
-}  // namespace Presto::Utils::File
+}  // namespace Pr::Utils::File

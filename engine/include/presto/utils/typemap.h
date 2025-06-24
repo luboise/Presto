@@ -4,7 +4,7 @@
 
 #include "presto/objects/component.h"
 
-namespace Presto {
+namespace Pr {
 
 class TypeMap {
    public:
@@ -42,4 +42,4 @@ class TypeMap {
         }
     };
 };
-}  // namespace Presto
+}  // namespace Pr

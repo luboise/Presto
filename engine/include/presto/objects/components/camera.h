@@ -1,6 +1,6 @@
 #include "presto/objects/component.h"
 
-namespace Presto {
+namespace Pr {
 
 enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 
@@ -17,15 +17,15 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
         camera_distance_t far;
     };
 
-    [[nodiscard]] Presto::mat4 getViewMatrix();
-    [[nodiscard]] Presto::mat4 getProjectionMatrix();
+    [[nodiscard]] Pr::mat4 getViewMatrix();
+    [[nodiscard]] Pr::mat4 getProjectionMatrix();
 
     CameraComponent& setType(CameraType newType);
 
-    CameraComponent& setFocus(Presto::vec3 newPos);
+    CameraComponent& setFocus(Pr::vec3 newPos);
     CameraComponent& setFocus();
 
-    [[nodiscard]] Presto::vec3 focus() const;
+    [[nodiscard]] Pr::vec3 focus() const;
 
     CameraComponent& setExtents(VisualExtents newExtents);
 
@@ -43,7 +43,7 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
 
     [[nodiscard]] TransformData transformData() const;
 
-    [[nodiscard]] Presto::vec3 position() const;
+    [[nodiscard]] Pr::vec3 position() const;
     CameraComponent& setPosition(vec3 newPos);
 
     template <typename... Args>
@@ -52,10 +52,10 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
         return setPosition(glm::vec3{std::forward<Args>(args)...});
     }
 
-    CameraComponent& rotate(Presto::vec3 rot);
+    CameraComponent& rotate(Pr::vec3 rot);
 
     [[nodiscard]] Quaternion rotation() const;
-    CameraComponent& setRotation(Presto::vec3 rot);
+    CameraComponent& setRotation(Pr::vec3 rot);
 
     template <typename... Args>
         requires std::constructible_from<glm::vec3, Args...>
@@ -73,7 +73,7 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     CameraType type_{CameraType::PERSPECTIVE};
 
     bool useFocus_{false};
-    Presto::vec3 focusPoint_{0, 0, 0};
+    Pr::vec3 focusPoint_{0, 0, 0};
 
     // FOV of the camera (default of 90deg)
     camera_fov_t verticalFov_{glm::radians(90.0F)};
@@ -90,4 +90,4 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     glm::mat4 viewMatrix_{1};
     glm::mat4 projectionMatrix_{1};
 };
-}  // namespace Presto
+}  // namespace Pr

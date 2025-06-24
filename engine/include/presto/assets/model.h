@@ -1,10 +1,12 @@
+#pragma once
+
 #include <vector>
 
+#include "presto/assets/asset.h"
 #include "presto/assets/mesh.h"
-#include "presto/assets/types.h"
 #include "presto/core.h"
 
-namespace Presto {
+namespace Pr {
 struct MeshDraw;
 
 class ModelAsset final : public Asset {
@@ -18,7 +20,7 @@ class ModelAsset final : public Asset {
         return AssetType::MODEL;
     };
 
-    [[nodiscard]] Presto::size_t meshCount() const;
+    [[nodiscard]] Pr::size_t meshCount() const;
     [[nodiscard]] const std::vector<MeshDraw>& getDraws() { return draws_; }
 
     BoundingBox getBoundingBox();
@@ -39,4 +41,4 @@ class ModelAsset final : public Asset {
     Ptr<MeshSource> source_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

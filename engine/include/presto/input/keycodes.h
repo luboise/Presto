@@ -1,8 +1,8 @@
 #include "presto/core/types.h"
 
-namespace Presto {
+namespace Pr {
 namespace Input {
-using KeyCodeType = Presto::uint32_t;
+using KeyCodeType = Pr::uint32_t;
 
 enum class Key : KeyCodeType {
     INVALID_KEY = 0x0000,
@@ -20,4 +20,4 @@ constexpr KeyCodeType CodeOf(Key key) noexcept {
 }  // namespace Input
 using namespace Input;
 
-}  // namespace Presto
+}  // namespace Pr

@@ -1,11 +1,4 @@
-#include "presto/assets.h"
-
-namespace Presto {
-
-using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
-using ImagePtr = AssetPtr<ImageAsset>;
-using ModelPtr = AssetPtr<ModelAsset>;
-using FontPtr = AssetPtr<FontAsset>;
-using MeshPtr = AssetPtr<Mesh>;
-
-}  // namespace Presto
+#include "handles/asset_handles.h"      // IWYU pragma: export
+#include "handles/core_handles.h"       // IWYU pragma: export
+#include "handles/object_handles.h"     // IWYU pragma: export
+#include "handles/rendering_handles.h"  // IWYU pragma: export

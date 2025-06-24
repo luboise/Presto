@@ -1,11 +1,11 @@
 #include <vector>
 #include "presto/core/platform.h"
 
-#include "presto/assets/types.h"
+#include "presto/assets/asset.h"
 #include "presto/core/platform.h"
 #include "presto/objects/component.h"
 
-namespace Presto {
+namespace Pr {
 struct QuadSubcomponent;
 
 class PRESTO_API RenderComponent final : public Component {
@@ -47,7 +47,7 @@ struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
 struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
     std::vector<MeshDraw> draws;
 
-    [[nodiscard]] Presto::size_t meshCount() const { return draws.size(); }
+    [[nodiscard]] Pr::size_t meshCount() const { return draws.size(); }
 };
 
-}  // namespace Presto
+}  // namespace Pr

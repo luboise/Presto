@@ -6,7 +6,7 @@
 
 #include ":keycodes.h"
 
-namespace Presto {
+namespace Pr {
 using KeyCode = Input::Key;
 
 // Intended to be abstract
@@ -35,7 +35,7 @@ class KeyEvent : public Event {
                          EventCategory::EventCategoryInput)
     EVENT_CLASS_TYPE(Key)
 
-    [[nodiscard]] Presto::string toString() const override {
+    [[nodiscard]] Pr::string toString() const override {
         return std::format("KeyEvent: Key ", Input::CodeOf(this->keyCode_));
     }
 
@@ -53,7 +53,7 @@ struct MousePosition {
     float x;
     float y;
 
-    operator Presto::vec2() { return Presto::vec2{this->x, this->y}; }
+    operator Pr::vec2() { return Pr::vec2{this->x, this->y}; }
 };
 
 class MouseEvent : public Event {
@@ -75,7 +75,7 @@ class MouseMovedEvent : public MouseEvent {
     [[nodiscard]] const auto& pos() const { return position_; }
     [[nodiscard]] MousePosition posNormalised() const;
 
-    [[nodiscard]] Presto::string toString() const override {
+    [[nodiscard]] Pr::string toString() const override {
         return std::format("MouseMovedEvent: ({}, {})", position_.x,
                            position_.y);
     }
@@ -94,7 +94,7 @@ class MouseScrolledEvent : public MouseEvent {
     [[nodiscard]] float GetXOffset() const { return this->scrollXOffset; }
     [[nodiscard]] float GetYOffset() const { return this->scrollYOffset; }
 
-    [[nodiscard]] Presto::string toString() const override {
+    [[nodiscard]] Pr::string toString() const override {
         return std::format("MouseScrolledEvent:  (x: {}, y: {})", scrollXOffset,
                            scrollYOffset);
     }
@@ -123,7 +123,7 @@ class MouseButtonPressedEvent : public MouseButtonEvent {
    public:
     explicit MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
-    [[nodiscard]] Presto::string toString() const override {
+    [[nodiscard]] Pr::string toString() const override {
         return std::format("MouseButtonPressedEvent:  Button {}", button_);
     }
 
@@ -134,10 +134,10 @@ class MouseButtonReleasedEvent : public MouseButtonEvent {
    public:
     explicit MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
-    [[nodiscard]] Presto::string toString() const override {
+    [[nodiscard]] Pr::string toString() const override {
         return std::format("MouseButtonReleasedEvent:  Button {}", button_);
     }
 
     EVENT_CLASS_TYPE(MouseBtnReleased)
 };
-}  // namespace Presto
+}  // namespace Pr

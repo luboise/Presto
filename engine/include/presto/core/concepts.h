@@ -6,9 +6,9 @@
 #include <iterator>
 #include <type_traits>
 
-namespace Presto {
+namespace Pr {
 
-enum class Strictness : Presto::uint8_t { STRICTLY_DERIVED, LOOSELY_DERIVED };
+enum class Strictness : Pr::uint8_t { STRICTLY_DERIVED, LOOSELY_DERIVED };
 using Strictness::LOOSELY_DERIVED;
 using Strictness::STRICTLY_DERIVED;
 
@@ -45,4 +45,4 @@ concept Scalable = requires(T a, Scalar b) {
     { a / b } -> std::convertible_to<T>;
 };
 
-}  // namespace Presto
+}  // namespace Pr

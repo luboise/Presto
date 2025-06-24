@@ -5,11 +5,9 @@
 #include <string>
 #include <vector>
 
-// #include <glm/gtc/type_precision.hpp>
+#include <glm/glm.hpp>
 
-#include <glm/fwd.hpp>
-
-namespace Presto {
+namespace Pr {
 
 namespace fs = std::filesystem;
 using ByteArray = std::vector<std::byte>;
@@ -84,4 +82,4 @@ enum class ShaderDataType : uint8_t {
     DMAT4
 };
 
-}  // namespace Presto
+}  // namespace Pr

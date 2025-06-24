@@ -4,7 +4,7 @@
 #include "presto/core/concepts.h"
 #include "presto/runtime.h"
 
-namespace Presto {
+namespace Pr {
 
 template <Scalable T>
 class PRESTO_API Interpolator {
@@ -53,4 +53,4 @@ class PRESTO_API TimedInterpolator : private Interpolator<T> {
     Timer timer_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

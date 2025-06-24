@@ -1,8 +1,8 @@
 #include "presto/core/types.h"
 
-namespace Presto {
+namespace Pr {
 
 VisualExtents WindowSize();
 VisualExtents FramebufferSize();
 
-}  // namespace Presto
+}  // namespace Pr

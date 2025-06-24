@@ -9,11 +9,11 @@
 #include <span>
 #include <type_traits>
 
-namespace Presto {
+namespace Pr {
 
 class ErasedBytes {
    public:
-    ErasedBytes() { reset(Presto::float32_t{0}); };
+    ErasedBytes() { reset(Pr::float32_t{0}); };
 
     template <typename T>
     explicit ErasedBytes(T val) {
@@ -27,7 +27,7 @@ class ErasedBytes {
     /*    this->setData(std::forward<T>(val));*/
     /*};*/
 
-    [[nodiscard]] Presto::size_t size() const { return data_.size(); }
+    [[nodiscard]] Pr::size_t size() const { return data_.size(); }
 
     template <typename T>
         requires std::is_copy_constructible_v<T> && (!std::ranges::range<T>)
@@ -131,4 +131,4 @@ template <UniformVariableType T>
     };
 };
 
-}  // namespace Presto
+}  // namespace Pr

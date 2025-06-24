@@ -1,22 +1,21 @@
 #include "types.h"
 
-namespace Presto {
+namespace Pr {
 
-constexpr Presto::size_t shaderDataSubTypeSize(
-    ShaderDataSubType subType) noexcept {
+constexpr Pr::size_t shaderDataSubTypeSize(ShaderDataSubType subType) noexcept {
     switch (subType) {
         case ShaderDataSubType::SHORT:
-            return sizeof(Presto::int16_t);
+            return sizeof(Pr::int16_t);
         case ShaderDataSubType::USHORT:
-            return sizeof(Presto::uint16_t);
+            return sizeof(Pr::uint16_t);
         case ShaderDataSubType::INT:
-            return sizeof(Presto::int32_t);
+            return sizeof(Pr::int32_t);
         case ShaderDataSubType::UINT:
-            return sizeof(Presto::uint32_t);
+            return sizeof(Pr::uint32_t);
         case ShaderDataSubType::FLOAT:
-            return sizeof(Presto::float32_t);
+            return sizeof(Pr::float32_t);
         case ShaderDataSubType::DOUBLE:
-            return sizeof(Presto::float64_t);
+            return sizeof(Pr::float64_t);
     }
 };
 
@@ -27,28 +26,28 @@ struct SubTypeDetails {
 };
 
 template <>
-struct SubTypeDetails<Presto::uint16_t> {
-    using subtype = Presto::uint16_t;
+struct SubTypeDetails<Pr::uint16_t> {
+    using subtype = Pr::uint16_t;
 };
 
 template <>
-struct SubTypeDetails<Presto::int16_t> {
-    using subtype = Presto::int16_t;
+struct SubTypeDetails<Pr::int16_t> {
+    using subtype = Pr::int16_t;
 };
 
 template <>
-struct SubTypeDetails<Presto::vec3> {
-    using subtype = Presto::float32_t;
+struct SubTypeDetails<Pr::vec3> {
+    using subtype = Pr::float32_t;
 };
 
 template <>
-struct SubTypeDetails<Presto::vec4> {
-    using subtype = Presto::float32_t;
+struct SubTypeDetails<Pr::vec4> {
+    using subtype = Pr::float32_t;
 };
 
 template <>
-struct SubTypeDetails<Presto::float32_t> {
-    using subtype = Presto::float32_t;
+struct SubTypeDetails<Pr::float32_t> {
+    using subtype = Pr::float32_t;
 };
 
 template <typename T>
@@ -91,4 +90,4 @@ constexpr ShaderDataSubType getShaderDataSubType(ShaderDataType data) {
             return ShaderDataSubType::DOUBLE;
     }
 };
-}  // namespace Presto
+}  // namespace Pr

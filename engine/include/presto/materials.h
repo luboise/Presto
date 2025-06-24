@@ -1,6 +1,9 @@
-export import :types;
+#include "presto/handles/asset_handles.h"
 
-namespace Presto {
+#include "presto/core/constants.h"
+#include "presto/core/types.h"
+
+namespace Pr {
 
 class ErasedBytes;
 
@@ -34,8 +37,8 @@ class MaterialInstance {
     explicit MaterialInstance(const MaterialDefinitionPtr&);
     ~MaterialInstance();
 
-    MaterialInstance& setName(Presto::string newName);
-    [[nodiscard]] Presto::string name() const;
+    MaterialInstance& setName(Pr::string newName);
+    [[nodiscard]] Pr::string name() const;
 
     [[nodiscard]] const UniformLayout& getUniformStructure() const;
 
@@ -48,7 +51,7 @@ class MaterialInstance {
         requires requires { sizeof(T); } &&
                  // Ensure that T is not a pointer
                  requires { !is_any_pointer_type_v<T>; }
-    MaterialInstance& setProperty(Presto::string name, const T& data) {
+    MaterialInstance& setProperty(Pr::string name, const T& data) {
         PropertyDetails* details{getBinding(name)};
 
         if (details == nullptr) {
@@ -95,19 +98,19 @@ class MaterialInstance {
         UniformBinding binding;
         // Data index is the index of the uniform block for block variables, and
         // the index of the data for regular uniform variables
-        Presto::size_t data_index{};
+        Pr::size_t data_index{};
     };
 
-    PropertyDetails* getBinding(const Presto::string& name);
-    UniformBuffer& getUniformBuffer(Presto::size_t index);
-    ErasedBytes& getUniformDataStore(Presto::size_t index);
+    PropertyDetails* getBinding(const Pr::string& name);
+    UniformBuffer& getUniformBuffer(Pr::size_t index);
+    ErasedBytes& getUniformDataStore(Pr::size_t index);
 
     struct Impl;
     Allocated<Impl> impl_;
 };
 
 template <>
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
+MaterialInstance& MaterialInstance::setProperty(Pr::string name,
                                                 const Ptr<Texture>& data);
 
-}  // namespace Presto
+}  // namespace Pr

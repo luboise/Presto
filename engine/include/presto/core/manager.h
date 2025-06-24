@@ -1,5 +1,4 @@
-#include "presto/assert.h"
-#include "presto/module.h"
+#include "presto/core/assert.h"
 #include "presto/core/platform.h"
 
 #include <format>
@@ -9,13 +8,36 @@
 
 #include "presto/core.h"
 
-namespace Presto {
+namespace Pr {
 template <typename T, typename = void>
 struct UsesModuleFunctions : std::false_type {};
 
 template <typename T>
 struct UsesModuleFunctions<T, std::void_t<decltype(&T::getModuleName)>>
     : std::true_type {};
+
+#define MODULE_FUNCTIONS(Type)                                  \
+                                                                \
+   private:                                                     \
+    friend class Module<Type>;                                  \
+                                                                \
+   public:                                                      \
+    [[nodiscard]] static constexpr Pr::string getModuleName() { \
+        return #Type;                                           \
+    }                                                           \
+                                                                \
+    Type(const Type&) = delete;                                 \
+    Type(Type&&) = delete;                                      \
+    Type& operator=(const Type&) = delete;                      \
+    Type& operator=(Type&&) = delete;                           \
+                                                                \
+   private:                                                     \
+    friend class Application
+
+#define INTERNAL_MODULE_STATIC_ASSERTION()                               \
+    static_assert(UsesModuleFunctions<T>::value,                         \
+                  "The type T must use the MODULE_FUNCTIONS() macro to " \
+                  "define a static function `getModuleName()`.")
 
 template <class T>
 // requires UsesModuleFunctions<T>::value
@@ -94,4 +116,4 @@ class PRESTO_API Module {
 template <typename T>
 Module<T>::ModulePointer Module<T>::instance_{nullptr};
 
-}  // namespace Presto
+}  // namespace Pr

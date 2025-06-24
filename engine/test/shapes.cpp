@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "presto/math.h"
 
-using namespace Presto;
+using namespace Pr;
 
 TEST(CubeTests, VertexTests) {
     Cube c{vec3{0, 0, 0}};

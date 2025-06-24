@@ -63,9 +63,8 @@ set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-target_include_directories(
-  ${PRESTO_ENGINE_NAME}
-  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/internal_includes")
+target_include_directories(${PRESTO_ENGINE_NAME}
+                           PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/internal")
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${OPENGL_LIBRARIES} glfw
                                                     GLEW::GLEW)
