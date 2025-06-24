@@ -1,5 +1,5 @@
 #include <algorithm>
-#include "presto/platform.h"
+#include "presto/core/platform.h"
 
 #include "presto/core/concepts.h"
 #include "presto/runtime.h"

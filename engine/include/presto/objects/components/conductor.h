@@ -1,5 +1,5 @@
 #include <list>
-#include "presto/platform.h"
+#include "presto/core/platform.h"
 
 #include "presto/objects/component.h"
 #include "presto/objects/entity.h"

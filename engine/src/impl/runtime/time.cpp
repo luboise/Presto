@@ -1,7 +1,5 @@
 #include "presto/runtime/time.h"
 
-#include "presto/internal/pch.h"
-
 using Clock = std::chrono::high_resolution_clock;
 using Duration = std::chrono::nanoseconds;
 

@@ -1,5 +1,5 @@
 #include "presto/events.h"
-#include "presto/platform.h"
+#include "presto/core/platform.h"
 
 #include "presto/core/event/base.h"
 #include "presto/core/eventmanager.h"

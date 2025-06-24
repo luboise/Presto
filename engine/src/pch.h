@@ -1,9 +1,3 @@
-#include "presto/core.h"  // IWYU pragma: export
-#include "presto/math.h"  // IWYU pragma: export
-
-#include "presto/assets/types.h"  // IWYU pragma: export
-
-export {
 // Utility stuff
 #include <algorithm>  // IWYU pragma: export
 #include <chrono>     // IWYU pragma: export
@@ -27,4 +21,3 @@ export {
 #include <Windows.h>
 #include <Xinput.h>
 #endif
-}

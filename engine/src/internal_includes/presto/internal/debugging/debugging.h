@@ -1,4 +1,4 @@
-export import :constants;
+#include "./debugging_constants.h"
 #include "presto/core/types.h"
 
 namespace Presto {

@@ -1,6 +1,4 @@
-#include "module presto/internal/managers/asset.h"
-
-#include <span>
+#include "presto/internal/managers/asset.h"
 
 namespace Presto {
 

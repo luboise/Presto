@@ -1,2 +1,4 @@
-export import :shapes;
-export import :quaternion;
+#pragma once
+
+#include "math/quaternion.h"
+#include "math/shapes.h"

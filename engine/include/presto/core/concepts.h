@@ -1,10 +1,14 @@
+#pragma once
+
+#include "./types.h"
+
 #include <concepts>
 #include <iterator>
 #include <type_traits>
 
 namespace Presto {
 
-enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
+enum class Strictness : Presto::uint8_t { STRICTLY_DERIVED, LOOSELY_DERIVED };
 using Strictness::LOOSELY_DERIVED;
 using Strictness::STRICTLY_DERIVED;
 

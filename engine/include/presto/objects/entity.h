@@ -1,8 +1,8 @@
+#include "presto/core/platform.h"
+
 #include <array>
 #include <map>
 #include <vector>
-
-#include "presto/platform.h"
 
 #include "presto/core.h"
 #include "presto/objects/component.h"

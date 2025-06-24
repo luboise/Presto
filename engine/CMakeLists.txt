@@ -32,19 +32,13 @@ target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(functions)
 
-target_sources(
-  ${PRESTO_ENGINE_NAME}
-  PUBLIC FILE_SET presto_modules TYPE CXX_MODULES BASE_DIRS
-         "${CMAKE_CURRENT_SOURCE_DIR}/modules")
-add_subdirectory(modules)
+target_precompile_headers(${PRESTO_ENGINE_NAME} PRIVATE "src/pch.h")
 
 target_sources(
   ${PRESTO_ENGINE_NAME}
   PRIVATE FILE_SET presto_internal_modules TYPE CXX_MODULES BASE_DIRS
           "${CMAKE_CURRENT_SOURCE_DIR}/src")
 add_subdirectory(src)
-
-
 
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
@@ -66,11 +60,12 @@ set(TINYGLTF_INSTALL
 
 set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC 
-   "${CMAKE_CURRENT_SOURCE_DIR}/headers")
+target_include_directories(${PRESTO_ENGINE_NAME}
+                           PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-# target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC
-# ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
+target_include_directories(
+  ${PRESTO_ENGINE_NAME}
+  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/internal_includes")
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${OPENGL_LIBRARIES} glfw
                                                     GLEW::GLEW)

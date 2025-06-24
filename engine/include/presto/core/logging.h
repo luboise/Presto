@@ -1,27 +1,27 @@
-#include <memory>
+#include "presto/core/type_handles.h"
 
 namespace spdlog {
 class logger;
 }
+
 namespace Presto {
 class Log {
    public:
     static void init();
 
-    inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
+    static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
         return s_CoreLogger;
     };
-    inline static std::shared_ptr<spdlog::logger>& GetClientLogger() {
+    static std::shared_ptr<spdlog::logger>& GetClientLogger() {
         return s_ClientLogger;
     };
 
    private:
-    static std::shared_ptr<spdlog::logger> s_CoreLogger;
-    static std::shared_ptr<spdlog::logger> s_ClientLogger;
+    static Ptr<spdlog::logger> s_CoreLogger;
+    static Ptr<spdlog::logger> s_ClientLogger;
 };
 }  // namespace Presto
 
-export {
 // Core log macros
 #define PR_CORE_TRACE(...) ::Presto::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define PR_CORE_INFO(...) ::Presto::Log::GetCoreLogger()->info(__VA_ARGS__)
@@ -36,4 +36,3 @@ export {
 #define PR_WARN(...) ::Presto::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define PR_ERROR(...) ::Presto::Log::GetClientLogger()->error(__VA_ARGS__)
 #define PR_CRITICAL(...) ::Presto::Log::GetClientLogger()->critical(__VA_ARGS__)
-}

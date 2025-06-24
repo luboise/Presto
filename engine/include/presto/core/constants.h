@@ -1,4 +1,6 @@
-#include <cstdint>
+#pragma once
+
+#include <glm/glm.hpp>
 
 #include "presto/core/types.h"
 
