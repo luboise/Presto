@@ -7,7 +7,7 @@ import presto.assets.mesh;
 import presto.assets.types;
 import presto.core;
 
-export namespace Presto {
+export namespace Pr {
 struct MeshDraw;
 
 class ModelAsset final : public Asset {
@@ -21,7 +21,7 @@ class ModelAsset final : public Asset {
         return AssetType::MODEL;
     };
 
-    [[nodiscard]] Presto::size_t meshCount() const;
+    [[nodiscard]] Pr::size_t meshCount() const;
     [[nodiscard]] const std::vector<MeshDraw>& getDraws() { return draws_; }
 
     BoundingBox getBoundingBox();
@@ -42,4 +42,4 @@ class ModelAsset final : public Asset {
     Ptr<MeshSource> source_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

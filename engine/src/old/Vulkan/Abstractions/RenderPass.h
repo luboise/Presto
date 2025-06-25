@@ -5,7 +5,7 @@
 #include "Abstraction.h"
 #include "Swapchain.h"
 
-namespace Presto {
+namespace Pr {
 class RenderPass : public Abstraction<VkRenderPass> {
    public:
     static VkAttachmentDescription BasicColourAttachment;
@@ -23,4 +23,4 @@ class RenderPass : public Abstraction<VkRenderPass> {
    private:
     const Swapchain& _swapchain;
 };
-}  // namespace Presto
+}  // namespace Pr

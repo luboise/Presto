@@ -1,6 +1,6 @@
 module presto.internal.managers.eventimpl;
 
-export namespace Presto {
+export namespace Pr {
 
 using ConductorPtr = ComponentPtr<ConductorComponent>;
 
@@ -28,4 +28,4 @@ if (conductor->handlesKeyEvents_) {
         conductor->entity = entity;
     }
 }
-}  // namespace Presto
+}  // namespace Pr

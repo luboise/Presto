@@ -4,7 +4,7 @@ export import presto.internal.windowdata;
 import presto.input;
 import presto.runtime.window;
 
-export namespace Presto {
+export namespace Pr {
 
 class Renderer;
 
@@ -42,4 +42,4 @@ class GLFWAppWindow final : public Window {
     Allocated<WindowData> windowData_{nullptr};
 };
 
-}  // namespace Presto
+}  // namespace Pr

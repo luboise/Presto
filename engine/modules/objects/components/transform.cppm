@@ -7,49 +7,48 @@ import presto.objects.component;
 import presto.core;
 import presto.math;
 
-export namespace Presto {
+export namespace Pr {
 class RenderingManager;
 
 class PRESTO_API TransformComponent : public Component {
    public:
     TransformComponent() = default;
-    TransformComponent(Presto::vec3 translation, Presto::vec3 rotation,
-                       Presto::vec3 scale);
+    TransformComponent(Pr::vec3 translation, Pr::vec3 rotation, Pr::vec3 scale);
 
-    static mat4 getModelMatrix(Presto::vec3 offset, Presto::vec3 yawPitchRoll,
+    static mat4 getModelMatrix(Pr::vec3 offset, Pr::vec3 yawPitchRoll,
                                glm::float32 scale) {
-        return getModelMatrix(offset, yawPitchRoll, Presto::vec3(scale));
+        return getModelMatrix(offset, yawPitchRoll, Pr::vec3(scale));
     };
 
-    static mat4 getModelMatrix(Presto::vec3 offset, Presto::vec3 yawPitchRoll,
-                               Presto::vec3 scale);
+    static mat4 getModelMatrix(Pr::vec3 offset, Pr::vec3 yawPitchRoll,
+                               Pr::vec3 scale);
 
-    TransformComponent& translate(Presto::vec3 translation);
+    TransformComponent& translate(Pr::vec3 translation);
     TransformComponent& translate(double x = 0, double y = 0, double z = 0) {
-        return this->translate(Presto::vec3{x, y, z});
+        return this->translate(Pr::vec3{x, y, z});
     }
 
     [[nodiscard]] const TransformData& data() const;
 
-    TransformComponent& rotate(Presto::vec3 rotation);
+    TransformComponent& rotate(Pr::vec3 rotation);
     TransformComponent& rotate(double x = 0, double y = 0, double z = 0);
 
-    TransformComponent& setTranslation(Presto::vec3 translation);
-    TransformComponent& setRotation(Presto::vec3 yawPitchRoll);
+    TransformComponent& setTranslation(Pr::vec3 translation);
+    TransformComponent& setRotation(Pr::vec3 yawPitchRoll);
 
     TransformComponent& setScale(float);
-    TransformComponent& setScale(Presto::vec3 scale);
+    TransformComponent& setScale(Pr::vec3 scale);
 
-    [[nodiscard]] Presto::vec3 getScale() const;
-    [[nodiscard]] Presto::vec3 getTranslation() const;
+    [[nodiscard]] Pr::vec3 getScale() const;
+    [[nodiscard]] Pr::vec3 getTranslation() const;
 
-    [[nodiscard]] Presto::vec3 getPosition() const;
+    [[nodiscard]] Pr::vec3 getPosition() const;
 
     [[nodiscard]] Quaternion getRotation() const;
 
-    [[nodiscard]] Presto::vec3 getYaw() const;
-    [[nodiscard]] Presto::vec3 getPitch() const;
-    [[nodiscard]] Presto::vec3 getRoll() const;
+    [[nodiscard]] Pr::vec3 getYaw() const;
+    [[nodiscard]] Pr::vec3 getPitch() const;
+    [[nodiscard]] Pr::vec3 getRoll() const;
 
     // void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z};
     // }
@@ -68,4 +67,4 @@ class PRESTO_API TransformComponent : public Component {
     // mat4 _modelView;
     friend class RenderingManager;
 };
-}  // namespace Presto
+}  // namespace Pr

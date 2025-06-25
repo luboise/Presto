@@ -2,9 +2,9 @@ export module presto.system;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
 VisualExtents WindowSize();
 VisualExtents FramebufferSize();
 
-}  // namespace Presto
+}  // namespace Pr

@@ -3,7 +3,7 @@
 
 #include "GLFWAppWindow.h"
 
-namespace Presto {
+namespace Pr {
 // Public
 Swapchain::Swapchain(VulkanDevice* device, const VkSurfaceKHR* surface,
 
@@ -225,4 +225,4 @@ void Swapchain::createImageViews() {
     };
 }
 
-}  // namespace Presto
+}  // namespace Pr

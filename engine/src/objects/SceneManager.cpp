@@ -4,7 +4,7 @@
 #include "Modules/AssetManager.h"
 #include "Modules/EntityManagerImpl.h"
 
-namespace Presto {
+namespace Pr {
 constexpr auto TYPE_KEY = "type";
 constexpr auto NAME_KEY = "name";
 
@@ -178,4 +178,4 @@ std::string SceneManager::validateSceneSyntax(const json& sceneData) {
     }
     return "";
 }
-}  // namespace Presto
+}  // namespace Pr

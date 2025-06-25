@@ -12,7 +12,7 @@ export module presto.core.manager;
 
 import presto.core;
 
-export namespace Presto {
+export namespace Pr {
 template <typename T, typename = void>
 struct UsesModuleFunctions : std::false_type {};
 
@@ -97,4 +97,4 @@ class PRESTO_API Module {
 template <typename T>
 Module<T>::ModulePointer Module<T>::instance_{nullptr};
 
-}  // namespace Presto
+}  // namespace Pr

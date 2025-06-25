@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 
 #ifdef NDEBUG
 constexpr bool enableValidationLayers = false;
@@ -21,4 +21,4 @@ constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 constexpr auto MAIN_LAYER_NAME = "Main";
 
-}  // namespace Presto
+}  // namespace Pr

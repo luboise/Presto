@@ -2,7 +2,7 @@ export module presto.internal.gltf;
 
 import presto.internal.importing;
 
-export namespace Presto {
+export namespace Pr {
 
 class GLTFLoader : public ModelLoader {
    public:
@@ -11,4 +11,4 @@ class GLTFLoader : public ModelLoader {
         const std::vector<asset_name_t>& customNames = {}) override;
 };
 
-}  // namespace Presto
+}  // namespace Pr

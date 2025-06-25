@@ -1,6 +1,6 @@
 export module presto.internal.rendering.opengl:types;
 
-export namespace Presto {
+export namespace Pr {
 
 constexpr GLenum OpenGLTypeFromPrestoType(ShaderDataType type) {
     switch (type) {
@@ -97,4 +97,4 @@ std::vector<PipelineUniformBlock> getUniformBlocksFromShader(GLuint program);
 std::vector<PipelineUniform> getUniforms(GLuint program, GLenum base);
 }  // namespace Introspection
 
-}  // namespace Presto
+}  // namespace Pr

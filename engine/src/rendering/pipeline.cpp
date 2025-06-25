@@ -5,7 +5,7 @@ import presto.core;
 
 #include <numeric>
 
-namespace Presto {
+namespace Pr {
 
 pipeline_id_t Pipeline::id() const { return pipelineStructure_.pipeline_id; }
 
@@ -21,26 +21,26 @@ PipelineBuilder& PipelineBuilder::setShader(const AssetArg& shaderPath,
     return setShader(data.data(), type);
 };
 
-Presto::size_t PipelineUniformBlock::size() const {
+Pr::size_t PipelineUniformBlock::size() const {
     return std::accumulate(
-        this->uniforms.begin(), this->uniforms.end(), Presto::size_t{0},
+        this->uniforms.begin(), this->uniforms.end(), Pr::size_t{0},
         [](auto sum, const auto& uniform) { return sum + uniform.size(); });
 };
 
-Presto::size_t PipelineUniform::size() const {
+Pr::size_t PipelineUniform::size() const {
     return SizeOfType(this->data_type);
 };
 
-Presto::size_t PipelineAttribute::size() const {
+Pr::size_t PipelineAttribute::size() const {
     return SizeOfShaderType(this->type);
 };
 
-Presto::size_t PipelineStructure::stride() const {
+Pr::size_t PipelineStructure::stride() const {
     return std::accumulate(this->attributes.begin(), this->attributes.end(),
-                           Presto::size_t{0},
+                           Pr::size_t{0},
                            [](auto sum, const PipelineAttribute& attrib) {
                                return sum + attrib.size();
                            });
 };
 
-}  // namespace Presto
+}  // namespace Pr

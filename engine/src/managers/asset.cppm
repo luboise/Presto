@@ -6,7 +6,7 @@ export module presto.internal.managers.asset;
 import presto.assets;
 import presto.internal;
 
-export namespace Presto {
+export namespace Pr {
 // enum class ResourceType { JSON, RAW };
 
 template <AssetType Type>
@@ -77,7 +77,7 @@ ModelLoadResult loadModelsFromDisk(
     Ptr<MaterialAsset> getMaterialDefinition(pipeline_id_t id);
 
     MaterialDefinitionPtr createMaterialDefinition(
-        Presto::string name, const PipelineStructure& structure);
+        Pr::string name, const PipelineStructure& structure);
 
     template <typename T>
         requires DerivedFrom<T, AssetSource, Strictness::STRICTLY_DERIVED>
@@ -127,4 +127,4 @@ MaterialPtr createMaterialFromImport(const ImportedMaterial&,
 /*    const asset_name_t& customName, const MaterialPtr& material);*/
 /**/
 
-}  // namespace Presto
+}  // namespace Pr

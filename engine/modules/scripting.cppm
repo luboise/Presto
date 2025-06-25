@@ -12,7 +12,7 @@ import presto.objects.components;
 // TODO: Check this
 // #include "Presto/Debugging.h"  // IWYU pragma: export
 
-export namespace Presto {
+export namespace Pr {
 
 class EventListener {
    public:
@@ -25,9 +25,9 @@ class EventListener {
 };
 
 #define FETCHED(TYPE, NAME)                                                    \
-    Presto::Ptr<TYPE> NAME {                                                   \
+    Pr::Ptr<TYPE> NAME {                                                       \
         [this]() {                                                             \
-            Presto::ConductorComponent::addPreStartCallback([this]() -> void { \
+            Pr::ConductorComponent::addPreStartCallback([this]() -> void {     \
                 auto ptr{Conductor::entity->getComponent<TYPE>()};             \
                 PR_ASSERT(ptr != nullptr, "Fetched pointer can not be null."); \
                 this->NAME = ptr;                                              \
@@ -36,13 +36,13 @@ class EventListener {
         }()                                                                    \
     }
 
-#define FETCHED_OR_NULL(TYPE, NAME)                                        \
-    [this]() {                                                             \
-        Presto::ConductorComponent::addPreStartCallback([this]() -> void { \
-            this->NAME = ptr;                                              \
-            return Conductor::entity->getComponent<TYPE>();                \
-        });                                                                \
-        return nullptr;                                                    \
+#define FETCHED_OR_NULL(TYPE, NAME)                                    \
+    [this]() {                                                         \
+        Pr::ConductorComponent::addPreStartCallback([this]() -> void { \
+            this->NAME = ptr;                                          \
+            return Conductor::entity->getComponent<TYPE>();            \
+        });                                                            \
+        return nullptr;                                                \
     }()
 
-}  // namespace Presto
+}  // namespace Pr

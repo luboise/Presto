@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 using nlohmann::json;
 
-namespace Presto {
+namespace Pr {
 class SceneManager final : public Module<SceneManager> {
     MODULE_FUNCTIONS(SceneManager);
 
@@ -36,4 +36,4 @@ class SceneManager final : public Module<SceneManager> {
     std::map<scene_name_t, std::unique_ptr<Scene>> sceneMap_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

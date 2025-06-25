@@ -5,7 +5,7 @@ import presto.objects.components;
 import presto.internal.rendering.opengl;
 import presto.internal.glfw;
 
-export namespace Presto {
+export namespace Pr {
 void Renderer::setCameraData(CameraComponent& camera) {
     globalUniforms_ = {.view = camera.getViewMatrix(),
                        .projection = camera.getProjectionMatrix()};
@@ -53,4 +53,4 @@ void Renderer::setWindow(GLFWAppWindow* window) {
     this->setExtents(window->framebufferSize());
 }
 
-}  // namespace Presto
+}  // namespace Pr

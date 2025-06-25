@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto::VulkanUtils {
+namespace Pr::VulkanUtils {
 
 //////////////////////////////
 // Initialisation Functions //
@@ -68,4 +68,4 @@ auto MapHandles(const std::vector<IN_T*>& in) {
     return std::move(out);
 }
 
-}  // namespace Presto::VulkanUtils
+}  // namespace Pr::anUtils

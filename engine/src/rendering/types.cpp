@@ -3,7 +3,7 @@ import :types;
 
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 void MeshData::setVertices(const ImportedAttributeList& attributes) {
     auto processed{processVertices<Vertex3D>(attributes)};
 
@@ -47,14 +47,14 @@ BoundingBox MeshData::getBoundingBox() const {
 };
 */
 
-[[nodiscard]] Presto::size_t UniformBlock::size() const {
+[[nodiscard]] Pr::size_t UniformBlock::size() const {
     return std::accumulate(
-        this->bindings.begin(), this->bindings.end(), Presto::size_t{0},
+        this->bindings.begin(), this->bindings.end(), Pr::size_t{0},
         [](auto sum, const auto& binding) { return sum + binding.size(); });
 };
 
-[[nodiscard]] Presto::size_t UniformBinding::size() const {
+[[nodiscard]] Pr::size_t UniformBinding::size() const {
     return SizeOfType(this->data_type);
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -8,7 +8,7 @@ export module presto.utils:typemap;
 
 import presto.objects.component;
 
-export namespace Presto {
+export namespace Pr {
 
 class TypeMap {
    public:
@@ -46,4 +46,4 @@ class TypeMap {
         }
     };
 };
-}  // namespace Presto
+}  // namespace Pr

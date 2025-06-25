@@ -9,7 +9,7 @@
 #include "Presto/Core.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 
-namespace Presto {
+namespace Pr {
 
 Pipeline* PipelineBuilder::createPipeline() {
     /**
@@ -183,4 +183,4 @@ PipelineBuilder::PipelineBuilder(VulkanDevice& device, DescriptorGroup& group,
     : _device(device), _descriptorGroup(&group), _pipelineList(&pipeline_list) {
     this->reset();
 }
-}  // namespace Presto
+}  // namespace Pr

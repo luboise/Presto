@@ -4,7 +4,7 @@ import presto.internal.rendering.types;
 
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 bool ModelAsset::load() { return true; };
 
 ModelAsset::ModelAsset(asset_name_t modelName) : Asset(std::move(modelName)) {}
@@ -39,6 +39,6 @@ ModelAsset& ModelAsset::clear() {
     return *this;
 }
 
-Presto::size_t ModelAsset::meshCount() const { return this->draws_.size(); };
+Pr::size_t ModelAsset::meshCount() const { return this->draws_.size(); };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -8,7 +8,7 @@ export module presto.internal.utils;
 #include <type_traits>
 #include <unordered_set>
 
-export namespace Presto {
+export namespace Pr {
 
 /**
  * A class for generating and tracking IDs. This is to ensure there is no ID
@@ -103,4 +103,4 @@ class IDGenerator {
     // TODO: Implement freeing IDs, as well as a queue of freedIds_
     // std::queue<T> freedIds_;
 };
-}  // namespace Presto
+}  // namespace Pr

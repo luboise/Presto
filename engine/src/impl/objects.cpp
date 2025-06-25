@@ -2,35 +2,35 @@ module presto.objects;
 
 import presto.core.types;
 
-namespace Presto {
+namespace Pr {
 
-Presto::CameraComponent& Presto::GetDefaultCamera() {
-    using namespace Presto;
+Pr::CameraComponent& Pr::GetDefaultCamera() {
+    using namespace Pr;
 
     return *RenderingManager::get()
                 .getMainCamera()
                 ->getComponent<CameraComponent>();
 }
 
-Presto::EntityRef Presto::NewLooseEntity() {
+Pr::EntityRef Pr::NewLooseEntity() {
     return EntityManagerImpl::Get().newEntity();
 };
 
-Presto::EntityOwner Presto::NewOwnedEntity(Presto::vec3 pos) {
+Pr::EntityOwner Pr::NewOwnedEntity(Pr::vec3 pos) {
     EntityOwner new_owner{};
     new_owner->getComponent<TransformComponent>()->setTranslation(pos);
 
     return new_owner;
 };
 
-Presto::EntityPtr Presto::NewEntity(Presto::vec3 pos) {
+Pr::EntityPtr Pr::NewEntity(Pr::vec3 pos) {
     auto new_entity{EntityManagerImpl::Get().newEntity()};
 
     new_entity->getComponent<TransformComponent>()->setTranslation(pos);
     return new_entity;
 };
 
-void Presto::SetDefaultCameraConductor(
+void Pr::SetDefaultCameraConductor(
     const ComponentPtr<ConductorComponent>& ptr) {
     EntityPtr main_camera{RenderingManager::get().getMainCamera()};
     main_camera->setComponent<ConductorComponent>(ptr);
@@ -73,49 +73,49 @@ ComponentSearchResults EntityManager::findComponentsWhere(
            std::views::filter(filter);
 }
 
-TransformData& TransformData::addRotation(Presto::vec3 r) {
+TransformData& TransformData::addRotation(Pr::vec3 r) {
     this->rotation = Quaternion::fromEuler(r) * this->rotation;
     return *this;
 };
 
-TransformData& TransformData::addRotation(Presto::Quaternion quat) {
+TransformData& TransformData::addRotation(Pr::Quaternion quat) {
     this->rotation = quat * this->rotation;
     return *this;
 };
 
-TransformData& TransformData::addTranslation(Presto::vec3 t) {
+TransformData& TransformData::addTranslation(Pr::vec3 t) {
     this->position += t;
     return *this;
 };
-TransformData& TransformData::scaleBy(Presto::vec3 s) {
+TransformData& TransformData::scaleBy(Pr::vec3 s) {
     this->scale *= s;
     return *this;
 };
 
-Presto::vec3 TransformData::forwards() const {
+Pr::vec3 TransformData::forwards() const {
     return glm::normalize(rotation * vec3{0, 0, -1});
 }
 
-Presto::vec3 TransformData::backwards() const { return -forwards(); }
+Pr::vec3 TransformData::backwards() const { return -forwards(); }
 
-Presto::vec3 TransformData::leftwards() const {
+Pr::vec3 TransformData::leftwards() const {
     return glm::normalize(rotation * vec3{-1, 0, 0});
 }
 
-Presto::vec3 TransformData::rightwards() const { return -leftwards(); }
+Pr::vec3 TransformData::rightwards() const { return -leftwards(); }
 
-Presto::vec3 TransformData::upwards() const {
+Pr::vec3 TransformData::upwards() const {
     return glm::normalize(rotation * vec3{0, 1, 0});
 }
 
-Presto::vec3 TransformData::downwards() const { return -upwards(); }
+Pr::vec3 TransformData::downwards() const { return -upwards(); }
 
 TransformData::TransformData() : TransformData({0, 0, 0}, Quaternion{}) {};
 
-TransformData::TransformData(Presto::vec3 position, Quaternion rotation)
+TransformData::TransformData(Pr::vec3 position, Quaternion rotation)
     : position{position}, rotation{rotation} {};
 
-TransformData::TransformData(Presto::vec3 position, Presto::vec3 rotation)
+TransformData::TransformData(Pr::vec3 position, Pr::vec3 rotation)
     : position{position}, rotation{Quaternion::fromEuler(rotation)} {};
 
-}  // namespace Presto
+}  // namespace Pr

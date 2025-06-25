@@ -5,7 +5,7 @@
 #include "Rendering/Vulkan/Abstractions/DescriptorSetLayout.h"
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace Pr {
 class BufferManager;
 
 class DescriptorManager {
@@ -36,4 +36,4 @@ class DescriptorManager {
     std::vector<DescriptorSetLayout*> _layouts;
     std::vector<DescriptorGroup*> _groups;
 };
-}  // namespace Presto
+}  // namespace Pr

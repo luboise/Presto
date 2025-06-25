@@ -4,18 +4,18 @@ module;
 export module presto.assets.image;
 import presto.assets.types;
 
-export namespace Presto {
+export namespace Pr {
 struct ImageData {
     using image_data_t = ByteArray;
 
-    Presto::size_t width;
-    Presto::size_t height;
+    Pr::size_t width;
+    Pr::size_t height;
     image_data_t bytes;
 
     static constexpr auto PIXEL_BYTE_LENGTH = 4;
 
     // 4 bytes since assumed RGBA, 1 for each channel
-    [[nodiscard]] Presto::size_t size() const {
+    [[nodiscard]] Pr::size_t size() const {
         return width * height * PIXEL_BYTE_LENGTH;
     };
 };
@@ -24,7 +24,7 @@ class ImageAsset final : public Asset {
     friend class RenderingManager;
 
    public:
-    ImageAsset(Presto::string name, Presto::ImageData image)
+    ImageAsset(Pr::string name, Pr::ImageData image)
         : Asset(std::move(name)), image_(std::move(image)) {};
 
     ~ImageAsset() override = default;
@@ -33,21 +33,21 @@ class ImageAsset final : public Asset {
         return AssetType::IMAGE;
     };
 
-    [[nodiscard]] const Presto::ImageData& data() const { return image_; }
+    [[nodiscard]] const Pr::ImageData& data() const { return image_; }
 
-    [[nodiscard]] Presto::size_t width() const { return image_.width; }
-    [[nodiscard]] Presto::size_t height() const { return image_.height; }
+    [[nodiscard]] Pr::size_t width() const { return image_.width; }
+    [[nodiscard]] Pr::size_t height() const { return image_.height; }
     [[nodiscard]] auto getData() const -> const ImageData::image_data_t& {
         return image_.bytes;
     }
 
     // 4 bytes since assumed RGBA, 1 for each channel
-    [[nodiscard]] Presto::size_t size() const { return image_.size(); };
+    [[nodiscard]] Pr::size_t size() const { return image_.size(); };
 
    private:
     bool load() override;
 
-    Presto::ImageData image_;
+    Pr::ImageData image_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

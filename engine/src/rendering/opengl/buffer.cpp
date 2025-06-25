@@ -4,7 +4,7 @@ import presto.internal;
 
 #include <span>
 
-namespace Presto {
+namespace Pr {
 
 void OpenGLBuffer::bind() { glBindBuffer(openGlBufferType_, buffer_); }
 
@@ -13,7 +13,7 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, ByteArray& data)
     this->write(data, 0);
 };
 
-OpenGLBuffer::OpenGLBuffer(BufferType type, Presto::size_t size)
+OpenGLBuffer::OpenGLBuffer(BufferType type, Pr::size_t size)
     : Buffer(type, size) {
     switch (type) {
         case BufferType::VERTEX:
@@ -43,7 +43,7 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, Presto::size_t size)
 
 OpenGLBuffer::~OpenGLBuffer() { glDeleteBuffers(1, &buffer_); };
 
-void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
+void OpenGLBuffer::write(buffer_write_t data, Pr::size_t offset) {
     if (data.size() + offset > this->size()) {
         PR_ERROR(
             "Writing {} bytes to a buffer of size {} would cause an overrun of "
@@ -64,7 +64,7 @@ void OpenGLBuffer::write(buffer_write_t data, Presto::size_t offset) {
 
 OpenGLUniformBuffer::~OpenGLUniformBuffer() { glDeleteBuffers(1, &buffer_); };
 
-OpenGLUniformBuffer::OpenGLUniformBuffer(Presto::size_t bufferSize)
+OpenGLUniformBuffer::OpenGLUniformBuffer(Pr::size_t bufferSize)
     : UniformBuffer(bufferSize) {
     glGenBuffers(1, &buffer_);
     glBindBuffer(GL_UNIFORM_BUFFER, buffer_);
@@ -74,16 +74,16 @@ OpenGLUniformBuffer::OpenGLUniformBuffer(Presto::size_t bufferSize)
 };
 
 void OpenGLUniformBuffer::write(const std::span<const std::byte>& bytes,
-                                Presto::size_t offset) {
+                                Pr::size_t offset) {
     glBindBuffer(GL_UNIFORM_BUFFER, buffer_);
     glBufferSubData(GL_UNIFORM_BUFFER, static_cast<GLsizeiptr>(offset),
                     static_cast<GLsizeiptr>(bytes.size()), bytes.data());
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 };
 
-void OpenGLUniformBuffer::bind(Presto::size_t index) {
+void OpenGLUniformBuffer::bind(Pr::size_t index) {
     glBindBufferBase(GL_UNIFORM_BUFFER, static_cast<GLuint>(index), buffer_);
 };
 void OpenGLUniformBuffer::unbind() {};
 
-}  // namespace Presto
+}  // namespace Pr

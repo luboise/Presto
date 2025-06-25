@@ -7,7 +7,7 @@ using Duration = std::chrono::nanoseconds;
 
 using TimePoint = std::chrono::time_point<Clock, Duration>;
 
-namespace Presto {
+namespace Pr {
 struct Time::Impl {
     TimePoint program_start;
     TimePoint current_time;
@@ -88,4 +88,4 @@ void Timer::reset(Time::Milliseconds duration) {
     started_ = false;
     this->setLength(duration);
 };
-}  // namespace Presto
+}  // namespace Pr

@@ -5,8 +5,8 @@ import presto.core;
 
 #include <utility>
 
-constexpr GLenum Presto::OpenGLTypeFromPrestoType(Presto::ShaderDataType type) {
-    using namespace Presto;
+constexpr GLenum Pr::OpenGLTypeFromPrestoType(Pr::ShaderDataType type) {
+    using namespace Pr;
     switch (type) {
         case ShaderDataType::SHORT:
             return GL_SHORT;
@@ -39,7 +39,7 @@ constexpr GLenum Presto::OpenGLTypeFromPrestoType(Presto::ShaderDataType type) {
     }
 }
 
-namespace Presto {
+namespace Pr {
 constexpr auto INFO_LOG_LENGTH = 512;
 
 bool OpenGLUtils::ShaderCompiledCorrectly(GLuint shader) {
@@ -64,7 +64,7 @@ bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
         GLint logLength = 0;
         glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &logLength);
 
-        Presto::string message("", logLength);
+        Pr::string message("", logLength);
         glGetProgramInfoLog(shaderProgram, logLength, &logLength,
                             message.data());
 
@@ -185,7 +185,7 @@ std::vector<PipelineAttribute> Introspection::getAttributesFromShader(
 
     std::vector<GLchar> name(256);
 
-    Presto::size_t running_offset{0};
+    Pr::size_t running_offset{0};
 
     for (GLint index = 0; index < attrib_count; ++index) {
         glGetProgramResourceiv(
@@ -201,7 +201,7 @@ std::vector<PipelineAttribute> Introspection::getAttributesFromShader(
         PipelineAttribute attribute{
             .layout = static_cast<PR_NUMERIC_ID>(values[0]),
             .type = getShaderDataType(values[1], values[2]),
-            .name = Presto::string(name.data()),
+            .name = Pr::string(name.data()),
             .offset = running_offset};
         running_offset += attribute.size();
 
@@ -230,9 +230,9 @@ std::vector<PipelineUniform> Introspection::getUniformsFromShader(
 
     std::vector<GLchar> name(256);
 
-    Presto::size_t running_offset{0};
+    Pr::size_t running_offset{0};
 
-    Presto::size_t real_count{0};
+    Pr::size_t real_count{0};
 
     for (GLint index = 0; index < uniform_count; ++index) {
         glGetProgramResourceiv(
@@ -252,7 +252,7 @@ std::vector<PipelineUniform> Introspection::getUniformsFromShader(
         PipelineUniform uniform{
             .location = static_cast<PR_NUMERIC_ID>(values[0]),
             .data_type = getUniformVariableType(values[1], values[2]),
-            .name = Presto::string(name.data()),
+            .name = Pr::string(name.data()),
             .offset = running_offset};
 
         running_offset += uniform.size();
@@ -320,7 +320,7 @@ std::vector<PipelineUniformBlock> Introspection::getUniformBlocksFromShader(
                 return index == block_index;
             })};
 
-        uniform_block.name = Presto::string(block_name.data(), chars_written);
+        uniform_block.name = Pr::string(block_name.data(), chars_written);
         uniform_block.binding = binding;
         uniform_block.uniforms = std::move(uniforms);
 
@@ -346,7 +346,7 @@ std::vector<PipelineUniform> Introspection::getUniforms(GLuint program,
 
     std::vector<GLchar> name(256);
 
-    Presto::size_t running_offset{0};
+    Pr::size_t running_offset{0};
 
     for (GLint index = 0; index < uniform_count; ++index) {
         glGetProgramResourceiv(
@@ -362,7 +362,7 @@ std::vector<PipelineUniform> Introspection::getUniforms(GLuint program,
         PipelineUniform uniform{
             .location = static_cast<PR_NUMERIC_ID>(values[0]),
             .data_type = getUniformVariableType(values[1], values[2]),
-            .name = Presto::string(name.data()),
+            .name = Pr::string(name.data()),
             .offset = running_offset};
         running_offset += uniform.size();
 
@@ -372,4 +372,4 @@ std::vector<PipelineUniform> Introspection::getUniforms(GLuint program,
     return uniforms;
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -1,7 +1,7 @@
 module presto.collision;
 
-Presto::CollisionResult Presto::Colliding(const Ray& ray, const Plane& plane) {
-    using namespace Presto;
+Pr::CollisionResult Pr::Colliding(const Ray& ray, const Plane& plane) {
+    using namespace Pr;
     CollisionResult res{.colliding = true};
 
     // For xz plane only

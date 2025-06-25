@@ -12,7 +12,7 @@ import presto.core.constants;
 import presto.utils;
 
 // #include "Utils/IDGenerator.h"
-export namespace Presto {
+export namespace Pr {
 
 using allocator_id_t = PR_NUMERIC_ID;
 
@@ -27,7 +27,7 @@ class Allocator {
    public:
     explicit Allocator(K threshold = 1) : idGenerator_(threshold) {};
 
-    [[nodiscard]] Presto::size_t size() const { return entries_.size(); }
+    [[nodiscard]] Pr::size_t size() const { return entries_.size(); }
     [[nodiscard]] bool empty() const { return entries_.size() == 0; }
 
     /**
@@ -189,4 +189,4 @@ class Allocator {
     }
 };
 
-}  // namespace Presto
+}  // namespace Pr

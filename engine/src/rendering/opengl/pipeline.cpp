@@ -13,8 +13,8 @@ import :pipeline;
 
 #include "Introspection.h"
 
-namespace Presto {
-using Presto::UniformVariableType;
+namespace Pr {
+using Pr::UniformVariableType;
 
 OpenGLPipeline::OpenGLPipeline(
     pipeline_id_t id, GLuint vertexShader, GLuint fragmentShader,
@@ -105,33 +105,32 @@ void OpenGLPipeline::setUniformBlock(uniform_index_t index,
     buffer.bind(index);
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::mat4 value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::mat4 value) {
     glUniformMatrix4fv(indexToBinding_[index], 1, GL_FALSE,
                        glm::value_ptr(value));
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index,
-                                Presto::float32_t value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::float32_t value) {
     glUniform1f(indexToBinding_[index], value);
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::int32_t value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::int32_t value) {
     glUniform1i(indexToBinding_[index], value);
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::uint32_t value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::uint32_t value) {
     glUniform1ui(indexToBinding_[index], value);
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::vec2 value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec2 value) {
     glUniform2fv(indexToBinding_[index], 1, glm::value_ptr(value));
 };
 
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::vec3 value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec3 value) {
     glUniform3fv(indexToBinding_[index], 1, glm::value_ptr(value));
 };
-void OpenGLPipeline::setUniform(uniform_index_t index, Presto::vec4 value) {
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec4 value) {
     glUniform4fv(indexToBinding_[index], 1, glm::value_ptr(value));
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -4,8 +4,8 @@ import presto.internal.managers.rendering;
 
 #include <utility>
 
-namespace Presto {
-MaterialAsset::MaterialAsset(Presto::string name, const PipelineStructure& ps)
+namespace Pr {
+MaterialAsset::MaterialAsset(Pr::string name, const PipelineStructure& ps)
     : Asset(std::move(name)), pipelineId_(ps.pipeline_id) {
     UniformLayout layout{createLayoutFromPipelineStructure(ps)};
 
@@ -32,7 +32,7 @@ UniformLayout MaterialAsset::createLayoutFromPipelineStructure(
         new_block.bind_point = block.binding;
         new_block.name = block.name;
 
-        Presto::uint32_t running_offset{0};
+        Pr::uint32_t running_offset{0};
 
         for (const PipelineUniform& uniform : block.uniforms) {
             new_block.bindings.push_back({
@@ -49,7 +49,7 @@ UniformLayout MaterialAsset::createLayoutFromPipelineStructure(
 
     layout.bindings.resize(ps.uniforms.size());
 
-    for (Presto::size_t i{0}; i < ps.uniforms.size(); i++) {
+    for (Pr::size_t i{0}; i < ps.uniforms.size(); i++) {
         const PipelineUniform& uniform{ps.uniforms[i]};
 
         layout.bindings[i] = {
@@ -67,4 +67,4 @@ Ptr<MaterialInstance> MaterialAsset::createInstance() {
     return std::make_shared<MaterialInstance>(shared_from_this());
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 struct VulkanContext;
 
 class MemoryAllocation {
@@ -35,11 +35,11 @@ class MemoryAllocation {
 
    private:
     VkBuffer boundBuffer_{};
-    Presto::size_t size_{};
+    Pr::size_t size_{};
 
     VkDeviceMemory allocation_{};
     void* mappedPtr_{};
 
     VkDevice logicalDevice_{};
 };
-}  // namespace Presto
+}  // namespace Pr

@@ -5,7 +5,7 @@ module presto.internal.gltf;
 
 import presto.core;
 
-namespace Presto {
+namespace Pr {
 
 ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
     switch (accessor.type) {
@@ -70,7 +70,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
     return ShaderDataType::FLOAT;
 };
 
-Presto::string tinygltfNameToPrestoName(const Presto::string& name) {
+Pr::string tinygltfNameToPrestoName(const Pr::string& name) {
     if (name == "POSITION") {
         return DefaultAttributeName::POSITION;
     }
@@ -155,7 +155,7 @@ std::vector<T> getDataFromAccessor2(const tinygltf::Model& model,
 
 template <typename T>
 [[nodiscard]] std::vector<T> getAccessorAs(const tinygltf::Model& model,
-                                           Presto::size_t accessorIndex) {
+                                           Pr::size_t accessorIndex) {
     const tinygltf::Accessor& accessor = model.accessors[accessorIndex];
 
     const auto& bv = model.bufferViews[accessor.bufferView];
@@ -185,7 +185,7 @@ template <typename T>
 /*
 template <ShaderDataType TO_T, ShaderDataType FROM_T>
 bool getAccessorCharsBySubtype(const tinygltf::Model& model,
-                               Presto::size_t accessorIndex,
+                               Pr::size_t accessorIndex,
                                std::vector<unsigned char>& outChars) {
     // Get the data as the gltf subtype
     using TinyGLTFSubtype = SubTypeOf<ShaderImportTypeOf<FROM_T>>;
@@ -218,7 +218,7 @@ bool getAccessorCharsBySubtype(const tinygltf::Model& model,
 */
 
 ImportedVertexAttribute getAttributeFromAccessor(const tinygltf::Model& model,
-                                                 Presto::size_t accessorIndex) {
+                                                 Pr::size_t accessorIndex) {
     const auto& accessor{model.accessors[accessorIndex]};
     const auto& bufferview = model.bufferViews[accessor.bufferView];
     const auto& buffer = model.buffers[bufferview.buffer];
@@ -316,7 +316,7 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
 
     return ret;
 
-}  // namespace Presto
+}  // namespace Pr
 
 template <typename T>
 std::vector<T> castBuffer(const ByteArray& bytes) {
@@ -334,7 +334,7 @@ std::vector<T> castBuffer(const ByteArray& bytes) {
 
 template <typename T>
     requires std::is_floating_point_v<T>
-Presto::vec4 vec4FromVector(std::vector<T> vec) {
+Pr::vec4 vec4FromVector(std::vector<T> vec) {
     PR_ASSERT(vec.size() == 4,
               std::format("Invalid vector size: ", vec.size()));
 
@@ -383,15 +383,15 @@ ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
                    "should have been validated.");
     const auto& image_data = model.images[index];
 
-    Presto::ImageData image{.width = static_cast<size_t>(image_data.width),
-                            .height = static_cast<size_t>(image_data.height),
-                            .bytes{}};
+    Pr::ImageData image{.width = static_cast<size_t>(image_data.width),
+                        .height = static_cast<size_t>(image_data.height),
+                        .bytes{}};
 
     image.bytes.resize(image.size());
     std::memcpy(image.bytes.data(), image_data.image.data(),
                 image.bytes.size());
 
-    Presto::string new_name{};
+    Pr::string new_name{};
     if (!image_data.name.empty()) {
         new_name = image_data.name;
 
@@ -422,8 +422,8 @@ ImportedModelData GLTFLoader::load(
 
     tinygltf::TinyGLTF loader;
     tinygltf::Model model;
-    Presto::string err;
-    Presto::string warn;
+    Pr::string err;
+    Pr::string warn;
 
     // TODO: Implement full path/cwd system for engine to find it at
     // runtime, or have the user change it (would help the editor)
@@ -439,8 +439,8 @@ ImportedModelData GLTFLoader::load(
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, full_asset_path);
     }
 
-    PR_CORE_ASSERT(ret, Presto::string("Failed to read asset ") +
-                            full_asset_path.string());
+    PR_CORE_ASSERT(
+        ret, Pr::string("Failed to read asset ") + full_asset_path.string());
 
     std::set<int> textureIndices;
 
@@ -500,29 +500,27 @@ ImportedModelData GLTFLoader::load(
                 if (converted_name == DefaultAttributeName::POSITION ||
                     converted_name == DefaultAttributeName::NORMAL ||
                     converted_name == DefaultAttributeName::COLOUR) {
-                    auto data{getAccessorAs<Presto::float32_t>(model,
-                                                               accessor_index)};
+                    auto data{
+                        getAccessorAs<Pr::float32_t>(model, accessor_index)};
 
                     ImportedVertexAttribute new_attribute{
                         .name = converted_name,
                         .type = ShaderDataType::VEC3,
                         .count = model.accessors[accessor_index].count,
-                        .data =
-                            ByteArray(data.size() * sizeof(Presto::float32_t))};
+                        .data = ByteArray(data.size() * sizeof(Pr::float32_t))};
 
                     std::memcpy(new_attribute.data.data(), data.data(),
                                 new_attribute.data.size());
                     imported_attributes.push_back(std::move(new_attribute));
 
                 } else if (converted_name == DefaultAttributeName::TEXCOORDS) {
-                    auto data{
-                        getAccessorAs<Presto::vec2>(model, accessor_index)};
+                    auto data{getAccessorAs<Pr::vec2>(model, accessor_index)};
 
                     ImportedVertexAttribute new_attribute{
                         .name = converted_name,
                         .type = ShaderDataType::VEC2,
                         .count = model.accessors[accessor_index].count,
-                        .data = ByteArray(data.size() * sizeof(Presto::vec2))};
+                        .data = ByteArray(data.size() * sizeof(Pr::vec2))};
 
                     std::memcpy(new_attribute.data.data(), data.data(),
                                 new_attribute.data.size());
@@ -544,10 +542,8 @@ ImportedModelData GLTFLoader::load(
             // attributes
             new_submesh.vertex_count = std::ranges::min(
                 new_submesh.attributes |
-                std::views::transform(
-                    [](const ImportedVertexAttribute& val) -> Presto::size_t {
-                        return val.count;
-                    }));
+                std::views::transform([](const ImportedVertexAttribute& val)
+                                          -> Pr::size_t { return val.count; }));
 
             new_model.meshes.push_back(std::move(new_submesh));
         }
@@ -558,4 +554,4 @@ ImportedModelData GLTFLoader::load(
     return imported_data;
 };
 
-}  // namespace Presto
+}  // namespace Pr

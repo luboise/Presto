@@ -7,7 +7,7 @@
 
 // #include "Presto/Logging.h"
 
-namespace Presto {
+namespace Pr {
 
 Pipeline::Pipeline(VulkanDevice& device, DescriptorGroup* descriptor_group,
                    VkGraphicsPipelineCreateInfo& info)
@@ -41,4 +41,4 @@ Pipeline::~Pipeline() {
     vkDestroyPipeline(_logicalDevice, handle_, nullptr);
     delete _layout;
 };
-}  // namespace Presto
+}  // namespace Pr

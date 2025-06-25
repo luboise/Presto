@@ -1,6 +1,6 @@
 module presto.assets.image;
 
-export namespace Presto {
+export namespace Pr {
 
 bool ImageAsset::load() {
     /*
@@ -10,4 +10,4 @@ bool ImageAsset::load() {
     return true;
 }
 
-}  // namespace Presto
+}  // namespace Pr

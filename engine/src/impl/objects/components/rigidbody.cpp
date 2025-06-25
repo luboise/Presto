@@ -1,7 +1,7 @@
 module presto.objects.components;
 import :rigidbody;
 
-namespace Presto {
+namespace Pr {
 
 [[nodiscard]] Force RigidBodyComponent::calculateMovement() const {
     return force_;
@@ -48,4 +48,4 @@ void RigidBodyComponent::setAngularVelocity(vec3 angularVel) {
     force_.angular_velocity = angularVel;
 };
 
-}  // namespace Presto
+}  // namespace Pr

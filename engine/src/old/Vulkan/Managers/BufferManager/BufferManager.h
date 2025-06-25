@@ -8,7 +8,7 @@
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 
-namespace Presto {
+namespace Pr {
 using BufferList = std::vector<Buffer*>;
 using BUFFER_TYPE = Buffer::BUFFER_TYPE;
 
@@ -49,4 +49,4 @@ class BufferManager {
 
     BufferList _uniformBuffers;
 };
-}  // namespace Presto
+}  // namespace Pr

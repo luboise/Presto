@@ -1,8 +1,8 @@
-namespace Presto::Meshes {
+namespace Pr::Meshes {
 
 // TODO: Move this somewhere else
 
-using Presto::Vertex;
+using Pr::Vertex;
 
 struct DefaultMeshCreationInfo {
     VertexList vertices;
@@ -64,4 +64,4 @@ constexpr DefaultMeshCreationInfo Cube(glm::vec3 position, glm::float32 size,
 
     return {vertices, indices};
 };
-}  // namespace Presto::Meshes
+}  // namespace Pr::Meshes

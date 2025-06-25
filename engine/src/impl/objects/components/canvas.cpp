@@ -2,7 +2,7 @@ module presto.objects.components.canvas;
 
 #include <utility>
 
-export namespace Presto {
+export namespace Pr {
 
 CanvasGroup& CanvasComponent::addGroup(CanvasGroup group) {
     CanvasGroup& new_group{groups_.emplace_back(std::move(group))};
@@ -20,7 +20,7 @@ VisualExtents CanvasComponent::size() const { return size_; };
 
 void CanvasComponent::setSize(VisualExtents extents) { size_ = extents; }
 
-CanvasGroup* CanvasComponent::group(Presto::size_t index) {
+CanvasGroup* CanvasComponent::group(Pr::size_t index) {
     if (index >= groups_.size()) {
         return nullptr;
     }
@@ -28,4 +28,4 @@ CanvasGroup* CanvasComponent::group(Presto::size_t index) {
     return &groups_[index];
 };
 
-}  // namespace Presto
+}  // namespace Pr

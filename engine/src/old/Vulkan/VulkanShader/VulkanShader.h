@@ -3,7 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include "Presto/Rendering/Renderer.h"
 
-namespace Presto {
+namespace Pr {
 
 class VulkanShader {
     friend class PipelineBuilder;
@@ -28,4 +28,4 @@ class VulkanShader {
     VkShaderModule _shaderModule = nullptr;
     SHADER_MODULE_TYPE _type;
 };
-}  // namespace Presto
+}  // namespace Pr

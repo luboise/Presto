@@ -12,7 +12,7 @@
 #include "Rendering/Vulkan/Abstractions/CommandPool.h"
 #include "Rendering/Vulkan/Abstractions/RenderPass.h"
 
-namespace Presto {
+namespace Pr {
 CommandBuffer::CommandBuffer(CommandPool& pool) : Abstraction(), _pool(pool) {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -131,4 +131,4 @@ void CommandBuffer::beginPass(const RenderPass& pass,
     scissor.extent = extent;
     vkCmdSetScissor(handle_, 0, 1, &scissor);
 };
-}  // namespace Presto
+}  // namespace Pr

@@ -5,9 +5,9 @@ import :file;
 
 import presto.core.types;
 
-namespace Presto::Utils {
+namespace Pr::Utils {
 
-Presto::string File::ReadFile(const FilePath& path) {
+Pr::string File::ReadFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(path);
     PR_CORE_TRACE("Reading file at path {}", path.generic_string());
@@ -22,7 +22,7 @@ Presto::string File::ReadFile(const FilePath& path) {
     const auto size = static_cast<size_t>(file.tellg());
     file.seekg(0);
 
-    Presto::string buffer(size, ' ');
+    Pr::string buffer(size, ' ');
     file.read(buffer.data(), size);
     file.close();
 
@@ -53,7 +53,7 @@ ByteArray File::ReadBinaryFile(const FilePath& path) {
 };
 
 // TODO: Implement proper error handling
-json File::GetJSON(const Presto::string& text) {
+json File::GetJSON(const Pr::string& text) {
     try {
         return json::parse(text);
     } catch (...) {
@@ -65,12 +65,12 @@ json File::GetJSON(const fs::path& path) {
     return File::GetJSON(File::ReadFile(path));
 }
 
-fs::path File::getFullPath(const Presto::string& path) {
+fs::path File::getFullPath(const Pr::string& path) {
     return executableDirectory / path;
 };
 
-Presto::string File::ReadAssetFile(const AssetArg& path) {
+Pr::string File::ReadAssetFile(const AssetArg& path) {
     return ReadFile(path.string());
 };
 
-}  // namespace Presto::Utils
+}  // namespace Pr::Utils

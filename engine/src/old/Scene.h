@@ -4,8 +4,8 @@
 
 #include "Entity.h"
 
-namespace Presto {
-using scene_name_t = Presto::string;
+namespace Pr {
+using scene_name_t = Pr::string;
 
 class Scene {
    public:
@@ -26,4 +26,4 @@ class Scene {
     // TODO: Make sure scenes can't share the same entity
     std::vector<EntityPtr> entityList_;
 };
-}  // namespace Presto
+}  // namespace Pr

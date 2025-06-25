@@ -20,7 +20,7 @@ import presto.core.constants;
 import presto.utils;
 import presto.defaults.textures;
 
-namespace Presto {
+namespace Pr {
 
 using PointType = float;
 
@@ -52,9 +52,9 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
 
     OpenGLPipelineBuilder builder{};
 
-    Presto::string vert{Utils::File::ReadAssetFile(
+    Pr::string vert{Utils::File::ReadAssetFile(
         "assets/shaders/default/opengl/default_3d.vert")};
-    Presto::string frag{Utils::File::ReadAssetFile(
+    Pr::string frag{Utils::File::ReadAssetFile(
         "assets/shaders/default/opengl/default_3d.frag")};
     builder.setAttributesOverride(Vertex3D::getPipelineAttributes())
         .setId(PR_PIPELINE_DEFAULT_3D)
@@ -84,7 +84,7 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         pipelines[pipelines.size() - 1] = builder.build())
 
     return pipelines;
-};  // namespace Presto
+};  // namespace Pr
 
 void OpenGLRenderer::nextFrame() {
     glfwSwapBuffers(static_cast<GLFWwindow*>(_glfwWindow->getWindowHandle()));
@@ -172,14 +172,13 @@ Allocated<PipelineBuilder> OpenGLRenderer::getPipelineBuilder() {
     return Allocated<PipelineBuilder>{new OpenGLPipelineBuilder{}};
 }
 
-Allocated<UniformBuffer> OpenGLRenderer::createUniformBuffer(
-    Presto::size_t size) {
+Allocated<UniformBuffer> OpenGLRenderer::createUniformBuffer(Pr::size_t size) {
     auto buffer{std::make_unique<OpenGLUniformBuffer>(size)};
     return buffer;
 };
 
 Allocated<Buffer> OpenGLRenderer::createBuffer(Buffer::BufferType type,
-                                               Presto::size_t size) {
+                                               Pr::size_t size) {
     return std::make_unique<OpenGLBuffer>(type, size);
 };
 
@@ -262,4 +261,4 @@ void OpenGLRenderer::recalculateViewport() {
                                */
 };
 
-}  // namespace Presto
+}  // namespace Pr

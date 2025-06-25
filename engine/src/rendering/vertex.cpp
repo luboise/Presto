@@ -4,7 +4,7 @@ export module presto.internal.rendering:vertex;
 #include <numeric>
 #include <vector>
 
-namespace Presto {
+namespace Pr {
 
 std::vector<PipelineAttribute> Vertex3D::getPipelineAttributes() {
     return {PipelineAttribute{.layout = 0,
@@ -71,7 +71,7 @@ bool AttributeSet::lock(bool calculateOffsets) {
     }
 
     if (calculateOffsets) {
-        Presto::size_t running_offset{0};
+        Pr::size_t running_offset{0};
 
         for (auto& [key, value] : attributes_) {
             value.offset = running_offset;
@@ -97,7 +97,7 @@ void AttributeSet::addAttribute(VertexAttribute attrib) {
 };
 
 const VertexAttribute* AttributeSet::getAttribute(
-    const Presto::string& name) const {
+    const Pr::string& name) const {
     auto found{std::ranges::find_if(attributes_, [name](const auto& pair) {
         return pair.second.name == name;
     })};
@@ -112,14 +112,13 @@ const auto& AttributeSet::getAttributes() const { return attributes_; };
 
 std::size_t AttributeSet::size() { return attributes_.size(); }
 
-Presto::size_t AttributeSet::bytesRequired() const {
+Pr::size_t AttributeSet::bytesRequired() const {
     PR_ASSERT(this->locked(),
               "Unable to obtain stride on an unlocked AttributeSet.");
 
-    return std::accumulate(
-        attributes_.begin(), attributes_.end(), 0,
-        [](Presto::size_t sum, const auto& pair) -> Presto::size_t {
-            return sum + pair.second.size();
-        });
+    return std::accumulate(attributes_.begin(), attributes_.end(), 0,
+                           [](Pr::size_t sum, const auto& pair) -> Pr::size_t {
+                               return sum + pair.second.size();
+                           });
 }
-}  // namespace Presto
+}  // namespace Pr

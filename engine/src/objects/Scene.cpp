@@ -1,6 +1,6 @@
 #include "Presto/Objects/Scene.h"
 
-namespace Presto {
+namespace Pr {
 std::vector<EntityPtr> Scene::getEntities() const { return entityList_; };
 
-}  // namespace Presto
+}  // namespace Pr

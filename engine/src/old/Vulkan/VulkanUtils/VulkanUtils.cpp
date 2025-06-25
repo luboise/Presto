@@ -7,7 +7,7 @@
 #include <set>
 #include "GLFW/glfw3.h"
 
-namespace Presto {
+namespace Pr {
 std::vector<const char*> VulkanUtils::getRequiredExtensions() {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions =
@@ -252,6 +252,6 @@ uint32_t VulkanUtils::findMemoryType(VkPhysicalDevice physical_device,
 
     // Error value
     return -1;
-}  // namespace Presto
+}  // namespace Pr
 
-}  // namespace Presto
+}  // namespace Pr

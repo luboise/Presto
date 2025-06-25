@@ -8,7 +8,7 @@
 
 #include "RenderingModule/Vulkan/VulkanRenderer.h"
 
-namespace Presto {
+namespace Pr {
 static bool s_GLFWInitialised = false;
 
 // Window* Window::Create(const WindowProperties& props) {
@@ -185,4 +185,4 @@ void WindowsWindow::SetVSync(bool vsync) {
 
 bool WindowsWindow::IsVSyncEnabled() { return w_data.VSync; }
 
-}  // namespace Presto
+}  // namespace Pr

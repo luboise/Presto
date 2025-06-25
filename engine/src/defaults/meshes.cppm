@@ -4,7 +4,7 @@ import presto.core.constants;
 import presto.internal.rendering;
 
 export {
-    using namespace Presto;
+    using namespace Pr;
 
     const MeshData Quad =  // Default quad
         {.pipeline_id = PR_PIPELINE_DEFAULT_UI,

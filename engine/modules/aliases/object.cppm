@@ -1,6 +1,6 @@
 export module presto.aliases.object;
 
-export namespace Presto {
+export namespace Pr {
 
 class CameraComponent;
 class ConductorComponent;
@@ -11,16 +11,16 @@ class RenderComponent;
 
 // Subcomponents
 
-}  // namespace Presto
+}  // namespace Pr
 
 export {
     // Components
-    using Camera = Presto::CameraComponent;
-    using Conductor = Presto::ConductorComponent;
-    using RigidBody = Presto::RigidBodyComponent;
-    using Transform = Presto::TransformComponent;
-    using Canvas = Presto::CanvasComponent;
-    using RenderComponent = Presto::RenderComponent;
+    using Camera = Pr::CameraComponent;
+    using Conductor = Pr::ConductorComponent;
+    using RigidBody = Pr::RigidBodyComponent;
+    using Transform = Pr::TransformComponent;
+    using Canvas = Pr::CanvasComponent;
+    using RenderComponent = Pr::RenderComponent;
 
     // Subcomponents
 }

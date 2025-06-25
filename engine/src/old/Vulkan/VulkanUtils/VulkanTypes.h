@@ -3,7 +3,7 @@
 #include <vulkan/vulkan_core.h>
 #include "Presto/Rendering/RenderTypes.h"
 
-namespace Presto {
+namespace Pr {
 
 class Pipeline;
 class VulkanBuffer;
@@ -21,4 +21,4 @@ struct DescriptorFrameSet {
 };
 
 using SetLayoutList = std::vector<VkDescriptorSetLayout>;
-}  // namespace Presto
+}  // namespace Pr

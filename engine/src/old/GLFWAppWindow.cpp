@@ -10,7 +10,7 @@ import presto.internal.windowdata;
 
 // #include <memory>
 
-namespace Presto {
+namespace Pr {
 bool GLFWAppWindow::s_GLFWInitialised = false;
 
 Window::WindowPtr Window::create(const WindowProperties& props) {
@@ -182,8 +182,8 @@ void GLFWAppWindow::SetCallbacks() {
             WindowResizeEvent e(new_width, new_height);
 
             data.window_size = {
-                .width = static_cast<Presto::uint16_t>(new_width),
-                .height = static_cast<Presto::uint16_t>(new_height),
+                .width = static_cast<Pr::uint16_t>(new_width),
+                .height = static_cast<Pr::uint16_t>(new_height),
             };
             data.templated_event_callback(e);
         });
@@ -194,8 +194,8 @@ void GLFWAppWindow::SetCallbacks() {
                 *static_cast<WindowData*>(glfwGetWindowUserPointer(window))};
 
             data.framebuffer_size = {
-                .width = static_cast<Presto::uint16_t>(new_width),
-                .height = static_cast<Presto::uint16_t>(new_height),
+                .width = static_cast<Pr::uint16_t>(new_width),
+                .height = static_cast<Pr::uint16_t>(new_height),
             };
             FramebufferResizedEvent e(&data);
             data.templated_event_callback(e);
@@ -244,4 +244,4 @@ unsigned GLFWAppWindow::getWidth() const {
     return windowData_->window_size.width;
 }
 
-}  // namespace Presto
+}  // namespace Pr

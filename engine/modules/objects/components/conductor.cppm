@@ -7,7 +7,7 @@ export module presto.objects.components.conductor;
 import presto.objects.entity;
 import presto.objects.component;
 
-export namespace Presto {
+export namespace Pr {
 
 class PRESTO_API ConductorComponent : public Component {
     friend class EntityManagerImpl;
@@ -39,4 +39,4 @@ class PRESTO_API ConductorComponent : public Component {
     // ~Conductor() override = default;
 };
 
-}  // namespace Presto
+}  // namespace Pr

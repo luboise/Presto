@@ -1,7 +1,7 @@
 module presto.objects.components;
 import :transform;
 
-namespace Presto {
+namespace Pr {
 mat4 TransformData::asModelMat() const {
     mat4 model{1.0F};
 
@@ -96,4 +96,4 @@ Quaternion TransformComponent::getRotation() const {
 
 const TransformData& TransformComponent::data() const { return transformData_; }
 
-}  // namespace Presto
+}  // namespace Pr

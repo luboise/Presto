@@ -8,7 +8,7 @@ import presto.core.event.base;
 import presto.core.concepts;
 import presto.utils;
 
-export namespace Presto {
+export namespace Pr {
 
 class PRESTO_API EventManager {
     template <typename... Args>
@@ -47,4 +47,4 @@ class PRESTO_API EventManager {
     void dispatchInternal(E& event);
 };
 
-}  // namespace Presto
+}  // namespace Pr

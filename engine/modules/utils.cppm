@@ -7,7 +7,7 @@ import presto.core.types;
 
 import presto.runtime.time;
 
-export namespace Presto {
+export namespace Pr {
 
 template <class T>
 class Singleton {
@@ -33,7 +33,7 @@ class LazyCalculator {
 
 class DebugTimer {
    public:
-    explicit DebugTimer(Presto::string name);
+    explicit DebugTimer(Pr::string name);
 
     void printElapsed(bool resetTimer = false);
     void reset();
@@ -41,9 +41,9 @@ class DebugTimer {
     ~DebugTimer() = default;
 
    private:
-    Presto::string name;
+    Pr::string name;
     Time::Milliseconds time_started{0};
     Time::Milliseconds time_ended{0};
 };
 
-}  // namespace Presto
+}  // namespace Pr

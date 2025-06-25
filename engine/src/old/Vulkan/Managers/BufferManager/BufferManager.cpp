@@ -8,7 +8,7 @@
 #include "Rendering/Vulkan/VulkanUtils/VulkanConstants.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanVertex.h"
 
-namespace Presto {
+namespace Pr {
 
 BufferManager::BufferManager(VulkanDevice* device)
     : _device(device), _commandPool(_device->createCommandPool()) {
@@ -74,4 +74,4 @@ void BufferManager::loadRenderable(Renderable* renderable_ptr,
 
     PR_CORE_TRACE("Added {} to the render list.", fmt::ptr(renderable_ptr));
 };
-}  // namespace Presto
+}  // namespace Pr

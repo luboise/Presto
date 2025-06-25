@@ -17,7 +17,7 @@ module;
 
 export module presto.core.types:base;
 
-export namespace Presto {
+export namespace Pr {
 
 namespace fs = std::filesystem;
 using ByteArray = std::vector<std::byte>;
@@ -92,4 +92,4 @@ enum class ShaderDataType : uint8_t {
     DMAT4
 };
 
-}  // namespace Presto
+}  // namespace Pr

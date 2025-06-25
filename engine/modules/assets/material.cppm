@@ -10,11 +10,11 @@ import presto.core.types;
 import presto.assets.material.types;
 
 // Private fwd declarations
-namespace Presto {
+namespace Pr {
 struct PipelineStructure;
-}  // namespace Presto
+}  // namespace Pr
 
-export namespace Presto {
+export namespace Pr {
 
 class PRESTO_API MaterialAsset final :
     // Enables MaterialAsset to be able to get its own shared pointer, needed
@@ -24,7 +24,7 @@ class PRESTO_API MaterialAsset final :
    public:
     friend class RenderingManager;
 
-    MaterialAsset(Presto::string name, const PipelineStructure& structure);
+    MaterialAsset(Pr::string name, const PipelineStructure& structure);
 
     ~MaterialAsset() override = default;
 
@@ -59,4 +59,4 @@ class PRESTO_API MaterialAsset final :
 
 // using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
 
-}  // namespace Presto
+}  // namespace Pr

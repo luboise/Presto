@@ -1,8 +1,8 @@
-namespace Presto {
+namespace Pr {
 
 class MemoryMapping {
    public:
-    MemoryMapping(Presto::uint32_t offset, Presto::uint32_t size);
+    MemoryMapping(Pr::uint32_t offset, Pr::uint32_t size);
     ~MemoryMapping();
 
     operator std::span<std::byte>() const;
@@ -15,4 +15,4 @@ class MemoryMapping {
     void* mapping_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

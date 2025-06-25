@@ -2,11 +2,11 @@ export module presto.aliases.asset;
 
 import presto.handles;
 
-export namespace Presto {
+export namespace Pr {
 
-using Presto::ImagePtr;
-using Presto::MaterialPtr;
-using Presto::MeshPtr;
-using Presto::ModelPtr;
+using Pr::ImagePtr;
+using Pr::MaterialPtr;
+using Pr::MeshPtr;
+using Pr::ModelPtr;
 
-}  // namespace Presto
+}  // namespace Pr

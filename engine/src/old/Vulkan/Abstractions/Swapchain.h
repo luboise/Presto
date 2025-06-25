@@ -6,7 +6,7 @@
 
 #include "Abstraction.h"
 
-namespace Presto {
+namespace Pr {
 class VulkanDevice;
 /*
    A wrapper for a Vulkan swapchain.
@@ -75,4 +75,4 @@ class Swapchain : public Abstraction<VkSwapchainKHR> {
     VkImage _depthImage;
     VkImageView _depthImageView;
 };
-}  // namespace Presto
+}  // namespace Pr

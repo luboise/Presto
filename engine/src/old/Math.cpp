@@ -2,11 +2,11 @@
 
 #include "Presto/Math.h"
 
-namespace Presto {
+namespace Pr {
 
 Quaternion::Quaternion() : Quaternion(0, {1, 0, 0}) {};
 
-Quaternion::Quaternion(float angleDeg, Presto::vec3 axis) {
+Quaternion::Quaternion(float angleDeg, Pr::vec3 axis) {
     float half_angle{glm::radians(angleDeg / 2)};
 
     this->w = std::cos(half_angle);
@@ -29,9 +29,8 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
     return ret;
 }
 
-Quaternion Quaternion::fromEuler(Presto::float32_t xPitch,
-                                 Presto::float32_t yYaw,
-                                 Presto::float32_t zRoll) {
+Quaternion Quaternion::fromEuler(Pr::float32_t xPitch, Pr::float32_t yYaw,
+                                 Pr::float32_t zRoll) {
     glm::vec3 e = glm::radians(glm::vec3(xPitch, yYaw, zRoll));
 
     glm::vec3 c = glm::cos(e * 0.5F);
@@ -46,11 +45,11 @@ Quaternion Quaternion::fromEuler(Presto::float32_t xPitch,
     return q;
 }
 
-Quaternion Quaternion::fromEuler(Presto::vec3 v) {
+Quaternion Quaternion::fromEuler(Pr::vec3 v) {
     return fromEuler(v.x, v.y, v.z);
 };
 
-Presto::mat3 Quaternion::toMat3() const {  // Precompute products
+Pr::mat3 Quaternion::toMat3() const {  // Precompute products
     float x2 = xyz.x + xyz.x;
     float y2 = xyz.y + xyz.y;
     float z2 = xyz.z + xyz.z;
@@ -73,11 +72,11 @@ Presto::mat3 Quaternion::toMat3() const {  // Precompute products
     });
 };
 
-Presto::mat4 Quaternion::toMat4() const {  // Precompute products
+Pr::mat4 Quaternion::toMat4() const {  // Precompute products
     return {this->toMat3()};
 }
 
-Presto::vec3 Quaternion::toEuler() const {
+Pr::vec3 Quaternion::toEuler() const {
     float x = this->xyz.x;
     float y = this->xyz.y;
     float z = this->xyz.z;
@@ -102,11 +101,11 @@ Presto::vec3 Quaternion::toEuler() const {
     return {glm::degrees(yaw), glm::degrees(pitch), glm::degrees(roll)};
 };
 
-Presto::vec3 operator*(const Quaternion& q, const Presto::vec3& v) {
+Pr::vec3 operator*(const Quaternion& q, const Pr::vec3& v) {
     return (q * Quaternion::newNonUnit(v) * q.conjugate()).xyz;
 };
 
-Presto::vec3 operator*(const Presto::vec3& v, const Quaternion& q) {
+Pr::vec3 operator*(const Pr::vec3& v, const Quaternion& q) {
     return (q.conjugate() * Quaternion::newNonUnit(v) * q).xyz;
 };
 
@@ -119,10 +118,10 @@ Quaternion Quaternion::conjugate() const {
     return new_quat;
 };
 
-Quaternion Quaternion::newNonUnit(Presto::vec3 v) {
+Quaternion Quaternion::newNonUnit(Pr::vec3 v) {
     Quaternion q{};
     q.w = 0;
     q.xyz = v;
     return q;
 }
-}  // namespace Presto
+}  // namespace Pr

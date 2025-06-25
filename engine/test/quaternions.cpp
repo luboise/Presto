@@ -3,7 +3,7 @@
 import presto;
 import presto.math;
 
-using namespace Presto;
+using namespace Pr;
 
 TEST(QuaternionTests, AxisConstructor) {
     Quaternion q{180, {0, 1, 0}};
@@ -24,7 +24,7 @@ TEST(QuaternionTests, AxisConstructor) {
 }
 
 TEST(QuaternionTests, PointMultiplication) {
-    const Presto::vec3 point{1, 0, 0};
+    const Pr::vec3 point{1, 0, 0};
 
     Quaternion q{180, {0, 1, 0}};
     vec3 rotated = q * point;
@@ -58,7 +58,7 @@ TEST(QuaternionTests, FromEuler) {
 }
 
 TEST(QuaternionTests, ToMat3) {
-    const Presto::vec3 point{1, 0, 0};
+    const Pr::vec3 point{1, 0, 0};
 
     Quaternion q{90, {0, 1, 0}};
     vec3 quat_val = q * point;

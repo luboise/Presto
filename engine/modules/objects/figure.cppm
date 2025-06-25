@@ -2,11 +2,11 @@ export module presto.objects.entity:figure;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 class Entity;
 
 constexpr auto PRESTO_FIGURE_MAX_ENTITY_COUNT = 20;
-using figure_size_t = Presto::size_t;
+using figure_size_t = Pr::size_t;
 
 class Figure {
    public:
@@ -19,9 +19,9 @@ class Figure {
 
     ~Figure();
 
-    Entity& getEntity(Presto::size_t index = 0);
+    Entity& getEntity(Pr::size_t index = 0);
 
    private:
     std::vector<EntityPtr> entities_;
 };
-}  // namespace Presto
+}  // namespace Pr

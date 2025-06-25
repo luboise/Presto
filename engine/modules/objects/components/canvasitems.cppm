@@ -6,7 +6,7 @@ import :base;
 
 import presto.core;
 
-export namespace Presto {
+export namespace Pr {
 
 class ImageAsset;
 
@@ -23,9 +23,9 @@ class PRESTO_API CanvasButton : public CanvasItem {
 struct Rectangle;
 
 struct CanvasRectProps {
-    Presto::vec2 pos{0, 0};
-    Presto::float32_t width{2};
-    Presto::float32_t height{1};
+    Pr::vec2 pos{0, 0};
+    Pr::float32_t width{2};
+    Pr::float32_t height{1};
 };
 
 class CanvasRect final : public CanvasItem {
@@ -40,4 +40,4 @@ class CanvasRect final : public CanvasItem {
     Rectangle rect_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

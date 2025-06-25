@@ -2,14 +2,14 @@ export module presto.internal.rendering:texture;
 
 import presto.internal;
 
-export namespace Presto {
+export namespace Pr {
 
 // TODO: Implement other texture types here
-enum class TextureType : Presto::uint8_t { TEX2D };
+enum class TextureType : Pr::uint8_t { TEX2D };
 
 class PRESTO_API Texture {
    public:
-    virtual void bind(Presto::uint8_t slot) = 0;
+    virtual void bind(Pr::uint8_t slot) = 0;
     virtual void load() = 0;
 
     [[nodiscard]] texture_id_t id() const { return id_; }
@@ -42,11 +42,9 @@ class Texture2D : public Texture {
 
     [[nodiscard]] ImagePtr image() const { return image_; }
 
-    [[nodiscard]] virtual Presto::size_t width() const = 0;
-    [[nodiscard]] virtual Presto::size_t height() const = 0;
-    [[nodiscard]] Presto::size_t pixelCount() const {
-        return width() * height();
-    };
+    [[nodiscard]] virtual Pr::size_t width() const = 0;
+    [[nodiscard]] virtual Pr::size_t height() const = 0;
+    [[nodiscard]] Pr::size_t pixelCount() const { return width() * height(); };
 
    private:
     ImagePtr image_;
@@ -66,7 +64,7 @@ using TexInterfaceOf = TextureTypeDetails<T>::TexInterface;
 
 class TextureFactory {
    protected:
-    using texture_extents_t = Presto::size_t;
+    using texture_extents_t = Pr::size_t;
 
    public:
     template <typename T>
@@ -78,4 +76,4 @@ class TextureFactory {
         texture_extents_t width, texture_extents_t height) = 0;
 };
 
-}  // namespace Presto
+}  // namespace Pr

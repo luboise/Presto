@@ -3,7 +3,7 @@ import :canvasitems;
 
 // export module presto.objects.components:canvas;
 
-namespace Presto {
+namespace Pr {
 struct CanvasItem::Impl {
     StructUniformBuffer<CanvasItemAttributes> struct_buffer{};
     CanvasItemAttributes attributes{};
@@ -104,7 +104,7 @@ CanvasItemAttributes CanvasItem::attributes() const {
     return impl_->attributes;
 };
 
-CanvasItem& CanvasItem::setOpacity(Presto::float32_t opacity) {
+CanvasItem& CanvasItem::setOpacity(Pr::float32_t opacity) {
     impl_->attributes.opacity = std::clamp(opacity, 0.F, 1.F);
     setDirty();
 
@@ -117,4 +117,4 @@ CanvasButton::CanvasButton(CanvasPosition position)
       };
 
 void CanvasButton::setImage(const ImagePtr& image) { image_ = image; };
-}  // namespace Presto
+}  // namespace Pr

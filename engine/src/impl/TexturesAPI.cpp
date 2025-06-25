@@ -3,4 +3,4 @@
 
 #include "Modules/RenderingManager.h"
 
-namespace Presto {}  // namespace Presto
+namespace Pr {}  // namespace Pr

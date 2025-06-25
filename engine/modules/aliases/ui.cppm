@@ -2,12 +2,12 @@ export module presto.aliases.ui;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 class CanvasItem;
 
 class CanvasGroup;
-using CanvasPosition = Presto::vec2;
+using CanvasPosition = Pr::vec2;
 
-};  // namespace Presto
+};  // namespace Pr
 
-using Presto::CanvasGroup, Presto::CanvasItem, Presto::CanvasPosition;
+using Pr::CanvasGroup, Pr::CanvasItem, Pr::CanvasPosition;

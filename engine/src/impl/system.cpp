@@ -1,15 +1,15 @@
 module presto.system;
 import presto.internal.managers.rendering;
 
-Presto::VisualExtents Presto::WindowSize() {
-    using namespace Presto;
+Pr::VisualExtents Pr::WindowSize() {
+    using namespace Pr;
 
     // TODO: Fix this to come from the window instead of the rendering manager
     return RenderingManager::get().framebufferSize();
 }
 
-Presto::VisualExtents Presto::FramebufferSize() {
-    using namespace Presto;
+Pr::VisualExtents Pr::FramebufferSize() {
+    using namespace Pr;
 
     return RenderingManager::get().framebufferSize();
 }

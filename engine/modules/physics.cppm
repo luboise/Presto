@@ -1,7 +1,7 @@
 export module presto.physics;
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 struct Force;
 
 void AddPersistentForce(Force);
@@ -21,4 +21,4 @@ Force& operator/=(Force& force, double scalar);
 Force operator*(Force force, float scalar);
 Force& operator*=(Force& force, float scalar);
 
-}  // namespace Presto
+}  // namespace Pr

@@ -7,7 +7,7 @@ import presto.core.platform;
 
 import presto.runtime.window;
 
-export namespace Presto {
+export namespace Pr {
 
 class Event;
 
@@ -58,7 +58,7 @@ class PRESTO_API Application {
     AppOptions options_{};
 };
 
-using AppHandle = std::unique_ptr<Presto::Application>;
+using AppHandle = std::unique_ptr<Pr::Application>;
 extern AppHandle createApplication();
 
-}  // namespace Presto
+}  // namespace Pr

@@ -3,7 +3,7 @@
 
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace Pr {
 
 DescriptorPool::DescriptorPool(const VulkanDevice& device)
     : Abstraction(), _device(device) {
@@ -70,4 +70,4 @@ std::vector<VkDescriptorSet> DescriptorPool::allocate(
 
     return allocated;
 }
-}  // namespace Presto
+}  // namespace Pr

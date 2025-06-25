@@ -2,7 +2,7 @@ module presto.objects.entity;
 import :figure;
 #include <utility>
 
-export namespace Presto {
+export namespace Pr {
 Figure::Figure(figure_size_t size) {
     PR_CORE_ASSERT(
         size > 0 && size < PRESTO_FIGURE_MAX_ENTITY_COUNT,
@@ -30,11 +30,11 @@ Figure::~Figure() {
     }
 }
 
-Entity& Figure::getEntity(Presto::size_t index) {
+Entity& Figure::getEntity(Pr::size_t index) {
     PR_ASSERT(index < entities_.size(),
               std::format("Index out of acccepted bounds [0, {}]",
                           entities_.size() - 1));
     return *entities_[index];
 };
 
-}  // namespace Presto
+}  // namespace Pr

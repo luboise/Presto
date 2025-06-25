@@ -2,7 +2,7 @@ module presto.physics;
 
 import presto.internal.managers;
 
-namespace Presto {
+namespace Pr {
 
 Force operator+(Force& left, Force& right) {
     const Force new_force{
@@ -40,8 +40,8 @@ Force& operator/=(Force& force, double scalar) {
     return force;
 };
 
-}  // namespace Presto
+}  // namespace Pr
 
-void Presto::AddPersistentForce(Force force) {
+void Pr::AddPersistentForce(Force force) {
     PhysicsManager::get().addPersistentForce(force);
 };

@@ -1,11 +1,10 @@
 module presto.internal.importing;
 
-Presto::size_t ImportedVertexAttribute::dataSize() const {
+Pr::size_t ImportedVertexAttribute::dataSize() const {
     return ShaderTypeSize(type);
 };
 
-bool Presto::DefaultAttributeName::IsDefaultAttributeName(
-    const Presto::string& str) {
+bool Pr::DefaultAttributeName::IsDefaultAttributeName(const Pr::string& str) {
     return str == POSITION || str == COLOUR || str == NORMAL ||
            str == TEXCOORDS;
 }

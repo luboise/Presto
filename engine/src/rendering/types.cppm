@@ -6,7 +6,7 @@ export module presto.internal.rendering:types;
 import presto.core;
 import presto.objects;
 
-export namespace Presto {
+export namespace Pr {
 
 struct CanvasDrawDetails {
     mesh_registration_id_t mesh;
@@ -19,7 +19,7 @@ struct MeshRegistrationData {
     Allocated<Buffer> vertices;
     Allocated<Buffer> indices;
 
-    Presto::size_t index_draw_count{0};
+    Pr::size_t index_draw_count{0};
 
     MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
     // The ID that points to the internal details in the renderer
@@ -54,21 +54,21 @@ using mesh_allocator_t =
     Allocator<mesh_registration_id_t, MeshRegistrationData>;
 
 struct GlobalUniforms {
-    Presto::mat4 view;
-    Presto::mat4 projection;
+    Pr::mat4 view;
+    Pr::mat4 projection;
 };
 
 struct ObjectUniforms {
-    Presto::mat4 transform;
+    Pr::mat4 transform;
 };
 
 struct DrawInfo {
-    Presto::size_t vertex_count = 0;
+    Pr::size_t vertex_count = 0;
 
     // Vulkan uses signed int for the offset
     int32_t vertex_offset = 0;
 
-    Presto::size_t index_count = 0;
+    Pr::size_t index_count = 0;
     uint32_t index_offset = 0;
 };
 
@@ -83,7 +83,7 @@ struct RawMeshData {
     using PositionType = vec3;
     using NormalType = vec3;
     using TexCoordsType = vec2;
-    using IndexType = Presto::uint32_t;
+    using IndexType = Pr::uint32_t;
 
     std::vector<PositionType> positions;
     std::vector<NormalType> normals;
@@ -97,7 +97,7 @@ struct RawMeshData {
 
 enum class ShaderStage { VERTEX, FRAGMENT };
 
-enum class MeshDrawMode : Presto::uint8_t {
+enum class MeshDrawMode : Pr::uint8_t {
     POINTS,
     LINES,
     LINE_STRIP,
@@ -113,95 +113,95 @@ struct ShaderDataTypeTraits {
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::SHORT> {
-    using ImportType = Presto::int16_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::int16_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::USHORT> {
-    using ImportType = Presto::uint16_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::uint16_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::INT> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::UINT> {
-    using ImportType = Presto::uint16_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::uint16_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::FLOAT> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DOUBLE> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{1};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{1};
 };
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::VEC2> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{2};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{2};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DVEC2> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{2};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{2};
 };
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::VEC3> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{3};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{3};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DVEC3> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{3};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{3};
 };
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::VEC4> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{4};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{4};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DVEC4> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{4};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{4};
 };
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::MAT3> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{12};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{12};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DMAT3> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{12};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{12};
 };
 
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::MAT4> {
-    using ImportType = Presto::float32_t;
-    static constexpr Presto::size_t subtype_count{16};
+    using ImportType = Pr::float32_t;
+    static constexpr Pr::size_t subtype_count{16};
 };
 template <>
 struct ShaderDataTypeTraits<ShaderDataType::DMAT4> {
-    using ImportType = Presto::float64_t;
-    static constexpr Presto::size_t subtype_count{16};
+    using ImportType = Pr::float64_t;
+    static constexpr Pr::size_t subtype_count{16};
 };
 
 template <ShaderDataType T>
 // requires requires { ShaderDataTypeTraits<T>::ImportType; }
 using ShaderImportTypeOf = ShaderDataTypeTraits<T>::ImportType;
 
-constexpr Presto::size_t SizeOfShaderType(ShaderDataType type) {
+constexpr Pr::size_t SizeOfShaderType(ShaderDataType type) {
 #define SWITCH_CASE(type)                                         \
     case type:                                                    \
         return sizeof(ShaderDataTypeTraits<(type)>::ImportType) * \
@@ -239,9 +239,8 @@ constexpr Presto::size_t SizeOfShaderType(ShaderDataType type) {
 
 BaseAttributeTypeDetails getShaderTypeDetails(ShaderDataType type);
 
-Presto::BaseAttributeTypeDetails Presto::getShaderTypeDetails(
-    ShaderDataType type) {
-    using namespace Presto;
+Pr::BaseAttributeTypeDetails Pr::getShaderTypeDetails(ShaderDataType type) {
+    using namespace Pr;
 
 #define SWITCH_CASE(type) \
     case type:            \
@@ -278,43 +277,43 @@ struct UniformVariableTypeTraits {
 
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::FLOAT> {
-    using ImportType = Presto::float32_t;
+    using ImportType = Pr::float32_t;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::INT> {
-    using ImportType = Presto::int32_t;
+    using ImportType = Pr::int32_t;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::UINT> {
-    using ImportType = Presto::uint32_t;
+    using ImportType = Pr::uint32_t;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::VEC2> {
-    using ImportType = Presto::vec2;
+    using ImportType = Pr::vec2;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::VEC3> {
-    using ImportType = Presto::vec3;
+    using ImportType = Pr::vec3;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::VEC4> {
-    using ImportType = Presto::vec4;
+    using ImportType = Pr::vec4;
     using GPUType = ImportType;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::TEXTURE> {
     // Imported as index into the array of imported textures
-    using ImportType = Presto::uint8_t;
-    using GPUType = Presto::int32_t;
+    using ImportType = Pr::uint8_t;
+    using GPUType = Pr::int32_t;
 };
 template <>
 struct UniformVariableTypeTraits<UniformVariableType::MAT4> {
-    using ImportType = Presto::mat4;
+    using ImportType = Pr::mat4;
     using GPUType = ImportType;
 };
 
@@ -327,7 +326,7 @@ template <UniformVariableType T>
     requires requires { typename UniformVariableTypeTraits<T>; }
 using GPUTypeOf = UniformVariableTypeTraits<T>::GPUType;
 
-constexpr Presto::size_t SizeOfType(UniformVariableType type) noexcept {
+constexpr Pr::size_t SizeOfType(UniformVariableType type) noexcept {
 #define SWITCH_CASE(type) \
     case type:            \
         return sizeof(UniformVariableTypeTraits<type>::GPUType);
@@ -348,4 +347,4 @@ constexpr Presto::size_t SizeOfType(UniformVariableType type) noexcept {
 #undef SWITCH_CASE
 };
 
-}  // namespace Presto
+}  // namespace Pr

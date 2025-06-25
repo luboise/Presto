@@ -11,7 +11,7 @@
 
 #include "Rendering/Vulkan/MemoryAllocation.h"
 
-namespace Presto {
+namespace Pr {
 
 VulkanBuffer::VulkanBuffer(const VulkanDevice& device, const BufferType& type,
                            const VkDeviceSize size, const bool create_mapping)
@@ -69,7 +69,7 @@ break;
         logicalDevice, device.getPhysicalDevice(), memory_flags, reqs);
 }
 
-void VulkanBuffer::write(buffer_write_t data, Presto::size_t offset) {
+void VulkanBuffer::write(buffer_write_t data, Pr::size_t offset) {
     /**
     PR_CORE_ASSERT(mapping_ != nullptr,
                    "A buffer can't be written to without a memory mapping "
@@ -85,7 +85,7 @@ void VulkanBuffer::write(buffer_write_t data, Presto::size_t offset) {
         return;
     }
 
-    Presto::size_t write_size{getWriteSize(data.size(), offset)};
+    Pr::size_t write_size{getWriteSize(data.size(), offset)};
     memory_->withMapping([&data, write_size](auto& span) {
         std::memcpy(span.data(), data.data(), write_size);
     });
@@ -209,4 +209,4 @@ allocInfo.commandBufferCount = 1;
 
     command_pool.destroyCommandBuffer(temp_buffer);
 }
-}  // namespace Presto
+}  // namespace Pr

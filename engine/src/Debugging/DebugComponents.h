@@ -3,7 +3,7 @@
 #include <type_traits>
 #include "imgui.h"
 
-namespace Presto {
+namespace Pr {
 
 template <typename T>
 struct EnumMember {
@@ -72,9 +72,9 @@ void CheckboxChooser(T& val, const char* label, CallbackT callback = nullptr) {
     };
 };
 
-void Vec3Chooser(Presto::vec3& val, const char* label,
-                 const std::function<void(Presto::vec3)>& callback = nullptr) {
-    Presto::vec3 temp{val};
+void Vec3Chooser(Pr::vec3& val, const char* label,
+                 const std::function<void(Pr::vec3)>& callback = nullptr) {
+    Pr::vec3 temp{val};
 
     if (ImGui::DragFloat3(label, reinterpret_cast<float*>(&temp.x))) {
         if (callback != nullptr) {
@@ -87,4 +87,4 @@ void Vec3Chooser(Presto::vec3& val, const char* label,
 
 }  // namespace DebugComponents
 
-}  // namespace Presto
+}  // namespace Pr

@@ -6,7 +6,7 @@
 
 #include "PipelineBuilder/PipelineBuilder.h"
 
-namespace Presto {
+namespace Pr {
 class PipelineManager {
    public:
     explicit PipelineManager(VulkanDevice*);
@@ -26,4 +26,4 @@ class PipelineManager {
 
     //        void initialiseDefaultPipeline(VkRenderPass);
 };
-}  // namespace Presto
+}  // namespace Pr

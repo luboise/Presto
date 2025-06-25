@@ -5,7 +5,7 @@ import presto.assets;
 
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 
 Ptr<Texture2D> NewTexture2D(AssetArg path) {
     ImagePtr image{LoadImage(path)};
@@ -24,7 +24,7 @@ Ptr<Texture2D> NewTexture2D(const ImagePtr& ptr) {
     return RenderingManager::get().createTexture2D(ptr);
 };
 
-ImagePtr LoadImage(const AssetArg& path, Presto::string name) {
+ImagePtr LoadImage(const AssetArg& path, Pr::string name) {
     if (name.empty()) {
         name = path.basename();
     }
@@ -57,16 +57,15 @@ Ptr<FontSource> CreateFontSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<FontSource>(filepath);
 };
 
-Presto::MaterialPtr Presto::NewMaterial(MaterialType type,
-                                        Presto::string name) {
-    using namespace Presto;
+Pr::MaterialPtr Pr::NewMaterial(MaterialType type, Pr::string name) {
+    using namespace Pr;
 
     return RenderingManager::get().createMaterial(type, std::move(name));
 };
 
-Presto::MaterialPtr Presto::FindMaterial(const Presto::string& name) {
-    using namespace Presto;
+Pr::MaterialPtr Pr::FindMaterial(const Pr::string& name) {
+    using namespace Pr;
 
     return RenderingManager::get().findMaterial(name);
 };
-}  // namespace Presto
+}  // namespace Pr

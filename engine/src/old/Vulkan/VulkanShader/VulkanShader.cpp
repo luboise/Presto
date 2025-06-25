@@ -5,7 +5,7 @@
 #include "Presto/Rendering/Renderer.h"
 #include "ResourcesModule/AssetManager.h"
 
-namespace Presto {
+namespace Pr {
 using ShaderCreateInfo = VkPipelineShaderStageCreateInfo;
 
 ShaderCreateInfo VulkanShader::getPipelineCreateInfo() const {
@@ -63,4 +63,4 @@ VkShaderStageFlagBits VulkanShader::BitsFromShaderModuleType(
 VulkanShader::~VulkanShader() {
     vkDestroyShaderModule(_device, _shaderModule, nullptr);
 }
-}  // namespace Presto
+}  // namespace Pr

@@ -2,7 +2,7 @@
 
 #include "Presto/Rendering/UniformTypes.h"
 
-export namespace Presto {
+export namespace Pr {
 
 struct MaterialBlockProperty;
 
@@ -14,7 +14,7 @@ struct UniformStructure {
     ErasedBytes data;
 
     [[nodiscard]] const MaterialProperty* getProperty(
-        const Presto::string& name) const;
+        const Pr::string& name) const;
 
     [[nodiscard]] bool writeableFrom(const UniformStructure&) const;
 
@@ -31,4 +31,4 @@ struct UniformStructure {
 };
 */
 
-}  // namespace Presto
+}  // namespace Pr

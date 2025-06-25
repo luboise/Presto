@@ -5,7 +5,7 @@
 #include "Abstraction.h"
 #include "CommandBuffer.h"
 
-namespace Presto {
+namespace Pr {
 class VulkanDevice;
 
 class CommandPool : public Abstraction<VkCommandPool> {
@@ -25,4 +25,4 @@ class CommandPool : public Abstraction<VkCommandPool> {
 
     std::map<CommandBuffer*, CommandBufferDetails> _commandBuffers;
 };
-}  // namespace Presto
+}  // namespace Pr

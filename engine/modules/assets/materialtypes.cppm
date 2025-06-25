@@ -5,15 +5,15 @@ export module presto.assets.material.types;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
-using uniform_name_t = Presto::string;
+using uniform_name_t = Pr::string;
 
-using uniform_index_t = Presto::uint8_t;
+using uniform_index_t = Pr::uint8_t;
 constexpr uniform_index_t PR_INVALID_UNIFORM = -1;
 
 // Uniform variable types
-enum class UniformVariableType : Presto::uint8_t {
+enum class UniformVariableType : Pr::uint8_t {
     INT = 1,
     UINT = 2,
     FLOAT = 3,
@@ -26,18 +26,18 @@ enum class UniformVariableType : Presto::uint8_t {
 };
 
 struct UniformBinding {
-    enum : Presto::uint8_t { SINGLE, BLOCK };
+    enum : Pr::uint8_t { SINGLE, BLOCK };
 
-    Presto::uint8_t bind_type;
+    Pr::uint8_t bind_type;
     UniformVariableType data_type;
     uniform_name_t name;
 
     union {
-        Presto::uint32_t location;
-        Presto::uint32_t offset;
+        Pr::uint32_t location;
+        Pr::uint32_t offset;
     };
 
-    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] Pr::size_t size() const;
 };
 
 struct UniformBlock {
@@ -46,7 +46,7 @@ struct UniformBlock {
 
     std::vector<UniformBinding> bindings;
 
-    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] Pr::size_t size() const;
 };
 
 struct UniformLayout {
@@ -55,13 +55,13 @@ struct UniformLayout {
 };
 
 struct MaterialProperty {
-    Presto::string name;
+    Pr::string name;
     UniformVariableType type;
 
-    Presto::size_t binding;
-    Presto::uint8_t offset;
+    Pr::size_t binding;
+    Pr::uint8_t offset;
 
     static bool compatible(const MaterialProperty&, const MaterialProperty&);
 };
 
-}  // namespace Presto
+}  // namespace Pr

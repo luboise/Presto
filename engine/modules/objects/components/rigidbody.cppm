@@ -7,7 +7,7 @@ import presto.objects.component;
 import presto.core;
 import presto.physics;
 
-export namespace Presto {
+export namespace Pr {
 
 class RenderingManager;
 
@@ -15,13 +15,13 @@ class PRESTO_API RigidBodyComponent : public Component {
    public:
     RigidBodyComponent() = default;
 
-    [[nodiscard]] Presto::vec3 velocity() const;
-    void addVelocity(Presto::vec3 vel);
-    void setVelocity(Presto::vec3 vel);
+    [[nodiscard]] Pr::vec3 velocity() const;
+    void addVelocity(Pr::vec3 vel);
+    void setVelocity(Pr::vec3 vel);
 
-    [[nodiscard]] Presto::vec3 angularVelocity() const;
-    void addAngularVelocity(Presto::vec3 angularVel);
-    void setAngularVelocity(Presto::vec3 angularVel);
+    [[nodiscard]] Pr::vec3 angularVelocity() const;
+    void addAngularVelocity(Pr::vec3 angularVel);
+    void setAngularVelocity(Pr::vec3 angularVel);
 
     void addForce(Force force);
 
@@ -34,8 +34,8 @@ class PRESTO_API RigidBodyComponent : public Component {
     [[nodiscard]] bool collidingWith(const RigidBodyComponent& other) const;
 
     struct PhysicsMovement {
-        Presto::vec3 pos_offset;
-        Presto::vec3 angular_offset;
+        Pr::vec3 pos_offset;
+        Pr::vec3 angular_offset;
     };
 
     [[nodiscard]] Force calculateMovement() const;
@@ -45,4 +45,4 @@ class PRESTO_API RigidBodyComponent : public Component {
     float drag_{0.5F};
 };
 
-}  // namespace Presto
+}  // namespace Pr

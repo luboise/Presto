@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 
 struct VulkanContext {
     VkInstance instance;
@@ -10,4 +10,4 @@ struct VulkanContext {
     VkPhysicalDevice physical_device;
 };
 
-}  // namespace Presto
+}  // namespace Pr

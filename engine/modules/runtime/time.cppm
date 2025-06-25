@@ -6,7 +6,7 @@ export module presto.runtime.time;
 import presto.core;
 import presto.core.concepts;
 
-export namespace Presto {
+export namespace Pr {
 
 class PRESTO_API Time {
     friend class Application;
@@ -58,4 +58,4 @@ class PRESTO_API Timer {
     Time::Seconds startTime_{0};
 };
 
-}  // namespace Presto
+}  // namespace Pr

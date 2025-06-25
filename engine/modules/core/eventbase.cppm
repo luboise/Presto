@@ -8,7 +8,7 @@ import presto.core.types;
 import presto.core.constants;
 import presto.core.concepts;
 
-export namespace Presto {
+export namespace Pr {
 
 enum class EventType {
     None = 0,
@@ -65,7 +65,7 @@ class Event {
     [[nodiscard]] virtual EventType getType() const = 0;
     [[nodiscard]] virtual const char* getName() const = 0;
     [[nodiscard]] virtual event_category_t getCategories() const = 0;
-    [[nodiscard]] virtual Presto::string toString() const { return getName(); };
+    [[nodiscard]] virtual Pr::string toString() const { return getName(); };
 
     [[nodiscard]] bool inCategory(EventCategory category) const {
         return (getCategories() & category) != 0;
@@ -115,4 +115,4 @@ class EventDispatcher {
 };
 */
 
-}  // namespace Presto
+}  // namespace Pr

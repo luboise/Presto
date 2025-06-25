@@ -1,6 +1,6 @@
 export module presto.internal.managers.input;
 
-export namespace Presto {
+export namespace Pr {
 
 class PRESTO_API InputManager : public Module<InputManager> {
    public:
@@ -21,4 +21,4 @@ class PRESTO_API InputManager : public Module<InputManager> {
     Renderer* _renderer;
 };
 
-}  // namespace Presto
+}  // namespace Pr

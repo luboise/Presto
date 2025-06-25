@@ -27,7 +27,7 @@ import presto.objects.components;
 #include "Rendering/Renderer.h"
 #include "Utils/IDGenerator.h"
 
-namespace Presto {
+namespace Pr {
 
 // constexpr auto PR_MIN_USER_PIPELINE_ID = 10;
 
@@ -140,7 +140,7 @@ void RenderingManager::loadDefaults() {
             std::format("DEFAULT PIPELINE {}", default_pipeline->id()))};
 
         default_material->setProperty(
-            Presto::DefaultMaterialPropertyName::DIFFUSE_TEXTURE, fallback_tex);
+            Pr::DefaultMaterialPropertyName::DIFFUSE_TEXTURE, fallback_tex);
 
         auto new_pipeline{
             std::make_unique<AllocatedPipeline>(
@@ -188,8 +188,8 @@ Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
         impl_->current_pipeline_id = pipelineId;
     }
 
-    Presto::size_t vertex_buffer_size{vertices.size() * sizeof(T)};
-    Presto::size_t index_buffer_size{indices.size() * sizeof(Index)};
+    Pr::size_t vertex_buffer_size{vertices.size() * sizeof(T)};
+    Pr::size_t index_buffer_size{indices.size() * sizeof(Index)};
 
     auto ret{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
         .render_manager_id{},
@@ -234,8 +234,8 @@ void RenderingManager::init() {
     return new_texture;
 };
 
-Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
-                                                 Presto::size_t height) {
+Ptr<Texture2D> RenderingManager::createTexture2D(Pr::size_t width,
+                                                 Pr::size_t height) {
     texture_id_t new_id{impl_->texture_ids.generate()};
     Ptr<Texture2D> new_texture{impl_->texture_factory->new2D(width, height)};
 
@@ -254,8 +254,8 @@ Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
     return new_texture;
 };
 
-Ptr<Texture2D> RenderingManager::createTexture2D(Presto::size_t width,
-                                                 Presto::size_t height,
+Ptr<Texture2D> RenderingManager::createTexture2D(Pr::size_t width,
+                                                 Pr::size_t height,
                                                  texture_id_t id) {
     if (!impl_->texture_ids.reserve(id)) {
         PR_CORE_ERROR(
@@ -323,7 +323,7 @@ void RenderingManager::update() {
         }
 
         for (QuadSubcomponent& quad : drawStruct.render->getQuads()) {
-            // for (Presto::size_t i = 0; i < model.draws.size(); i++) {
+            // for (Pr::size_t i = 0; i < model.draws.size(); i++) {
 
             if (quad.material == nullptr) {
                 PR_ERROR(
@@ -463,12 +463,12 @@ const PipelineStructure* RenderingManager::getPipelineStructure(
 };
 
 Allocated<UniformBuffer> RenderingManager::createUniformBuffer(
-    Presto::size_t size) {
+    Pr::size_t size) {
     return renderer_->createUniformBuffer(size);
 };
 
 Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
-                                                       Presto::string name) {
+                                                       Pr::string name) {
     // TODO: Make this a constexpr
     pipeline_id_t id{[type]() {
         switch (type) {
@@ -492,8 +492,7 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
     return new_instance;
 };
 
-Ptr<MaterialInstance> RenderingManager::findMaterial(
-    const Presto::string& name) {
+Ptr<MaterialInstance> RenderingManager::findMaterial(const Pr::string& name) {
     if (auto found{std::ranges::find_if(
             impl_->materials,
             [name](const MaterialPtr& val) { return val->name() == name; })};
@@ -696,8 +695,8 @@ void RenderingManager::drawFromAllocation(MeshRegistrationData& data) {
 }
 
 Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
-    pipeline_id_t pipelineId, Presto::size_t vertexSize,
-    Presto::size_t vertexCount, Presto::size_t indexCount) {
+    pipeline_id_t pipelineId, Pr::size_t vertexSize, Pr::size_t vertexCount,
+    Pr::size_t indexCount) {
     PR_CORE_ASSERT(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
@@ -721,8 +720,8 @@ Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
         impl_->current_pipeline_id = pipelineId;
     }
 
-    Presto::size_t vertex_buffer_size{vertexCount * vertexSize};
-    Presto::size_t index_buffer_size{indexCount * sizeof(Index)};
+    Pr::size_t vertex_buffer_size{vertexCount * vertexSize};
+    Pr::size_t index_buffer_size{indexCount * sizeof(Index)};
 
     auto details{std::make_unique<MeshRegistrationData>(MeshRegistrationData{
         .render_manager_id{},
@@ -746,4 +745,4 @@ Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
 void RenderingManager::usePipeline(pipeline_id_t id) {
     getPipeline(id)->pipeline->bind();
 }
-}  // namespace Presto
+}  // namespace Pr

@@ -1,6 +1,6 @@
 #include "QueueFamilyIndices.h"
 
-namespace Presto {
+namespace Pr {
 const QueueFamilyIndices QueueFamilyIndices::findQueueFamilies(
     const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface) {
     QueueFamilyIndices indices;
@@ -39,4 +39,4 @@ const QueueFamilyIndices QueueFamilyIndices::findQueueFamilies(
     return indices;
 }
 
-}  // namespace Presto
+}  // namespace Pr

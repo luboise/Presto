@@ -4,7 +4,7 @@ module;
 export module presto.internal.managers.rendering;
 import presto.core.manager;
 
-export namespace Presto {
+export namespace Pr {
 
 class GLFWAppWindow;
 
@@ -76,17 +76,15 @@ class RenderingManager final : public Module<RenderingManager> {
 
     PipelineBuilder& getPipelineBuilder();
 
-    [[nodiscard]] Allocated<UniformBuffer> createUniformBuffer(
-        Presto::size_t size);
+    [[nodiscard]] Allocated<UniformBuffer> createUniformBuffer(Pr::size_t size);
 
     [[nodiscard]] Ptr<MaterialInstance> createMaterial(MaterialType type,
-                                                       Presto::string name);
-    [[nodiscard]] Ptr<MaterialInstance> findMaterial(
-        const Presto::string& name);
+                                                       Pr::string name);
+    [[nodiscard]] Ptr<MaterialInstance> findMaterial(const Pr::string& name);
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(const ImagePtr& image_ptr);
-    [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
-                                                 Presto::size_t height);
+    [[nodiscard]] Ptr<Texture2D> createTexture2D(Pr::size_t width,
+                                                 Pr::size_t height);
 
     Ptr<Texture> getDefaultTexture(const char* name);
 
@@ -100,8 +98,8 @@ class RenderingManager final : public Module<RenderingManager> {
     [[nodiscard]] VisualExtents framebufferSize() const;
 
     Allocated<MeshRegistrationData> allocateMeshRegistration(
-        pipeline_id_t pipelineId, Presto::size_t vertexSize,
-        Presto::size_t vertexCount, Presto::size_t indexCount);
+        pipeline_id_t pipelineId, Pr::size_t vertexSize, Pr::size_t vertexCount,
+        Pr::size_t indexCount);
 
     void drawFromAllocation(MeshRegistrationData&);
 
@@ -121,7 +119,7 @@ void loadImageOnGpu(ImageAsset&);
     void setPipeline(pipeline_id_t, Pipeline pipeline);
     void setTexture(texture_id_t id, Texture texture);
 
-    texture_id_t addTexture(const Presto::ImageData& image);
+    texture_id_t addTexture(const Pr::ImageData& image);
     void removeTexture(texture_id_t);
 
     PipelineStructure addPipeline(Pipeline&& pipeline,
@@ -136,8 +134,8 @@ void loadImageOnGpu(ImageAsset&);
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(ImageData data,
                                                  texture_id_t id);
-    [[nodiscard]] Ptr<Texture2D> createTexture2D(Presto::size_t width,
-                                                 Presto::size_t height,
+    [[nodiscard]] Ptr<Texture2D> createTexture2D(Pr::size_t width,
+                                                 Pr::size_t height,
                                                  texture_id_t id);
 
     template <typename T>
@@ -153,4 +151,4 @@ void loadImageOnGpu(ImageAsset&);
     Allocated<Impl> impl_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

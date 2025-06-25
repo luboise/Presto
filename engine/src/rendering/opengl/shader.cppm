@@ -6,10 +6,10 @@ import presto.internal.rendering;
 
 #include <GL/glew.h>
 
-export namespace Presto {
+export namespace Pr {
 class OpenGLShader final : public Shader {
    public:
-    using shader_property_key_t = Presto::string;
+    using shader_property_key_t = Pr::string;
 
     using opengl_shader_ptr_t = std::shared_ptr<OpenGLShader>;
 
@@ -20,15 +20,15 @@ class OpenGLShader final : public Shader {
     void setGlobalUniforms(GlobalUniforms uniforms) override;
     void setObjectUniforms(ObjectUniforms uniforms) override;
 
-    void setUniform(uniform_name_t property, Presto::uint32_t value) override;
+    void setUniform(uniform_name_t property, Pr::uint32_t value) override;
 
-    void setUniform(uniform_name_t property, Presto::int32_t value) override;
-    void setUniform(uniform_name_t property, Presto::float32_t value) override;
+    void setUniform(uniform_name_t property, Pr::int32_t value) override;
+    void setUniform(uniform_name_t property, Pr::float32_t value) override;
 
-    void setUniform(uniform_name_t property, Presto::vec2 value) override;
-    void setUniform(uniform_name_t property, Presto::vec3 value) override;
-    void setUniform(uniform_name_t property, Presto::vec4 value) override;
-    void setUniform(uniform_name_t property, Presto::mat4 value) override;
+    void setUniform(uniform_name_t property, Pr::vec2 value) override;
+    void setUniform(uniform_name_t property, Pr::vec3 value) override;
+    void setUniform(uniform_name_t property, Pr::vec4 value) override;
+    void setUniform(uniform_name_t property, Pr::mat4 value) override;
 
     inline void setMat4(uniform_name_t property, float* value);
 
@@ -48,7 +48,7 @@ class OpenGLShader final : public Shader {
 };
 
 class OpenGLVAO {
-    using attribute_offset_t = Presto::int64_t;
+    using attribute_offset_t = Pr::int64_t;
 
    public:
     OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
@@ -77,4 +77,4 @@ class OpenGLVAO {
     GLuint vao_{};
 };
 
-}  // namespace Presto
+}  // namespace Pr

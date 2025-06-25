@@ -8,7 +8,7 @@ import presto.internal.managers;
 import presto.internal.managers.debug;
 #endif
 
-namespace Presto {
+namespace Pr {
 
 Application::Application() {
     // TODO: Fix this to be injected
@@ -149,4 +149,4 @@ for (auto& system : _systems) {
 */
 
 Window& Application::getWindow() const { return *appWindow_; };
-}  // namespace Presto
+}  // namespace Pr

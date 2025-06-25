@@ -6,37 +6,44 @@ export module presto.core.logging;
 namespace spdlog {
 class logger;
 }
-export namespace Presto {
+
+export namespace Pr {
+
+namespace Log {}
+
+/*
 class Log {
-   public:
-    static void init();
+public:
+static void init();
 
-    inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
-        return s_CoreLogger;
-    };
-    inline static std::shared_ptr<spdlog::logger>& GetClientLogger() {
-        return s_ClientLogger;
-    };
-
-   private:
-    static std::shared_ptr<spdlog::logger> s_CoreLogger;
-    static std::shared_ptr<spdlog::logger> s_ClientLogger;
+static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
+return s_CoreLogger;
 };
-}  // namespace Presto
+static std::shared_ptr<spdlog::logger>& GetClientLogger() {
+return s_ClientLogger;
+};
+
+private:
+static std::shared_ptr<spdlog::logger> s_CoreLogger;
+static std::shared_ptr<spdlog::logger> s_ClientLogger;
+};
+*/
+}  // namespace Pr
 
 export {
 // Core log macros
-#define PR_CORE_TRACE(...) ::Presto::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define PR_CORE_INFO(...) ::Presto::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define PR_CORE_WARN(...) ::Presto::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define PR_CORE_ERROR(...) ::Presto::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define PR_CORE_CRITICAL(...) \
-    ::Presto::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define PR_CORE_TRACE(...) ::Pr::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define PR_CORE_INFO(...) ::Pr::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define PR_CORE_WARN(...) ::Pr::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define PR_CORE_ERROR(...) ::Pr::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define PR_CORE_CRITICAL(...) ::Pr::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define PR_TRACE(...) ::Presto::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define PR_INFO(...) ::Presto::Log::GetClientLogger()->info(__VA_ARGS__)
-#define PR_WARN(...) ::Presto::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define PR_ERROR(...) ::Presto::Log::GetClientLogger()->error(__VA_ARGS__)
-#define PR_CRITICAL(...) ::Presto::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define PR_TRACE(...) ::Pr::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define PR_INFO(...) ::Pr::Log::GetClientLogger()->info(__VA_ARGS__)
+#define PR_WARN(...) ::Pr::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define PR_ERROR(...) ::Pr::Log::GetClientLogger()->error(__VA_ARGS__)
+#define PR_CRITICAL(...) ::Pr::Log::GetClientLogger()->critical(__VA_ARGS__)
 }
+
+module :private;

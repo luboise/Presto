@@ -2,15 +2,15 @@ module presto.materials;
 
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 
 struct UniformBufferExtra {
-    Presto::uint8_t bind_point;
+    Pr::uint8_t bind_point;
     Allocated<UniformBuffer> buffer;
 };
 
 struct UniformBindingExtra {
-    Presto::uint8_t location;
+    Pr::uint8_t location;
 
     UniformVariableType data_type;
     ErasedBytes data;
@@ -18,11 +18,11 @@ struct UniformBindingExtra {
 
 struct MaterialInstance::Impl {
     MaterialDefinitionPtr definition;
-    Presto::string name;
+    Pr::string name;
 
     UniformLayout structure;
 
-    std::map<Presto::string, PropertyDetails> property_lookup;
+    std::map<Pr::string, PropertyDetails> property_lookup;
 
     std::vector<UniformBufferExtra> uniform_buffers;
     std::vector<UniformBindingExtra> uniform_bindings;
@@ -38,7 +38,7 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
 
     // Allocate a buffer for each uniform block (needed for hotswap)
     impl_->uniform_buffers.resize(impl_->structure.blocks.size());
-    for (Presto::size_t i{0}; i < impl_->structure.blocks.size(); i++) {
+    for (Pr::size_t i{0}; i < impl_->structure.blocks.size(); i++) {
         const UniformBlock& block{impl_->structure.blocks[i]};
 
         impl_->uniform_buffers[i] = {
@@ -53,16 +53,16 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
         }
     }
 
-    Presto::size_t naked_binding_count{impl_->structure.bindings.size()};
+    Pr::size_t naked_binding_count{impl_->structure.bindings.size()};
 
     impl_->uniform_bindings.resize(naked_binding_count);
-    for (Presto::size_t i = 0; i < naked_binding_count; i++) {
+    for (Pr::size_t i = 0; i < naked_binding_count; i++) {
         const UniformBinding& binding{impl_->structure.bindings[i]};
         impl_->property_lookup[binding.name] = {.binding = binding,
                                                 .data_index = i};
 
         impl_->uniform_bindings[i] = {
-            .location = static_cast<Presto::uint8_t>(binding.location),
+            .location = static_cast<Pr::uint8_t>(binding.location),
             .data_type = binding.data_type,
             .data = ErasedBytes{ByteArray(binding.size())}};
 
@@ -85,7 +85,7 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
 MaterialInstance::~MaterialInstance() = default;
 
 MaterialInstance::PropertyDetails* MaterialInstance::getBinding(
-    const Presto::string& name) {
+    const Pr::string& name) {
     if (auto val{impl_->property_lookup.find(name)};
         val != impl_->property_lookup.end()) {
         return &(val->second);
@@ -93,16 +93,16 @@ MaterialInstance::PropertyDetails* MaterialInstance::getBinding(
     return nullptr;
 };
 
-MaterialInstance& MaterialInstance::setName(Presto::string newName) {
+MaterialInstance& MaterialInstance::setName(Pr::string newName) {
     impl_->name = std::move(newName);
     return *this;
 };
 
-ErasedBytes& MaterialInstance::getUniformDataStore(Presto::size_t index) {
+ErasedBytes& MaterialInstance::getUniformDataStore(Pr::size_t index) {
     return impl_->uniform_bindings[index].data;
 };
 
-UniformBuffer& MaterialInstance::getUniformBuffer(Presto::size_t index) {
+UniformBuffer& MaterialInstance::getUniformBuffer(Pr::size_t index) {
     return *impl_->uniform_buffers[index].buffer;
 };
 
@@ -114,7 +114,7 @@ pipeline_id_t MaterialInstance::getPipelineId() const {
     return this->impl_->definition->pipelineId();
 };
 
-Presto::string MaterialInstance::name() const { return impl_->name; };
+Pr::string MaterialInstance::name() const { return impl_->name; };
 
 void MaterialInstance::bindTo(Pipeline& pipeline) const {
     // Bind each block
@@ -141,7 +141,7 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
             SWITCH_CASE(UniformVariableType::MAT4);
 
             case UniformVariableType::TEXTURE: {
-                auto texture_index{binding.data.as<Presto::uint8_t>()};
+                auto texture_index{binding.data.as<Pr::uint8_t>()};
                 const TexturePtr& texture{impl_->textures[texture_index]};
 
                 if (texture == nullptr) {
@@ -172,7 +172,7 @@ PR_TRACE(
 };
 
 template <>
-MaterialInstance& MaterialInstance::setProperty(Presto::string name,
+MaterialInstance& MaterialInstance::setProperty(Pr::string name,
                                                 const Ptr<Texture>& data) {
     PropertyDetails* details{getBinding(name)};
 
@@ -219,4 +219,4 @@ void MaterialInstance::setFromImport(const ImportedMaterial& imported_material,
     }
 };
 
-}  // namespace Presto
+}  // namespace Pr

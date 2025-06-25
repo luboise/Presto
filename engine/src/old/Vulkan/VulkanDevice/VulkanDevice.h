@@ -5,7 +5,7 @@
 #include "Rendering/Vulkan/Abstractions/Abstraction.h"
 #include "Rendering/Vulkan/QueueFamilyIndices/QueueFamilyIndices.h"
 
-namespace Presto {
+namespace Pr {
 struct SwapchainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
@@ -71,4 +71,4 @@ class VulkanDevice : public Abstraction<VkDevice> {
     static VkDescriptorSetLayout allocateDescriptorSetLayout(
         const VulkanDevice&);
 };
-}  // namespace Presto
+}  // namespace Pr

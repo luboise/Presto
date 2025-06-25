@@ -3,9 +3,9 @@ export module presto.materials:types;
 import presto.core.types;
 import presto.assets.types;
 
-export namespace Presto {
+export namespace Pr {
 
-enum class MaterialType : Presto::uint8_t {
+enum class MaterialType : Pr::uint8_t {
     DEFAULT_3D,
     DEFAULT_UI,
     /*SHADER*/
@@ -19,20 +19,20 @@ struct MaterialTypeTraits {
 template <>
 struct MaterialTypeTraits<MaterialType::DEFAULT_3D> {
     struct property_list {
-        Presto::vec4 colour{1, 1, 1, 1};
-        Presto::ImagePtr diffuse_texture{nullptr};
+        Pr::vec4 colour{1, 1, 1, 1};
+        Pr::ImagePtr diffuse_texture{nullptr};
 
-        Presto::float32_t metallic{0};
-        Presto::float32_t rough{0};
+        Pr::float32_t metallic{0};
+        Pr::float32_t rough{0};
 
-        Presto::ImagePtr normal_map{nullptr};
-        Presto::ImagePtr bump_map{nullptr};
+        Pr::ImagePtr normal_map{nullptr};
+        Pr::ImagePtr bump_map{nullptr};
 
-        Presto::float32_t specular;
-        Presto::vec3 specular_tint{1, 1, 1};
+        Pr::float32_t specular;
+        Pr::vec3 specular_tint{1, 1, 1};
 
-        Presto::ImagePtr emission_map{nullptr};
+        Pr::ImagePtr emission_map{nullptr};
     };
 };
 
-}  // namespace Presto
+}  // namespace Pr

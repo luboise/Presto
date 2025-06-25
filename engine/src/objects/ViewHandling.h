@@ -6,7 +6,7 @@
 
 #include "Presto/Core/Concepts.h"
 
-namespace Presto {
+namespace Pr {
 
 using namespace std::ranges;
 using namespace std::views;
@@ -36,4 +36,4 @@ using FilterView = std::ranges::filter_view<
 template <MapLike M>
 using MapFilterView = FilterView<typename M::key_type, typename M::mapped_type>;
 
-}  // namespace Presto
+}  // namespace Pr

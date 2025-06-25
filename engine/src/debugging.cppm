@@ -3,7 +3,7 @@ export module presto.internal.debugging;
 export import :constants;
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
 class CameraComponent;
 class RenderingManager;
@@ -27,15 +27,15 @@ class DebugUI {
    public:
     enum class EditorState { EDITING, SELECTING_A_FILE, SELECTING_A_FOLDER };
 
-    static constexpr Presto::scene_name_t NO_SCENE_SELECTED = "NOSCENE";
+    static constexpr Pr::scene_name_t NO_SCENE_SELECTED = "NOSCENE";
 
     static EditorState getEditorState() { return state_; };
 
-    static void initialise(Presto::Window* windowPtr,
+    static void initialise(Pr::Window* windowPtr,
                            std::function<void()> exitCallback);
 
-    static void modalPopup(Presto::string message);
-    static void errorPopup(Presto::string message);
+    static void modalPopup(Pr::string message);
+    static void errorPopup(Pr::string message);
 
     static void shutdown();
 
@@ -53,7 +53,7 @@ class DebugUI {
     inline static EditorState state_{EditorState::EDITING};
     inline static EntityPtr selectedEntity_{nullptr};
 
-    inline static std::vector<Presto::string> errorMessages_;
+    inline static std::vector<Pr::string> errorMessages_;
 
     static void drawMainEditor();
 
@@ -79,4 +79,4 @@ class DebugUI {
 
     inline static CheckedComponentBits componentBits_{-1U};
 };
-}  // namespace Presto
+}  // namespace Pr

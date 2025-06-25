@@ -11,7 +11,7 @@ import presto.core;
 import presto.utils;
 import presto.assets.mesh;
 
-export namespace Presto {
+export namespace Pr {
 
 /*
 struct CanvasDrawDetails;
@@ -36,7 +36,7 @@ class PRESTO_API CanvasItem : LazyCalculator {
     [[nodiscard]] CanvasItemAttributes attributes() const;
     CanvasItem& setAttributes(CanvasItemAttributes attributes);
 
-    CanvasItem& setOpacity(Presto::float32_t);
+    CanvasItem& setOpacity(Pr::float32_t);
 
     [[nodiscard]] const CanvasPosition& position() const;
     [[nodiscard]] const TexturePtr& texture() const;
@@ -69,7 +69,7 @@ class PRESTO_API CanvasGroup {
     ~CanvasGroup() = default;
 
     void addItem(CanvasItem item) { items_.emplace_back(std::move(item)); };
-    void setItem(Presto::size_t index, CanvasItem item) {
+    void setItem(Pr::size_t index, CanvasItem item) {
         items_[index] = std::move(item);
     }
 
@@ -96,7 +96,7 @@ class CanvasComponent : public Component {
     // ~CanvasComponent() override;
     CanvasGroup& addGroup(CanvasGroup = {});
 
-    CanvasGroup* group(Presto::size_t index = 0);
+    CanvasGroup* group(Pr::size_t index = 0);
 
     /**
      * @brief  Creates a new canvas group and returns it. The new canvas group
@@ -116,4 +116,4 @@ class CanvasComponent : public Component {
     std::vector<CanvasGroup> groups_;
 };
 
-};  // namespace Presto
+};  // namespace Pr

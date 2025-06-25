@@ -7,36 +7,36 @@ import :types;
 
 import presto.core;
 
-export namespace Presto {
+export namespace Pr {
 
 struct PipelineAttribute {
     // Index of the attribute
     PR_NUMERIC_ID layout;
 
     ShaderDataType type;
-    Presto::string name;
+    Pr::string name;
 
-    Presto::size_t offset;
+    Pr::size_t offset;
 
-    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] Pr::size_t size() const;
 };
 
 struct PipelineUniform {
     PR_NUMERIC_ID location;
     UniformVariableType data_type;
-    Presto::string name;
+    Pr::string name;
 
-    Presto::size_t offset;
+    Pr::size_t offset;
 
-    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] Pr::size_t size() const;
 };
 
 struct PipelineUniformBlock {
-    Presto::uint8_t binding;
-    Presto::string name;
+    Pr::uint8_t binding;
+    Pr::string name;
     std::vector<PipelineUniform> uniforms;
 
-    [[nodiscard]] Presto::size_t size() const;
+    [[nodiscard]] Pr::size_t size() const;
 };
 
 struct PipelineStructure {
@@ -50,7 +50,7 @@ struct PipelineStructure {
     std::vector<PipelineUniform> uniforms;
     std::vector<PipelineUniformBlock> uniform_blocks;
 
-    [[nodiscard]] Presto::size_t stride() const;
+    [[nodiscard]] Pr::size_t stride() const;
 };
 
 class Pipeline {
@@ -83,15 +83,15 @@ class Pipeline {
      *  Sets the value of a uniform variable in the pipeline. For OpenGL, these
      * is expected to be used for regular uniform variables.
      */
-    virtual void setUniform(uniform_index_t index, Presto::uint32_t value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::uint32_t value) = 0;
 
-    virtual void setUniform(uniform_index_t index, Presto::int32_t value) = 0;
-    virtual void setUniform(uniform_index_t index, Presto::float32_t value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::int32_t value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::float32_t value) = 0;
 
-    virtual void setUniform(uniform_index_t index, Presto::vec2 value) = 0;
-    virtual void setUniform(uniform_index_t index, Presto::vec3 value) = 0;
-    virtual void setUniform(uniform_index_t index, Presto::vec4 value) = 0;
-    virtual void setUniform(uniform_index_t index, Presto::mat4 value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::vec2 value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::vec3 value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::vec4 value) = 0;
+    virtual void setUniform(uniform_index_t index, Pr::mat4 value) = 0;
 
     // [[nodiscard]] bool accepts(const UniformLayout&) const;
 
@@ -155,4 +155,4 @@ class PipelineBuilderImpl : public PipelineBuilder {
     };
 };
 
-}  // namespace Presto
+}  // namespace Pr

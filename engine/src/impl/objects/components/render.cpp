@@ -1,7 +1,7 @@
 module presto.objects.components.render;
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 
 struct RenderComponent::Impl {
     std::vector<QuadSubcomponent> quads;
@@ -58,4 +58,4 @@ std::vector<ModelPtr>& RenderComponent::getModels() const {
     return impl_->models;
 };
 
-}  // namespace Presto
+}  // namespace Pr

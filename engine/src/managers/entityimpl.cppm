@@ -5,7 +5,7 @@ export module presto.internal.managers.entityimpl;
 
 import presto.core.manager;
 
-export namespace Presto {
+export namespace Pr {
 class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
                                            public EntityManager {
     MODULE_FUNCTIONS(EntityManagerImpl);
@@ -25,7 +25,7 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<EntityPtr> newEntities(Presto::size_t count);
+    std::vector<EntityPtr> newEntities(Pr::size_t count);
 
     EntityPtr getEntityByID(entity_id_t id);
 
@@ -108,4 +108,4 @@ return entityMap_[new_id].get();
 
     // ComponentMap components_;
 };
-}  // namespace Presto
+}  // namespace Pr

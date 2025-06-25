@@ -7,7 +7,7 @@ export module presto.core.event.userevent;
 import presto.core.event.base;
 import presto.core.eventmanager;
 
-export namespace Presto {
+export namespace Pr {
 
 template <typename T>
 class PRESTO_API UserEvent : public Event {
@@ -22,4 +22,4 @@ class PRESTO_API UserEvent : public Event {
     void dispatch() { EventManager::Get().handle<T>(*static_cast<T*>(this)); };
 };
 
-}  // namespace Presto
+}  // namespace Pr

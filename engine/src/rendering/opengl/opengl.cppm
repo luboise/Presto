@@ -10,7 +10,7 @@ import :base;
 
 import presto.utils;
 
-export namespace Presto {
+export namespace Pr {
 class GLFWAppWindow;
 class OpenGLPipeline;
 /*
@@ -38,9 +38,9 @@ class OpenGLRenderer final : public Renderer {
     Allocated<TextureFactory> getTextureFactory() override;
 
     Allocated<Buffer> createBuffer(Buffer::BufferType type,
-                                   Presto::size_t size) override;
+                                   Pr::size_t size) override;
 
-    Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size) override;
+    Allocated<UniformBuffer> createUniformBuffer(Pr::size_t size) override;
 
     void nextFrame() override;
 
@@ -72,4 +72,4 @@ class OpenGLRenderer final : public Renderer {
                               const GLchar* message, const void* userParam);
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -7,11 +7,11 @@ import presto.core.event;
 import presto.runtime.window;
 import presto.internal.managers;
 
-epoxrt namespace Presto {
+epoxrt namespace Pr {
     class Renderer;
 
     struct WindowData {
-        Presto::string title;
+        Pr::string title;
 
         VisualExtents window_size;
         VisualExtents framebuffer_size;
@@ -27,4 +27,4 @@ epoxrt namespace Presto {
         };
     };
 
-}  // namespace Presto
+}  // namespace Pr

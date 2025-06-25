@@ -2,7 +2,7 @@
 #include "../PipelineLayout.h"
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace Pr {
 
 PipelineLayout::PipelineLayout(
     VulkanDevice* device, const std::vector<VkDescriptorSetLayout>& set_layouts)
@@ -28,4 +28,4 @@ PipelineLayout::PipelineLayout(
 PipelineLayout::~PipelineLayout() {
     vkDestroyPipelineLayout(_device->handle(), handle_, nullptr);
 }
-}  // namespace Presto
+}  // namespace Pr

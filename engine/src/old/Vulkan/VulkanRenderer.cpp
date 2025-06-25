@@ -23,7 +23,7 @@
 #include "VulkanUtils/VulkanUtils.h"
 #include "VulkanUtils/VulkanVertex.h"
 
-namespace Presto {
+namespace Pr {
 
 VulkanRenderer::VulkanRenderer(GLFWAppWindow* window) {
     this->setWindow(window);
@@ -81,7 +81,7 @@ VulkanRenderer::VulkanRenderer(GLFWAppWindow* window) {
 }
 
 Allocated<Buffer> VulkanRenderer::createBuffer(Buffer::BufferType type,
-                                               Presto::size_t size) {
+                                               Pr::size_t size) {
 
 };
 
@@ -225,4 +225,4 @@ bool VulkanRenderer::createMeshContext(
     MeshRegistrationData& registration,
     const PipelineStructure& structure) override {};
 
-}  // namespace Presto
+}  // namespace Pr

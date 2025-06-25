@@ -1,7 +1,7 @@
 #include "VulkanSyncSet.h"
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 
 VulkanSyncSet::VulkanSyncSet(const VkDevice device) : _device(device) {
     VkSemaphoreCreateInfo semaphoreInfo{};
@@ -34,4 +34,4 @@ VulkanSyncSet::~VulkanSyncSet() {
     vkDestroyFence(_device, this->frame_is_in_flight, nullptr);
 };
 
-}  // namespace Presto
+}  // namespace Pr

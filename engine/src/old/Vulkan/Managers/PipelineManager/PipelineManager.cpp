@@ -2,7 +2,7 @@
 
 #include "PipelineManager.h"
 
-namespace Presto {
+namespace Pr {
 
 PipelineManager::PipelineManager(VulkanDevice* device)
     : _device(device) {
@@ -32,4 +32,4 @@ return pipeline_layout;
     };
         */
 
-}  // namespace Presto
+}  // namespace Pr

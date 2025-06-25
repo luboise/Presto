@@ -3,7 +3,7 @@ module;
 
 export module presto.internal.rendering:processing;
 
-export namespace Presto {
+export namespace Pr {
 
 template <typename T>
     requires requires { T::vertexPosition; }
@@ -18,10 +18,10 @@ template <>
     std::vector<Vertex3D> vertices;
 
     // Get the minimum vertex count of all attributes
-    Presto::size_t vertex_count{std::ranges::min(
+    Pr::size_t vertex_count{std::ranges::min(
         inputAttributes |
         std::views::transform([](const ImportedVertexAttribute& val)
-                                  -> Presto::size_t { return val.count; }))};
+                                  -> Pr::size_t { return val.count; }))};
 
     PR_CORE_ASSERT(
         vertex_count != 0,
@@ -36,13 +36,12 @@ template <>
             })};
         in_a != inputAttributes.end()) {
         // Get the desired attribute from the input list
-        std::span<const Presto::float32_t> span;
-        for (Presto::size_t i{0}; i < vertex_count; i++) {
-            span = std::span{reinterpret_cast<const Presto::float32_t*>(
-                                 &in_a->data[i * sizeof(Presto::vec3)]),
+        std::span<const Pr::float32_t> span;
+        for (Pr::size_t i{0}; i < vertex_count; i++) {
+            span = std::span{reinterpret_cast<const Pr::float32_t*>(
+                                 &in_a->data[i * sizeof(Pr::vec3)]),
                              3};
-            vertices[i].vertexPosition =
-                Presto::vec3{span[0], span[1], span[2]};
+            vertices[i].vertexPosition = Pr::vec3{span[0], span[1], span[2]};
         }
     } else {
         PR_ERROR(
@@ -59,9 +58,9 @@ template <>
             })};
         in_a != inputAttributes.end()) {
         // Get the desired attribute from the input list
-        Presto::size_t in_stride{sizeof(Vertex3D::normal)};
+        Pr::size_t in_stride{sizeof(Vertex3D::normal)};
 
-        for (Presto::size_t i{0}; i < vertex_count; i++) {
+        for (Pr::size_t i{0}; i < vertex_count; i++) {
             std::memcpy(&vertices[i].normal, &in_a->data[i * in_stride],
                         in_stride);
         }
@@ -80,9 +79,9 @@ template <>
             })};
         in_a != inputAttributes.end()) {
         // Get the desired attribute from the input list
-        Presto::size_t in_stride{sizeof(Vertex3D::colour)};
+        Pr::size_t in_stride{sizeof(Vertex3D::colour)};
 
-        for (Presto::size_t i{0}; i < vertex_count; i++) {
+        for (Pr::size_t i{0}; i < vertex_count; i++) {
             std::memcpy(&vertices[i].colour, &in_a->data[i * in_stride],
                         in_stride);
         }
@@ -101,9 +100,9 @@ template <>
             })};
         in_a != inputAttributes.end()) {
         // Get the desired attribute from the input list
-        Presto::size_t in_stride{sizeof(Vertex3D::tex_coords)};
+        Pr::size_t in_stride{sizeof(Vertex3D::tex_coords)};
 
-        for (Presto::size_t i{0}; i < vertex_count; i++) {
+        for (Pr::size_t i{0}; i < vertex_count; i++) {
             std::memcpy(&vertices[i].tex_coords, &in_a->data[i * in_stride],
                         in_stride);
         }
@@ -118,4 +117,4 @@ template <>
     return vertices;
 }
 
-}  // namespace Presto
+}  // namespace Pr

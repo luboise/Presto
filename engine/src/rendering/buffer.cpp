@@ -1,14 +1,13 @@
 module presto.internal.rendering;
 import :buffer;
 
-namespace Presto {
+namespace Pr {
 
-Buffer::Buffer(BufferType type, Presto::size_t size)
-    : type_(type), size_(size) {};
+Buffer::Buffer(BufferType type, Pr::size_t size) : type_(type), size_(size) {};
 
-Presto::size_t Buffer::getWriteSize(Presto::size_t desiredSize,
-                                    Presto::size_t startOffset) const {
-    Presto::size_t write_size{std::min(desiredSize, this->size_ - startOffset)};
+Pr::size_t Buffer::getWriteSize(Pr::size_t desiredSize,
+                                Pr::size_t startOffset) const {
+    Pr::size_t write_size{std::min(desiredSize, this->size_ - startOffset)};
 
     if (write_size != desiredSize) {
         PR_WARN(
@@ -24,6 +23,6 @@ Presto::size_t Buffer::getWriteSize(Presto::size_t desiredSize,
 }
 
 Buffer::BufferType Buffer::type() const { return type_; };
-Presto::size_t Buffer::size() const { return size_; }
+Pr::size_t Buffer::size() const { return size_; }
 
-}  // namespace Presto
+}  // namespace Pr

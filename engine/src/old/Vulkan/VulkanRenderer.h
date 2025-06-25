@@ -17,7 +17,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Presto {
+namespace Pr {
 
 class GLFWAppWindow;
 class PipelineManager;
@@ -35,9 +35,9 @@ class VulkanRenderer final : public Renderer {
     Allocated<TextureFactory> getTextureFactory() override;
 
     Allocated<Buffer> createBuffer(Buffer::BufferType type,
-                                   Presto::size_t size) override;
+                                   Pr::size_t size) override;
 
-    Allocated<UniformBuffer> createUniformBuffer(Presto::size_t size) override;
+    Allocated<UniformBuffer> createUniformBuffer(Pr::size_t size) override;
 
     void nextFrame() override;
 
@@ -89,4 +89,4 @@ class VulkanRenderer final : public Renderer {
                             VkMemoryPropertyFlags propFlags, VkBuffer& buffer,
                             VkDeviceMemory& bufferMemory);
 };
-}  // namespace Presto
+}  // namespace Pr

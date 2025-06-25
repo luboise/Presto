@@ -2,7 +2,7 @@ export module presto.internal.managers.debug;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
 struct DebugDrawProps {
     vec4 colour{1, 1, 1, 1};
@@ -17,7 +17,7 @@ class DebugManager final : public Module<DebugManager> {
     void drawAll();
     void update() override;
 
-    explicit DebugManager(Presto::Window*, std::function<void()>);
+    explicit DebugManager(Pr::Window*, std::function<void()>);
 
     void drawLine(vec3 from, vec3 to, DebugDrawProps = {});
     void drawCube(vec3 position, vec3 to, DebugDrawProps = {});
@@ -30,4 +30,4 @@ class DebugManager final : public Module<DebugManager> {
     Allocated<Impl> impl_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

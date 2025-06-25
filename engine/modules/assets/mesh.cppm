@@ -3,7 +3,7 @@ export module presto.assets.mesh;
 import presto.assets.types;
 import presto.core;
 
-export namespace Presto {
+export namespace Pr {
 
 // TODO: Move these
 class MaterialInstance;
@@ -51,7 +51,7 @@ MeshAsset& setDrawMode(MeshDrawMode mode);
     MeshAsset& setDefaultMaterial(const MaterialPtr&);
 
     // TODO: Adapt to imported mesh so it doesn't have to be calculated
-    [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Presto
+    [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Pr
 
     static MeshPtr from(const ImportedMesh&);
 
@@ -70,15 +70,14 @@ class MeshSource final : public AssetSource {
     explicit MeshSource(AssetPath filepath);
     ~MeshSource() override;
 
-    [[nodiscard]] ModelPtr getModel(const Presto::string& name);
-    [[nodiscard]] ModelPtr loadModel(Presto::string modelName,
+    [[nodiscard]] ModelPtr getModel(const Pr::string& name);
+    [[nodiscard]] ModelPtr loadModel(Pr::string modelName,
                                      bool allowReload = true);
-    void unloadModel(const Presto::string& modelName);
+    void unloadModel(const Pr::string& modelName);
 
-    MaterialPtr getMaterial(const Presto::string& name);
-    MaterialPtr loadMaterial(Presto::string materialName,
-                             bool allowReload = true);
-    void unloadMaterial(const Presto::string& materialName);
+    MaterialPtr getMaterial(const Pr::string& name);
+    MaterialPtr loadMaterial(Pr::string materialName, bool allowReload = true);
+    void unloadMaterial(const Pr::string& materialName);
 
     void reloadFile();
 
@@ -95,23 +94,23 @@ class MeshSource final : public AssetSource {
     // Allocated<ImportedModelData> importData_;
 
     struct LoadedModel {
-        Presto::string name;
+        Pr::string name;
         std::vector<ImportedMesh> mesh_imports;
         std::vector<Ptr<Mesh>> meshes;
 
         ModelPtr ptr{nullptr};
     };
 
-    LoadedModel* getLoadedModel(const Presto::string& name);
+    LoadedModel* getLoadedModel(const Pr::string& name);
     void unloadModel(LoadedModel& loadedModel);
 
     struct LoadedMaterial {
-        Presto::string name;
+        Pr::string name;
         ImportedMaterial material_import;
         MaterialPtr ptr{nullptr};
     };
 
-    LoadedMaterial* getLoadedMaterial(const Presto::string& name);
+    LoadedMaterial* getLoadedMaterial(const Pr::string& name);
     void unloadMaterial(LoadedMaterial& loadedMaterial);
 
     std::vector<LoadedModel> models_;
@@ -147,4 +146,4 @@ struct BoundingBox {
     [[nodiscard]] double getNormalisingFactor() const;
 };
 
-}  // namespace Presto
+}  // namespace Pr

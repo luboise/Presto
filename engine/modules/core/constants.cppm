@@ -5,28 +5,28 @@ export module presto.core.constants;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
-using PR_NUMERIC_ID = Presto::uint32_t;
+using PR_NUMERIC_ID = Pr::uint32_t;
 
 enum RENDER_LIBRARY { UNSET, VULKAN, OPENGL, DIRECTX };
 
-using Presto::PR_NUMERIC_ID;
+using Pr::PR_NUMERIC_ID;
 
-using PR_BIT_TYPE = Presto::uint16_t;
-constexpr PR_BIT_TYPE AS_BIT(Presto::uint8_t x) { return 1U << x; }
+using PR_BIT_TYPE = Pr::uint16_t;
+constexpr PR_BIT_TYPE AS_BIT(Pr::uint8_t x) { return 1U << x; }
 
 constexpr double PR_MIN_NEAR_DISTANCE{0.1};
 
 // Pipelines
-using mesh_context_id_t = Presto::uint32_t;
+using mesh_context_id_t = Pr::uint32_t;
 
-using mesh_registration_id_t = Presto::uint32_t;
+using mesh_registration_id_t = Pr::uint32_t;
 constexpr mesh_registration_id_t PR_UNREGISTERED{
     static_cast<mesh_registration_id_t>(-1)};
 
-using pipeline_id_t = Presto::uint16_t;
-using material_id_t = Presto::uint16_t;
+using pipeline_id_t = Pr::uint16_t;
+using material_id_t = Pr::uint16_t;
 
 constexpr pipeline_id_t PR_MIN_USER_PIPELINE_ID{10};
 constexpr mesh_registration_id_t PR_MIN_RUNTIME_MESH_ID{10};
@@ -43,7 +43,7 @@ constexpr pipeline_id_t PR_PIPELINE_NONE{static_cast<pipeline_id_t>(-1)};
 
 // Textures
 
-using texture_id_t = Presto::uint16_t;
+using texture_id_t = Pr::uint16_t;
 constexpr texture_id_t PR_TEX_DIFFUSE_FALLBACK{9};
 constexpr texture_id_t PR_TEX_DIFFUSE_FLAT{10};
 
@@ -54,7 +54,7 @@ constexpr const char* PR_ANY_NAME{"PRESTO_ANY_NAME"};
 
 constexpr auto DEFAULT_FOV = 120;
 
-using colour_t = Presto::vec4;
+using colour_t = Pr::vec4;
 constexpr struct {
     colour_t WHITE{1, 1, 1, 1};
     colour_t BLACK{0, 0, 0, 1};
@@ -66,4 +66,4 @@ constexpr struct {
     colour_t PURPLE{1, 0, 1, 1};
 } Colour;
 
-}  // namespace Presto
+}  // namespace Pr

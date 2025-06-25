@@ -2,9 +2,9 @@ export module presto.input:keycodes;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 namespace Input {
-using KeyCodeType = Presto::uint32_t;
+using KeyCodeType = Pr::uint32_t;
 
 enum class Key : KeyCodeType {
     INVALID_KEY = 0x0000,
@@ -22,4 +22,4 @@ constexpr KeyCodeType CodeOf(Key key) noexcept {
 }  // namespace Input
 using namespace Input;
 
-}  // namespace Presto
+}  // namespace Pr

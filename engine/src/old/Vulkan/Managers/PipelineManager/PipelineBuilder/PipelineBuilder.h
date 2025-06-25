@@ -8,7 +8,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 class DescriptorGroup;
 class VulkanDevice;
 class Pipeline;
@@ -94,4 +94,4 @@ return *this;
     bool _useDynamicViewport = true;
     bool _useDynamicScissor = true;
 };
-}  // namespace Presto
+}  // namespace Pr

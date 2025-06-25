@@ -7,7 +7,7 @@ import presto.core.platform;
 import presto.objects.component;
 import presto.assets.types;
 
-export namespace Presto {
+export namespace Pr {
 struct QuadSubcomponent;
 
 class PRESTO_API RenderComponent final : public Component {
@@ -49,7 +49,7 @@ struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
 struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {
     std::vector<MeshDraw> draws;
 
-    [[nodiscard]] Presto::size_t meshCount() const { return draws.size(); }
+    [[nodiscard]] Pr::size_t meshCount() const { return draws.size(); }
 };
 
-}  // namespace Presto
+}  // namespace Pr

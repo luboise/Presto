@@ -9,7 +9,7 @@
 #include "Presto/Rendering/UniformTypes.h"
 #include "Presto/Types/MaterialTypes.h"
 
-namespace Presto {
+namespace Pr {
 
 namespace DefaultAttributeName {
 
@@ -23,7 +23,7 @@ constexpr auto COLOR = COLOUR;
 constexpr auto NORMAL = "a_normal";
 constexpr auto TEXCOORDS = "a_texcoords";
 
-bool IsDefaultAttributeName(const Presto::string& str);
+bool IsDefaultAttributeName(const Pr::string& str);
 
 }  // namespace DefaultAttributeName
 
@@ -41,4 +41,4 @@ constexpr const char* UI_OFFSET = "u_offset";
 
 };  // namespace DefaultMaterialPropertyName
 
-}  // namespace Presto
+}  // namespace Pr

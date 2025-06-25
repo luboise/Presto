@@ -7,7 +7,7 @@ import presto.utils;
 
 import :types;
 
-namespace Presto {
+namespace Pr {
 OpenGLShader::OpenGLShader() : shaderProgram_(glCreateProgram()) {};
 
 void OpenGLShader::use() const { glUseProgram(shaderProgram_); };
@@ -29,31 +29,30 @@ view = glGetUniformLocation(shaderProgram_, "transform");
     setReady(true);
 };
 
-void OpenGLShader::setUniform(uniform_name_t property, Presto::mat4 value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::mat4 value) {
     setMat4(property, glm::value_ptr(value));
 };
 
-void OpenGLShader::setUniform(uniform_name_t property,
-                              Presto::float32_t value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::float32_t value) {
     glUniform1f(propertyMap_[property], value);
 };
 
-void OpenGLShader::setUniform(uniform_name_t property, Presto::int32_t value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::int32_t value) {
     glUniform1i(propertyMap_[property], value);
 };
 
-void OpenGLShader::setUniform(uniform_name_t property, Presto::uint32_t value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::uint32_t value) {
     glUniform1ui(propertyMap_[property], value);
 };
 
-void OpenGLShader::setUniform(uniform_name_t property, Presto::vec2 value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::vec2 value) {
     glUniform2fv(propertyMap_[property], 1, glm::value_ptr(value));
 };
 
-void OpenGLShader::setUniform(uniform_name_t property, Presto::vec3 value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::vec3 value) {
     glUniform3fv(propertyMap_[property], 1, glm::value_ptr(value));
 };
-void OpenGLShader::setUniform(uniform_name_t property, Presto::vec4 value) {
+void OpenGLShader::setUniform(uniform_name_t property, Pr::vec4 value) {
     glUniform4fv(propertyMap_[property], 1, glm::value_ptr(value));
 };
 
@@ -187,4 +186,4 @@ OpenGLVAO& OpenGLVAO::setAttribs(const PipelineStructure& structure) {
     return *this;
 }
 
-}  // namespace Presto
+}  // namespace Pr

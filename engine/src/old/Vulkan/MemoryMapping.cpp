@@ -2,9 +2,9 @@
 
 #include <vulkan/vulkan.h>
 
-namespace Presto {
+namespace Pr {
 
-MemoryMapping::MemoryMapping(Presto::uint32_t offset, Presto::uint32_t size) {
+MemoryMapping::MemoryMapping(Pr::uint32_t offset, Pr::uint32_t size) {
     const uint32_t allocation_size = this->size_ - offset;
 
     // Check for valid mapping region
@@ -35,4 +35,4 @@ MemoryMapping::~MemoryMapping() {
     }
 }
 
-}  // namespace Presto
+}  // namespace Pr

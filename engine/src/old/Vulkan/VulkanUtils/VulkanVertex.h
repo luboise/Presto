@@ -6,7 +6,7 @@
 
 #include <array>
 
-namespace Presto {
+namespace Pr {
 #define index_t uint16_t
 
 struct VulkanVertex : public Vertex {
@@ -16,4 +16,4 @@ struct VulkanVertex : public Vertex {
     getAttributeDescriptions();
 };
 
-}  // namespace Presto
+}  // namespace Pr

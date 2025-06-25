@@ -2,7 +2,7 @@ import module presto.internal.managers.asset;
 
 #include <span>
 
-namespace Presto {
+namespace Pr {
 
 /*
 MaterialPtr AssetManager::createMaterialFromImport(
@@ -66,7 +66,7 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
 }
 
 MaterialDefinitionPtr AssetManager::createMaterialDefinition(
-    Presto::string name, const PipelineStructure& structure) {
+    Pr::string name, const PipelineStructure& structure) {
     if (assets_[AssetType::MATERIAL_DEFINITION].contains(name)) {
         PR_ERROR(
             "Unable to create material definition, as a definition with the "
@@ -98,4 +98,4 @@ Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
     return nullptr;
 };
 
-}  // namespace Presto
+}  // namespace Pr

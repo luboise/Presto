@@ -4,7 +4,7 @@ module;
 export module presto.internal.managers.physics;
 import presto.objects;
 
-export namespace Presto {
+export namespace Pr {
 
 class PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);
@@ -32,4 +32,4 @@ class PhysicsManager final : public Module<PhysicsManager> {
     std::vector<Force> persistentForces_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

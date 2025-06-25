@@ -6,10 +6,10 @@ export module presto.assets.types;
 import presto.core;
 import presto.core.concepts;
 
-export namespace Presto {
+export namespace Pr {
 
-using asset_name_t = Presto::string;
-enum class AssetType : Presto::uint8_t {
+using asset_name_t = Pr::string;
+enum class AssetType : Pr::uint8_t {
     MESH,
     MODEL,
     MATERIAL_DEFINITION,
@@ -23,17 +23,17 @@ class AssetPath {
 
     explicit AssetPath(FilePath path);
 
-    [[nodiscard]] Presto::string basename() const;
+    [[nodiscard]] Pr::string basename() const;
 
-    [[nodiscard]] Presto::string fileExtension() const;
+    [[nodiscard]] Pr::string fileExtension() const;
 
     [[nodiscard]] const FilePath& path() const;
 
     operator const FilePath&() const;
     explicit operator FilePath() const;
 
-    [[nodiscard]] Presto::string string() const;
-    explicit operator Presto::string() const;
+    [[nodiscard]] Pr::string string() const;
+    explicit operator Pr::string() const;
 
     [[nodiscard]] bool valid() const;
 
@@ -115,4 +115,4 @@ class AssetSource {
     bool loaded_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

@@ -2,7 +2,7 @@ module presto.objects.entity;
 
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 
 Entity::Entity(entity_id_t id, entity_name_t name)
     : name_(std::move(name)), id_(id) {
@@ -79,4 +79,4 @@ EntityOwner::EntityOwner(EntityOwner&& other) noexcept
     other.entity_ = nullptr;
 };
 
-}  // namespace Presto
+}  // namespace Pr

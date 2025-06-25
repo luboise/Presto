@@ -15,9 +15,9 @@ import presto.runtime.window;
 #include "imgui.h"
 #include "imgui_internal.h"
 
-namespace Presto {
+namespace Pr {
 
-void DebugUI::initialise(Presto::Window* windowPtr,
+void DebugUI::initialise(Pr::Window* windowPtr,
                          std::function<void()> exitCallback) {
     DebugUI::exitCallback_ = std::move(exitCallback);
 
@@ -541,15 +541,14 @@ void DebugUI::drawCameraModifier(CameraComponent& camera) {
 
     auto distances{camera.distances()};
 
-    Presto::vec3 pos{camera.position()};
-    DebugComponents::Vec3Chooser(
-        pos, "Position",
-        [&camera](Presto::vec3 newPos) { camera.setPosition(newPos); });
-
-    Presto::vec3 rot{camera.rotation().toEuler()};
-    DebugComponents::Vec3Chooser(rot, "Rotation", [&camera](Presto::vec3 rot) {
-        camera.setRotation(rot);
+    Pr::vec3 pos{camera.position()};
+    DebugComponents::Vec3Chooser(pos, "Position", [&camera](Pr::vec3 newPos) {
+        camera.setPosition(newPos);
     });
+
+    Pr::vec3 rot{camera.rotation().toEuler()};
+    DebugComponents::Vec3Chooser(
+        rot, "Rotation", [&camera](Pr::vec3 rot) { camera.setRotation(rot); });
 
     DebugComponents::SliderChooser(
         distances.near, "Near", -1000.F, 3000.F,
@@ -684,4 +683,4 @@ void DebugCameraListener::toggle() {
 bool DebugCameraListener::enabled() const { return enabled_; };
 
 CameraComponent& DebugCameraListener::camera() { return *camera_; };
-}  // namespace Presto
+}  // namespace Pr

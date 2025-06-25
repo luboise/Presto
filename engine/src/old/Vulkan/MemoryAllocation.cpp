@@ -3,7 +3,7 @@
 #include "Rendering/Vulkan/VulkanContext.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanUtils.h"
 
-namespace Presto {
+namespace Pr {
 MemoryAllocation::MemoryAllocation(const VulkanContext& ctx,
                                    VkMemoryRequirements requirements,
                                    VkMemoryPropertyFlags flags) {
@@ -36,4 +36,4 @@ void MemoryAllocation::unmap() {
     vkUnmapMemory(logicalDevice_, allocation_);
     mappedPtr_ = nullptr;
 }
-}  // namespace Presto
+}  // namespace Pr

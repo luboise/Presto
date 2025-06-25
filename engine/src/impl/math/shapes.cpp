@@ -1,7 +1,7 @@
 module presto.math;
 import :shapes;
 
-namespace Presto {
+namespace Pr {
 
 Triangle& Triangle::operator*=(const mat4& other) {
     *this = *this * other;
@@ -34,11 +34,11 @@ vec3 Rectangle::at(float x, float y) const {
 
 [[nodiscard]] vec3 Rectangle::at(vec2 v) const { return this->at(v.x, v.y); };
 
-Presto::float32_t Rectangle::height() const {
+Pr::float32_t Rectangle::height() const {
     return std::abs(top_right.y - bottom_left.y);
 };
 
-Presto::float32_t Rectangle::width() const {
+Pr::float32_t Rectangle::width() const {
     return std::abs(top_right.x - top_left.x);
 };
 
@@ -66,13 +66,13 @@ std::array<vec3, 8> Cube::vertices() const {
     return vertices;
 };
 
-}  // namespace Presto
+}  // namespace Pr
 
 #if 0
 
-bool Presto::Intersects(const Cylinder& cylinder,
+bool Pr::Intersects(const Cylinder& cylinder,
                         Triangle tri) {
-    using namespace Presto;
+    using namespace Pr;
 
     /*
 // View the triangle from the cylinder's perspective (from above)
@@ -137,9 +137,9 @@ return Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
     return false;
 };
 
-vec3 Presto::ClosestPointTo(const LineSegment& segment,
+vec3 Pr::ClosestPointTo(const LineSegment& segment,
                                     const Point& point) {
-    using namespace Presto;
+    using namespace Pr;
 
     // Get P2 relative to the origin
     vec3 v{segment.p2 - segment.p1};

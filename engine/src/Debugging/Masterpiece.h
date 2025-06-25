@@ -3,5 +3,5 @@
 
 struct Masterpiece {
     std::string name;
-    Presto::scene_name_t main_scene;
+    Pr::scene_name_t main_scene;
 };

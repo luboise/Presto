@@ -5,7 +5,7 @@ module;
 
 export module presto.core.concepts;
 
-export namespace Presto {
+export namespace Pr {
 
 enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
 using Strictness::LOOSELY_DERIVED;
@@ -44,4 +44,4 @@ concept Scalable = requires(T a, Scalar b) {
     { a / b } -> std::convertible_to<T>;
 };
 
-}  // namespace Presto
+}  // namespace Pr

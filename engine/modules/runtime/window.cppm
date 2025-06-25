@@ -10,10 +10,10 @@ import presto.core;
 constexpr auto DEFAULT_WIDTH = 2560;
 constexpr auto DEFAULT_HEIGHT = 1440;
 
-export namespace Presto {
+export namespace Pr {
 
 struct WindowProperties {
-    Presto::string title{"Untitled Presto application"};
+    Pr::string title{"Untitled Presto application"};
     VisualExtents extents{.width = DEFAULT_WIDTH, .height = DEFAULT_HEIGHT};
     RENDER_LIBRARY render_library{UNSET};
 };
@@ -59,4 +59,4 @@ class Window {
 
 using WindowPtr = Window::WindowPtr;
 
-}  // namespace Presto
+}  // namespace Pr

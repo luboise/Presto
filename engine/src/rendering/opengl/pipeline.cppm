@@ -4,7 +4,7 @@ export module presto.internal.rendering.opengl:pipeline;
 
 import presto.internal.rendering;
 
-export namespace Presto {
+export namespace Pr {
 
 class OpenGLPipeline final : public Pipeline {
     friend class OpenGLRenderer;
@@ -19,15 +19,15 @@ class OpenGLPipeline final : public Pipeline {
    public:
     uniform_index_t getIndex(uniform_name_t name) override;
 
-    void setUniform(uniform_index_t index, Presto::uint32_t value) override;
+    void setUniform(uniform_index_t index, Pr::uint32_t value) override;
 
-    void setUniform(uniform_index_t index, Presto::int32_t value) override;
-    void setUniform(uniform_index_t index, Presto::float32_t value) override;
+    void setUniform(uniform_index_t index, Pr::int32_t value) override;
+    void setUniform(uniform_index_t index, Pr::float32_t value) override;
 
-    void setUniform(uniform_index_t index, Presto::vec2 value) override;
-    void setUniform(uniform_index_t index, Presto::vec3 value) override;
-    void setUniform(uniform_index_t index, Presto::vec4 value) override;
-    void setUniform(uniform_index_t index, Presto::mat4 value) override;
+    void setUniform(uniform_index_t index, Pr::vec2 value) override;
+    void setUniform(uniform_index_t index, Pr::vec3 value) override;
+    void setUniform(uniform_index_t index, Pr::vec4 value) override;
+    void setUniform(uniform_index_t index, Pr::mat4 value) override;
 
     // void setProperties(const UniformLayout& inStructure) override;
 
@@ -151,4 +151,4 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     ShaderAllocation fragmentShader_{INVALID_SHADER_ID};
 };
 
-}  // namespace Presto
+}  // namespace Pr

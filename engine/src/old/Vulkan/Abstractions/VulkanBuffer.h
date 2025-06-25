@@ -4,7 +4,7 @@
 
 #include "Rendering/Buffer.h"
 
-namespace Presto {
+namespace Pr {
 
 class VulkanDevice;
 class CommandPool;
@@ -14,13 +14,13 @@ class MemoryAllocation;
 /*
 struct OpenGLBufferArgs {
     ByteArray bytes;
-        Presto::size_t vertex_count;
+        Pr::size_t vertex_count;
     AttributeSet attributes;
 };
 
 class OpenGLBuffer final : public Buffer {
    public:
-    OpenGLBuffer(BufferType type, Presto::size_t size);
+    OpenGLBuffer(BufferType type, Pr::size_t size);
     OpenGLBuffer(BufferType type, ByteArray& data);
 
     ~OpenGLBuffer() override;
@@ -28,7 +28,7 @@ class OpenGLBuffer final : public Buffer {
 
    private:
     HandleType buffer_{};
-    Presto::int32_t openGlBufferType_;
+    Pr::int32_t openGlBufferType_;
 };
 */
 
@@ -44,7 +44,7 @@ struct VulkanBuffer final : public Buffer {
     void bind() override;
     [[nodiscard]] uint32_t getSize() const { return this->size_; }
 
-    void write(buffer_write_t data, Presto::size_t offset = 0) override;
+    void write(buffer_write_t data, Pr::size_t offset = 0) override;
 
     /*
 void write(uint32_t size, const void* data, uint32_t offset);
@@ -95,4 +95,4 @@ void write(const uint32_t size, const void* data) {
     // Pointer to the mapping
     void* mapping_ = nullptr;
 };
-}  // namespace Presto
+}  // namespace Pr

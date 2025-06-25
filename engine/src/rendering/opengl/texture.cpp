@@ -1,9 +1,9 @@
 module presto.internal.rendering.opengl;
 import :texture;
 
-namespace Presto {
+namespace Pr {
 
-void OpenGLTexture::load(const Presto::Image& image) {
+void OpenGLTexture::load(const Pr::Image& image) {
     imageWidth_ = image.width;
     imageHeight_ = image.height;
 
@@ -36,7 +36,7 @@ void OpenGLTexture::unload() {
 
 OpenGLTexture::~OpenGLTexture() { this->unload(); }
 
-void OpenGLTexture::bind(Presto::uint8_t slot) const {
+void OpenGLTexture::bind(Pr::uint8_t slot) const {
     constexpr auto MAX_SLOT = 31;
 
     PR_CORE_ASSERT(
@@ -114,8 +114,8 @@ OpenGLTexture2D::OpenGLTexture2D(opengl_dim_t width, opengl_dim_t height)
     reloadInstances();
 }
 
-Presto::size_t OpenGLTexture2D::width() const { return width_; }
-Presto::size_t OpenGLTexture2D::height() const { return height_; }
+Pr::size_t OpenGLTexture2D::width() const { return width_; }
+Pr::size_t OpenGLTexture2D::height() const { return height_; }
 
 void OpenGLTexture2D::reloadInstances() {
     // Update the height and width if they have been changed
@@ -156,4 +156,4 @@ void OpenGLTexture2D::write(ByteArray bytes) {
     glGenerateTextureMipmap(textureInst_);
 }
 
-}  // namespace Presto
+}  // namespace Pr

@@ -3,7 +3,7 @@ module presto.internal.managers.entityimpl;
 import presto.objects;
 import presto.internal;
 
-namespace Presto {
+namespace Pr {
 // Static member declarations
 // std::vector<entity_ptr> EntityManagerImpl::entities_;
 // entity_id_t EntityManagerImpl::_currentId = 0;
@@ -70,7 +70,7 @@ void EntityManagerImpl::destroyEntity(Entity* entity_ptr) {
                                                 fmt::ptr(entity_ptr)));
 
     // Send event
-    Presto::ObjectDestroyedEvent(static_cast<void*>(entity_ptr));
+    Pr::ObjectDestroyedEvent(static_cast<void*>(entity_ptr));
 }
 
 entity_id_t EntityManagerImpl::reserveId() { return impl_->current_id++; }
@@ -130,12 +130,12 @@ bool EntityManagerImpl::exists(entity_id_t id) const {
                                 [id](auto& key) { return key == id; });
 };
 
-std::vector<EntityPtr> EntityManagerImpl::newEntities(Presto::size_t count) {
+std::vector<EntityPtr> EntityManagerImpl::newEntities(Pr::size_t count) {
     PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
                    "Invalid entity count construction requested.");
     std::vector<EntityPtr> entities(count);
 
-    for (Presto::size_t i = 0; i < count; i++) {
+    for (Pr::size_t i = 0; i < count; i++) {
         entities[i] = newEntity("Entity");
     }
 
@@ -161,4 +161,4 @@ void EntityManagerImpl::instantiateEntities() {
     };
 }
 
-}  // namespace Presto
+}  // namespace Pr

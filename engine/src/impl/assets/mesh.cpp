@@ -7,7 +7,7 @@ import presto.internal;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
 struct MeshAsset::Impl {
     MeshData mesh_data;
@@ -69,7 +69,7 @@ void MeshSource::unload() {
     // TODO: Make this unload all models and materials that belong to the file
 };
 
-ModelPtr MeshSource::getModel(const Presto::string& name) {
+ModelPtr MeshSource::getModel(const Pr::string& name) {
     if (LoadedModel * loaded{getLoadedModel(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
@@ -77,7 +77,7 @@ ModelPtr MeshSource::getModel(const Presto::string& name) {
     return nullptr;
 };
 
-MaterialPtr MeshSource::getMaterial(const Presto::string& name) {
+MaterialPtr MeshSource::getMaterial(const Pr::string& name) {
     if (LoadedMaterial * loaded{getLoadedMaterial(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
@@ -96,7 +96,7 @@ void MeshSource::reloadFile() {
                    "The pipeline structure of the default pipelines must "
                    "not be nullptr.");
 
-    Presto::string filename{path().basename()};
+    Pr::string filename{path().basename()};
     fs::path file_extension{path().fileExtension()};
 
     ImportedModelData imported_data;
@@ -112,7 +112,7 @@ void MeshSource::reloadFile() {
 
     // Turn the textures into assets
     textures_.resize(imported_data.textures.size());
-    for (Presto::size_t i{0}; i < imported_data.textures.size(); ++i) {
+    for (Pr::size_t i{0}; i < imported_data.textures.size(); ++i) {
         ImportedTexture& texture{imported_data.textures[i]};
         if (texture.name.empty()) {
             PR_WARN(
@@ -135,7 +135,7 @@ void MeshSource::reloadFile() {
 
     // Store the material imports
     materials_.resize(imported_data.materials.size());
-    for (Presto::size_t i{0}; i < materials_.size(); ++i) {
+    for (Pr::size_t i{0}; i < materials_.size(); ++i) {
         ImportedMaterial& mat{imported_data.materials[i]};
 
         materials_[i] = {.name{mat.name}, .material_import{std::move(mat)}};
@@ -182,8 +182,7 @@ MeshSource::~MeshSource() {
     }
 };
 
-MeshSource::LoadedModel* MeshSource::getLoadedModel(
-    const Presto::string& name) {
+MeshSource::LoadedModel* MeshSource::getLoadedModel(const Pr::string& name) {
     auto found{std::ranges::find_if(models_, [&name](const LoadedModel& model) {
         return model.name == name;
     })};
@@ -191,7 +190,7 @@ MeshSource::LoadedModel* MeshSource::getLoadedModel(
 };
 
 MeshSource::LoadedMaterial* MeshSource::getLoadedMaterial(
-    const Presto::string& name) {
+    const Pr::string& name) {
     auto found{std::ranges::find_if(materials_,
                                     [&name](const LoadedMaterial& material) {
                                         return material.name == name;
@@ -199,7 +198,7 @@ MeshSource::LoadedMaterial* MeshSource::getLoadedMaterial(
     return found == materials_.end() ? nullptr : found.base();
 };
 
-ModelPtr MeshSource::loadModel(Presto::string modelName, bool allowReload) {
+ModelPtr MeshSource::loadModel(Pr::string modelName, bool allowReload) {
     LoadedModel* model{getLoadedModel(modelName)};
     if (model == nullptr) {
         PR_CORE_WARN(
@@ -274,7 +273,7 @@ void MeshSource::unloadModel(LoadedModel& loadedModel) {
     loadedModel.meshes.clear();
 };
 
-void MeshSource::unloadModel(const Presto::string& modelName) {
+void MeshSource::unloadModel(const Pr::string& modelName) {
     LoadedModel* model{getLoadedModel(modelName)};
 
     if (model == nullptr) {
@@ -289,7 +288,7 @@ void MeshSource::unloadModel(const Presto::string& modelName) {
     this->unloadModel(*model);
 }
 
-MaterialPtr MeshSource::loadMaterial(Presto::string materialName,
+MaterialPtr MeshSource::loadMaterial(Pr::string materialName,
                                      bool allowReload) {
     LoadedMaterial* material{getLoadedMaterial(materialName)};
     if (material == nullptr) {
@@ -355,4 +354,4 @@ double BoundingBox::getNormalisingFactor() const {
     return 0.5 / max;
 }
 
-}  // namespace Presto
+}  // namespace Pr

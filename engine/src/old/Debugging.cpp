@@ -11,24 +11,24 @@
 #include "Presto/Rendering/RenderTypes.h"
 #include "Rendering/Buffer.h"
 
-namespace Presto {
+namespace Pr {
 
-constexpr Presto::size_t MAX_VERTEX_COUNT{100};
-constexpr Presto::size_t MAX_INDEX_COUNT{MAX_VERTEX_COUNT * 2};
+constexpr Pr::size_t MAX_VERTEX_COUNT{100};
+constexpr Pr::size_t MAX_INDEX_COUNT{MAX_VERTEX_COUNT * 2};
 
 struct DebugManager::Impl {
     bool draw_main_camera{false};
 
     Allocated<MeshRegistrationData> draw_data{nullptr};
 
-    Presto::size_t line_count{0};
-    Presto::size_t vertex_count{0};
+    Pr::size_t line_count{0};
+    Pr::size_t vertex_count{0};
 
-    Presto::size_t vb_offset{0};
-    Presto::size_t ib_offset{0};
+    Pr::size_t vb_offset{0};
+    Pr::size_t ib_offset{0};
 };
 
-DebugManager::DebugManager(Presto::Window* windowPtr,
+DebugManager::DebugManager(Pr::Window* windowPtr,
                            std::function<void()> exitCallback) {
     DebugUI::initialise(windowPtr, std::move(exitCallback));
 
@@ -45,7 +45,7 @@ void DebugManager::drawLine(vec3 from, vec3 to, DebugDrawProps props) {
         VertexDebug{.vertexPosition{from}, .colour{props.colour}},
         VertexDebug{.vertexPosition{to}, .colour{props.colour}}};
 
-    Presto::size_t vertices_size{sizeof(vertices)};
+    Pr::size_t vertices_size{sizeof(vertices)};
 
     ByteArray bytes(vertices_size);
     std::memcpy(bytes.data(), vertices.data(), vertices_size);
@@ -57,7 +57,7 @@ void DebugManager::drawLine(vec3 from, vec3 to, DebugDrawProps props) {
         static_cast<Index>(impl_->vertex_count),
         static_cast<Index>(impl_->vertex_count + 1)};
 
-    Presto::size_t indices_size{sizeof(indices)};
+    Pr::size_t indices_size{sizeof(indices)};
 
     bytes.resize(indices_size);
     std::memcpy(bytes.data(), indices.data(), indices_size);
@@ -77,7 +77,7 @@ void DebugManager::drawRect(const Rectangle& rect, DebugDrawProps props) {
         VertexDebug{.vertexPosition{rect.bottom_left}, .colour{props.colour}},
     };
 
-    Presto::size_t vertices_size{sizeof(vertices)};
+    Pr::size_t vertices_size{sizeof(vertices)};
 
     ByteArray bytes(vertices_size);
     std::memcpy(bytes.data(), vertices.data(), vertices_size);
@@ -92,7 +92,7 @@ void DebugManager::drawRect(const Rectangle& rect, DebugDrawProps props) {
     impl_->line_count += 4;
     impl_->vertex_count += 4;
 
-    Presto::size_t indices_size{sizeof(indices)};
+    Pr::size_t indices_size{sizeof(indices)};
 
     bytes.resize(indices_size);
     std::memcpy(bytes.data(), indices.data(), indices_size);
@@ -132,10 +132,10 @@ void DebugManager::setDrawMainCamera(bool enabled) {
     impl_->draw_main_camera = enabled;
 };
 
-}  // namespace Presto
+}  // namespace Pr
 
-void Presto::Draw(const Presto::Cube& cube, Presto::vec4 colour) {
-    using namespace Presto;
+void Pr::Draw(const Pr::Cube& cube, Pr::vec4 colour) {
+    using namespace Pr;
 
     static auto& dm{DebugManager::get()};
 
@@ -157,16 +157,16 @@ void Presto::Draw(const Presto::Cube& cube, Presto::vec4 colour) {
     dm.drawLine(vertices[3], vertices[7], {.colour = colour});
 };
 
-void Presto::DrawLine(Presto::vec3 from, Presto::vec3 to, Presto::vec4 colour) {
-    using namespace Presto;
+void Pr::DrawLine(Pr::vec3 from, Pr::vec3 to, Pr::vec4 colour) {
+    using namespace Pr;
 
     auto& dm{DebugManager::get()};
 
     dm.drawLine(from, to, {.colour{colour}});
 }
 
-void Presto::Draw(Camera& camera) {
-    using namespace Presto;
+void Pr::Draw(Camera& camera) {
+    using namespace Pr;
 
     auto& dm{DebugManager::get()};
 
@@ -185,8 +185,8 @@ void Presto::Draw(Camera& camera) {
     dm.drawLine(pos, far_rect.bottom_left, line_props);
 };
 
-void Presto::DebugMainCamera(bool enabled) {
-    using namespace Presto;
+void Pr::DebugMainCamera(bool enabled) {
+    using namespace Pr;
 
     DebugManager::get().setDrawMainCamera(enabled);
 }

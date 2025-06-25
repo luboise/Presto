@@ -4,38 +4,38 @@ module;
 export module presto.internal.rendering.opengl:buffer;
 import presto.internal.rendering;
 
-export namespace Presto {
+export namespace Pr {
 
 class OpenGLBuffer final : public Buffer {
     using HandleType = GLuint;
 
    public:
-    OpenGLBuffer(BufferType type, Presto::size_t size);
+    OpenGLBuffer(BufferType type, Pr::size_t size);
     OpenGLBuffer(BufferType type, ByteArray& data);
 
     ~OpenGLBuffer() override;
 
     void bind() override;
-    void write(buffer_write_t data, Presto::size_t offset = 0) override;
+    void write(buffer_write_t data, Pr::size_t offset = 0) override;
 
    private:
     HandleType buffer_{};
-    Presto::int32_t openGlBufferType_;
+    Pr::int32_t openGlBufferType_;
 };
 
 class OpenGLUniformBuffer final : public UniformBuffer {
    public:
-    explicit OpenGLUniformBuffer(Presto::size_t bufferSize);
+    explicit OpenGLUniformBuffer(Pr::size_t bufferSize);
     ~OpenGLUniformBuffer() override;
 
-    void bind(Presto::size_t index) override;
+    void bind(Pr::size_t index) override;
     void unbind() override;
 
     void write(const std::span<const std::byte>& bytes,
-               Presto::size_t offset = 0) override;
+               Pr::size_t offset = 0) override;
 
    private:
     GLuint buffer_{};
 };
 
-}  // namespace Presto
+}  // namespace Pr

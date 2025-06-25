@@ -1,6 +1,6 @@
 module presto.internal.managers.physics;
 
-namespace Presto {
+namespace Pr {
 
 PhysicsManager::PhysicsManager() = default;
 
@@ -26,9 +26,9 @@ void PhysicsManager::update() {
 
     // Check collisions
     /*
-for (Presto::size_t i = 0; i < pairings_.size(); i++) {
+for (Pr::size_t i = 0; i < pairings_.size(); i++) {
     ComponentPtr<RigidBodyComponent>& pairing_a{pairings_[i].body};
-    for (Presto::size_t j = i + 1; j < pairings_.size(); j++) {
+    for (Pr::size_t j = i + 1; j < pairings_.size(); j++) {
         ComponentPtr<RigidBodyComponent>& pairing_b{pairings_[j].body};
     }
 }
@@ -42,4 +42,4 @@ void PhysicsManager::addPairing(const PhysicsPairing& pairing) {
 void PhysicsManager::addPersistentForce(Force force) {
     persistentForces_.push_back(force);
 };
-}  // namespace Presto
+}  // namespace Pr

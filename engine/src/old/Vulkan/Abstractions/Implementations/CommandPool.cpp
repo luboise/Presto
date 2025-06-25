@@ -5,7 +5,7 @@
 #include "Presto/Core.h"
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"
 
-namespace Presto {
+namespace Pr {
 CommandPool::CommandPool(const VulkanDevice& device) : _device(device) {
     VkCommandPoolCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -43,4 +43,4 @@ CommandPool::~CommandPool() {
     vkResetCommandPool(_device.handle(), handle_, 0);
     vkDestroyCommandPool(_device.handle(), handle_, nullptr);
 }
-}  // namespace Presto
+}  // namespace Pr

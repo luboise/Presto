@@ -2,7 +2,7 @@ export module presto.internal.rendering.opengl:texture;
 
 import presto.internal.rendering:texture;
 
-export namespace Presto {
+export namespace Pr {
 
 constexpr int OPENGL_PIXEL_FORMAT{GL_RGBA};
 constexpr int OPENGL_TEXTURE_DATA_TYPE{GL_UNSIGNED_BYTE};
@@ -45,7 +45,7 @@ class OpenGLSamplerInstance {
 
 class OpenGLTexture : public Texture {
    public:
-    explicit OpenGLTexture(const Presto::ImageData& image) { load(image); };
+    explicit OpenGLTexture(const Pr::ImageData& image) { load(image); };
 
     ~OpenGLTexture() override;
 
@@ -53,10 +53,10 @@ class OpenGLTexture : public Texture {
         return textureId_ != 0 && samplerId_ != 0;
     };
 
-    void load(const Presto::ImageData& data);
+    void load(const Pr::ImageData& data);
     void unload();
 
-    void bind(Presto::uint8_t slot) override;
+    void bind(Pr::uint8_t slot) override;
 
     OpenGLTexture& operator=(const OpenGLTexture&) = delete;
     OpenGLTexture(OpenGLTexture& other);
@@ -82,8 +82,8 @@ class OpenGLTexture2D final : public Texture2D {
 
     void load() override;
 
-    [[nodiscard]] Presto::size_t height() const override;
-    [[nodiscard]] Presto::size_t width() const override;
+    [[nodiscard]] Pr::size_t height() const override;
+    [[nodiscard]] Pr::size_t width() const override;
 
     void write(ByteArray bytes) override;
 
@@ -109,4 +109,4 @@ class OpenGLTextureFactory final : public TextureFactory {
     };
 };
 
-}  // namespace Presto
+}  // namespace Pr

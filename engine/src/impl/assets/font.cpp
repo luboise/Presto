@@ -3,9 +3,9 @@ module presto.assets.font;
 #include <span>
 #include <utility>
 
-namespace Presto {
+namespace Pr {
 
-FontAsset::FontAsset(Presto::string name) : Asset(std::move(name)) {}
+FontAsset::FontAsset(Pr::string name) : Asset(std::move(name)) {}
 
 // TODO: Implement
 bool FontAsset::load() { return true; };
@@ -63,4 +63,4 @@ FontSource::~FontSource() {
 // TODO: Implement
 void FontSource::unload() {};
 
-}  // namespace Presto
+}  // namespace Pr

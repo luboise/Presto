@@ -5,7 +5,7 @@
 
 #include "Presto/Window.h"
 
-namespace Presto {
+namespace Pr {
 class WindowsWindow : public Window {
    public:
     WindowsWindow(const WindowProperties& props);
@@ -45,4 +45,4 @@ class WindowsWindow : public Window {
     WindowData w_data;
 };
 
-}  // namespace Presto
+}  // namespace Pr

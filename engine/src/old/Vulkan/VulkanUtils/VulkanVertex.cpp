@@ -1,6 +1,6 @@
 #include "VulkanVertex.h"
 
-namespace Presto {
+namespace Pr {
 constexpr glm::float32 cameraZDistance = 2.0F;
 
 VkVertexInputBindingDescription VulkanVertex::getBindingDescription() {
@@ -45,4 +45,4 @@ VulkanVertex::getAttributeDescriptions() {
     return attributeDescriptions;
 }
 
-}  // namespace Presto
+}  // namespace Pr

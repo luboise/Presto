@@ -3,7 +3,7 @@ import :types;
 
 import presto.core.types;
 
-export namespace Presto {
+export namespace Pr {
 
 class GLFWAppWindow;
 class CameraComponent;
@@ -36,12 +36,11 @@ class Renderer : protected LazyCalculator {
     virtual Allocated<PipelineBuilder> getPipelineBuilder() = 0;
 
     virtual Allocated<TextureFactory> getTextureFactory() = 0;
-    // virtual Allocated<Texture> createTexture(Presto::Image image) = 0;
+    // virtual Allocated<Texture> createTexture(Pr::Image image) = 0;
 
     virtual Allocated<Buffer> createBuffer(Buffer::BufferType type,
-                                           Presto::size_t size) = 0;
-    virtual Allocated<UniformBuffer> createUniformBuffer(
-        Presto::size_t size) = 0;
+                                           Pr::size_t size) = 0;
+    virtual Allocated<UniformBuffer> createUniformBuffer(Pr::size_t size) = 0;
 
     using AllocatedPipelineList = std::vector<Allocated<Pipeline>>;
     virtual AllocatedPipelineList createDefaultPipelines() = 0;
@@ -89,4 +88,4 @@ class Renderer : protected LazyCalculator {
     aspect_ratio_t aspectRatio_{16.0 / 9.0};
 };
 
-}  // namespace Presto
+}  // namespace Pr

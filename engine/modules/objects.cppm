@@ -5,18 +5,18 @@ export module presto.objects;
 
 export import presto.objects.entity;
 
-export namespace Presto {
+export namespace Pr {
 
 [[nodiscard]] EntityRef NewLooseEntity();
 
-[[nodiscard]] EntityPtr NewEntity(Presto::vec3 pos = {});
+[[nodiscard]] EntityPtr NewEntity(Pr::vec3 pos = {});
 
 /**
  * @brief  Returns a new entity which the consumer must keep track of and
  * destroy themselves. It will still handle its own rendering and component
  * calls, but its destruction is bound by the user.
  */
-[[nodiscard]] EntityOwner NewOwnedEntity(Presto::vec3 pos = {});
+[[nodiscard]] EntityOwner NewOwnedEntity(Pr::vec3 pos = {});
 
 /**
  * @brief  Gets a reference to the main camera. This is whats used to generate
@@ -70,7 +70,7 @@ class PRESTO_API EntityManager {
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<EntityPtr> newEntities(Presto::size_t count);
+    std::vector<EntityPtr> newEntities(Pr::size_t count);
 
     EntityPtr getEntityByID(entity_id_t id);
 
@@ -181,32 +181,32 @@ class EntityOwner {
 };
 
 struct TransformData {
-    Presto::vec3 position;
+    Pr::vec3 position;
     Quaternion rotation;
 
     TransformData();
-    explicit TransformData(Presto::vec3 position, Quaternion rotation = {});
-    TransformData(Presto::vec3 position, Presto::vec3 rotation);
+    explicit TransformData(Pr::vec3 position, Quaternion rotation = {});
+    TransformData(Pr::vec3 position, Pr::vec3 rotation);
 
-    Presto::vec3 scale{1, 1, 1};
+    Pr::vec3 scale{1, 1, 1};
 
-    [[nodiscard]] Presto::mat4 asModelMat() const;
-    [[nodiscard]] Presto::mat4 asViewMat() const;
+    [[nodiscard]] Pr::mat4 asModelMat() const;
+    [[nodiscard]] Pr::mat4 asViewMat() const;
 
-    [[nodiscard]] Presto::vec3 forwards() const;
-    [[nodiscard]] Presto::vec3 backwards() const;
+    [[nodiscard]] Pr::vec3 forwards() const;
+    [[nodiscard]] Pr::vec3 backwards() const;
 
-    [[nodiscard]] Presto::vec3 leftwards() const;
-    [[nodiscard]] Presto::vec3 rightwards() const;
+    [[nodiscard]] Pr::vec3 leftwards() const;
+    [[nodiscard]] Pr::vec3 rightwards() const;
 
-    [[nodiscard]] Presto::vec3 upwards() const;
-    [[nodiscard]] Presto::vec3 downwards() const;
+    [[nodiscard]] Pr::vec3 upwards() const;
+    [[nodiscard]] Pr::vec3 downwards() const;
 
-    TransformData& addRotation(Presto::vec3);
-    TransformData& addRotation(Presto::Quaternion);
+    TransformData& addRotation(Pr::vec3);
+    TransformData& addRotation(Pr::Quaternion);
 
-    TransformData& addTranslation(Presto::vec3);
-    TransformData& scaleBy(Presto::vec3);
+    TransformData& addTranslation(Pr::vec3);
+    TransformData& scaleBy(Pr::vec3);
 };
 
-}  // namespace Presto
+}  // namespace Pr

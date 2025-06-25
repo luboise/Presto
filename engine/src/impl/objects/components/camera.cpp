@@ -3,7 +3,7 @@ module presto.objects.components.camera;
 import presto.math;
 import presto.objects;
 
-namespace Presto {
+namespace Pr {
 CameraComponent::CameraComponent() : LazyCalculator() { this->setDirty(); }
 
 mat4 CameraComponent::getViewMatrix() {  // Calculate offset pointing at origin
@@ -14,7 +14,7 @@ mat4 CameraComponent::getViewMatrix() {  // Calculate offset pointing at origin
     return viewMatrix_;
 }
 
-Presto::mat4 CameraComponent::getProjectionMatrix() {
+Pr::mat4 CameraComponent::getProjectionMatrix() {
     if (this->isDirty()) {
         recalculate();
     }
@@ -45,9 +45,7 @@ CameraComponent& CameraComponent::setFocus(vec3 newPos) {
 }
 
 vec3 CameraComponent::position() const { return transform_.position; }
-Presto::Quaternion CameraComponent::rotation() const {
-    return transform_.rotation;
-}
+Pr::Quaternion CameraComponent::rotation() const { return transform_.rotation; }
 
 void CameraComponent::recalculate() {
     // Calculate offset pointing at origin with the y axis up
@@ -113,14 +111,14 @@ CameraComponent& CameraComponent::setType(CameraType newType) {
 CameraType& CameraComponent::type() { return type_; };
 VisualExtents& CameraComponent::extents() { return extents_; };
 
-CameraComponent& CameraComponent::setRotation(Presto::vec3 rot) {
+CameraComponent& CameraComponent::setRotation(Pr::vec3 rot) {
     transform_.rotation = Quaternion::fromEuler(rot);
 
     this->setDirty();
     return *this;
 };
 
-CameraComponent& CameraComponent::rotate(Presto::vec3 rot) {
+CameraComponent& CameraComponent::rotate(Pr::vec3 rot) {
     transform_.rotation = Quaternion::fromEuler(rot) * transform_.rotation;
     // transform_.rotation = transform_.rotation * Quaternion::fromEuler(rot);
 
@@ -132,7 +130,7 @@ CameraComponent::camera_fov_t CameraComponent::FOV() const {
     return verticalFov_;
 };
 
-Presto::vec3 CameraComponent::focus() const { return focusPoint_; };
+Pr::vec3 CameraComponent::focus() const { return focusPoint_; };
 
 Rectangle CameraComponent::distanceRect(camera_distance_t distance) const {
     // Create a right angled triangle from the origin to where half of the width
@@ -166,4 +164,4 @@ Rectangle CameraComponent::nearRectangle() const {
 
 TransformData CameraComponent::transformData() const { return transform_; }
 
-}  // namespace Presto
+}  // namespace Pr

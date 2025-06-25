@@ -1,6 +1,6 @@
 #include <vulkan/vulkan_core.h>
 
-namespace Presto {
+namespace Pr {
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
@@ -12,4 +12,4 @@ struct QueueFamilyIndices {
     static const QueueFamilyIndices findQueueFamilies(const VkPhysicalDevice&,
                                                       const VkSurfaceKHR&);
 };
-}  // namespace Presto
+}  // namespace Pr

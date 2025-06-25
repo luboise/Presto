@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Presto {
+namespace Pr {
 template <typename HandleType>
 struct Abstraction {
    public:
@@ -20,4 +20,4 @@ struct Abstraction {
     HandleType handle_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

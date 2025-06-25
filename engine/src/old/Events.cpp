@@ -3,7 +3,7 @@
 
 #include "Presto/Events.h"
 
-namespace Presto {
+namespace Pr {
 
 FramebufferResizedEvent::FramebufferResizedEvent(const WindowData* data)
     : windowData_(data),
@@ -11,7 +11,7 @@ FramebufferResizedEvent::FramebufferResizedEvent(const WindowData* data)
       height_(windowData_->framebuffer_size.height) {}
 
 MousePosition MouseMovedEvent::posNormalised() const {
-    VisualExtents extents{Presto::FramebufferSize()};
+    VisualExtents extents{Pr::FramebufferSize()};
 
     MousePosition ret{position_};
     ret.x /= static_cast<float>(extents.width);
@@ -20,4 +20,4 @@ MousePosition MouseMovedEvent::posNormalised() const {
     return ret;
 }
 
-}  // namespace Presto
+}  // namespace Pr

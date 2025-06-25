@@ -7,7 +7,7 @@ export module presto.utils:interpolation;
 
 import presto.core.concepts;
 
-export namespace Presto {
+export namespace Pr {
 
 template <Scalable T>
 class PRESTO_API Interpolator {
@@ -56,4 +56,4 @@ class PRESTO_API TimedInterpolator : private Interpolator<T> {
     Timer timer_;
 };
 
-}  // namespace Presto
+}  // namespace Pr

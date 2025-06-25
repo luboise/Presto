@@ -5,11 +5,11 @@ export import presto.assets.image;
 export import presto.assets.material;
 export import presto.assets.model;
 
-export namespace Presto {
+export namespace Pr {
 
 // Materials
-MaterialPtr NewMaterial(MaterialType type, Presto::string name = "");
-MaterialPtr FindMaterial(const Presto::string& name);
+MaterialPtr NewMaterial(MaterialType type, Pr::string name = "");
+MaterialPtr FindMaterial(const Pr::string& name);
 
 // Textures
 /**
@@ -24,7 +24,7 @@ Ptr<Texture2D> NewTexture2D(const ImagePtr& ptr);
  * @brief Loads an image from the disk, and creates a new ImageAsset out of it.
  * If no name is given, the name of the file is used as the name of the asset.
  */
-ImagePtr LoadImage(const AssetArg& path, Presto::string name = "");
+ImagePtr LoadImage(const AssetArg& path, Pr::string name = "");
 
 /**
  * @brief  Creates a new MeshSource object from a file path. This can be used to
@@ -51,4 +51,4 @@ ModelPtr FindModel(const asset_name_t& name);
 ModelPtr LoadModel(const AssetArg& filepath,
                    const asset_name_t& customName = "");
                                    */
-}  // namespace Presto
+}  // namespace Pr

@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 
-namespace Presto {
+namespace Pr {
 class PRESTO_API System {
    public:
     void Update() {
@@ -15,4 +15,4 @@ class PRESTO_API System {
    private:
     std::vector<EntityPtr> _entities;
 };
-}  // namespace Presto
+}  // namespace Pr

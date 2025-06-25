@@ -3,7 +3,7 @@
 
 // <chrono> included by utility in pch.h
 
-namespace Presto {
+namespace Pr {
 using namespace std::chrono_literals;
 
 DWORD InputManager::controller_port;
@@ -113,4 +113,4 @@ void InputManager::LogGamepad() {
             InputManager::controller_state.Gamepad.sThumbLY);
 }
 
-}  // namespace Presto
+}  // namespace Pr

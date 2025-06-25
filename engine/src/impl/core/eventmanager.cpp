@@ -1,6 +1,6 @@
 module presto.core.eventmanager;
 import presto.internal.eventimpl;
 
-namespace Presto {
+namespace Pr {
 EventManager& EventManager::Get() { return EventManagerImpl::get(); };
-}  // namespace Presto
+}  // namespace Pr
