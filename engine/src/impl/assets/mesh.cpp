@@ -204,7 +204,8 @@ Pr::Ptr<Pr::ModelAsset> MeshSource::loadModel(Pr::string modelName,
                                               bool allowReload) {
     LoadedModel* model{getLoadedModel(modelName)};
     if (model == nullptr) {
-        PR_CORE_WARN(
+        Pr::CoreLog(
+            WARN,
             "Unable to load {} as it couldn't be found in {}. Skipping this "
             "request.",
             modelName, this->path().string());
@@ -280,11 +281,11 @@ void MeshSource::unloadModel(const Pr::string& modelName) {
     LoadedModel* model{getLoadedModel(modelName)};
 
     if (model == nullptr) {
-        PR_CORE_WARN(
-            "Unable to load {} as it couldn't be found in {}. Skipping "
-            "this "
-            "request.",
-            modelName, this->path().string());
+        Pr::CoreLog(WARN,
+                    "Unable to load {} as it couldn't be found in {}. Skipping "
+                    "this "
+                    "request.",
+                    modelName, this->path().string());
         return;
     }
 
@@ -295,11 +296,11 @@ Pr::Ptr<Pr::MaterialInstance> MeshSource::loadMaterial(Pr::string materialName,
                                                        bool allowReload) {
     LoadedMaterial* material{getLoadedMaterial(materialName)};
     if (material == nullptr) {
-        PR_CORE_WARN(
-            "Unable to load {} as it couldn't be found in {}. Skipping "
-            "this "
-            "request.",
-            materialName, this->path().string());
+        Pr::CoreLog(WARN,
+                    "Unable to load {} as it couldn't be found in {}. Skipping "
+                    "this "
+                    "request.",
+                    materialName, this->path().string());
         return nullptr;
     }
 

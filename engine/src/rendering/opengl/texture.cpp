@@ -92,14 +92,14 @@ void OpenGLTexture2D::bind(uint8_t slot) {
 }
 void OpenGLTexture2D::load() {
     if (loaded()) {
-        PR_CORE_WARN(
-            "Attempting to reload an existing image {}. Ignoring this "
-            "request.",
-            this->id());
+        Pr::CoreLog(WARN,
+                    "Attempting to reload an existing image {}. Ignoring this "
+                    "request.",
+                    this->id());
         return;
     }
     if (!this->image()) {
-        PR_CORE_WARN("No image available. Returning.");
+        Pr::CoreLog(WARN, "No image available. Returning.");
         return;
     }
 

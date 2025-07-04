@@ -34,8 +34,8 @@ void WindowsWindow::init(const WindowProperties& props) {
     this->w_data.width = props.width;
     this->w_data.height = props.height;
 
-    PR_CORE_INFO("Creating window \"{}\" ({}x{})", props.title, props.width,
-                 props.height);
+    Pr::CoreLog(INFO, "Creating window \"{}\" ({}x{})", props.title,
+                props.width, props.height);
 
     if (!s_GLFWInitialised) {
         int success = glfwInit();
@@ -166,7 +166,7 @@ void WindowsWindow::RenderFrame() {
     double delta = new_time - _glfwTime;
 
     // PRINT FPS
-    // PR_CORE_TRACE("{:.2f} FPS", 1 / delta);
+    // Pr::CoreLog(TRACE,"{:.2f} FPS", 1 / delta);
 
     _glfwTime = new_time;
 

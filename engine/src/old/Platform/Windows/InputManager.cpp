@@ -22,15 +22,15 @@ void InputManager::init() {
 
     // Ensure controller is connected
     if (!GetState()) {
-        PR_CORE_ERROR("Controller in port {} is not connected.",
-                      controller_port);
+        Pr::CoreLog(ERROR, "Controller in port {} is not connected.",
+                    controller_port);
     }
 }
 
 void InputManager::SetPort(DWORD port) {
     if (port >= MAX_XINPUT_PORTS) {
-        PR_CORE_ERROR("Invalid port given. Continuing to use port {}",
-                      controller_port);
+        Pr::CoreLog(ERROR, "Invalid port given. Continuing to use port {}",
+                    controller_port);
     } else {
         controller_port = port;
     }

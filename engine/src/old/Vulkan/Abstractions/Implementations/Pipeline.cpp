@@ -19,7 +19,7 @@ Pipeline::Pipeline(VulkanDevice& device, DescriptorGroup* descriptor_group,
 
     /*
 if (info.layout != layout.handle()) {
-PR_CORE_WARN(
+Pr::CoreLog(WARN,
     "The layout ({}) in the info received by the Pipeline "
     "constructor "
     "does not match the handle of the layout argument passed ({}). "

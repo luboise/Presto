@@ -29,7 +29,7 @@ OpenGLRenderer::OpenGLRenderer(GLFWAppWindow* window) {
 
     auto res = glewInit();
     if (res != GLEW_OK) {
-        PR_CORE_ERROR("{}", (const char*)(glewGetErrorString(res)));
+        Pr::CoreLog(ERROR, "{}", (const char*)(glewGetErrorString(res)));
         throw std::runtime_error("Unable to initialise GLEW.");
     }
 
@@ -94,7 +94,7 @@ OpenGLRenderer::~OpenGLRenderer() = default;
 void GLAPIENTRY OpenGLRenderer::debugCallback(
     GLenum /*source*/, GLenum /*type*/, GLuint id, GLenum /*severity*/,
     GLsizei /*length*/, const GLchar* message, const void* /*userParam*/) {
-    PR_CORE_TRACE("OpenGL Debug Message (ID: {}): {}", id, message);
+    Pr::CoreLog(TRACE, "OpenGL Debug Message (ID: {}): {}", id, message);
 }
 
 void OpenGLRenderer::setupDebugLogging() {
@@ -128,7 +128,8 @@ void OpenGLRenderer::setupDebugLogging() {
 void OpenGLRenderer::render(MeshRegistrationData& data) {
     OpenGLMeshContext* context{contexts_.find(data.context_id)};
     if (context == nullptr) {
-        PR_CORE_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to find OpenGL context for registered data with context id "
             "{}. "
             "Skipping this draw.",
@@ -188,7 +189,8 @@ Allocated<TextureFactory> OpenGLRenderer::getTextureFactory() {
 bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
                                        const PipelineStructure& structure) {
     if (registration.context_id != PR_UNREGISTERED) {
-        PR_CORE_WARN(
+        Pr::CoreLog(
+            WARN,
             "Attempted to create a mesh context for registration {}, which "
             "already has a mesh context of id {}. Skipping this request.",
             registration.render_manager_id, registration.context_id);

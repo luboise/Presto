@@ -84,7 +84,7 @@ PR_RESULT DrawManager::enableDrawing() {
     }
 
     if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR) {
-        PR_CORE_ERROR("Failed to acquire swap chain image.");
+        Pr::CoreLog(ERROR, "Failed to acquire swap chain image.");
         return PR_FAILURE;
     }
 
@@ -103,7 +103,7 @@ PR_RESULT DrawManager::enableDrawing() {
         // TODO: Handle errors in a more robust way. At the moment, just
         // throw them.
 
-        PR_CORE_ERROR(e.what());
+        Pr::CoreLog(ERROR, e.what());
         throw;
     }
 
@@ -153,7 +153,7 @@ void DrawManager::disableDrawing() {
     vkCmdEndRenderPass(cmd);
 
     if (vkEndCommandBuffer(cmd) != VK_SUCCESS) {
-        PR_CORE_CRITICAL("Failed to record command buffer!");
+        Pr::CoreLog(CRITICAL, "Failed to record command buffer!");
         throw std::runtime_error("Failed to record command buffer!");
     }
 }
@@ -206,7 +206,7 @@ void DrawManager::submitCommands() {
     if (vkQueueSubmit(device->getGraphicsQueue(), 1, &submitInfo,
                       _drawContext.sync_set->frame_is_in_flight) !=
         VK_SUCCESS) {
-        PR_CORE_CRITICAL("Failed to submit command buffer to GPU.");
+        Pr::CoreLog(CRITICAL, "Failed to submit command buffer to GPU.");
     };
 
     // Check that the image was presented properly
@@ -219,7 +219,7 @@ void DrawManager::submitCommands() {
         _reloadSwapchainOnNextFrame = false;
         this->reloadSwapchain();
     } else if (res != VK_SUCCESS) {
-        PR_CORE_CRITICAL("Failed to present new frame from queue.");
+        Pr::CoreLog(CRITICAL, "Failed to present new frame from queue.");
     }
 
     _currentFrame = (_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;

@@ -3,6 +3,8 @@ import :file;
 
 import std;
 
+import presto.assets.types;
+
 import presto.core.types;
 
 namespace Pr::Utils {
@@ -10,11 +12,11 @@ namespace Pr::Utils {
 Pr::string File::ReadFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(path);
-    PR_CORE_TRACE("Reading file at path {}", path.generic_string());
+    Pr::CoreLog(TRACE, "Reading file at path {}", path.generic_string());
     std::ifstream file(path, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
-        PR_CORE_ERROR("Unable to load file \"{}\"", path.string());
+        Pr::CoreLog(ERROR, "Unable to load file \"{}\"", path.string());
         return "";
     }
 
@@ -32,11 +34,11 @@ Pr::string File::ReadFile(const FilePath& path) {
 ByteArray File::ReadBinaryFile(const FilePath& path) {
     // ate <-> start at end of file
     // auto filepath = executableDirectory / fs::path(filename);
-    PR_CORE_TRACE(path.generic_string());
+    Pr::CoreLog(TRACE, path.generic_string());
     std::ifstream file(path, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
-        PR_CORE_ERROR("Unable to load file \"{}\"", path.string());
+        Pr::CoreLog(ERROR, "Unable to load file \"{}\"", path.string());
         return {};
     }
 

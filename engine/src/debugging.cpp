@@ -670,7 +670,7 @@ DebugCameraListener::DebugCameraListener(RenderingManager& rm) {
 
 void DebugCameraListener::toggle() {
     if (camera_ == nullptr) {
-        PR_CORE_ERROR("Unable to doggle debug camera on, as it is null.");
+        Pr::CoreLog(ERROR, "Unable to doggle debug camera on, as it is null.");
         return;
     }
 

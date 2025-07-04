@@ -1,9 +1,10 @@
 export module presto.assets.mesh;
 
 import std;
+import presto.core;
 
 import presto.assets.types;
-import presto.core;
+import presto.materials;
 
 export namespace Pr {
 

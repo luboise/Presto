@@ -24,7 +24,8 @@ BufferManager::BufferManager(VulkanDevice* device)
 void BufferManager::loadRenderable(Renderable* renderable_ptr,
                                    Pipeline* pipeline) {
     if (_drawInfoMap.contains(renderable_ptr)) {
-        PR_CORE_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Entity has already been added to render pool. Can't add it "
             "again.");
         return;
@@ -72,6 +73,7 @@ void BufferManager::loadRenderable(Renderable* renderable_ptr,
                    "Presto failed to insert renderable {} to the render list.",
                    fmt::ptr(renderable_ptr));
 
-    PR_CORE_TRACE("Added {} to the render list.", fmt::ptr(renderable_ptr));
+    Pr::CoreLog(TRACE, "Added {} to the render list.",
+                fmt::ptr(renderable_ptr));
 };
 }  // namespace Pr

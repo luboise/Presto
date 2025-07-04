@@ -91,7 +91,7 @@ void VulkanUtils::initialiseVulkanExtensions() {
     for (const auto& extension : extensions) {
         ss << extension.extensionName << ", ";
     }
-    PR_CORE_INFO(ss.str());
+    Pr::CoreLog(INFO, ss.str());
 }
 
 VkResult VulkanUtils::CreateDebugUtilsMessengerEXT(
@@ -130,15 +130,15 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VulkanUtils::debugCallback(
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     void* pUserData) {
     if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-        PR_CORE_ERROR("{}: {}", "VulkanRenderer", pCallbackData->pMessage);
+        Pr::CoreLog(ERROR, "{}: {}", "VulkanRenderer", pCallbackData->pMessage);
     } else if (messageSeverity >=
                VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-        PR_CORE_WARN("{}: {}", "VulkanRenderer", pCallbackData->pMessage);
+        Pr::CoreLog(WARN, "{}: {}", "VulkanRenderer", pCallbackData->pMessage);
     } else if (messageSeverity >=
                VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
-        PR_CORE_INFO("{}: {}", "VulkanRenderer", pCallbackData->pMessage);
+        Pr::CoreLog(INFO, "{}: {}", "VulkanRenderer", pCallbackData->pMessage);
     } else {
-        PR_CORE_TRACE("{}: {}", "VulkanRenderer", pCallbackData->pMessage);
+        Pr::CoreLog(TRACE, "{}: {}", "VulkanRenderer", pCallbackData->pMessage);
     }
 
     // False as we dont want to cancel
@@ -218,7 +218,7 @@ VkInstance VulkanUtils::getNewVulkanInstance() {
     if (vkCreateInstance(&createInfo, nullptr, &(instance)) != VK_SUCCESS) {
         throw std::runtime_error("Unable to create Vulkan instance.");
     }
-    PR_CORE_INFO("Created Vulkan instance.");
+    Pr::CoreLog(INFO, "Created Vulkan instance.");
 
     return instance;
 }

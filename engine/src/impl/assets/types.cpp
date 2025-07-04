@@ -1,6 +1,7 @@
 module presto.assets.types;
 
 import std;
+import presto.utils;
 
 namespace Pr {
 

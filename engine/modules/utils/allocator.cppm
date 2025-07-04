@@ -45,7 +45,8 @@ class Allocator {
 
     return_t alloc(V* allocation) {
         if (allocation == nullptr) {
-            PR_CORE_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "An allocator can't allocate from a null pointer. Skipping "
                 "this allocation.");
             return BAD_INSERTION();
@@ -55,7 +56,8 @@ class Allocator {
                                 [allocation](const Allocated<V>& val) -> bool {
                                     return val == allocation;
                                 })) {
-            PR_CORE_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "An allocator can't allocate the same memory twice. This is a "
                 "serious error.");
             return BAD_INSERTION();
@@ -74,7 +76,8 @@ class Allocator {
 
     return_t alloc(Allocated<V> allocation, K key = 0) {
         if (allocation == nullptr) {
-            PR_CORE_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "An allocator can't allocate from a null pointer. Skipping "
                 "this allocation.");
             return BAD_INSERTION();
@@ -84,7 +87,8 @@ class Allocator {
                                 [&allocation](const Allocated<V>& val) -> bool {
                                     return val == allocation;
                                 })) {
-            PR_CORE_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "An allocator can't allocate the same memory twice. This is a "
                 "serious error.");
             return BAD_INSERTION();

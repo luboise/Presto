@@ -25,10 +25,10 @@ Scene* SceneManager::LoadScene(const json& j) {
     const auto& scene_name = j[NAME_KEY];
     const auto& objects = j[OBJECTS_KEY];
 
-    PR_CORE_TRACE("Scene: {}", scene_name);
+    Pr::CoreLog(TRACE, "Scene: {}", scene_name);
     for (const auto& object : objects) {
         // TODO: Implement this
-        PR_CORE_TRACE(object);
+        Pr::CoreLog(TRACE, object);
     }
 
     return Scene::INVALID;
@@ -48,7 +48,7 @@ Scene* SceneManager::getScene(const scene_name_t& id) {
     auto scene_iterator = sceneMap_.find(id);
 
     if (scene_iterator == sceneMap_.end()) {
-        PR_CORE_WARN("Unable to get scene: {}", id);
+        Pr::CoreLog(WARN, "Unable to get scene: {}", id);
         return Scene::INVALID;
     }
 
@@ -63,7 +63,7 @@ Scene* SceneManager::newScene(std::string name) {
 
 Scene* SceneManager::newSceneFromJson(json jsonData) {
     if (auto message = validateSceneSyntax(jsonData); message != "") {
-        PR_CORE_ERROR("Error validating scene: {}", message);
+        Pr::CoreLog(ERROR, "Error validating scene: {}", message);
         return Scene::INVALID;
     }
 
@@ -87,8 +87,8 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
                             component["resource"])};
 
                     if (mr == nullptr) {
-                        PR_CORE_ERROR("Unable to find mesh resource: {}",
-                                      component["resource"]);
+                        Pr::CoreLog(ERROR, "Unable to find mesh resource: {}",
+                                    component["resource"]);
                         return Scene::INVALID;
                     }
 

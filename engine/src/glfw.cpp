@@ -9,13 +9,14 @@ import presto.internal.windowdata;
 #include <GLFW/glfw3.h>
 
 // import std;
-
+//
 namespace Pr {
-bool GLFWAppWindow::s_GLFWInitialised = false;
 
-Window::WindowPtr Window::create(const WindowProperties& props) {
+Window::WindowPtr ::Pr::create(const WindowProperties& props) {
     return std::make_unique<GLFWAppWindow>(props);
 }
+
+bool GLFWAppWindow::s_GLFWInitialised = false;
 
 void GLFWAppWindow::shutdown() {
     if (this->windowPtr_ != nullptr) {
@@ -37,8 +38,8 @@ void GLFWAppWindow::init(const WindowProperties& props) {
     this->windowData_->window_size = props.extents;
     this->windowData_->framebuffer_size = props.extents;
 
-    PR_CORE_INFO("Creating window \"{}\" ({}x{})", props.title,
-                 props.extents.width, props.extents.height);
+    Pr::CoreLog(INFO, "Creating window \"{}\" ({}x{})", props.title,
+                props.extents.width, props.extents.height);
 
     if (!s_GLFWInitialised) {
         // Disable OpenGL

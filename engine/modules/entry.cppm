@@ -14,7 +14,7 @@ export {
 #define PRESTO_ENTRY_POINT()                             \
     int main(int argc, char** argv) {                    \
         Pr::Log::init();                                 \
-        PR_CORE_WARN("Initialised core logger.");        \
+        Pr::CoreLog(WARN, "Initialised core logger.");   \
         Pr::CoreLog(INFO, "Initialised client logger."); \
         AppHandle app{Pr::createApplication()};          \
         app->setup();                                    \

@@ -73,7 +73,7 @@ void Application::run() {
         // Calculate delta
 
         // PRINT FPS
-        // PR_CORE_TRACE("{:.2f} FPS", 1 / Time::deltaSeconds());
+        // Pr::CoreLog(TRACE,"{:.2f} FPS", 1 / Time::deltaSeconds());
 
         // time_update.reset();
         Time::update();

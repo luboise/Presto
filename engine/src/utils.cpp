@@ -9,8 +9,8 @@ DebugTimer::DebugTimer(Pr::string name)
 
 void DebugTimer::printElapsed(bool resetTimer) {
     time_ended = Time::totalSecondsSinceStart();
-    PR_CORE_TRACE("Time Elapsed for timer {}: {}", name,
-                  time_ended - time_started);
+    Pr::CoreLog(TRACE, "Time Elapsed for timer {}: {}", name,
+                time_ended - time_started);
 
     if (resetTimer) {
         reset();

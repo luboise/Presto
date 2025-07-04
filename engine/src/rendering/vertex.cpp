@@ -62,7 +62,8 @@ std::vector<PipelineAttribute> VertexDebug::getPipelineAttributes() {
 
 bool AttributeSet::lock(bool calculateOffsets) {
     if (locked_) {
-        PR_CORE_WARN(
+        Pr::CoreLog(
+            WARN,
             "Attempted to lock an attribute set that is already locked. "
             "Ignoring this request.");
         return false;

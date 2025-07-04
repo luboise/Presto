@@ -78,7 +78,7 @@ class PRESTO_API Module {
         PR_ASSERT("Module {} must only be initialised once.",
                   T::getModuleName());
 
-        PR_CORE_INFO("Initialising {}.", T::getModuleName());
+        Pr::CoreLog(INFO, "Initialising {}.", T::getModuleName());
 
         // Necessary, since the constructor is private
         instance_ = ModulePointer{new T(std::forward<Args>(args)...),

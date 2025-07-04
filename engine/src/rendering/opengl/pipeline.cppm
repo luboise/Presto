@@ -92,7 +92,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
                 break;
             }
             default: {
-                PR_CORE_ERROR("Invalid shader set in OpenGL Pipeline.");
+                Pr::CoreLog(ERROR, "Invalid shader set in OpenGL Pipeline.");
             }
         }
 

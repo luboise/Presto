@@ -9,7 +9,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(Presto)
 
-
 set(CMAKE_CONFIGURATION_TYPES
     "Debug;Release;Dist"
     CACHE STRING "Build Configurations" FORCE)

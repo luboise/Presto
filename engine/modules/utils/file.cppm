@@ -23,4 +23,5 @@ ByteArray ReadBinaryFile(const FilePath& path);
 
 json GetJSON(const Pr::string& text);
 json GetJSON(const fs::path& path);
+
 }  // namespace Pr::Utils::File

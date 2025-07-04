@@ -31,8 +31,9 @@ DescriptorGroup::DescriptorGroup(
     for (int i = 0; i < count; i++) {
         auto allocation = _pool->allocate(layout_handles);
 
-        PR_CORE_TRACE("Allocated {} descriptor sets from descriptor pool {}",
-                      count, fmt::ptr(&pool));
+        Pr::CoreLog(TRACE,
+                    "Allocated {} descriptor sets from descriptor pool {}",
+                    count, fmt::ptr(&pool));
 
         DescriptorFrameSet dfs{allocation, {}};
         for (auto* set : allocation) {

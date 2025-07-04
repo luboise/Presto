@@ -75,8 +75,9 @@ VulkanRenderer::VulkanRenderer(GLFWAppWindow* window) {
 
         layer->setPipeline(pipeline_builder.createPipeline());
     } catch (const std::runtime_error& e) {
-        PR_CORE_ERROR("Unable to initialise Vulkan renderer. Runtime error: {}",
-                      e.what());
+        Pr::CoreLog(ERROR,
+                    "Unable to initialise Vulkan renderer. Runtime error: {}",
+                    e.what());
     }
 }
 

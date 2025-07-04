@@ -33,6 +33,8 @@ target_sources(${PRESTO_ENGINE_NAME} PRIVATE FILE_SET presto_internal_modules
   common.cppm
   common.types.cppm
   #
+  create_window.cppm
+  #
   defaults.cppm
   defaults/meshes.cppm
   defaults/textures.cppm
@@ -95,6 +97,8 @@ impl/runtime/time.cpp
 impl/utils/file.cpp
 #
 impl/materials.cpp
-impl/system.cpp)
+impl/system.cpp
+#
+glfw.cpp)
 
 add_subdirectory(resources)

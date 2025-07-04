@@ -256,8 +256,8 @@ Ptr<Texture2D> RenderingManager::createTexture2D(Pr::size_t width,
                                                  Pr::size_t height,
                                                  texture_id_t id) {
     if (!impl_->texture_ids.reserve(id)) {
-        PR_CORE_ERROR(
-            "Unable to reserve texture id {} as it is already in use.");
+        Pr::CoreLog(ERROR,
+                    "Unable to reserve texture id {} as it is already in use.");
         return nullptr;
     };
 
@@ -591,7 +591,8 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
 
 void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
     if (ptr == nullptr) {
-        PR_CORE_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "An attempt was made to unload a nullptr Mesh. This will be "
             "ignored.");
         return;

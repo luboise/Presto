@@ -41,7 +41,7 @@ void CommandBuffer::startRecording(uint flags) {
     beginInfo.flags = flags;
 
     if (vkBeginCommandBuffer(handle_, &beginInfo) != VK_SUCCESS) {
-        PR_CORE_CRITICAL("Unable to begin recording to command buffer.");
+        Pr::CoreLog(CRITICAL, "Unable to begin recording to command buffer.");
         throw std::runtime_error("Unable to write to command buffer.");
     };
 }

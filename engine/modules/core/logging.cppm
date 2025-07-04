@@ -1,7 +1,8 @@
 export module presto.core.logging;
 
-import presto.core.types;
 import std;
+import presto.core.types;
+import presto.runtime.application;
 
 namespace spdlog {
 class logger;
@@ -30,9 +31,19 @@ void Log(LogLevel level, const char* str, Args&&... args) {
     Logger::Log(level, std::format(str, std::move(args...)));
 };
 
+export template <typename T>
+void Log(LogLevel level, const T& value) {
+    Logger::Log(level, std::to_string(value));
+};
+
 export template <typename... Args>
 void CoreLog(LogLevel level, const char* str, Args&&... args) {
     Logger::CoreLog(level, std::format(str, std::move(args...)));
+};
+
+export template <typename T>
+void CoreLog(LogLevel level, const T& value) {
+    Logger::CoreLog(level, std::to_string(value));
 };
 
 }  // namespace Pr

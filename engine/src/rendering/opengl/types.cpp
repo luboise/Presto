@@ -51,7 +51,7 @@ bool OpenGLUtils::ShaderCompiledCorrectly(GLuint shader) {
         std::array<char, INFO_LOG_LENGTH> infoLog{};
         glGetShaderInfoLog(shader, INFO_LOG_LENGTH, nullptr, infoLog.data());
 
-        PR_CORE_ERROR("Shader failed to compile: {}", infoLog.data());
+        Pr::CoreLog(ERROR, "Shader failed to compile: {}", infoLog.data());
     }
 
     return success == GL_TRUE;
@@ -68,7 +68,7 @@ bool OpenGLUtils::ShaderProgramLinkedCorrectly(GLuint shaderProgram) {
         glGetProgramInfoLog(shaderProgram, logLength, &logLength,
                             message.data());
 
-        PR_CORE_ERROR("Shader program failed to link: {}", message);
+        Pr::CoreLog(ERROR, "Shader program failed to link: {}", message);
     }
 
     return success != 0;

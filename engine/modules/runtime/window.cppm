@@ -2,7 +2,8 @@ export module presto.runtime.window;
 
 import std;
 
-import presto.core;
+import presto.core.types;
+import presto.core.constants;
 
 constexpr auto DEFAULT_WIDTH = 2560;
 constexpr auto DEFAULT_HEIGHT = 1440;
@@ -19,8 +20,6 @@ class EventManager;
 
 // Abstracted window interface to be implemented per platform
 class Window {
-    friend class Application;
-
    public:
     using WindowPtr = std::unique_ptr<Window>;
     using EventCallbackFn = std::function<void(EventManager&)>;
@@ -40,10 +39,6 @@ class Window {
     virtual bool vSyncEnabled() = 0;
 
     virtual void* getWindowPtr() { return windowPtr_; };
-
-    // Window create function that must be implemented per platform
-    // Uses default props if unspecified
-    static WindowPtr create(const WindowProperties& props = WindowProperties());
 
     Window(const Window&) = default;
     Window(Window&&) = delete;
