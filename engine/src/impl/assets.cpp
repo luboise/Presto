@@ -8,7 +8,7 @@ import std;
 namespace Pr {
 
 Ptr<Texture2D> NewTexture2D(AssetArg path) {
-    ImagePtr image{LoadImage(path)};
+    Pr::Ptr<Pr::ImageAsset> image{LoadImage(path)};
 
     if (image == nullptr) {
         Pr::Log(
@@ -21,11 +21,11 @@ Ptr<Texture2D> NewTexture2D(AssetArg path) {
     return NewTexture2D(image);
 };
 
-Ptr<Texture2D> NewTexture2D(const ImagePtr& ptr) {
+Ptr<Texture2D> NewTexture2D(const Pr::Ptr<Pr::ImageAsset>& ptr) {
     return RenderingManager::get().createTexture2D(ptr);
 };
 
-ImagePtr LoadImage(const AssetArg& path, Pr::string name) {
+Pr::Ptr<Pr::ImageAsset> LoadImage(const AssetArg& path, Pr::string name) {
     if (name.empty()) {
         name = path.basename();
     }
@@ -34,8 +34,8 @@ ImagePtr LoadImage(const AssetArg& path, Pr::string name) {
 }
 
 /*
-ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
-    ModelLoadResult result{
+Pr::Ptr<Pr::ModelAsset> LoadModel(const AssetArg& filepath, const asset_name_t&
+customName) { ModelLoadResult result{
         AssetManager::get().loadModelsFromDisk(filepath, customName)};
 
     if (!result.models.empty()) {
@@ -46,7 +46,7 @@ ModelPtr LoadModel(const AssetArg& filepath, const asset_name_t& customName) {
 }
 */
 
-ModelPtr FindModel(const asset_name_t& name) {
+Pr::Ptr<Pr::ModelAsset> FindModel(const asset_name_t& name) {
     return AssetManager::get().find<AssetType::MODEL>(name);
 };
 
@@ -58,13 +58,14 @@ Ptr<FontSource> CreateFontSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<FontSource>(filepath);
 };
 
-Pr::MaterialPtr Pr::NewMaterial(MaterialType type, Pr::string name) {
+Pr::Ptr<Pr::MaterialInstance> Pr::NewMaterial(MaterialType type,
+                                              Pr::string name) {
     using namespace Pr;
 
     return RenderingManager::get().createMaterial(type, std::move(name));
 };
 
-Pr::MaterialPtr Pr::FindMaterial(const Pr::string& name) {
+Pr::Ptr<Pr::MaterialInstance> Pr::FindMaterial(const Pr::string& name) {
     using namespace Pr;
 
     return RenderingManager::get().findMaterial(name);

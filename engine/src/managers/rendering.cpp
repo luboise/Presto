@@ -34,7 +34,7 @@ struct RenderingManager::Impl {
     IDGenerator<material_id_t> material_ids;
     IDGenerator<texture_id_t> texture_ids;
 
-    std::vector<MaterialPtr> materials;
+    std::vector<Pr::Ptr<Pr::MaterialInstance>> materials;
 
     pipeline_allocator_t pipelines{PR_MIN_USER_PIPELINE_ID};
 
@@ -107,9 +107,9 @@ void RenderingManager::loadDefaults() {
     Renderer::AllocatedPipelineList default_pipelines{
         renderer_->createDefaultPipelines()};
 
-    TexturePtr fallback_tex{
+    Pr::Ptr<Pr::Texture> fallback_tex{
         this->createTexture2D(DEFAULT_TEXTURE_DATA, PR_TEX_DIFFUSE_FALLBACK)};
-    TexturePtr flat_shading_tex{
+    Pr::Ptr<Pr::Texture> flat_shading_tex{
         this->createTexture2D(DEFAULT_TEXTURE_DATA, PR_TEX_DIFFUSE_FLAT)};
 
     // Check that all of them loaded correctly
@@ -222,7 +222,7 @@ void RenderingManager::init() {
 }
 
 [[nodiscard]] Ptr<Texture2D> RenderingManager::createTexture2D(
-    const ImagePtr& image_ptr) {
+    const Pr::Ptr<Pr::ImageAsset>& image_ptr) {
     auto image{image_ptr->data()};
 
     // TODO: Add width/height validation here
@@ -494,7 +494,9 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
 Ptr<MaterialInstance> RenderingManager::findMaterial(const Pr::string& name) {
     if (auto found{std::ranges::find_if(
             impl_->materials,
-            [name](const MaterialPtr& val) { return val->name() == name; })};
+            [name](const Pr::Ptr<Pr::MaterialInstance>& val) {
+                return val->name() == name;
+            })};
         found != impl_->materials.end()) {
         return *found;
     }
@@ -648,7 +650,8 @@ void RenderingManager::switchPipeline(pipeline_id_t id) {
     switchPipeline(pipeline);
 }
 
-void RenderingManager::switchMaterial(const MaterialPtr& material) {
+void RenderingManager::switchMaterial(
+    const Pr::Ptr<Pr::MaterialInstance>& material) {
     const auto pipeline_id{material->getPipelineId()};
 
     // Update pipeline if changed

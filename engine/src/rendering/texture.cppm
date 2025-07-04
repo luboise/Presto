@@ -36,18 +36,18 @@ class PRESTO_API Texture {
 
 class Texture2D : public Texture {
    public:
-    virtual void setImage(const ImagePtr& ptr) = 0;
+    virtual void setImage(const Pr::Ptr<Pr::ImageAsset>& ptr) = 0;
 
     virtual void write(ByteArray bytes) = 0;
 
-    [[nodiscard]] ImagePtr image() const { return image_; }
+    [[nodiscard]] Pr::Ptr<Pr::ImageAsset> image() const { return image_; }
 
     [[nodiscard]] virtual Pr::size_t width() const = 0;
     [[nodiscard]] virtual Pr::size_t height() const = 0;
     [[nodiscard]] Pr::size_t pixelCount() const { return width() * height(); };
 
    private:
-    ImagePtr image_;
+    Pr::Ptr<Pr::ImageAsset> image_;
 };
 
 template <TextureType T>

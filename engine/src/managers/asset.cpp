@@ -5,10 +5,10 @@ import std;
 namespace Pr {
 
 /*
-MaterialPtr AssetManager::createMaterialFromImport(
+Pr::Ptr<Pr::MaterialInstance> AssetManager::createMaterialFromImport(
 const ImportedMaterial& imported_material,
-std::vector<TexturePtr>& texturePtrs) {
-MaterialPtr material{RenderingManager::get().createMaterial(
+std::vector<Pr::Ptr<Pr::Texture>>& texturePtrs) {
+Pr::Ptr<Pr::MaterialInstance> material{RenderingManager::get().createMaterial(
 MaterialType::DEFAULT_3D, imported_material.name)};
 
 material->setFromImport(imported_material, texturePtrs);
@@ -16,8 +16,8 @@ return material;
 };
 */
 
-ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
-                                         const asset_name_t& customName) {
+Pr::Ptr<Pr::ImageAsset> AssetManager::loadImageFromDisk(
+    const AssetArg& filepath, const asset_name_t& customName) {
     ByteArray data{Utils::File::ReadBinaryFile(filepath)};
 
     int x{};
@@ -66,7 +66,7 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
     return new_resource;
 }
 
-MaterialDefinitionPtr AssetManager::createMaterialDefinition(
+Pr::Ptr<Pr::MaterialAsset> AssetManager::createMaterialDefinition(
     Pr::string name, const PipelineStructure& structure) {
     if (assets_[AssetType::MATERIAL_DEFINITION].contains(name)) {
         Pr::CoreLog(
@@ -76,7 +76,7 @@ MaterialDefinitionPtr AssetManager::createMaterialDefinition(
         return nullptr;
     }
 
-    MaterialDefinitionPtr new_definition{
+    Pr::Ptr<Pr::MaterialAsset> new_definition{
         std::make_shared<MaterialAsset>(name, structure)};
 
     assets_[AssetType::MATERIAL_DEFINITION][name] = new_definition;

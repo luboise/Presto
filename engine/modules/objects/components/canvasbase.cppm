@@ -40,9 +40,9 @@ class PRESTO_API CanvasItem : LazyCalculator {
     CanvasItem& setOpacity(Pr::float32_t);
 
     [[nodiscard]] const CanvasPosition& position() const;
-    [[nodiscard]] const TexturePtr& texture() const;
+    [[nodiscard]] const Pr::Ptr<Pr::Texture>& texture() const;
 
-    CanvasItem& setTexture(const TexturePtr&);
+    CanvasItem& setTexture(const Pr::Ptr<Pr::Texture>&);
 
     CanvasItem(CanvasItem&&) noexcept;
 

@@ -12,7 +12,7 @@ export namespace Pr {
 struct MeshAsset::Impl {
     MeshData mesh_data;
 
-    MaterialPtr default_material;
+    Pr::Ptr<Pr::MaterialInstance> default_material;
 
     BoundingBox box;
 };
@@ -27,7 +27,8 @@ bool MeshAsset::load() {
     return impl_->registration_id != PR_UNREGISTERED;
 }
 
-MeshAsset& MeshAsset::setDefaultMaterial(const MaterialPtr& material) {
+MeshAsset& MeshAsset::setDefaultMaterial(
+    const Pr::Ptr<Pr::MaterialInstance>& material) {
     if (!modifiable()) {
         return *this;
     }
@@ -52,7 +53,7 @@ bool MeshAsset::modifiable() const {
     return true;
 };
 
-MaterialPtr& MeshAsset::defaultMaterial() const {
+Pr::Ptr<Pr::MaterialInstance>& MeshAsset::defaultMaterial() const {
     return impl_->default_material;
 };
 
@@ -70,7 +71,7 @@ void MeshSource::unload() {
     // TODO: Make this unload all models and materials that belong to the file
 };
 
-ModelPtr MeshSource::getModel(const Pr::string& name) {
+Pr::Ptr<Pr::ModelAsset> MeshSource::getModel(const Pr::string& name) {
     if (LoadedModel * loaded{getLoadedModel(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
@@ -78,7 +79,7 @@ ModelPtr MeshSource::getModel(const Pr::string& name) {
     return nullptr;
 };
 
-MaterialPtr MeshSource::getMaterial(const Pr::string& name) {
+Pr::Ptr<Pr::MaterialInstance> MeshSource::getMaterial(const Pr::string& name) {
     if (LoadedMaterial * loaded{getLoadedMaterial(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
@@ -123,12 +124,12 @@ void MeshSource::reloadFile() {
             continue;
         }
 
-        // const ImagePtr& image_ptr{am.createImageAsset(texture.name,
-        // texture.image)};
+        // const Pr::Ptr<Pr::ImageAsset>&
+        // image_ptr{am.createImageAsset(texture.name, texture.image)};
 
         // TODO: Make this cache images that it gets from the import rather
         // than create a new asset for each one
-        const ImagePtr& image_ptr{
+        const Pr::Ptr<Pr::ImageAsset>& image_ptr{
             am.newAsset<ImageAsset>(texture.name, texture.image)};
 
         textures_[i] = rm.createTexture2D(image_ptr);
@@ -199,7 +200,8 @@ MeshSource::LoadedMaterial* MeshSource::getLoadedMaterial(
     return found == materials_.end() ? nullptr : found.base();
 };
 
-ModelPtr MeshSource::loadModel(Pr::string modelName, bool allowReload) {
+Pr::Ptr<Pr::ModelAsset> MeshSource::loadModel(Pr::string modelName,
+                                              bool allowReload) {
     LoadedModel* model{getLoadedModel(modelName)};
     if (model == nullptr) {
         PR_CORE_WARN(
@@ -239,7 +241,7 @@ ModelPtr MeshSource::loadModel(Pr::string modelName, bool allowReload) {
 
         Ptr<Mesh> new_mesh{RenderingManager::get().loadMesh(data)};
 
-        MaterialPtr default_material{nullptr};
+        Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
 
         // If the mesh has a material, try to load it
         if (imported_mesh.hasMaterial()) {
@@ -289,8 +291,8 @@ void MeshSource::unloadModel(const Pr::string& modelName) {
     this->unloadModel(*model);
 }
 
-MaterialPtr MeshSource::loadMaterial(Pr::string materialName,
-                                     bool allowReload) {
+Pr::Ptr<Pr::MaterialInstance> MeshSource::loadMaterial(Pr::string materialName,
+                                                       bool allowReload) {
     LoadedMaterial* material{getLoadedMaterial(materialName)};
     if (material == nullptr) {
         PR_CORE_WARN(

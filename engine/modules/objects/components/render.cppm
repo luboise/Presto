@@ -29,9 +29,9 @@ class PRESTO_API RenderComponent final : public Component {
     RenderComponent& addQuad(QuadSubcomponent&& quad);
     [[nodiscard]] std::vector<QuadSubcomponent>& getQuads() const;
 
-    RenderComponent& addModel(const ModelPtr& model);
+    RenderComponent& addModel(const Pr::Ptr<Pr::ModelAsset>& model);
 
-    [[nodiscard]] std::vector<ModelPtr>& getModels() const;
+    [[nodiscard]] std::vector<Pr::Ptr<Pr::ModelAsset>>& getModels() const;
 
    private:
     void onEnterScene() override;
@@ -45,7 +45,7 @@ struct PRESTO_API QuadSubcomponent : public Subcomponent<RenderComponent> {
     float height;
 
     TransformData transform;
-    MaterialPtr material;
+    Pr::Ptr<Pr::MaterialInstance> material;
 };
 
 struct PRESTO_API ModelSubcomponent : public Subcomponent<RenderComponent> {

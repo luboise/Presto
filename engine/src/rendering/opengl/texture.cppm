@@ -78,7 +78,7 @@ class OpenGLTexture2D final : public Texture2D {
 
     void bind(uint8_t slot) override;
 
-    void setImage(const ImagePtr& ptr) override;
+    void setImage(const Pr::Ptr<Pr::ImageAsset>& ptr) override;
 
     void load() override;
 

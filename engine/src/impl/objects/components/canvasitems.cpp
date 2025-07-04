@@ -12,10 +12,10 @@ struct CanvasItem::Impl {
 
     // CanvasDrawDetails draw_details;
 
-    TexturePtr texture;
+    Pr::Ptr<Pr::Texture> texture;
 };
 
-CanvasItem& CanvasItem::setTexture(const TexturePtr& texture) {
+CanvasItem& CanvasItem::setTexture(const Pr::Ptr<Pr::Texture>& texture) {
     impl_->texture = texture;
 
     return *this;
@@ -35,7 +35,9 @@ CanvasItem::CanvasItem(CanvasItemAttributes attributes) : CanvasItem() {
     impl_->struct_buffer.write(impl_->attributes);
 };
 
-const TexturePtr& CanvasItem::texture() const { return impl_->texture; };
+const Pr::Ptr<Pr::Texture>& CanvasItem::texture() const {
+    return impl_->texture;
+};
 
 const CanvasPosition& CanvasItem::position() const {
     return impl_->struct_buffer.data().position;
@@ -116,5 +118,7 @@ CanvasButton::CanvasButton(CanvasPosition position)
 
       };
 
-void CanvasButton::setImage(const ImagePtr& image) { image_ = image; };
+void CanvasButton::setImage(const Pr::Ptr<Pr::ImageAsset>& image) {
+    image_ = image;
+};
 }  // namespace Pr

@@ -84,7 +84,7 @@ OpenGLTexture::OpenGLTexture(OpenGLTexture&& other) noexcept
     other.samplerId_ = 0;
 };
 
-void OpenGLTexture2D::setImage(const ImagePtr& ptr) {};
+void OpenGLTexture2D::setImage(const Pr::Ptr<Pr::ImageAsset>& ptr) {};
 
 void OpenGLTexture2D::bind(uint8_t slot) {
     glActiveTexture(GL_TEXTURE0 + static_cast<unsigned int>(slot));

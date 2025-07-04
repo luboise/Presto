@@ -58,6 +58,6 @@ class PRESTO_API MaterialAsset final :
     // std::vector<MaterialProperty> properties_;
 };
 
-// using MaterialDefinitionPtr = AssetPtr<MaterialAsset>;
+// using Pr::Ptr<Pr::MaterialAsset> = AssetPtr<MaterialAsset>;
 
 }  // namespace Pr

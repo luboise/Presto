@@ -82,8 +82,9 @@ Scene* SceneManager::newSceneFromJson(json jsonData) {
                 if (componentKey == "mesh") {
                     auto mesh_data = components[componentKey];
 
-                    ModelPtr mr{AssetManager::get().find<AssetType::MESH>(
-                        component["resource"])};
+                    Pr::Ptr<Pr::ModelAsset> mr{
+                        AssetManager::get().find<AssetType::MESH>(
+                            component["resource"])};
 
                     if (mr == nullptr) {
                         PR_CORE_ERROR("Unable to find mesh resource: {}",

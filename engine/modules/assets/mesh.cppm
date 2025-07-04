@@ -1,5 +1,7 @@
 export module presto.assets.mesh;
 
+import std;
+
 import presto.assets.types;
 import presto.core;
 
@@ -40,13 +42,13 @@ MeshAsset& setDrawMode(MeshDrawMode mode);
 
     MeshAsset& setMeshData(MeshData data);
 
-    [[nodiscard]] MaterialPtr& defaultMaterial() const;
-    MeshAsset& setDefaultMaterial(const MaterialPtr&);
+    [[nodiscard]] Pr::Ptr<Pr::MaterialInstance>& defaultMaterial() const;
+    MeshAsset& setDefaultMaterial(const Pr::Ptr<Pr::MaterialInstance>&);
 
     // TODO: Adapt to imported mesh so it doesn't have to be calculated
     [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Pr
 
-    static MeshPtr from(const ImportedMesh&);
+    static Pr::Ptr<Pr::MeshAsset> from(const ImportedMesh&);
 
    private:
     struct Impl;
@@ -63,13 +65,14 @@ class MeshSource final : public AssetSource {
     explicit MeshSource(AssetPath filepath);
     ~MeshSource() override;
 
-    [[nodiscard]] ModelPtr getModel(const Pr::string& name);
-    [[nodiscard]] ModelPtr loadModel(Pr::string modelName,
-                                     bool allowReload = true);
+    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> getModel(const Pr::string& name);
+    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> loadModel(Pr::string modelName,
+                                                    bool allowReload = true);
     void unloadModel(const Pr::string& modelName);
 
-    MaterialPtr getMaterial(const Pr::string& name);
-    MaterialPtr loadMaterial(Pr::string materialName, bool allowReload = true);
+    Pr::Ptr<Pr::MaterialInstance> getMaterial(const Pr::string& name);
+    Pr::Ptr<Pr::MaterialInstance> loadMaterial(Pr::string materialName,
+                                               bool allowReload = true);
     void unloadMaterial(const Pr::string& materialName);
 
     void reloadFile();
@@ -91,7 +94,7 @@ class MeshSource final : public AssetSource {
         std::vector<ImportedMesh> mesh_imports;
         std::vector<Ptr<Mesh>> meshes;
 
-        ModelPtr ptr{nullptr};
+        Pr::Ptr<Pr::ModelAsset> ptr{nullptr};
     };
 
     LoadedModel* getLoadedModel(const Pr::string& name);
@@ -100,7 +103,7 @@ class MeshSource final : public AssetSource {
     struct LoadedMaterial {
         Pr::string name;
         ImportedMaterial material_import;
-        MaterialPtr ptr{nullptr};
+        Pr::Ptr<Pr::MaterialInstance> ptr{nullptr};
     };
 
     LoadedMaterial* getLoadedMaterial(const Pr::string& name);
@@ -108,7 +111,7 @@ class MeshSource final : public AssetSource {
 
     std::vector<LoadedModel> models_;
     std::vector<LoadedMaterial> materials_;
-    std::vector<TexturePtr> textures_;
+    std::vector<Pr::Ptr<Pr::Texture>> textures_;
 };
 
 struct BoundingBox {

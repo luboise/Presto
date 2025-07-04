@@ -1,5 +1,7 @@
 export module presto.assets.font;
 
+import std;
+
 import presto.assets.types;
 import presto.core.types;
 
@@ -26,9 +28,9 @@ class FontSource final : public AssetSource {
     explicit FontSource(AssetPath filepath);
     ~FontSource() override;
 
-    [[nodiscard]] FontPtr getFont(const Pr::string& name);
-    [[nodiscard]] FontPtr loadFont(Pr::string fontName,
-                                   bool allowReload = true);
+    [[nodiscard]] Pr::Ptr<Pr::FontAsset> getFont(const Pr::string& name);
+    [[nodiscard]] Pr::Ptr<Pr::FontAsset> loadFont(Pr::string fontName,
+                                                  bool allowReload = true);
     void unloadFont(const Pr::string& fontName);
 
     void reloadFile();
@@ -46,7 +48,7 @@ class FontSource final : public AssetSource {
 
     struct LoadedFont {
         Pr::string name;
-        FontPtr ptr{nullptr};
+        Pr::Ptr<Pr::FontAsset> ptr{nullptr};
     };
 
     LoadedFont* getLoadedFont(const Pr::string& name);

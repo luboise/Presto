@@ -5,14 +5,14 @@ namespace Pr {
 
 struct RenderComponent::Impl {
     std::vector<QuadSubcomponent> quads;
-    std::vector<ModelPtr> models;
+    std::vector<Pr::Ptr<Pr::ModelAsset>> models;
 };
 
 RenderComponent::RenderComponent() { impl_ = std::make_unique<Impl>(); };
 RenderComponent::~RenderComponent() = default;
 
 void RenderComponent::onEnterScene() {
-    for (ModelPtr& model : impl_->models) {
+    for (Pr::Ptr<Pr::ModelAsset>& model : impl_->models) {
         model->ensureLoaded();
     }
 
@@ -38,7 +38,8 @@ RenderComponent& RenderComponent::addQuad(QuadSubcomponent&& quad) {
     return *this;
 };
 
-RenderComponent& RenderComponent::addModel(const ModelPtr& model) {
+RenderComponent& RenderComponent::addModel(
+    const Pr::Ptr<Pr::ModelAsset>& model) {
     if (model == nullptr) {
         Pr::Log(
             ERROR,
@@ -55,7 +56,7 @@ std::vector<QuadSubcomponent>& RenderComponent::getQuads() const {
     return impl_->quads;
 };
 
-std::vector<ModelPtr>& RenderComponent::getModels() const {
+std::vector<Pr::Ptr<Pr::ModelAsset>>& RenderComponent::getModels() const {
     return impl_->models;
 };
 

@@ -33,7 +33,7 @@ class MaterialInstance {
     friend class RenderingManager;
 
    public:
-    explicit MaterialInstance(const MaterialDefinitionPtr&);
+    explicit MaterialInstance(const Pr::Ptr<Pr::MaterialAsset>&);
     ~MaterialInstance();
 
     MaterialInstance& setName(Pr::string newName);
@@ -44,7 +44,7 @@ class MaterialInstance {
     [[nodiscard]] pipeline_id_t getPipelineId() const;
 
     void setFromImport(const ImportedMaterial& imported_material,
-                       std::vector<TexturePtr>& texturePtrs);
+                       std::vector<Pr::Ptr<Pr::Texture>>& texturePtrs);
 
     template <typename T>
         requires requires { sizeof(T); } &&

@@ -14,10 +14,10 @@ class PRESTO_API CanvasButton : public CanvasItem {
    public:
     explicit CanvasButton(CanvasPosition position);
 
-    void setImage(const ImagePtr&);
+    void setImage(const Pr::Ptr<Pr::ImageAsset>&);
 
    private:
-    ImagePtr image_;
+    Pr::Ptr<Pr::ImageAsset> image_;
 };
 
 struct Rectangle;

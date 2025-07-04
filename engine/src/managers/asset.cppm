@@ -38,9 +38,9 @@ struct AssetTraits<AssetType::MODEL> {
 struct ModelLoadResult {
     bool success;
 
-    std::vector<ModelPtr> models;
-    std::vector<TexturePtr> textures;
-    std::vector<MaterialPtr> materials;
+    std::vector<Pr::Ptr<Pr::ModelAsset>> models;
+    std::vector<Pr::Ptr<Pr::Texture>> textures;
+    std::vector<Pr::Ptr<Pr::MaterialInstance>> materials;
 };
 
 class PRESTO_API AssetManager final : public Module<AssetManager> {
@@ -63,8 +63,8 @@ ModelLoadResult loadModelsFromDisk(
     const std::vector<asset_name_t>& customNames = {});
             */
 
-    ImagePtr loadImageFromDisk(const AssetArg& path,
-                               const asset_name_t& customName);
+    Pr::Ptr<Pr::ImageAsset> loadImageFromDisk(const AssetArg& path,
+                                              const asset_name_t& customName);
 
     template <AssetType Type>
     [[nodiscard]] auto find(const asset_name_t& key)
@@ -75,7 +75,7 @@ ModelLoadResult loadModelsFromDisk(
 
     Ptr<MaterialAsset> getMaterialDefinition(pipeline_id_t id);
 
-    MaterialDefinitionPtr createMaterialDefinition(
+    Pr::Ptr<Pr::MaterialAsset> createMaterialDefinition(
         Pr::string name, const PipelineStructure& structure);
 
     template <typename T>
@@ -90,7 +90,7 @@ ModelLoadResult loadModelsFromDisk(
     };
 
     /*
-MaterialPtr createMaterialFromImport(const ImportedMaterial&,
+Pr::Ptr<Pr::MaterialInstance> createMaterialFromImport(const ImportedMaterial&,
                                      std::vector<Ptr<Texture>>&);
                                                                              */
 
@@ -123,7 +123,8 @@ MaterialPtr createMaterialFromImport(const ImportedMaterial&,
 /*template <>*/
 /*MaterialTypeTraits<MaterialType::DEFAULT_3D>::property_list*/
 /*AssetManager::createMaterialInstance<MaterialType::DEFAULT_3D>(*/
-/*    const asset_name_t& customName, const MaterialPtr& material);*/
+/*    const asset_name_t& customName, const Pr::Ptr<Pr::MaterialInstance>&
+ * material);*/
 /**/
 
 }  // namespace Pr

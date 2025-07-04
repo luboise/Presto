@@ -20,7 +20,8 @@ BoundingBox ModelAsset::getBoundingBox() {
     return box;
 }
 
-ModelAsset& ModelAsset::addMesh(MeshPtr mesh, MaterialPtr material) {
+ModelAsset& ModelAsset::addMesh(Pr::Ptr<Pr::MeshAsset> mesh,
+                                Pr::Ptr<Pr::MaterialInstance> material) {
     PR_ASSERT(mesh != nullptr,
               "An added mesh to a model asset must not be null.");
 

@@ -82,7 +82,8 @@ class RenderingManager final : public Module<RenderingManager> {
                                                        Pr::string name);
     [[nodiscard]] Ptr<MaterialInstance> findMaterial(const Pr::string& name);
 
-    [[nodiscard]] Ptr<Texture2D> createTexture2D(const ImagePtr& image_ptr);
+    [[nodiscard]] Ptr<Texture2D> createTexture2D(
+        const Pr::Ptr<Pr::ImageAsset>& image_ptr);
     [[nodiscard]] Ptr<Texture2D> createTexture2D(Pr::size_t width,
                                                  Pr::size_t height);
 
@@ -112,7 +113,7 @@ class RenderingManager final : public Module<RenderingManager> {
 
     /*
 // TODO: Make this take a reference instead and clean up the logic
-void loadImageOnGpu(const ImagePtr&);
+void loadImageOnGpu(const Pr::Ptr<Pr::ImageAsset>&);
 void loadImageOnGpu(ImageAsset&);
     */
 
@@ -130,7 +131,7 @@ void loadImageOnGpu(ImageAsset&);
     void switchPipeline(AllocatedPipeline* allocatedPipeline);
     void switchPipeline(pipeline_id_t id);
 
-    void switchMaterial(const MaterialPtr& material);
+    void switchMaterial(const Pr::Ptr<Pr::MaterialInstance>& material);
 
     [[nodiscard]] Ptr<Texture2D> createTexture2D(ImageData data,
                                                  texture_id_t id);

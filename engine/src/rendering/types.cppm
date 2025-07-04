@@ -38,14 +38,14 @@ struct MeshData {
 };
 
 struct MeshDraw {
-    const MeshPtr mesh;
-    const MaterialPtr material;
+    const Pr::Ptr<Pr::MeshAsset> mesh;
+    const Pr::Ptr<Pr::MaterialInstance> material;
 };
 
 struct AllocatedPipeline {
     pipeline_id_t id;
     Allocated<Pipeline> pipeline;
-    MaterialPtr default_material{nullptr};
+    Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
 };
 
 using pipeline_allocator_t = Allocator<pipeline_id_t, AllocatedPipeline>;
