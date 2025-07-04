@@ -1,11 +1,10 @@
 module;
-#include <array>
-#include <map>
-#include <vector>
 
 #include "presto/platform.h"
 
 export module presto.objects.entity;
+
+import std;
 
 import presto.core;
 import presto.objects.component;
@@ -51,7 +50,7 @@ class PRESTO_API Entity {
         checkNewComponent(component_ptr);
     }
 
-    [[nodiscard]] std::vector<ComponentPtr<ConductorComponent>> getConductors();
+    [[nodiscard]] std::vector<Ptr<ConductorComponent>> getConductors();
 
     template <ComponentType ComponentClass>
     ComponentPtr<ComponentClass> getComponent() {

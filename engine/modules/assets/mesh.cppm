@@ -5,13 +5,6 @@ import presto.core;
 
 export namespace Pr {
 
-// TODO: Move these
-class MaterialInstance;
-using MaterialPtr = Ptr<MaterialInstance>;
-
-class Texture;
-using TexturePtr = Ptr<Texture>;
-
 class Mesh {
     friend class RenderingManager;
 

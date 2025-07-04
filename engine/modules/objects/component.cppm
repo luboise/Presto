@@ -1,9 +1,9 @@
 module;
-#include <concepts>
-#include <typeinfo>
 #include "presto/platform.h"
 
 export module presto.objects.component;
+
+import std;
 
 import presto.core;
 import presto.core.concepts;

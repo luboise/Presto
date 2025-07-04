@@ -1,8 +1,10 @@
 module;
-#include <vector>
 #include "presto/platform.h"
 
 export module presto.objects.components.render;
+
+import std;
+
 import presto.core.platform;
 import presto.objects.component;
 import presto.assets.types;

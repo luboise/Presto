@@ -3,7 +3,10 @@ module;
 
 export module presto.internal.managers.entityimpl;
 
+import std;
+
 import presto.core.manager;
+import presto.objects;
 
 export namespace Pr {
 class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,

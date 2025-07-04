@@ -1,10 +1,5 @@
 module;
 
-#include <cstdint>
-#include <filesystem>
-#include <string>
-#include <vector>
-
 // #include <glm/gtc/type_precision.hpp>
 
 #include <glm/detail/type_float.hpp>
@@ -16,6 +11,8 @@ module;
 #include <glm/vec4.hpp>
 
 export module presto.core.types:base;
+
+import std;
 
 export namespace Pr {
 

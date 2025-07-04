@@ -43,7 +43,7 @@ void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
     }
 };
 
-std::vector<ComponentPtr<ConductorComponent>> Entity::getConductors() {
+std::vector<Ptr<ConductorComponent>> Entity::getConductors() {
     auto data{getComponents() | std::views::values |
               std::views::transform(
                   [](auto& val) -> ComponentPtr<ConductorComponent> {

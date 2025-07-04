@@ -10,4 +10,7 @@ using ModelPtr = AssetPtr<ModelAsset>;
 using FontPtr = AssetPtr<FontAsset>;
 using MeshPtr = AssetPtr<Mesh>;
 
+using MaterialPtr = Ptr<MaterialInstance>;
+using TexturePtr = Ptr<Texture>;
+
 }  // namespace Pr

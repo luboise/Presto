@@ -1,9 +1,10 @@
 module;
-#include <memory>
-#include <vector>
 #include "presto/platform.h"
 
 export module presto.assets.material;
+
+import std;
+
 import presto.assets.types;
 import presto.core.types;
 

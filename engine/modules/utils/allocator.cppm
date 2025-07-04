@@ -1,12 +1,8 @@
 module;
 
-#include <algorithm>
-#include <concepts>
-#include <map>
-#include <ranges>
-#include <type_traits>
-
 export module presto.utils:allocator;
+
+import std;
 
 import presto.core.constants;
 import presto.utils;

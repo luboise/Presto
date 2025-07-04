@@ -1,10 +1,8 @@
 module;
 
-#include <any>
-#include <unordered_map>
-#include <vector>
-
 export module presto.utils:typemap;
+
+import std;
 
 import presto.objects.component;
 

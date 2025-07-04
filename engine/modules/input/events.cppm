@@ -1,8 +1,9 @@
 module;
-#include <format>
 #include "presto/events.h"
 
 export module presto.input:events;
+
+import std;
 
 import presto.core.types;
 import presto.core.event;

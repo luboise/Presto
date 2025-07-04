@@ -1,5 +1,4 @@
 module;
-#include <concepts>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS
@@ -14,6 +13,8 @@ module;
 */
 
 export module presto.math:shapes;
+
+import std;
 
 import presto.core.types;
 import presto.objects;

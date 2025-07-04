@@ -4,11 +4,25 @@ import std;
 
 export import presto.objects.entity;
 
+import presto.objects.component;
+import presto.objects.components.conductor;
+
+export module presto.objects.components.conductor;
+
+using namespace std::ranges;
+using namespace std::views;
+
 export namespace Pr {
 
 [[nodiscard]] EntityRef NewLooseEntity();
 
 [[nodiscard]] EntityPtr NewEntity(Pr::vec3 pos = {});
+
+/**
+ * @brief  Returns the conductor components belonging to an Entity.
+ */
+[[nodiscard]] std::vector<ComponentPtr<ConductorComponent>> GetConductors(
+    const EntityPtr entity);
 
 /**
  * @brief  Returns a new entity which the consumer must keep track of and
@@ -43,9 +57,6 @@ ComponentPtr<T> Conductor(Args... args) {
 };
 
 }  // namespace CreateComponent
-
-using namespace std::ranges;
-using namespace std::views;
 
 // Used by EntityManager.h
 using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;

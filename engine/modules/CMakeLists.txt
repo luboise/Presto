@@ -30,7 +30,6 @@ target_sources(
          #
          physics.cppm
          #
-         objects.cppm
          objects/entity.cppm
          objects/component.cppm
          objects/components/transform.cppm
@@ -42,6 +41,7 @@ target_sources(
          objects/components/render.cppm
          objects/components/rigidbody.cppm
          objects/components.cppm
+         objects.cppm
          #
          assets/types.cppm
          assets/font.cppm
