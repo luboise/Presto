@@ -1,10 +1,11 @@
+module;
+#include <GL/glew.h>
+
 export module presto.internal.rendering.opengl:shader;
 
+import std;
+
 import presto.internal.rendering;
-
-#include <map>
-
-#include <GL/glew.h>
 
 export namespace Pr {
 class OpenGLShader final : public Shader {
