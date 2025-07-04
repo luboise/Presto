@@ -118,7 +118,8 @@ ShaderDataType Introspection::getShaderDataType(GLint type, GLint count) {
                     return ShaderDataType::FLOAT;
             }
         default:
-            PR_ERROR(
+            Pr::Log(
+                ERROR,
                 "Unknown shader data type encountered:   type {}   count {}. "
                 "Assuming float.",
                 type, count);
@@ -159,7 +160,8 @@ UniformVariableType Introspection::getUniformVariableType(GLint type,
                     return UniformVariableType::FLOAT;
             }
         default:
-            PR_ERROR(
+            Pr::Log(
+                ERROR,
                 "Unknown uniform variable type encountered:   type {}   count "
                 "{}. "
                 "Assuming float.",

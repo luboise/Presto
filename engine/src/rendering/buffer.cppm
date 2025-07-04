@@ -1,11 +1,9 @@
-module;
-#include <span>
-#include <utility>
-
 export module presto.internal.rendering:buffer;
 
 import presto.core.types;
 import presto.utils;
+
+import std;
 
 export namespace Pr {
 

@@ -10,7 +10,8 @@ Pr::size_t Buffer::getWriteSize(Pr::size_t desiredSize,
     Pr::size_t write_size{std::min(desiredSize, this->size_ - startOffset)};
 
     if (write_size != desiredSize) {
-        PR_WARN(
+        Pr::CoreLog(
+            WARN,
             "Requested write of size {} to Buffer of size {} exceeds the "
             "boundaries "
             "of "

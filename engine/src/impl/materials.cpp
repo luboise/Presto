@@ -146,7 +146,7 @@ void MaterialInstance::bindTo(Pipeline& pipeline) const {
 
                 if (texture == nullptr) {
                     /*
-PR_TRACE(
+Pr::CoreLog(TRACE,
     "No texture specified at location {} in material "
     "instance. Using fallback instead.",
     binding.location);
@@ -161,7 +161,8 @@ PR_TRACE(
             }
 
             default:
-                PR_ERROR(
+                Pr::CoreLog(
+                    ERROR,
                     "Unable to determine type of binding data. Skipping "
                     "this "
                     "write.");
@@ -177,7 +178,8 @@ MaterialInstance& MaterialInstance::setProperty(Pr::string name,
     PropertyDetails* details{getBinding(name)};
 
     if (details == nullptr) {
-        PR_WARN(
+        Pr::CoreLog(
+            WARN,
             "Unable to find texture \"{}\" in MaterialInstance of pipeline "
             "{}. "
             "Skipping this write.",
@@ -186,7 +188,8 @@ MaterialInstance& MaterialInstance::setProperty(Pr::string name,
     }
 
     if (details->binding.data_type != UniformVariableType::TEXTURE) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to write Texture value to \"{}\" in pipeline {}. (It "
             "is "
             "not a texture type). Skipping this write.",

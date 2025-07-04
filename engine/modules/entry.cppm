@@ -1,7 +1,6 @@
-module;
-#include <memory>
-
 export module presto.entry;
+
+import std;
 
 import presto.runtime.application;
 
@@ -12,14 +11,14 @@ export {
 
     // Pulled from somewhere else
 
-#define PRESTO_ENTRY_POINT()                      \
-    int main(int argc, char** argv) {             \
-        Pr::Log::init();                          \
-        PR_CORE_WARN("Initialised core logger."); \
-        PR_INFO("Initialised client logger.");    \
-        AppHandle app{Pr::createApplication()};   \
-        app->setup();                             \
-        app->run();                               \
+#define PRESTO_ENTRY_POINT()                             \
+    int main(int argc, char** argv) {                    \
+        Pr::Log::init();                                 \
+        PR_CORE_WARN("Initialised core logger.");        \
+        Pr::CoreLog(INFO, "Initialised client logger."); \
+        AppHandle app{Pr::createApplication()};          \
+        app->setup();                                    \
+        app->run();                                      \
     };
 
 #define PRESTO_APP_CLASS(ClassName) \

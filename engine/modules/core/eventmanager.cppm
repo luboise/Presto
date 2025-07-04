@@ -35,7 +35,7 @@ class PRESTO_API EventManager {
             try {
                 handler(event);
             } catch (std::exception& e) {
-                PR_ERROR("Error handling key event: {}", e.what());
+                Pr::CoreLog(ERROR, "Error handling key event: {}", e.what());
             }
         }
     }

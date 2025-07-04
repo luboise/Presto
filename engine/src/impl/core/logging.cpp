@@ -7,16 +7,56 @@ module;
 module presto.core.logging;
 
 namespace Pr {
-std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
-std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+std::shared_ptr<spdlog::logger> Logger::coreLogger_;
+std::shared_ptr<spdlog::logger> Logger::clientLogger_;
 
-void Log::init() {
+void Logger::init() {
     spdlog::set_pattern("%^[%T] %n: %v%$");
-    s_CoreLogger = spdlog::stdout_color_mt("PRESTO");
-    s_CoreLogger->set_level(spdlog::level::trace);
+    coreLogger_ = spdlog::stdout_color_mt("PRESTO");
+    coreLogger_->set_level(spdlog::level::trace);
 
-    s_ClientLogger = spdlog::stdout_color_mt("APP");
-    s_ClientLogger->set_level(spdlog::level::trace);
+    clientLogger_ = spdlog::stdout_color_mt("APP");
+    clientLogger_->set_level(spdlog::level::trace);
+}
+
+void Logger::Log(LogLevel level, Pr::string message) {
+    switch (level) {
+        case TRACE: {
+            clientLogger_->trace(message);
+        }
+        case INFO: {
+            clientLogger_->info(message);
+        }
+        case WARN: {
+            clientLogger_->warn(message);
+        }
+        case ERROR: {
+            clientLogger_->error(message);
+        }
+        case CRITICAL: {
+            clientLogger_->critical(message);
+        }
+    }
+}
+
+void Logger::CoreLog(LogLevel level, Pr::string message) {
+    switch (level) {
+        case TRACE: {
+            coreLogger_->trace(message);
+        }
+        case INFO: {
+            coreLogger_->info(message);
+        }
+        case WARN: {
+            coreLogger_->warn(message);
+        }
+        case ERROR: {
+            coreLogger_->error(message);
+        }
+        case CRITICAL: {
+            coreLogger_->critical(message);
+        }
+    }
 }
 
 }  // namespace Pr

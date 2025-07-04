@@ -1,8 +1,7 @@
-module;
-#include <memory>
-#include <vector>
-
 export module presto.internal.rendering:pipeline;
+
+import std;
+
 import :types;
 
 import presto.core;
@@ -70,7 +69,8 @@ class Pipeline {
     void setUniform(uniform_name_t name, T data) {
         uniform_index_t index{getIndex(name)};
         if (index == PR_INVALID_UNIFORM) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "Unable to set uniform \"{}\" (its index could not be found)",
                 name);
 

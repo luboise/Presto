@@ -1,7 +1,6 @@
-module;
-#include <cstdint>
-
 export module presto.core.constants;
+
+import std;
 
 import presto.core.types;
 

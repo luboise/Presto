@@ -1,4 +1,7 @@
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 add_library(${PRESTO_ENGINE_NAME} SHARED)
+
+set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY CXX_MODULE_STD 1)
 
 target_include_directories(${PRESTO_ENGINE_NAME}
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -18,13 +21,6 @@ target_include_directories(
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC nlohmann_json::nlohmann_json
                                                    glm::glm)
-
-# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE gtapplications)
-
-# target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE Eigen3::Eigen)
-
-# Needed for shared library
-set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_compile_definitions(${PRESTO_ENGINE_NAME} PRIVATE PR_BUILD_LIB)
 # target_compile_options(${PRESTO_ENGINE_NAME} PRIVATE -Wall -Wextra)
@@ -52,10 +48,8 @@ if(PLATFORM STREQUAL "Windows")
                                                       XInput9_1_0.lib)
 endif()
 
-target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC glfw ${Vulkan_LIBRARIES}
-                                                   spdlog)
-
-target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS})
+target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC glfw ${Vulkan_LIBRARIES})
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS} spdlog::spdlog_header_only)
 
 set(TINYGLTF_HEADER_ONLY
     OFF

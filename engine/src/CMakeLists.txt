@@ -28,8 +28,6 @@ if(PRESTO_DEBUG_BUILD)
             ${IMGUI_DIR}/imgui_demo.cpp)
 endif()
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
-
 target_sources(${PRESTO_ENGINE_NAME} PRIVATE FILE_SET presto_internal_modules
                                                TYPE CXX_MODULES FILES 
   common.cppm

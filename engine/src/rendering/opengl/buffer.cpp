@@ -45,7 +45,8 @@ OpenGLBuffer::~OpenGLBuffer() { glDeleteBuffers(1, &buffer_); };
 
 void OpenGLBuffer::write(buffer_write_t data, Pr::size_t offset) {
     if (data.size() + offset > this->size()) {
-        PR_ERROR(
+        Pr::Log(
+            ERROR,
             "Writing {} bytes to a buffer of size {} would cause an overrun of "
             "size {}. Skipping this write.",
             data.size(), this->size(), data.size() + offset - this->size());

@@ -78,7 +78,8 @@ OpenGLVAO::OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
                      const PipelineStructure& structure)
     : OpenGLVAO() {
     if (vertexBuffer == nullptr) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "OpenGLVAO received a null vertex buffer. Perhaps a dynamic cast "
             "failed?");
     } else {
@@ -86,7 +87,8 @@ OpenGLVAO::OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
     }
 
     if (indexBuffer == nullptr) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "OpenGLVAO received a null index buffer. Perhaps a dynamic cast "
             "failed?");
     } else {
@@ -108,7 +110,8 @@ void OpenGLVAO::bind() const {
 
 void OpenGLVAO::finalise() {
     if (this->finalised()) {
-        PR_WARN(
+        Pr::CoreLog(
+            WARN,
             "An OpenGLVAO has been finalised a second time. Ignoring this "
             "request, and continuing with execution.");
         return;
@@ -165,7 +168,8 @@ void OpenGLVAO::setAttribPointer(const PipelineAttribute& attribute,
 
 OpenGLVAO& OpenGLVAO::setAttribs(const PipelineStructure& structure) {
     if (this->finalised()) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to set the attributes of an OpenGLVAO once it has been "
             "finalised.");
         return *this;

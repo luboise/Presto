@@ -50,7 +50,7 @@ void FontSource::reloadFile() {
     //           stbtt_GetFontVMetrics()
     //           stbtt_GetFontVMetricsOS2()
     //           stbtt_GetCodepointKernAdvance()
-    PR_TRACE(true);
+    Pr::CoreLog(TRACE, true);
 }
 
 // TODO: Move this to the base AssetSource

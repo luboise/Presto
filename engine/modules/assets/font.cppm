@@ -1,8 +1,10 @@
 export module presto.assets.font;
+
 import presto.assets.types;
 import presto.core.types;
 
 export namespace Pr {
+
 class FontAsset final : public Asset {
     friend class RenderingManager;
 
@@ -18,3 +20,5 @@ class FontAsset final : public Asset {
    private:
     bool load() override;
 };
+
+}  // namespace Pr

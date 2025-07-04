@@ -41,7 +41,8 @@ BoundingBox MeshAsset::getBoundingBox() const { return impl_->box; }
 
 bool MeshAsset::modifiable() const {
     if (this->loaded()) {
-        PR_ERROR(
+        Pr::Log(
+            ERROR,
             "Unable to modify MeshAsset \"{}\" while it is loaded. It must be "
             "unloaded before being modified.\nSkipping this modification.",
             this->name());
@@ -115,10 +116,10 @@ void MeshSource::reloadFile() {
     for (Pr::size_t i{0}; i < imported_data.textures.size(); ++i) {
         ImportedTexture& texture{imported_data.textures[i]};
         if (texture.name.empty()) {
-            PR_WARN(
-                "Imported texture ({}x{}) has no name. Skipping this "
-                "import.",
-                texture.image.width, texture.image.height);
+            Pr::CoreLog(WARN,
+                        "Imported texture ({}x{}) has no name. Skipping this "
+                        "import.",
+                        texture.image.width, texture.image.height);
             continue;
         }
 

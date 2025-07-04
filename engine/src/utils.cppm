@@ -1,7 +1,6 @@
-module;
-#include <utility>
-
 export module presto.internal.utils;
+
+import std;
 
 #include <concepts>
 #include <queue>

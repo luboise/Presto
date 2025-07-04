@@ -1,7 +1,6 @@
-module;
-#include <vector>
-
 export module presto.assets.material.types;
+
+import std;
 
 import presto.core.types;
 

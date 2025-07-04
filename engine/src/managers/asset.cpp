@@ -35,7 +35,8 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
                                            &y, &channels, desired_channels)};
 
     if (image_data == nullptr) {
-        PR_ERROR("Unable to load image from path {}", filepath.path().string());
+        Pr::CoreLog(ERROR, "Unable to load image from path {}",
+                    filepath.path().string());
         return nullptr;
     }
 
@@ -68,7 +69,8 @@ ImagePtr AssetManager::loadImageFromDisk(const AssetArg& filepath,
 MaterialDefinitionPtr AssetManager::createMaterialDefinition(
     Pr::string name, const PipelineStructure& structure) {
     if (assets_[AssetType::MATERIAL_DEFINITION].contains(name)) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to create material definition, as a definition with the "
             "same name already exists.");
         return nullptr;

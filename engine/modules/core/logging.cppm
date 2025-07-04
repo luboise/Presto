@@ -1,49 +1,65 @@
-module;
-#include <memory>
-
 export module presto.core.logging;
+
+import presto.core.types;
+import std;
 
 namespace spdlog {
 class logger;
 }
 
-export namespace Pr {
+namespace Pr {
 
-namespace Log {}
+export enum LogLevel : Pr::uint8_t { TRACE, INFO, WARN, ERROR, CRITICAL };
 
-/*
-class Log {
-public:
-static void init();
+class Logger {
+    friend class Application;
 
-static std::shared_ptr<spdlog::logger>& GetCoreLogger() {
-return s_CoreLogger;
+   public:
+    static void Log(LogLevel level, Pr::string message);
+    static void CoreLog(LogLevel level, Pr::string message);
+
+   private:
+    static void init();
+
+    static std::shared_ptr<spdlog::logger> coreLogger_;
+    static std::shared_ptr<spdlog::logger> clientLogger_;
 };
-static std::shared_ptr<spdlog::logger>& GetClientLogger() {
-return s_ClientLogger;
+
+export template <typename... Args>
+void Log(LogLevel level, const char* str, Args&&... args) {
+    Logger::Log(level, std::format(str, std::move(args...)));
 };
 
-private:
-static std::shared_ptr<spdlog::logger> s_CoreLogger;
-static std::shared_ptr<spdlog::logger> s_ClientLogger;
+export template <typename... Args>
+void CoreLog(LogLevel level, const char* str, Args&&... args) {
+    Logger::CoreLog(level, std::format(str, std::move(args...)));
 };
-*/
+
 }  // namespace Pr
 
-export {
-// Core log macros
-#define PR_CORE_TRACE(...) ::Pr::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define PR_CORE_INFO(...) ::Pr::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define PR_CORE_WARN(...) ::Pr::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define PR_CORE_ERROR(...) ::Pr::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define PR_CORE_CRITICAL(...) ::Pr::Log::GetCoreLogger()->critical(__VA_ARGS__)
-
-// Client log macros
-#define PR_TRACE(...) ::Pr::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define PR_INFO(...) ::Pr::Log::GetClientLogger()->info(__VA_ARGS__)
-#define PR_WARN(...) ::Pr::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define PR_ERROR(...) ::Pr::Log::GetClientLogger()->error(__VA_ARGS__)
-#define PR_CRITICAL(...) ::Pr::Log::GetClientLogger()->critical(__VA_ARGS__)
+/*
+export template <typename... Args>
+void Trace(const char* str, Args&&... args) {
+    Log(TRACE, std::format(str, std::move(args...)));
 }
 
-module :private;
+export template <typename... Args>
+void Info(const char* str, Args&&... args) {
+    Log(INFO, std::format(str, std::move(args...)));
+}
+
+export template <typename... Args>
+void Warn(const char* str, Args&&... args) {
+    Log(WARN, std::format(str, std::move(args...)));
+}
+
+export template <typename... Args>
+void Error(const char* str, Args&&... args) {
+    Log(ERROR, std::format(str, std::move(args...)));
+}
+
+export template <typename... Args>
+void Critical(const char* str, Args&&... args) {
+    Log(CRITICAL, std::format(str, std::move(args...)));
+}
+*/

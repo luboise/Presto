@@ -99,7 +99,8 @@ RenderingManager::RenderingManager(RENDER_LIBRARY library,
 
 void RenderingManager::loadDefaults() {
     if (!impl_->pipelines.empty()) {
-        PR_WARN(
+        Pr::CoreLog(
+            WARN,
             "Attempted to initialise the default pipelines when they are "
             "already set up. Ignoring this request.");
         return;
@@ -174,7 +175,8 @@ Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
 
     AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
     if (allocated_pipeline == nullptr) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
             pipelineId);
@@ -302,7 +304,8 @@ void RenderingManager::update() {
         for (const Ptr<ModelAsset>& model : drawStruct.render->getModels()) {
             for (const MeshDraw& draw : model->getDraws()) {
                 if (draw.material == nullptr) {
-                    PR_ERROR(
+                    Pr::CoreLog(
+                        ERROR,
                         "No material available to render in 3D. Using the "
                         "fallback material.");
 
@@ -326,10 +329,10 @@ void RenderingManager::update() {
             // for (Pr::size_t i = 0; i < model.draws.size(); i++) {
 
             if (quad.material == nullptr) {
-                PR_ERROR(
-                    "No material available to render in 2D. Using the "
-                    "fallback "
-                    "material. ");
+                Pr::CoreLog(ERROR,
+                            "No material available to render in 2D. Using the "
+                            "fallback "
+                            "material. ");
                 continue;
             }
 
@@ -515,7 +518,8 @@ PipelineBuilder& RenderingManager::getPipelineBuilder() {
 AllocatedPipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
     auto* pipeline{impl_->pipelines.find(id)};
     if (pipeline == nullptr) {
-        PR_WARN(
+        Pr::CoreLog(
+            WARN,
             "Pipeline of id {} could not be found in the RenderingManager. ",
             id);
     }
@@ -538,7 +542,8 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
 
     allocated_pipeline = getPipeline(pipelineId);
     if (allocated_pipeline == nullptr) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
             pipelineId);
@@ -559,7 +564,7 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
         meshData.vertices);
 
     if (details == nullptr) {
-        PR_ERROR("Unable to create mesh registration from MeshData.");
+        Pr::CoreLog(ERROR, "Unable to create mesh registration from MeshData.");
         return nullptr;
     }
 
@@ -567,7 +572,7 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
         *details, allocated_pipeline->pipeline->getStructure())};
 
     if (!success) {
-        PR_ERROR("Unable to create mesh context in renderer.");
+        Pr::CoreLog(ERROR, "Unable to create mesh context in renderer.");
         return nullptr;
     }
 
@@ -595,8 +600,9 @@ void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
     }
 
     if (!ptr.unique()) {
-        PR_WARN("Unable to unload mesh with id {} as it is currently in use.",
-                ptr->registrationId());
+        Pr::CoreLog(
+            WARN, "Unable to unload mesh with id {} as it is currently in use.",
+            ptr->registrationId());
         return;
     }
 
@@ -668,7 +674,7 @@ Ptr<Texture> RenderingManager::getDefaultTexture(const char* name) {
         return getTexture(PR_TEX_DIFFUSE_FALLBACK);
     }
 
-    PR_ERROR("Unable to retrieve default texture \"{}\".", name);
+    Pr::CoreLog(ERROR, "Unable to retrieve default texture \"{}\".", name);
 
     return nullptr;
 };
@@ -686,7 +692,8 @@ VisualExtents RenderingManager::framebufferSize() const {
 
 void RenderingManager::drawFromAllocation(MeshRegistrationData& data) {
     if (data.context_id == PR_UNREGISTERED) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "An unregistered allocation draw has been request. Ignoring this "
             "draw.");
         return;
@@ -706,7 +713,8 @@ Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
 
     AllocatedPipeline* allocated_pipeline = getPipeline(pipelineId);
     if (allocated_pipeline == nullptr) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Unable to load mesh into pipeline #{}, as it is undefined. "
             "Skipping this mesh load.",
             pipelineId);
@@ -735,7 +743,7 @@ Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
         *details, allocated_pipeline->pipeline->getStructure())};
 
     if (!success) {
-        PR_ERROR("Unable to create mesh context in renderer.");
+        Pr::CoreLog(ERROR, "Unable to create mesh context in renderer.");
         return nullptr;
     }
 

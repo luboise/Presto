@@ -140,11 +140,11 @@ void OpenGLTexture2D::reloadInstances() {
 
 void OpenGLTexture2D::write(ByteArray bytes) {
     if (auto size{pixelCount() * OPENGL_PIXEL_SIZE}; bytes.size() != size) {
-        PR_ERROR(
-            "The number of bytes received ({}) does not match the "
-            "number "
-            "of bytes expected ({}). Skipping this texture write.",
-            size, bytes.size());
+        Pr::CoreLog(ERROR,
+                    "The number of bytes received ({}) does not match the "
+                    "number "
+                    "of bytes expected ({}). Skipping this texture write.",
+                    size, bytes.size());
         return;
     }
 

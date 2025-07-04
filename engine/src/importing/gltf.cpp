@@ -297,7 +297,7 @@ std::vector<T> getAccessorAndConvertTo(const tinygltf::Model& model,
         };
             SWITCH_CASE(ShaderDataType::FLOAT);
         default: {
-            PR_ERROR("Unable to parse data.");
+            Pr::CoreLog(ERROR, "Unable to parse data.");
             return {};
         }
     }
@@ -398,10 +398,10 @@ ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
     } else if (!image_data.uri.empty()) {
         new_name = image_data.uri;
     } else {
-        PR_ERROR(
-            "Name and URI are both empty inside of an imported GLTF "
-            "texture. "
-            "Using \"UnnamedImportedTexture\" instead.");
+        Pr::CoreLog(ERROR,
+                    "Name and URI are both empty inside of an imported GLTF "
+                    "texture. "
+                    "Using \"UnnamedImportedTexture\" instead.");
         new_name = "UnnamedImportedTexture";
     }
 
@@ -527,7 +527,8 @@ ImportedModelData GLTFLoader::load(
                     imported_attributes.push_back(std::move(new_attribute));
 
                 } else {
-                    PR_INFO(
+                    Pr::CoreLog(
+                        INFO,
                         "{} is not a default attribute. Skipping this in "
                         "GLTF "
                         "import.",

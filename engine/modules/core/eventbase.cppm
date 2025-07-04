@@ -1,8 +1,6 @@
-module;
-#include <functional>
-#include <iostream>
-
 export module presto.core.event.base;
+
+import std;
 
 import presto.core.types;
 import presto.core.constants;

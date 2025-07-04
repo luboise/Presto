@@ -9,8 +9,8 @@ bool Asset::ensureLoaded() {
         loaded_ = this->load();
 
         if (!loaded_) {
-            PR_ERROR("Unable to load asset \"{}\" of type {}", this->name(),
-                     static_cast<Pr::uint8_t>(this->type()));
+            Pr::CoreLog(ERROR, "Unable to load asset \"{}\" of type {}",
+                        this->name(), static_cast<Pr::uint8_t>(this->type()));
         }
     }
 

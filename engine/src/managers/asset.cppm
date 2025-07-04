@@ -1,7 +1,6 @@
-module;
-#include <memory>
-
 export module presto.internal.managers.asset;
+
+import std;
 
 import presto.assets;
 import presto.internal;

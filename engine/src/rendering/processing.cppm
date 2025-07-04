@@ -1,7 +1,6 @@
-module;
-#include <span>
-
 export module presto.internal.rendering:processing;
+
+import std;
 
 export namespace Pr {
 
@@ -44,11 +43,11 @@ template <>
             vertices[i].vertexPosition = Pr::vec3{span[0], span[1], span[2]};
         }
     } else {
-        PR_ERROR(
-            "Unable to find attribute {} in imported input attributes. "
-            "Leaving these values as 0 and continuing with vertex "
-            "processing.",
-            DefaultAttributeName::POSITION);
+        Pr::CoreLog(ERROR,
+                    "Unable to find attribute {} in imported input attributes. "
+                    "Leaving these values as 0 and continuing with vertex "
+                    "processing.",
+                    DefaultAttributeName::POSITION);
     }
 
     if (const auto& in_a{std::ranges::find_if(
@@ -65,11 +64,11 @@ template <>
                         in_stride);
         }
     } else {
-        PR_ERROR(
-            "Unable to find attribute {} in imported input attributes. "
-            "Leaving these values as 0 and continuing with vertex "
-            "processing.",
-            DefaultAttributeName::NORMAL);
+        Pr::CoreLog(ERROR,
+                    "Unable to find attribute {} in imported input attributes. "
+                    "Leaving these values as 0 and continuing with vertex "
+                    "processing.",
+                    DefaultAttributeName::NORMAL);
     }
 
     if (const auto& in_a{std::ranges::find_if(
@@ -86,11 +85,11 @@ template <>
                         in_stride);
         }
     } else {
-        PR_ERROR(
-            "Unable to find attribute {} in imported input attributes. "
-            "Leaving these values as 0 and continuing with vertex "
-            "processing.",
-            DefaultAttributeName::COLOUR);
+        Pr::CoreLog(ERROR,
+                    "Unable to find attribute {} in imported input attributes. "
+                    "Leaving these values as 0 and continuing with vertex "
+                    "processing.",
+                    DefaultAttributeName::COLOUR);
     }
 
     if (const auto& in_a{std::ranges::find_if(
@@ -107,11 +106,11 @@ template <>
                         in_stride);
         }
     } else {
-        PR_ERROR(
-            "Unable to find attribute {} in imported input attributes. "
-            "Leaving these values as 0 and continuing with vertex "
-            "processing.",
-            DefaultAttributeName::TEXCOORDS);
+        Pr::CoreLog(ERROR,
+                    "Unable to find attribute {} in imported input attributes. "
+                    "Leaving these values as 0 and continuing with vertex "
+                    "processing.",
+                    DefaultAttributeName::TEXCOORDS);
     }
 
     return vertices;

@@ -217,7 +217,7 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
     auto allocation{contexts_.alloc(std::move(new_context))};
 
     if (allocation.second == nullptr) {
-        PR_ERROR("Unable to create Mesh Context in OpenGLRenderer.");
+        Pr::CoreLog(ERROR, "Unable to create Mesh Context in OpenGLRenderer.");
         return false;
     }
 

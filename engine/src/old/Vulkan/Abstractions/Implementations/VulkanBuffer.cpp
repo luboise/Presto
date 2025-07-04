@@ -77,7 +77,8 @@ void VulkanBuffer::write(buffer_write_t data, Pr::size_t offset) {
 **/
 
     if (offset >= data.size()) {
-        PR_ERROR(
+        Pr::CoreLog(
+            ERROR,
             "Offset {} is out of range for input data of size {}. Skipping "
             "this write.",
             offset, data.size());

@@ -11,7 +11,8 @@ Ptr<Texture2D> NewTexture2D(AssetArg path) {
     ImagePtr image{LoadImage(path)};
 
     if (image == nullptr) {
-        PR_ERROR(
+        Pr::Log(
+            ERROR,
             "Unable to load image from path {}. Skipping Texture2D creation.",
             path.string());
         return nullptr;

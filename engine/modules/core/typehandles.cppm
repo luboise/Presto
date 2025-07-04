@@ -1,7 +1,6 @@
-module;
-#include <memory>
-
 export module presto.core.types:handles;
+
+import std;
 
 import presto.core.concepts;
 

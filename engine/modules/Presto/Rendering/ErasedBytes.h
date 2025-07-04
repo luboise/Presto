@@ -60,7 +60,8 @@ class ErasedBytes {
         auto data_size{sizeof(newData)};
 
         if (data_size != data_.size()) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "Mismatch between current size of ErasedBytes ({}) and size of "
                 "input data {}. Skipping this write.",
                 data_.size(), data_size);
@@ -76,7 +77,8 @@ class ErasedBytes {
         auto data_size{sizeof(newData.first()) * newData.size()};
 
         if (data_size != data_.size()) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "Mismatch between current size of ErasedBytes ({}) and size of "
                 "input data {}. Skipping this write.",
                 data_.size(), data_size);

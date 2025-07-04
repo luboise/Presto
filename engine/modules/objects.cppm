@@ -1,7 +1,6 @@
-module;
-#include <utility>
-
 export module presto.objects;
+
+import std;
 
 export import presto.objects.entity;
 

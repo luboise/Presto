@@ -101,21 +101,22 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
 
     Allocated<Pipeline> build() override {
         if (id() == PR_PIPELINE_NONE) {
-            PR_ERROR(
-                "A pipeline can't be build using an id of "
-                "PR_PIPELINE_NONE. Unable to build pipeline.");
+            Pr::CoreLog(ERROR,
+                        "A pipeline can't be build using an id of "
+                        "PR_PIPELINE_NONE. Unable to build pipeline.");
             return nullptr;
         }
         if (vertexShader_.id == INVALID_SHADER_ID) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "Vertex shader was unassigned when building the pipeline. "
                 "Unable to build pipeline.");
             return nullptr;
         }
         if (fragmentShader_.id == INVALID_SHADER_ID) {
-            PR_ERROR(
-                "Fragment shader was unassigned when building the "
-                "pipeline. Unable to build pipeline.");
+            Pr::CoreLog(ERROR,
+                        "Fragment shader was unassigned when building the "
+                        "pipeline. Unable to build pipeline.");
             return nullptr;
         }
 

@@ -1,7 +1,6 @@
-module;
-#include <utility>
-
 export module presto.scripting;
+
+import std;
 
 import presto.core;
 import presto.core.eventmanager;

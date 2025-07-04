@@ -20,7 +20,8 @@ class MemoryAllocation {
                     &mappedPtr_);
 
         if (mappedPtr_ == nullptr) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "Unable to map memory. Unable to proceed with mapping memory "
                 "lambda function.");
             return;

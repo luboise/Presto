@@ -86,7 +86,7 @@ void InputManager::PollInputs(std::atomic<bool>& continue_polling) {
         duration = std::chrono::duration_cast<std::chrono::nanoseconds>(
             currentTime - prevTime);
 
-        // PR_INFO("Length of previous iteration: {} ~= {}ms",
+        // Pr::CoreLog(INFO,"Length of previous iteration: {} ~= {}ms",
         //     duration.count(),
         //     ((currentTime - prevTime) / 1ms)
         //);  // using milliseconds and seconds accordingly
@@ -100,7 +100,7 @@ void InputManager::PollInputs(std::atomic<bool>& continue_polling) {
         assert(step_count > 0);
 
         if (step_count > 1) {
-            PR_WARN("Skipped {} polls.", step_count - 1);
+            Pr::CoreLog(WARN, "Skipped {} polls.", step_count - 1);
         }
     };
 
@@ -109,8 +109,9 @@ void InputManager::PollInputs(std::atomic<bool>& continue_polling) {
 }
 
 void InputManager::LogGamepad() {
-    PR_INFO("X: {}   Y: {}", InputManager::controller_state.Gamepad.sThumbLX,
-            InputManager::controller_state.Gamepad.sThumbLY);
+    Pr::CoreLog(INFO, "X: {}   Y: {}",
+                InputManager::controller_state.Gamepad.sThumbLX,
+                InputManager::controller_state.Gamepad.sThumbLY);
 }
 
 }  // namespace Pr

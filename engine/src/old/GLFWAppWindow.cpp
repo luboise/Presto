@@ -48,7 +48,7 @@ void GLFWAppWindow::init(const WindowProperties& props) {
         if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND) != 0) {
             glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
         } else {
-            PR_WARN("GLFW Wayland not available. Using X11.");
+            Pr::CoreLog(WARN, "GLFW Wayland not available. Using X11.");
         }
 
         glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
@@ -91,7 +91,7 @@ void GLFWAppWindow::init(const WindowProperties& props) {
 
     glfwSetInputMode(new_window, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
 
-    PR_TRACE(glfwGetPlatform());
+    Pr::CoreLog(TRACE, glfwGetPlatform());
 }
 
 void GLFWAppWindow::SetCallbacks() {

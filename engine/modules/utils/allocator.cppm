@@ -125,7 +125,8 @@ class Allocator {
 
     bool release(K id) {
         if (!idGenerator_.release(id)) {
-            PR_WARN(
+            Pr::CoreLog(
+                WARN,
                 "Unable to release id {} in Allocator. Ignoring this release.",
                 id);
             return false;

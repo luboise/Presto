@@ -1,9 +1,6 @@
-module;
-
-#include <functional>
-#include <memory>
-
 export module presto.runtime.window;
+
+import std;
 
 import presto.core;
 

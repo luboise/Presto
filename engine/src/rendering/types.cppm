@@ -1,7 +1,6 @@
-module;
-#include <vector>
-
 export module presto.internal.rendering:types;
+
+import std;
 
 import presto.core;
 import presto.objects;
@@ -230,7 +229,7 @@ constexpr Pr::size_t SizeOfShaderType(ShaderDataType type) {
         SWITCH_CASE(ShaderDataType::DMAT4);
 
         default: {
-            PR_ERROR("No size available.");
+            Pr::CoreLog(ERROR, "No size available.");
             return 0;
         }
     }

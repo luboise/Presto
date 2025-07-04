@@ -54,7 +54,8 @@ class MaterialInstance {
         PropertyDetails* details{getBinding(name)};
 
         if (details == nullptr) {
-            PR_WARN(
+            Pr::CoreLog(
+                WARN,
                 "Unable to find \"{}\" in MaterialInstance of pipeline {}. "
                 "Skipping this write.",
                 name, this->getPipelineId());
@@ -62,7 +63,8 @@ class MaterialInstance {
         }
 
         if (sizeof(data) != details->binding.size()) {
-            PR_ERROR(
+            Pr::CoreLog(
+                ERROR,
                 "The size of data being written to material property {} must "
                 "be of "
                 "size {}. Received size {}.",
@@ -83,7 +85,7 @@ class MaterialInstance {
                 break;
             }
             default: {
-                PR_ERROR("Unhandled UniformBinding case.");
+                Pr::CoreLog(ERROR, "Unhandled UniformBinding case.");
             }
         }
 

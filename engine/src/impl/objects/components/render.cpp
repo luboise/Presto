@@ -40,7 +40,8 @@ RenderComponent& RenderComponent::addQuad(QuadSubcomponent&& quad) {
 
 RenderComponent& RenderComponent::addModel(const ModelPtr& model) {
     if (model == nullptr) {
-        PR_ERROR(
+        Pr::Log(
+            ERROR,
             "Unable to add a null model to a RenderComponent. Skipping this "
             "request.");
         return *this;

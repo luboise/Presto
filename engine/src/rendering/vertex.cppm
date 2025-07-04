@@ -1,9 +1,7 @@
-module;
-#include <map>
-#include <variant>
-#include <vector>
-
 export module presto.internal.rendering:vertex;
+
+import std;
+
 import :base;
 
 import presto.core.types;

@@ -1,7 +1,6 @@
-module;
-#include <vector>
-
 export module presto.assets.model;
+
+import std;
 
 import presto.assets.mesh;
 import presto.assets.types;
