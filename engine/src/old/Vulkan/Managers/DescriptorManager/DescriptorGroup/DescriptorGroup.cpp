@@ -1,5 +1,5 @@
 #include "DescriptorGroup.h"
-#include <memory>
+import std;
 
 #include "Presto/Core.h"
 

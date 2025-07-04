@@ -5,7 +5,7 @@
 #include "Rendering/Vulkan/Managers/DescriptorManager/DescriptorGroup/DescriptorGroup.h"
 
 #include <vulkan/vulkan_core.h>
-#include <algorithm>
+import std;
 #include "Presto/Core.h"
 #include "Rendering/Vulkan/VulkanUtils/VulkanTypes.h"
 

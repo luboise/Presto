@@ -6,9 +6,7 @@ import presto.internal.managers;
 import presto.objects;
 import presto.runtime.window;
 
-#include <algorithm>
-#include <memory>
-#include <utility>
+import std;
 
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"

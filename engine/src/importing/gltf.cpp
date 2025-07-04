@@ -1,7 +1,6 @@
 module presto.internal.gltf;
 
-#include <span>
-#include <utility>
+import std;
 
 import presto.core;
 

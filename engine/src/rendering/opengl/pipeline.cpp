@@ -2,7 +2,7 @@ module presto.internal.rendering.opengl;
 import :pipeline;
 
 #include <GL/glext.h>
-#include <algorithm>
+import std;
 #include "OpenGLPipeline.h"
 
 #include "Presto/Assets/ImportTypes.h"

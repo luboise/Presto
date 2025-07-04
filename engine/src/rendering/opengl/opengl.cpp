@@ -3,9 +3,7 @@ module presto.internal.rendering.opengl;
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <cmath>
-#include <span>
-#include <utility>
+import std;
 
 import :buffer;
 import :pipeline;

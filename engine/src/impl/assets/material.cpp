@@ -2,7 +2,7 @@ module presto.assets.material;
 
 import presto.internal.managers.rendering;
 
-#include <utility>
+import std;
 
 namespace Pr {
 MaterialAsset::MaterialAsset(Pr::string name, const PipelineStructure& ps)

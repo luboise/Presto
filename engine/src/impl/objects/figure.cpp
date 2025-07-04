@@ -1,6 +1,6 @@
 module presto.objects.entity;
 import :figure;
-#include <utility>
+import std;
 
 export namespace Pr {
 Figure::Figure(figure_size_t size) {

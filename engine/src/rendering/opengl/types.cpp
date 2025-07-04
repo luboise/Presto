@@ -3,7 +3,7 @@ module presto.internal.rendering.opengl;
 import :types;
 import presto.core;
 
-#include <utility>
+import std;
 
 constexpr GLenum Pr::OpenGLTypeFromPrestoType(Pr::ShaderDataType type) {
     using namespace Pr;

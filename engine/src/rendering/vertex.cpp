@@ -1,8 +1,6 @@
 export module presto.internal.rendering:vertex;
 
-#include <algorithm>
-#include <numeric>
-#include <vector>
+import std;
 
 namespace Pr {
 

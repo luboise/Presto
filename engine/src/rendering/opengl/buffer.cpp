@@ -2,7 +2,7 @@ module presto.internal.rendering.opengl;
 import :buffer;
 import presto.internal;
 
-#include <span>
+import std;
 
 namespace Pr {
 

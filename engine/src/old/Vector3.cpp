@@ -1,6 +1,6 @@
 #include "Presto/Rendering/Vector3.h"
 
-#include <cmath>
+import std;
 
 Vector3::Vector3() : Vector3(0, 0, 0) {}
 

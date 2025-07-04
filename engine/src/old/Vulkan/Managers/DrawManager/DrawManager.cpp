@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
-#include <exception>
+import std;
 
 #include "Presto/Core.h"
 #include "Presto/Logging.h"

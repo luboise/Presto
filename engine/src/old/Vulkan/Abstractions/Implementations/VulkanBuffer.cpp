@@ -1,7 +1,7 @@
 #include "../VulkanBuffer.h"
 
 #include <vulkan/vulkan_core.h>
-#include <stdexcept>
+import std;
 
 #include <Rendering/Vulkan/Abstractions/CommandPool.h>
 #include "Rendering/Vulkan/VulkanDevice/VulkanDevice.h"

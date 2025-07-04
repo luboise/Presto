@@ -1,6 +1,6 @@
 module presto.internal.utils;
 
-#include <utility>
+import std;
 
 import presto.core;
 

@@ -11,11 +11,7 @@ import presto.internal.managers;
 import presto.objects.components;
 
 // STL import
-#include <algorithm>
-#include <memory>
-#include <ranges>
-#include <span>
-#include <utility>
+import std;
 
 // Public imports
 #include "Presto/Assets/ImportTypes.h"

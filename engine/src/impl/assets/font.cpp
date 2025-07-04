@@ -1,7 +1,6 @@
 module presto.assets.font;
 
-#include <span>
-#include <utility>
+import std;
 
 namespace Pr {
 

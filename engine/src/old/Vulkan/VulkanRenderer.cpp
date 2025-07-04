@@ -1,5 +1,5 @@
 #include <vulkan/vulkan_core.h>
-#include <algorithm>
+import std;
 
 #include "Presto/Core/Constants.h"
 #include "Rendering/Renderer.h"

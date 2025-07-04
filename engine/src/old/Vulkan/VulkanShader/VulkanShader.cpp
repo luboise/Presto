@@ -1,6 +1,6 @@
 #include "VulkanShader.h"
 #include <vulkan/vulkan_core.h>
-#include <stdexcept>
+import std;
 
 #include "Presto/Rendering/Renderer.h"
 #include "ResourcesModule/AssetManager.h"

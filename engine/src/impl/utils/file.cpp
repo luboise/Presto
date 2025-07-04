@@ -1,7 +1,7 @@
 module presto.utils;
 import :file;
 
-#include <fstream>
+import std;
 
 import presto.core.types;
 

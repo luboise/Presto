@@ -3,7 +3,7 @@ import :pipeline;
 
 import presto.core;
 
-#include <numeric>
+import std;
 
 namespace Pr {
 
