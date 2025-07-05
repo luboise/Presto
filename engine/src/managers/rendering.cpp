@@ -115,7 +115,7 @@ void RenderingManager::loadDefaults() {
     // Check that all of them loaded correctly
     std::ranges::for_each(
         default_pipelines, [](const Allocated<Pipeline>& default_pipeline) {
-            PR_CORE_ASSERT(
+            Pr::CoreAssert(
                 default_pipeline != nullptr,
                 "The default pipelines must be initialised correctly "
                 "when being used, not nullptr.");
@@ -126,9 +126,9 @@ void RenderingManager::loadDefaults() {
             am.createMaterialDefinition(std::to_string(default_pipeline->id()),
                                         default_pipeline->getStructure())};
 
-        PR_ASSERT(new_definition != nullptr,
-                  "The newly created pipeline cannot already exist under a "
-                  "different name.");
+        Pr::Assert(new_definition != nullptr,
+                   "The newly created pipeline cannot already exist under a "
+                   "different name.");
 
         auto new_id{default_pipeline->id()};
 
@@ -162,7 +162,7 @@ template <typename T>
 Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
     const std::vector<T>& vertices, IndexList& indices,
     pipeline_id_t pipelineId) {
-    PR_CORE_ASSERT(renderer_ != nullptr,
+    Pr::CoreAssert(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
     if (pipelineId == PR_PIPELINE_ANY) {
@@ -210,10 +210,10 @@ Allocated<MeshRegistrationData> RenderingManager::createMeshRegistration(
 };
 
 void RenderingManager::init() {
-    PR_CORE_ASSERT(_library != UNSET,
+    Pr::CoreAssert(_library != UNSET,
                    "Unable to initialise the RenderingManager with an "
                    "unset graphics library.");
-    PR_CORE_ASSERT(_window != nullptr,
+    Pr::CoreAssert(_window != nullptr,
                    "Unable to initialise the RenderingManager with a null "
                    "Window handle.");
 
@@ -313,7 +313,7 @@ void RenderingManager::update() {
 
                 MeshRegistrationData* data{impl_->mesh_registrations.find(
                     draw.mesh->registrationId())};
-                PR_CORE_ASSERT(
+                Pr::CoreAssert(
                     data != nullptr,
                     "Mesh registrations can't be null at the draw phase.");
 
@@ -335,7 +335,7 @@ void RenderingManager::update() {
             switchMaterial(quad.material);
 
             auto* data{impl_->mesh_registrations.find(PR_MESH_0_SQUARE)};
-            PR_CORE_ASSERT(data != nullptr,
+            Pr::CoreAssert(data != nullptr,
                            "The default quad can not be null.");
 
             // TODO: Move this somewhere else so it isn't calculated 7 million
@@ -364,7 +364,7 @@ void RenderingManager::update() {
     ui_pipeline->pipeline->bind();
 
     auto* quad_registration{impl_->mesh_registrations.find(PR_MESH_QUAD)};
-    PR_CORE_ASSERT(quad_registration != nullptr,
+    Pr::CoreAssert(quad_registration != nullptr,
                    "The default quad can not be null.");
 
     // Set pipeline to UI pipeline
@@ -393,7 +393,7 @@ void RenderingManager::update() {
 
                 MeshRegistrationData* data{
                     impl_->mesh_registrations.find(canvasItem.meshId())};
-                PR_CORE_ASSERT(
+                Pr::CoreAssert(
                     data != nullptr,
                     "Mesh registrations can't be null at the draw phase.");
 
@@ -422,14 +422,14 @@ void RenderingManager::update() {
 void RenderingManager::clear() { renderer_->nextFrame(); }
 
 void RenderingManager::setRenderLibrary(RENDER_LIBRARY library) {
-    PR_CORE_ASSERT(!RenderingManager::initialised(),
+    Pr::CoreAssert(!RenderingManager::initialised(),
                    "Unable to set render library while the renderer is "
                    "already initialised.");
 
     RenderingManager::_library = library;
 }
 void RenderingManager::setWindow(GLFWAppWindow* window) {
-    PR_CORE_ASSERT(!RenderingManager::initialised(),
+    Pr::CoreAssert(!RenderingManager::initialised(),
                    "Unable to set window surface while the renderer is "
                    "already initialised.");
 
@@ -437,10 +437,9 @@ void RenderingManager::setWindow(GLFWAppWindow* window) {
 }
 
 void RenderingManager::setMainCamera(const EntityPtr& mainCam) {
-    PR_CORE_ASSERT(RenderingManager::initialised(),
+    Pr::CoreAssert(RenderingManager::initialised(),
                    "Unable to set camera when the RenderingManager is "
-                   "uninitialised.")
-    impl_->cam_active_entity = mainCam;
+                   "uninitialised.") impl_->cam_active_entity = mainCam;
 }
 
 const PipelineStructure* RenderingManager::getPipelineStructure(
@@ -479,7 +478,7 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
     }()};
 
     auto definition{AssetManager::get().getMaterialDefinition(id)};
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         definition != nullptr,
         "A default pipeline can't have a null shared pointer to it.");
 
@@ -505,7 +504,7 @@ Ptr<MaterialInstance> RenderingManager::findMaterial(const Pr::string& name) {
 };
 
 PipelineBuilder& RenderingManager::getPipelineBuilder() {
-    PR_CORE_ASSERT(impl_->pipeline_builder != nullptr,
+    Pr::CoreAssert(impl_->pipeline_builder != nullptr,
                    "The application must be initialised in order to "
                    "get the pipeline "
                    "builder.");
@@ -527,7 +526,7 @@ AllocatedPipeline* RenderingManager::getPipeline(pipeline_id_t id) const {
 
 Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
                                      mesh_registration_id_t customId) {
-    PR_CORE_ASSERT(renderer_ != nullptr,
+    Pr::CoreAssert(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
     auto pipelineId{meshData.pipeline_id};
@@ -622,7 +621,7 @@ EntityPtr RenderingManager::getMainCamera() {
     return impl_->cam_active_entity;
     /*
 auto cam{impl_->cam_active_entity->getComponent<CameraComponent>()};
-PR_CORE_ASSERT(cam != nullptr, "The active camera must always be defined.");
+Pr::CoreAssert(cam != nullptr, "The active camera must always be defined.");
 return *cam;
     */
 };
@@ -631,7 +630,7 @@ ComponentPtr<CameraComponent> RenderingManager::getDebugCamera() {
     return impl_->cam_debug;
     /*
 auto cam{impl_->cam_debug_entity->getComponent<CameraComponent>()};
-PR_CORE_ASSERT(cam != nullptr, "The debug camera must always be defined.");
+Pr::CoreAssert(cam != nullptr, "The debug camera must always be defined.");
 return cam;
     */
 };
@@ -640,7 +639,7 @@ void RenderingManager::switchPipeline(AllocatedPipeline* allocatedPipeline) {
     // Update pipeline if changed
     auto* pipeline = allocatedPipeline->pipeline.get();
 
-    PR_ASSERT(pipeline != nullptr, "Unable to switch to null pipeline.");
+    Pr::Assert(pipeline != nullptr, "Unable to switch to null pipeline.");
     pipeline->bind();
     impl_->current.pipeline = allocatedPipeline;
     impl_->current_pipeline_id = pipeline->id();
@@ -704,7 +703,7 @@ void RenderingManager::drawFromAllocation(MeshRegistrationData& data) {
 Allocated<MeshRegistrationData> RenderingManager::allocateMeshRegistration(
     pipeline_id_t pipelineId, Pr::size_t vertexSize, Pr::size_t vertexCount,
     Pr::size_t indexCount) {
-    PR_CORE_ASSERT(renderer_ != nullptr,
+    Pr::CoreAssert(renderer_ != nullptr,
                    "The renderer must be initialised in order to load meshes.");
 
     if (pipelineId == PR_PIPELINE_ANY) {

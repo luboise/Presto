@@ -23,7 +23,7 @@ class IDGenerator {
      * threshold must be reserved using @fn reserve.
      */
     explicit IDGenerator(T threshold = 1) {
-        PR_CORE_ASSERT(threshold > 0,
+        Pr::CoreAssert(threshold > 0,
                        "IDGenerator can't be instantiated with a value of 0, "
                        "as this is reserved for INVALID_ID");
         minGeneratedThreshold_ = threshold;

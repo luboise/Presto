@@ -65,7 +65,7 @@ ShaderDataType tinygltfToPrestoType(const tinygltf::Accessor& accessor) {
         }
     }
 
-    PR_ASSERT(false, "Invalid data type import attempted.");
+    Pr::Assert(false, "Invalid data type import attempted.");
     return ShaderDataType::FLOAT;
 };
 
@@ -334,8 +334,8 @@ std::vector<T> castBuffer(const ByteArray& bytes) {
 template <typename T>
     requires std::is_floating_point_v<T>
 Pr::vec4 vec4FromVector(std::vector<T> vec) {
-    PR_ASSERT(vec.size() == 4,
-              std::format("Invalid vector size: ", vec.size()));
+    Pr::Assert(vec.size() == 4,
+               std::format("Invalid vector size: ", vec.size()));
 
     return {
         vec[0],
@@ -377,7 +377,7 @@ ImportedMaterial importMaterialFromGLTF(const tinygltf::Material& material,
 
 ImportedTexture importTextureFromGLTF(const tinygltf::Model& model,
                                       const int index) {
-    PR_CORE_ASSERT(model.images.size() >= index + 1U,
+    Pr::CoreAssert(model.images.size() >= index + 1U,
                    "Invalid GLTF processing has occurred, even though it "
                    "should have been validated.");
     const auto& image_data = model.images[index];
@@ -438,7 +438,7 @@ ImportedModelData GLTFLoader::load(
         ret = loader.LoadBinaryFromFile(&model, &err, &warn, full_asset_path);
     }
 
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         ret, Pr::string("Failed to read asset ") + full_asset_path.string());
 
     std::set<int> textureIndices;

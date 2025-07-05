@@ -69,7 +69,7 @@ void BufferManager::loadRenderable(Renderable* renderable_ptr,
 
     auto insertion = _drawInfoMap.try_emplace(renderable_ptr, info);
 
-    PR_CORE_ASSERT(insertion.second,
+    Pr::CoreAssert(insertion.second,
                    "Presto failed to insert renderable {} to the render list.",
                    fmt::ptr(renderable_ptr));
 

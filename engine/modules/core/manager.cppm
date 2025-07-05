@@ -3,14 +3,10 @@ module;
 #include "presto/module.h"
 #include "presto/platform.h"
 
-#include <format>
-#include <functional>
-#include <memory>
-#include <type_traits>
-
 export module presto.core.manager;
 
 import presto.core;
+import std;
 
 export namespace Pr {
 template <typename T, typename = void>
@@ -46,7 +42,7 @@ class PRESTO_API Module {
      */
     [[nodiscard]] static T& get() {
         INTERNAL_MODULE_STATIC_ASSERTION();
-        PR_CORE_ASSERT(T::initialised(),
+        Pr::CoreAssert(T::initialised(),
                        std::format("Attempted to get uninitialised module: {}",
                                    T::getModuleName()));
 
@@ -75,8 +71,8 @@ class PRESTO_API Module {
     static void init(Args&&... args) {
         INTERNAL_MODULE_STATIC_ASSERTION();
 
-        PR_ASSERT("Module {} must only be initialised once.",
-                  T::getModuleName());
+        Pr::Assert("Module {} must only be initialised once.",
+                   T::getModuleName());
 
         Pr::CoreLog(INFO, "Initialising {}.", T::getModuleName());
 
@@ -88,8 +84,8 @@ class PRESTO_API Module {
     static void shutdown() {
         INTERNAL_MODULE_STATIC_ASSERTION();
 
-        PR_ASSERT("Module {} must be initialised in order to be destructed.",
-                  typeid(T).name());
+        Pr::Assert("Module {} must be initialised in order to be destructed.",
+                   typeid(T).name());
         instance_.reset();
     };
 };

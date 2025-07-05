@@ -1,6 +1,12 @@
+module;
+#include "stb_truetype.h"
+
 module presto.assets.font;
 
 import std;
+
+import presto.core;
+import presto.core.assert;
 
 namespace Pr {
 
@@ -19,13 +25,13 @@ void FontSource::reloadFile() {
     ByteArray font_bytes =
         Utils::File::ReadBinaryFile("assets/fonts/Inter.ttc");
 
-    PR_ASSERT(font_bytes.size() > 0, "Font couldn't be loaded.");
+    Pr::Assert(font_bytes.size() > 0, "Font couldn't be loaded.");
 
     std::span<unsigned char> span{
         reinterpret_cast<unsigned char*>(font_bytes.data()), font_bytes.size()};
 
-    PR_ASSERT(stbtt_GetNumberOfFonts(span.data()) > 0,
-              "No fonts found in Inter.ttc.");
+    Pr::Assert(stbtt_GetNumberOfFonts(span.data()) > 0,
+               "No fonts found in Inter.ttc.");
 
     int index{stbtt_GetFontOffsetForIndex(span.data(), 0)};
 

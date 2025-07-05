@@ -57,7 +57,7 @@ void CommandBuffer::bind(Pipeline& pipeline) {
 }
 
 void CommandBuffer::bind(const DescriptorFrameSet& dfs) {
-    PR_CORE_ASSERT(this->_currentBoundPipeline != nullptr,
+    Pr::CoreAssert(this->_currentBoundPipeline != nullptr,
                    "Unable to bind descriptor sets without a bound "
                    "pipeline in command buffer {}.",
                    fmt::ptr(handle_));
@@ -81,12 +81,13 @@ void CommandBuffer::bind(const VulkanDrawInfo& draw_info) {
 
 void CommandBuffer::bind(const BufferList& buffers,
                          std::vector<unsigned long> offsets) {
-    PR_CORE_ASSERT(buffers.size() > 0,
+    Pr::CoreAssert(buffers.size() > 0,
                    "The number of buffers received to bind is 0. You must "
                    "bind at least 1 buffer when calling bind.")
 
-    PR_CORE_ASSERT(buffers.size() == offsets.size(),
-                   "The number of buffers and offsets received is mismatched.");
+        Pr::CoreAssert(
+            buffers.size() == offsets.size(),
+            "The number of buffers and offsets received is mismatched.");
 
     const auto handles = VulkanUtils::MapHandles(buffers);
 
@@ -99,7 +100,7 @@ void CommandBuffer::bind(const BufferList& buffers,
                                  VK_INDEX_TYPE_UINT32);
         }
     } else {
-        PR_CORE_ASSERT(true == false,
+        Pr::CoreAssert(true == false,
                        "Invalid buffer type was bound. Buffer address: {}",
                        fmt::ptr(buffers[0]));
     }

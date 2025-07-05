@@ -62,7 +62,7 @@ void GLFWAppWindow::init(const WindowProperties& props) {
         s_GLFWInitialised = true;
         const int success = glfwInit();
 
-        PR_CORE_ASSERT(success,
+        Pr::CoreAssert(success,
                        "Unable to initialise GLFW. Program cannot continue.");
     }
 

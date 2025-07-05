@@ -6,7 +6,7 @@ struct Abstraction {
    public:
     explicit operator HandleType() const { return this->handle_; };
     HandleType handle() const {
-        PR_CORE_ASSERT(
+        Pr::CoreAssert(
             handle_ != nullptr,
             "An abstracted type has a handle of nullptr. This shouldn't be "
             "possible, as its lifetime should be tied to the constructor "

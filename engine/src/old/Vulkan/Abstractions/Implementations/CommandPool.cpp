@@ -30,7 +30,7 @@ CommandBuffer* const CommandPool::createCommandBuffer() {
 void CommandPool::destroyCommandBuffer(CommandBuffer* const to_remove) {
     auto found = _commandBuffers.find(to_remove);
 
-    PR_CORE_ASSERT(found != _commandBuffers.end(),
+    Pr::CoreAssert(found != _commandBuffers.end(),
                    "An invalid command buffer can't be destroyed.");
 
     if (found != _commandBuffers.end()) {

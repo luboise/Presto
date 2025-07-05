@@ -23,16 +23,17 @@ class EventListener {
     };
 };
 
-#define FETCHED(TYPE, NAME)                                                    \
-    Pr::Ptr<TYPE> NAME {                                                       \
-        [this]() {                                                             \
-            Pr::ConductorComponent::addPreStartCallback([this]() -> void {     \
-                auto ptr{Conductor::entity->getComponent<TYPE>()};             \
-                PR_ASSERT(ptr != nullptr, "Fetched pointer can not be null."); \
-                this->NAME = ptr;                                              \
-            });                                                                \
-            return nullptr;                                                    \
-        }()                                                                    \
+#define FETCHED(TYPE, NAME)                                                \
+    Pr::Ptr<TYPE> NAME {                                                   \
+        [this]() {                                                         \
+            Pr::ConductorComponent::addPreStartCallback([this]() -> void { \
+                auto ptr{Conductor::entity->getComponent<TYPE>()};         \
+                Pr::Assert(ptr != nullptr,                                 \
+                           "Fetched pointer can not be null.");            \
+                this->NAME = ptr;                                          \
+            });                                                            \
+            return nullptr;                                                \
+        }()                                                                \
     }
 
 #define FETCHED_OR_NULL(TYPE, NAME)                                    \

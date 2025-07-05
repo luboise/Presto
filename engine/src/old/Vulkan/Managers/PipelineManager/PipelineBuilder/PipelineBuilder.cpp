@@ -19,7 +19,7 @@ Pipeline* PipelineBuilder::createPipeline() {
             }
                     **/
 
-    PR_CORE_ASSERT(_renderContext != nullptr,
+    Pr::CoreAssert(_renderContext != nullptr,
                    "Unable to create pipeline without a render context.");
 
     // Vertex input info (VBO/VBA)
@@ -87,7 +87,7 @@ Pipeline* PipelineBuilder::createPipeline() {
     createInfo.pDynamicState = &dynamicState;
     // createInfo.pTessellationState = nullptr;
 
-    PR_CORE_ASSERT(_renderContext != nullptr,
+    Pr::CoreAssert(_renderContext != nullptr,
                    "The render context must be set in order to create a "
                    "pipeline using the pipeline builder.");
 

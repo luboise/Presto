@@ -22,8 +22,8 @@ BoundingBox ModelAsset::getBoundingBox() {
 
 ModelAsset& ModelAsset::addMesh(Pr::Ptr<Pr::MeshAsset> mesh,
                                 Pr::Ptr<Pr::MaterialInstance> material) {
-    PR_ASSERT(mesh != nullptr,
-              "An added mesh to a model asset must not be null.");
+    Pr::Assert(mesh != nullptr,
+               "An added mesh to a model asset must not be null.");
 
     if (material == nullptr) {
         Pr::CoreLog(

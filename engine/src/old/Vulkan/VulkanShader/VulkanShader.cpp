@@ -27,8 +27,8 @@ VulkanShader::VulkanShader(VkDevice device, SHADER_MODULE_TYPE type,
     : _device(device) {
     auto code = AssetManager::ReadFile(filepath);
 
-    PR_ASSERT(code.size() > 0,
-              "Attempted to create a shader from an empty code vector.");
+    Pr::Assert(code.size() > 0,
+               "Attempted to create a shader from an empty code vector.");
 
     this->_type = type;
 

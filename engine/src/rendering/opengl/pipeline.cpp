@@ -24,8 +24,8 @@ OpenGLPipeline::OpenGLPipeline(
     glAttachShader(shaderProgram_, fragmentShader);
 
     glLinkProgram(shaderProgram_);
-    PR_ASSERT(OpenGLUtils::ShaderProgramLinkedCorrectly(shaderProgram_),
-              "Shader program failed to link.");
+    Pr::Assert(OpenGLUtils::ShaderProgramLinkedCorrectly(shaderProgram_),
+               "Shader program failed to link.");
 
     if (!attributesOverride.empty()) {
         pipelineStructure_.attributes = attributesOverride;

@@ -61,7 +61,7 @@ PR_RESULT DrawManager::enableDrawing() {
     auto* device = _swapchain.getDevice()->handle();
 
     auto* fence = _drawContext.sync_set->frame_is_in_flight;
-    PR_CORE_ASSERT(_drawContext.sync_set != nullptr,
+    Pr::CoreAssert(_drawContext.sync_set != nullptr,
                    "Unable to enable drawing with a nullptr sync_set "
                    "attribute on _drawContext.");
 
@@ -227,7 +227,7 @@ void DrawManager::submitCommands() {
 }
 
 RenderContext* DrawManager::addLayer(const RenderCtxKey& layer_name) {
-    PR_CORE_ASSERT(!_renderContexts.contains(layer_name),
+    Pr::CoreAssert(!_renderContexts.contains(layer_name),
                    "Attempted to add a second layer with name {}. This is "
                    "strictly not allowed.",
                    layer_name);

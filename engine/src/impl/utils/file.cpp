@@ -5,7 +5,7 @@ import std;
 
 import presto.assets.types;
 
-import presto.core.types;
+import presto.core;
 
 namespace Pr::Utils {
 

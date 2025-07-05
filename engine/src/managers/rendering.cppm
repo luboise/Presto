@@ -2,7 +2,13 @@ module;
 #include "presto/module.h"
 
 export module presto.internal.managers.rendering;
+
+import presto.core.constants;
 import presto.core.manager;
+import presto.core.types;
+
+import presto.assets.image;
+import presto.assets.material;
 
 export namespace Pr {
 

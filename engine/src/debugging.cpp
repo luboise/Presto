@@ -498,7 +498,7 @@ void DebugUI::drawComponentBrowser() {
 void DebugUI::drawSelectedComponent() {
     ImGui::Text("Component Editor");
 
-    PR_CORE_ASSERT(selectedComponent_ != nullptr,
+    Pr::CoreAssert(selectedComponent_ != nullptr,
                    "drawSelectedComponent shouldn't be called if the selected "
                    "component is null.");
 

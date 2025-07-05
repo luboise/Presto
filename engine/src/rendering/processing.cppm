@@ -22,7 +22,7 @@ template <>
         std::views::transform([](const ImportedVertexAttribute& val)
                                   -> Pr::size_t { return val.count; }))};
 
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         vertex_count != 0,
         "The number of vertices to be processed must be higher than 0.");
 

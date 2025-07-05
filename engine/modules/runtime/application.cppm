@@ -5,10 +5,12 @@ export module presto.runtime.application;
 
 import std;
 import presto.runtime.window;
+import presto.core.event;
 
 export namespace Pr {
 
-class Event;
+class WindowCloseEvent;
+class WindowResizeEvent;
 
 class PRESTO_API Application {
    public:

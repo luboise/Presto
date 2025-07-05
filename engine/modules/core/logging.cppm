@@ -36,6 +36,11 @@ void Log(LogLevel level, const T& value) {
     Logger::Log(level, std::to_string(value));
 };
 
+export template <>
+void Log(LogLevel level, const std::string& value) {
+    Logger::Log(level, value);
+};
+
 export template <typename... Args>
 void CoreLog(LogLevel level, const char* str, Args&&... args) {
     Logger::CoreLog(level, std::format(str, std::move(args...)));
@@ -44,6 +49,11 @@ void CoreLog(LogLevel level, const char* str, Args&&... args) {
 export template <typename T>
 void CoreLog(LogLevel level, const T& value) {
     Logger::CoreLog(level, std::to_string(value));
+};
+
+export template <>
+void CoreLog(LogLevel level, const std::string& value) {
+    Logger::CoreLog(level, value);
 };
 
 }  // namespace Pr

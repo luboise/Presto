@@ -26,7 +26,7 @@ class BufferManager {
     void loadRenderable(Renderable*, Pipeline*);
 
     const VulkanDrawInfo& getDrawInfo(const draw_key key) const {
-        PR_CORE_ASSERT(
+        Pr::CoreAssert(
             _drawInfoMap.contains(key),
             "Unable to get draw info for renderable {} because it has not "
             "been loaded yet. Please call addToRenderPool(ptr) first.",

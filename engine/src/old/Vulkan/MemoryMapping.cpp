@@ -8,12 +8,12 @@ MemoryMapping::MemoryMapping(Pr::uint32_t offset, Pr::uint32_t size) {
     const uint32_t allocation_size = this->size_ - offset;
 
     // Check for valid mapping region
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         allocation_size <= size_,
         "A memory mapping can't be made past the boundaries of a buffer.");
 
     // Check there isn't already a mapping
-    PR_CORE_ASSERT(mapping_ == nullptr,
+    Pr::CoreAssert(mapping_ == nullptr,
                    "A memory mapping can't be created if there already is "
                    "one.\nBuffer handle: {}\nBuffer memory handle: {}, "
                    "Existing map pointer: {}'",
@@ -26,7 +26,7 @@ MemoryMapping::MemoryMapping(Pr::uint32_t offset, Pr::uint32_t size) {
 MemoryMapping::operator std::span<std::byte>() const {}
 
 MemoryMapping::~MemoryMapping() {
-    PR_CORE_ASSERT(mapping_ != nullptr,
+    Pr::CoreAssert(mapping_ != nullptr,
                    "A null memory mapping can't be destroyed.");
 
     if (mapping_ != VK_NULL_HANDLE) {

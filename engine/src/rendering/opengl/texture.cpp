@@ -39,7 +39,7 @@ OpenGLTexture::~OpenGLTexture() { this->unload(); }
 void OpenGLTexture::bind(Pr::uint8_t slot) const {
     constexpr auto MAX_SLOT = 31;
 
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         slot <= 31,
         std::format("Texture units must be between 0 and {} (received {}).",
                     MAX_SLOT, slot));

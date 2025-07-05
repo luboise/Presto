@@ -94,7 +94,7 @@ void MeshSource::reloadFile() {
     // The 3D pipeline must be defined in order for 3D models to be used.
     const PipelineStructure* pipeline_structure{
         rm.getPipelineStructure(PR_PIPELINE_DEFAULT_3D)};
-    PR_CORE_ASSERT(pipeline_structure != nullptr,
+    Pr::CoreAssert(pipeline_structure != nullptr,
                    "The pipeline structure of the default pipelines must "
                    "not be nullptr.");
 
@@ -109,8 +109,8 @@ void MeshSource::reloadFile() {
     }
 
     // Get the import
-    PR_ASSERT(imported_data.models.size() > 0,
-              std::format("No models could be found in {}.", path().string()));
+    Pr::Assert(imported_data.models.size() > 0,
+               std::format("No models could be found in {}.", path().string()));
 
     // Turn the textures into assets
     textures_.resize(imported_data.textures.size());
@@ -228,7 +228,7 @@ Pr::Ptr<Pr::ModelAsset> MeshSource::loadModel(Pr::string modelName,
     }
 
     // Past this point, it is assumed that the ModelAsset is empty
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         model->ptr->meshCount() == 0,
         "A model asset that was just cleared must have 0 meshes in it.");
 

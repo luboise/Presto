@@ -43,7 +43,7 @@ void EntityManagerImpl::update() {
 EntityPtr EntityManagerImpl::newEntity(const entity_name_t& name) {
     entity_id_t new_id = EntityManagerImpl::reserveId();
 
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         std::ranges::none_of(impl_->entity_map | std::views::keys,
                              [new_id](auto& key) { return key == new_id; }),
         "Attempted to create entity using existing id: {}", new_id);
@@ -53,7 +53,7 @@ EntityPtr EntityManagerImpl::newEntity(const entity_name_t& name) {
     auto new_transform{newComponent<TransformComponent>()};
     new_entity->setComponent(new_transform);
 
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         new_entity.get() != nullptr,
         "Internal error: A new entity handle has been retrieved as nullptr.");
 
@@ -66,7 +66,7 @@ void EntityManagerImpl::destroyEntity(Entity* entity_ptr) {
     // Delete the entity
     auto num_erased{impl_->entity_map.erase(entity_ptr->id_)};
 
-    PR_CORE_ASSERT(num_erased == 1, std::format("Entity was not erased: {}",
+    Pr::CoreAssert(num_erased == 1, std::format("Entity was not erased: {}",
                                                 fmt::ptr(entity_ptr)));
 
     // Send event
@@ -111,13 +111,13 @@ entity_tag_id_t EntityManagerImpl::getTagId(
 };
 
 entity_tag_id_t EntityManagerImpl::createTag(const entity_tag_name_t& tagName) {
-    PR_ASSERT(impl_->tag_map.size() < MAX_TAG_COUNT,
-              std::format("Creating a new tag exceeds the maximum number "
-                          "of tags allowed ({}).",
-                          MAX_TAG_COUNT));
+    Pr::Assert(impl_->tag_map.size() < MAX_TAG_COUNT,
+               std::format("Creating a new tag exceeds the maximum number "
+                           "of tags allowed ({}).",
+                           MAX_TAG_COUNT));
 
-    PR_ASSERT(getTagId(tagName) != INVALID_TAG_ID,
-              "Multiple tags can't be created with the same name.");
+    Pr::Assert(getTagId(tagName) != INVALID_TAG_ID,
+               "Multiple tags can't be created with the same name.");
 
     const auto new_tag_index = impl_->tag_map.size();
     impl_->tag_map.push_back(tagName);
@@ -131,7 +131,7 @@ bool EntityManagerImpl::exists(entity_id_t id) const {
 };
 
 std::vector<EntityPtr> EntityManagerImpl::newEntities(Pr::size_t count) {
-    PR_CORE_ASSERT(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
+    Pr::CoreAssert(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
                    "Invalid entity count construction requested.");
     std::vector<EntityPtr> entities(count);
 
@@ -150,7 +150,7 @@ void EntityManagerImpl::instantiateEntities() {
 
         for (auto& components{entity->components_};
              auto& [key, component] : components) {
-            PR_CORE_ASSERT(
+            Pr::CoreAssert(
                 component != nullptr,
                 "Null component found when instantiating new entities.");
             component->onEnterScene();

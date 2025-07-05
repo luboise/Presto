@@ -87,11 +87,11 @@ class CookOffApp final : public Pr::Application {
         ImagePtr ground_image{Pr::LoadImage("assets/textures/ground.png")};
 
         // You can add assertions to make sure your code is running correctly
-        PR_ASSERT(ground_image != nullptr, 
+        Pr::Assert(ground_image != nullptr, 
                   "The ground image could not be loaded.");
         Presto::Ptr<Presto::Texture2D> ground_texture{
             Pr::NewTexture2D(ground_image)};
-        PR_ASSERT(ground_texture != nullptr, "Ground texture can't be null.");
+        Pr::Assert(ground_texture != nullptr, "Ground texture can't be null.");
 
         // Create a material for the ground
         auto ground_material{
@@ -198,7 +198,7 @@ constexpr auto CAMERA_SPEED = 60;
 
 void MainCamera::start() {
     camera_ = entity->getComponent<Camera>();
-    PR_ASSERT(camera_ != nullptr,
+    Pr::Assert(camera_ != nullptr,
               "Unable to find a camera on the entity this is attached to.");
 
     listener.on<Pr::MouseMovedEvent>([this](Pr::MouseMovedEvent& e) {

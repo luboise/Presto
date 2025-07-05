@@ -80,15 +80,15 @@ CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
 
 CameraComponent& CameraComponent::setDistances(CameraDistances distances) {
     if (type_ == CameraType::PERSPECTIVE) {
-        // PR_ASSERT(distances.near >= PR_MIN_NEAR_DISTANCE,
+        // Pr::Assert(distances.near >= PR_MIN_NEAR_DISTANCE,
         // "The camera's near distance must be at least {}",
         // PR_MIN_NEAR_DISTANCE)
     }
 
-    PR_ASSERT(distances.far > distances.near,
-              "The camera's far distance must be at least the near distance.")
+    Pr::Assert(distances.far > distances.near,
+               "The camera's far distance must be at least the near distance.")
 
-    distances_ = distances;
+        distances_ = distances;
 
     setDirty();
     return *this;

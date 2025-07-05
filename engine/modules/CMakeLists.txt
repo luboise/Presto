@@ -8,18 +8,19 @@ target_sources(
          CXX_MODULES
          FILES
          core/concepts.cppm
-         core/assert.cppm
          #
          core/typesbase.cppm
          core/typetraits.cppm
          core/typehandles.cppm
          core/types.cppm
-         #
+		 #
          core/constants.cppm
+		 #
+         core/logging.cppm
+         core/assert.cppm
          #
          core/platform.cppm
          #
-         core/logging.cppm
          core/manager.cppm
          core/eventbase.cppm
          core/eventuser.cppm

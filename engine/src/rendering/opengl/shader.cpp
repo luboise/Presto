@@ -102,7 +102,7 @@ OpenGLVAO::OpenGLVAO(OpenGLBuffer* vertexBuffer, OpenGLBuffer* indexBuffer,
 OpenGLVAO::~OpenGLVAO() { glDeleteVertexArrays(1, &vao_); }
 
 void OpenGLVAO::bind() const {
-    PR_CORE_ASSERT(finalised_,
+    Pr::CoreAssert(finalised_,
                    "An OpenGLVAO must be finalised before it can be bound.");
 
     glBindVertexArray(vao_);

@@ -11,9 +11,9 @@ EventManagerImpl::EventManagerImpl() = default;
 void EventManagerImpl::registerCallbacks(Entity* entity) {
     for (const Ptr<ConductorComponent>& conductor : entity->getConductors()) {
         if (conductor->registered_) {
-            PR_ASSERT(entity == conductor->entity,
-                      "A Conductor component has been assigned to multiple "
-                      "different entities.");
+            Pr::Assert(entity == conductor->entity,
+                       "A Conductor component has been assigned to multiple "
+                       "different entities.");
 
             continue;
         }

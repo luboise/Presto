@@ -26,7 +26,7 @@ OpenGLBuffer::OpenGLBuffer(BufferType type, Pr::size_t size)
             openGlBufferType_ = GL_UNIFORM_BUFFER;
             break;
         default:
-            PR_CORE_ASSERT(false, "Invalid buffer type");
+            Pr::CoreAssert(false, "Invalid buffer type");
             return;
     }
 

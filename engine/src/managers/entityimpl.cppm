@@ -62,7 +62,7 @@ template <typename T = Entity, typename... Args>
 T *newEntity(Args &&...args) {
 entity_id_t new_id{EntityManagerImpl::reserveId()};
 
-PR_CORE_ASSERT(exists(new_id),
+Pr::CoreAssert(exists(new_id),
                "Attempted to create entity using existing id: {}",
                new_id);
 

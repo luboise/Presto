@@ -39,8 +39,9 @@ void Swapchain::reload() {
 // Private
 VkSurfaceFormatKHR Swapchain::chooseSwapSurfaceFormat(
     const std::vector<VkSurfaceFormatKHR>& availableFormats) {
-    PR_ASSERT(availableFormats.size() > 0,
-              "Empty list of swap surfaces passed to chooseSwapSurfaceFormat.");
+    Pr::Assert(
+        availableFormats.size() > 0,
+        "Empty list of swap surfaces passed to chooseSwapSurfaceFormat.");
 
     // Look for SRGB with 8 bit colors
     for (const auto& formatKHR : availableFormats) {

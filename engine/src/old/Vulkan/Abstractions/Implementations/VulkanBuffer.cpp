@@ -71,7 +71,7 @@ break;
 
 void VulkanBuffer::write(buffer_write_t data, Pr::size_t offset) {
     /**
-    PR_CORE_ASSERT(mapping_ != nullptr,
+    Pr::CoreAssert(mapping_ != nullptr,
                    "A buffer can't be written to without a memory mapping "
                    "(see VulkanBuffer::getMapping).");
 **/
@@ -135,12 +135,12 @@ MemoryMapping VulkanBuffer::createMapping(uint32_t offset, uint32_t size) {
     const uint32_t allocation_size = this->size_ - offset;
 
     // Check for valid mapping region
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         allocation_size <= size_,
         "A memory mapping can't be made past the boundaries of a buffer.");
 
     // Check there isn't already a mapping
-    PR_CORE_ASSERT(mapping_ == nullptr,
+    Pr::CoreAssert(mapping_ == nullptr,
                    "A memory mapping can't be created if there already is "
                    "one.\nBuffer handle: {}\nBuffer memory handle: {}, "
                    "Existing map pointer: {}'",
@@ -151,7 +151,7 @@ MemoryMapping VulkanBuffer::createMapping(uint32_t offset, uint32_t size) {
 };
 
 void VulkanBuffer::destroyMapping() {
-    PR_CORE_ASSERT(mapping_ != nullptr,
+    Pr::CoreAssert(mapping_ != nullptr,
                    "A null memory mapping can't be destroyed.");
 
     vkUnmapMemory(_device.handle(), memory_);
@@ -161,7 +161,7 @@ void VulkanBuffer::destroyMapping() {
 void VulkanBuffer::write(const uint32_t data_size, const void* data,
                          const uint32_t offset) {
     /**
-    PR_CORE_ASSERT(mapping_ != nullptr,
+    Pr::CoreAssert(mapping_ != nullptr,
                    "A buffer can't be written to without a memory mapping "
                    "(see VulkanBuffer::getMapping).");
 **/
@@ -175,7 +175,7 @@ void VulkanBuffer::write(const uint32_t data_size, const void* data,
 
 void VulkanBuffer::copyInto(CommandPool& command_pool, const Buffer& src,
                             Buffer& dst, const uint32_t size) {
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         src._device.handle() == dst._device.handle(),
         "A buffer can not be copied across different logical devices.");
 

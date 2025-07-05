@@ -58,7 +58,9 @@ target_sources(${PRESTO_ENGINE_NAME} PRIVATE FILE_SET presto_internal_modules
   managers/entityimpl.cppm
   managers.cppm
   #
-  windowdata.cppm)
+  windowdata.cppm
+  #
+  internal.cppm)
 
 target_sources(${PRESTO_ENGINE_NAME} 	PRIVATE
 impl/core/logging.cpp

@@ -72,7 +72,7 @@ Scalar Timer::progress() const {
 
     double currentTime{Time::totalSecondsSinceStart()};
 
-    PR_ASSERT(duration_ != 0, "Timer has a duration of 0.");
+    Pr::Assert(duration_ != 0, "Timer has a duration of 0.");
 
     auto percentage{
         static_cast<Scalar>((currentTime - startTime_) / duration_)};

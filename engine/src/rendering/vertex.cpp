@@ -83,11 +83,12 @@ bool AttributeSet::lock(bool calculateOffsets) {
 };
 
 void AttributeSet::addAttribute(VertexAttribute attrib) {
-    PR_ASSERT(!this->locked(),
-              "An AttributeSet must be locked in order to add new attributes.");
+    Pr::Assert(
+        !this->locked(),
+        "An AttributeSet must be locked in order to add new attributes.");
 
     // Check that the new attribute hasn't already been added to the map
-    PR_CORE_ASSERT(attributes_.find(attrib.index) == attributes_.end(),
+    Pr::CoreAssert(attributes_.find(attrib.index) == attributes_.end(),
                    std::format("Attempted to bind an attribute to the "
                                "same index twice (index: {})",
                                attrib.index));
@@ -112,8 +113,8 @@ const auto& AttributeSet::getAttributes() const { return attributes_; };
 std::size_t AttributeSet::size() { return attributes_.size(); }
 
 Pr::size_t AttributeSet::bytesRequired() const {
-    PR_ASSERT(this->locked(),
-              "Unable to obtain stride on an unlocked AttributeSet.");
+    Pr::Assert(this->locked(),
+               "Unable to obtain stride on an unlocked AttributeSet.");
 
     return std::accumulate(attributes_.begin(), attributes_.end(), 0,
                            [](Pr::size_t sum, const auto& pair) -> Pr::size_t {

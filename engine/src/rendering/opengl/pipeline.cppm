@@ -73,7 +73,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
                 glShaderSource(vs, 1, &data, nullptr);
                 glCompileShader(vs);
 
-                PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(vs),
+                Pr::CoreAssert(OpenGLUtils::ShaderCompiledCorrectly(vs),
                                "Vertex shader failed to compile.");
 
                 vertexShader_.id = vs;
@@ -85,7 +85,7 @@ class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
                 glShaderSource(fs, 1, &data, nullptr);
                 glCompileShader(fs);
 
-                PR_CORE_ASSERT(OpenGLUtils::ShaderCompiledCorrectly(fs),
+                Pr::CoreAssert(OpenGLUtils::ShaderCompiledCorrectly(fs),
                                "Fragment shader failed to compile.");
 
                 fragmentShader_.id = fs;

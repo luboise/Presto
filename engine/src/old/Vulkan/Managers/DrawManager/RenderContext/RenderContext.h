@@ -12,12 +12,12 @@ class RenderContext {
     explicit RenderContext(const Swapchain&);
 
     [[nodiscard]] RenderPass& getRenderPass() const {
-        PR_CORE_ASSERT(
+        Pr::CoreAssert(
             _renderPass != nullptr,
             "Attempted to get the render pass handle from RenderContext "
             "before it has been initialised. This shouldn't be possible. "
-            "Check the render context constructor RenderContext()")
-        return *_renderPass;
+            "Check the render context constructor "
+            "RenderContext()") return *_renderPass;
     };
 
     [[nodiscard]] Pipeline* getPipeline() const { return _pipeline; }

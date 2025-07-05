@@ -14,7 +14,7 @@ DescriptorGroup::DescriptorGroup(
     DescriptorPool& pool, BufferManager& buffer_manager,
     const std::vector<DescriptorSetLayout*>& layouts, uint32_t count)
     : _pool(&pool) {
-    PR_CORE_ASSERT(count > 0,
+    Pr::CoreAssert(count > 0,
                    "Must allocate at least one descriptor set when calling "
                    "DescriptorSetLayout::allocate()");
 
@@ -68,7 +68,7 @@ DescriptorGroup::DescriptorGroup(
 };
 
 const DescriptorFrameSet& DescriptorGroup::getFrameSet(uint32_t index) const {
-    PR_CORE_ASSERT(index < _frameSets.size(),
+    Pr::CoreAssert(index < _frameSets.size(),
                    "Invalid index into descriptor group. Expected [0, {}], "
                    "received {}.",
                    _frameSets.size() - 1, index);

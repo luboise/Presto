@@ -66,7 +66,7 @@ class Allocator {
         Allocated<V> ptr{allocation};
 
         V new_id{idGenerator_.generate()};
-        PR_CORE_ASSERT(!entries_.contains(new_id),
+        Pr::CoreAssert(!entries_.contains(new_id),
                        std::format("Keys that an Allocator receives from an "
                                    "IDGenerator must be unique, and {} wasn't.",
                                    new_id));
@@ -106,7 +106,7 @@ class Allocator {
             new_id = key;
         }
 
-        PR_CORE_ASSERT(!entries_.contains(new_id),
+        Pr::CoreAssert(!entries_.contains(new_id),
                        std::format("Keys that an Allocator receives from an "
                                    "IDGenerator must be unique, and {} wasn't.",
                                    new_id));
@@ -132,13 +132,13 @@ class Allocator {
             return false;
         }
 
-        PR_CORE_ASSERT(entries_.contains(id),
+        Pr::CoreAssert(entries_.contains(id),
                        "Attempted to release memory that has already been "
                        "released. ID: {}",
                        id);
 
         std::size_t removed{entries_.erase(id)};
-        PR_CORE_ASSERT(
+        Pr::CoreAssert(
             removed > 0,
             "Allocator release should never fail after checking the ID.");
 
@@ -152,7 +152,7 @@ class Allocator {
     void release(V query)
         requires std::equality_comparable<V>
     {
-        PR_CORE_ASSERT(query != nullptr,
+        Pr::CoreAssert(query != nullptr,
                        "Attempted to release memory from a nullptr.");
 
         auto values_view{entries_ | std::views::values};

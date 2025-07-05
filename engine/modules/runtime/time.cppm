@@ -5,6 +5,7 @@ export module presto.runtime.time;
 
 import presto.core;
 import presto.core.concepts;
+import presto.runtime.application;
 
 export namespace Pr {
 

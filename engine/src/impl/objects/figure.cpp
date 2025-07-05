@@ -4,7 +4,7 @@ import std;
 
 export namespace Pr {
 Figure::Figure(figure_size_t size) {
-    PR_CORE_ASSERT(
+    Pr::CoreAssert(
         size > 0 && size < PRESTO_FIGURE_MAX_ENTITY_COUNT,
         std::format("Figure entity count is out of valid range [1, {}]",
                     PRESTO_FIGURE_MAX_ENTITY_COUNT));
@@ -31,9 +31,9 @@ Figure::~Figure() {
 }
 
 Entity& Figure::getEntity(Pr::size_t index) {
-    PR_ASSERT(index < entities_.size(),
-              std::format("Index out of acccepted bounds [0, {}]",
-                          entities_.size() - 1));
+    Pr::Assert(index < entities_.size(),
+               std::format("Index out of acccepted bounds [0, {}]",
+                           entities_.size() - 1));
     return *entities_[index];
 };
 

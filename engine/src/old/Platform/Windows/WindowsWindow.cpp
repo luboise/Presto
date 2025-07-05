@@ -40,7 +40,7 @@ void WindowsWindow::init(const WindowProperties& props) {
     if (!s_GLFWInitialised) {
         int success = glfwInit();
 
-        PR_CORE_ASSERT(success,
+        Pr::CoreAssert(success,
                        "Unable to initialise GLFW. Program cannot continue.");
 
         // Disable OpenGL
@@ -61,7 +61,7 @@ void WindowsWindow::init(const WindowProperties& props) {
     switch (props.render_library) {
         case Renderer::VULKAN: {
             this->_renderer = new VulkanRenderer((GLFWwindow*)this->_windowPtr);
-            PR_CORE_ASSERT(this->_renderer->initialised(),
+            Pr::CoreAssert(this->_renderer->initialised(),
                            "The renderer was not initialised.");
             break;
         }
