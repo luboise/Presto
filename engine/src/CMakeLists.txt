@@ -36,6 +36,7 @@ target_sources(
           FILES
           common.cppm
           common.types.cppm
+          events.cppm
           #
           create_window.cppm
           #
@@ -64,10 +65,7 @@ target_sources(
           #
           windowdata.cppm
           #
-          internal.cppm)
-
-target_sources(
-  ${PRESTO_ENGINE_NAME}
+          internal.cppm
   PRIVATE impl/core/logging.cpp
           impl/core/event_manager.cpp
           #

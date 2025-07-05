@@ -1,7 +1,7 @@
 module;
 #include "presto/platform.h"
 
-export module presto.core.eventmanager;
+export module presto.core.event_manager;
 
 import std;
 

@@ -23,7 +23,6 @@ constexpr entity_tag_id_t INVALID_TAG_ID = -1;
 
 class PRESTO_API Entity {
     friend class EntityManagerImpl;
-    friend class EventManager;
 
    public:
     Entity() = delete;
@@ -49,8 +48,6 @@ class PRESTO_API Entity {
 
         checkNewComponent(component_ptr);
     }
-
-    [[nodiscard]] std::vector<Ptr<ConductorComponent>> getConductors();
 
     template <ComponentType ComponentClass>
     ComponentPtr<ComponentClass> getComponent() {

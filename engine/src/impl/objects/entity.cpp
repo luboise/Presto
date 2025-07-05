@@ -2,6 +2,8 @@ module presto.objects.entity;
 
 import std;
 
+import presto.internal.events;
+
 namespace Pr {
 
 Entity::Entity(entity_id_t id, entity_name_t name)
@@ -42,18 +44,6 @@ void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
             {.entity = this, .body = rigidbody_ptr});
     }
 };
-
-std::vector<Ptr<ConductorComponent>> Entity::getConductors() {
-    auto data{getComponents() | std::views::values |
-              std::views::transform(
-                  [](auto& val) -> ComponentPtr<ConductorComponent> {
-                      return std::dynamic_pointer_cast<ConductorComponent>(val);
-                  }) |
-              std::views::filter(
-                  [](const auto& val) -> bool { return val != nullptr; })};
-
-    return {data.begin(), data.end()};
-}
 
 void Entity::destroy() { EntityManagerImpl::get().destroyEntity(this); }
 

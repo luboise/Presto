@@ -1,8 +1,7 @@
-export module presto.asset.material.traits;
+export module presto.assets.material.traits;
 
 import presto.core.types;
 import presto.assets.types;
-
 import presto.assets.image;
 
 export namespace Pr {

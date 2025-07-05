@@ -2,17 +2,21 @@ export module presto.objects;
 
 import std;
 
+export import presto.objects.components.conductor;
 export import presto.objects.entity;
 
+import presto.core.types;
+import presto.core.concepts;
 import presto.objects.component;
 import presto.objects.components.conductor;
-
-export module presto.objects.components.conductor;
+import presto.objects.components.camera;
 
 using namespace std::ranges;
 using namespace std::views;
 
 export namespace Pr {
+
+class EntityOwner;
 
 [[nodiscard]] EntityRef NewLooseEntity();
 

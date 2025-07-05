@@ -4,6 +4,18 @@ import presto.core.types;
 
 namespace Pr {
 
+std::vector<Ptr<ConductorComponent>> Pr::GetConductors() {
+    auto data{getComponents() | std::views::values |
+              std::views::transform(
+                  [](auto& val) -> ComponentPtr<ConductorComponent> {
+                      return std::dynamic_pointer_cast<ConductorComponent>(val);
+                  }) |
+              std::views::filter(
+                  [](const auto& val) -> bool { return val != nullptr; })};
+
+    return {data.begin(), data.end()};
+}
+
 Pr::CameraComponent& Pr::GetDefaultCamera() {
     using namespace Pr;
 

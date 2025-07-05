@@ -3,6 +3,8 @@ module;
 
 export module presto.assets.material;
 
+import presto.core.types;
+import presto.core.constants;
 export import presto.assets.material.types;
 export import presto.assets.material.traits;
 

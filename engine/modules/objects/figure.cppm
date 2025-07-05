@@ -1,9 +1,11 @@
 export module presto.objects.entity:figure;
 
+import std;
+
 import presto.core.types;
+import presto.objects.entity;
 
 export namespace Pr {
-class Entity;
 
 constexpr auto PRESTO_FIGURE_MAX_ENTITY_COUNT = 20;
 using figure_size_t = Pr::size_t;

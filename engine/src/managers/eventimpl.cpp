@@ -9,7 +9,7 @@ using MakeConductor = std::function<ConductorPtr(GenericComponentPtr& val)>;
 EventManagerImpl::EventManagerImpl() = default;
 
 void EventManagerImpl::registerCallbacks(Entity* entity) {
-    for (const Ptr<ConductorComponent>& conductor : entity->getConductors()) {
+    for (const Ptr<ConductorComponent>& conductor : Pr::GetConductors(entity)) {
         if (conductor->registered_) {
             Pr::Assert(entity == conductor->entity,
                        "A Conductor component has been assigned to multiple "

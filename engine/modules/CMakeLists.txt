@@ -37,6 +37,7 @@ target_sources(
          physics.cppm
          #
          objects/entity.cppm
+         objects/figure.cppm
          objects/component.cppm
          objects/components/transform.cppm
          objects/components/conductor.cppm

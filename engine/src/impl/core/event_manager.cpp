@@ -1,4 +1,4 @@
-module presto.core.eventmanager;
+module presto.core.event_manager;
 import presto.internal.eventimpl;
 
 namespace Pr {

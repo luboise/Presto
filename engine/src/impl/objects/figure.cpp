@@ -1,5 +1,6 @@
 module presto.objects.entity;
 import :figure;
+
 import std;
 
 export namespace Pr {

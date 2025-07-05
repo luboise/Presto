@@ -33,7 +33,7 @@ EntityManagerImpl::~EntityManagerImpl() {
 void EntityManagerImpl::update() {
     // TODO: Move this somewhere cached instead
     for (const auto& entity : impl_->entity_map | std::views::values) {
-        for (const auto& script : entity->getConductors()) {
+        for (const auto& script : Pr::GetConductors(entity)) {
             script->update();
         }
     }
