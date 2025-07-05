@@ -2,6 +2,7 @@ export module presto.utils;
 
 export import :file;
 export import :interpolation;
+export import :typemap;
 
 import presto.core.types;
 

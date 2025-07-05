@@ -5,6 +5,7 @@ module presto.assets.font;
 
 import std;
 
+import presto.utils;
 import presto.core;
 import presto.core.assert;
 

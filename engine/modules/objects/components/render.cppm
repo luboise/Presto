@@ -9,6 +9,7 @@ import presto.core.types;
 import presto.core.platform;
 import presto.objects.component;
 import presto.assets.types;
+import presto.assets.model;
 
 export namespace Pr {
 struct QuadSubcomponent;

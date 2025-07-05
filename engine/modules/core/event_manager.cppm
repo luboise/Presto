@@ -5,6 +5,7 @@ export module presto.core.eventmanager;
 
 import std;
 
+import presto.core.logging;
 import presto.core.event.base;
 import presto.core.concepts;
 import presto.utils;

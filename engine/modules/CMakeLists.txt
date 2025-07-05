@@ -9,22 +9,27 @@ target_sources(
          FILES
          core/concepts.cppm
          #
-         core/typesbase.cppm
-         core/typetraits.cppm
-         core/typehandles.cppm
+         core/types_base.cppm
+         core/type_traits.cppm
+         core/type_handles.cppm
          core/types.cppm
-		 #
+         #
+         utils/file.cppm
+         utils/interpolation.cppm
+         utils/typemap.cppm
+         utils.cppm
+         #
          core/constants.cppm
-		 #
+         #
          core/logging.cppm
          core/assert.cppm
          #
          core/platform.cppm
          #
          core/manager.cppm
-         core/eventbase.cppm
-         core/eventuser.cppm
-         core/eventmanager.cppm
+         core/event_base.cppm
+         core/event_user.cppm
+         core/event_manager.cppm
          core/event.cppm
          #
          core.cppm
@@ -49,6 +54,9 @@ target_sources(
          assets/image.cppm
          assets/mesh.cppm
          assets/model.cppm
+         #
+         assets/material_types.cppm
+         assets/material_traits.cppm
          assets/material.cppm
          assets.cppm
          #
@@ -72,15 +80,8 @@ target_sources(
          input/events.cppm
          input/keycodes.cppm
          #
-         utils/file.cppm
-         utils/interpolation.cppm
-         utils/typemap.cppm
-         utils.cppm
-         #
          debugging.cppm
          #
-         materials.cppm
-         materialtypes.cppm
          # Main API importables
          presto.cppm
          entry.cppm

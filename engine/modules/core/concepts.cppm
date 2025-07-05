@@ -43,4 +43,19 @@ concept Scalable = requires(T a, Scalar b) {
     { a / b } -> std::convertible_to<T>;
 };
 
+template <typename, typename = void>
+struct has_arrow_operator : std::false_type {};
+
+template <typename T>
+struct has_arrow_operator<T,
+                          std::void_t<decltype(std::declval<T>().operator->())>>
+    : std::true_type {};
+
+template <typename T>
+inline constexpr bool has_arrow_operator_v = has_arrow_operator<T>::value;
+
+template <typename T>
+inline constexpr bool is_any_pointer_type_v =
+    (has_arrow_operator_v<T> || std::is_pointer_v<T>);
+
 }  // namespace Pr

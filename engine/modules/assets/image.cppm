@@ -2,6 +2,7 @@ export module presto.assets.image;
 
 import std;
 
+import presto.core.types;
 import presto.assets.types;
 
 export namespace Pr {

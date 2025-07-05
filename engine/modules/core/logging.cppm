@@ -28,7 +28,7 @@ class Logger {
 
 export template <typename... Args>
 void Log(LogLevel level, const char* str, Args&&... args) {
-    Logger::Log(level, std::format(str, std::move(args...)));
+    Logger::Log(level, std::format(std::move(str), std::move(args...)));
 };
 
 export template <typename T>
@@ -43,7 +43,7 @@ void Log(LogLevel level, const std::string& value) {
 
 export template <typename... Args>
 void CoreLog(LogLevel level, const char* str, Args&&... args) {
-    Logger::CoreLog(level, std::format(str, std::move(args...)));
+    Logger::CoreLog(level, std::format(std::move(str), std::move(args...)));
 };
 
 export template <typename T>

@@ -9,7 +9,7 @@ import presto.assets.types;
 
 using json = nlohmann::json;
 
-namespace Pr::Utils::File {
+export namespace Pr::Utils::File {
 // static Mesh* LoadMesh(const Pr::string&);
 
 const FilePath executableDirectory{std::filesystem::current_path()};

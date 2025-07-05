@@ -4,7 +4,7 @@ import std;
 import presto.core;
 
 import presto.assets.types;
-import presto.materials;
+import presto.assets.materials;
 
 export namespace Pr {
 
