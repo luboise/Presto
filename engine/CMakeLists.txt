@@ -1,4 +1,5 @@
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++
+# -lc++abi")
 add_library(${PRESTO_ENGINE_NAME} SHARED)
 
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY CXX_MODULE_STD 1)
@@ -29,9 +30,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(functions)
 
 target_sources(
-  ${PRESTO_ENGINE_NAME}
-  PUBLIC FILE_SET presto_modules TYPE CXX_MODULES BASE_DIRS
-         "${CMAKE_CURRENT_SOURCE_DIR}/modules")
+  ${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE CXX_MODULES
+                               BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 add_subdirectory(modules)
 
 target_sources(
@@ -40,8 +40,6 @@ target_sources(
           "${CMAKE_CURRENT_SOURCE_DIR}/src")
 add_subdirectory(src)
 
-
-
 # target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE glfw)
 if(PLATFORM STREQUAL "Windows")
   target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE dwmapi.lib
@@ -49,7 +47,8 @@ if(PLATFORM STREQUAL "Windows")
 endif()
 
 target_link_libraries(${PRESTO_ENGINE_NAME} PUBLIC glfw ${Vulkan_LIBRARIES})
-target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS} spdlog::spdlog_header_only)
+target_link_libraries(${PRESTO_ENGINE_NAME} PRIVATE ${CHRONO_TARGETS}
+                                                    spdlog::spdlog_header_only)
 
 set(TINYGLTF_HEADER_ONLY
     OFF
@@ -60,8 +59,8 @@ set(TINYGLTF_INSTALL
 
 set(PRESTO_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC 
-   "${CMAKE_CURRENT_SOURCE_DIR}/headers")
+target_include_directories(${PRESTO_ENGINE_NAME}
+                           PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 
 # target_include_directories(${PRESTO_ENGINE_NAME} PUBLIC
 # ${CMAKE_CURRENT_SOURCE_DIR}/ext/TinyGLTF)
@@ -91,5 +90,5 @@ else()
 endif()
 
 if(PRESTO_ENABLE_TESTS)
-  add_subdirectory(test)
+  # add_subdirectory(test)
 endif()

@@ -1,5 +1,5 @@
-import presto.math;
 #include <gtest/gtest.h>
+import presto.math;
 
 using namespace Pr;
 

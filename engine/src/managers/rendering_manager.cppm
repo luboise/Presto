@@ -10,6 +10,8 @@ import presto.core.types;
 import presto.assets.image;
 import presto.assets.material;
 
+import presto.internal.rendering;
+
 export namespace Pr {
 
 class MaterialInstance;
@@ -154,52 +156,6 @@ class MaterialInstance {
     void setFromImport(const ImportedMaterial& imported_material,
                        std::vector<Pr::Ptr<Pr::Texture>>& texturePtrs);
 
-    template <typename T>
-        requires requires { sizeof(T); } &&
-                 // Ensure that T is not a pointer
-                 requires { !is_any_pointer_type_v<T>; }
-    MaterialInstance& setProperty(Pr::string name, const T& data) {
-        PropertyDetails* details{getBinding(name)};
-
-        if (details == nullptr) {
-            Pr::CoreLog(
-                WARN,
-                "Unable to find \"{}\" in MaterialInstance of pipeline {}. "
-                "Skipping this write.",
-                name, this->getPipelineId());
-            return *this;
-        }
-
-        if (sizeof(data) != details->binding.size()) {
-            Pr::CoreLog(
-                ERROR,
-                "The size of data being written to material property {} must "
-                "be of "
-                "size {}. Received size {}.",
-                name, details->binding.size(), sizeof(data));
-            return *this;
-        }
-
-        switch (details->binding.bind_type) {
-            case UniformBinding::SINGLE: {
-                getUniformDataStore(details->data_index).write(data);
-                break;
-            }
-            case UniformBinding::BLOCK: {
-                ErasedBytes bytes{data};
-
-                getUniformBuffer(details->data_index)
-                    .write(bytes.getData(), details->binding.offset);
-                break;
-            }
-            default: {
-                Pr::CoreLog(ERROR, "Unhandled UniformBinding case.");
-            }
-        }
-
-        return *this;
-    };
-
    private:
     void bindTo(Pipeline&) const;
 
@@ -221,5 +177,11 @@ class MaterialInstance {
 template <>
 MaterialInstance& MaterialInstance::setProperty(Pr::string name,
                                                 const Ptr<Texture>& data);
+
+class MaterialInstanceImpl : public MaterialInstance {
+   public:
+
+   private:
+};
 
 }  // namespace Pr

@@ -1,3 +1,6 @@
+module;
+#include "presto/platform.h"
+
 export module presto.objects;
 
 import std;
@@ -17,6 +20,7 @@ using namespace std::views;
 export namespace Pr {
 
 class EntityOwner;
+class EntityManager;
 
 [[nodiscard]] EntityRef NewLooseEntity();
 
@@ -62,7 +66,7 @@ ComponentPtr<T> Conductor(Args... args) {
 
 }  // namespace CreateComponent
 
-// Used by EntityManager.h
+// Used by EntityManager
 using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
 
 using ComponentList = std::vector<GenericComponentPtr>;
@@ -72,9 +76,9 @@ using ComponentSearchResults =
                 ComponentFilter>;
 
 class PRESTO_API EntityManager {
-    friend class Application;
+    // friend class Application;
 
-    friend Figure::~Figure();
+    // friend Figure::~Figure();
 
     using EntityMap = std::map<entity_id_t, EntityPtr>;
 

@@ -15,8 +15,6 @@ import presto.assets.types;
 
 export namespace Pr {
 
-class MaterialInstance;
-
 class PRESTO_API MaterialAsset final :
     // Enables MaterialAsset to be able to get its own shared pointer, needed
     // for giving the instances a weak reference
@@ -25,7 +23,7 @@ class PRESTO_API MaterialAsset final :
    public:
     friend class RenderingManager;
 
-    MaterialAsset(Pr::string name, const PipelineStructure& structure);
+    MaterialAsset(Pr::string name, const UniformLayout& structure);
 
     ~MaterialAsset() override = default;
 
@@ -39,10 +37,7 @@ class PRESTO_API MaterialAsset final :
      */
     [[nodiscard]] UniformLayout uniformLayout() const;
 
-    static UniformLayout createLayoutFromPipelineStructure(
-        const PipelineStructure&);
-
-    Ptr<MaterialInstance> createInstance();
+    // Ptr<MaterialInstance> createInstance();
 
     [[nodiscard]] pipeline_id_t pipelineId() const { return pipelineId_; };
 

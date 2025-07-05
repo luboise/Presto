@@ -8,6 +8,8 @@ export import :buffer;
 export import :pipeline;
 export import :shader;
 export import :texture;
+export import :struct_uniform_buffer;
+
 export import presto.internal.rendering.types;
 
 // import presto.utils;

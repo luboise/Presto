@@ -4,7 +4,7 @@ import std;
 import presto.core;
 
 import presto.assets.types;
-import presto.assets.materials;
+import presto.assets.material;
 
 export namespace Pr {
 
@@ -19,7 +19,7 @@ class Mesh {
     mesh_registration_id_t registrationId_{PR_UNREGISTERED};
 };
 
-struct MeshData;
+struct BoundingBox;
 
 class MeshAsset final : public Asset {
     friend class RenderingManager;
@@ -41,7 +41,7 @@ MeshAsset& setIndices(IndexList indices);
 MeshAsset& setDrawMode(MeshDrawMode mode);
     */
 
-    MeshAsset& setMeshData(MeshData data);
+    // MeshAsset& setMeshData(MeshData data);
 
     [[nodiscard]] Pr::Ptr<Pr::MaterialInstance>& defaultMaterial() const;
     MeshAsset& setDefaultMaterial(const Pr::Ptr<Pr::MaterialInstance>&);
@@ -49,7 +49,7 @@ MeshAsset& setDrawMode(MeshDrawMode mode);
     // TODO: Adapt to imported mesh so it doesn't have to be calculated
     [[nodiscard]] BoundingBox getBoundingBox() const;  // namespace Pr
 
-    static Pr::Ptr<Pr::MeshAsset> from(const ImportedMesh&);
+    // static Pr::Ptr<Pr::MeshAsset> from(const ImportedMesh&);
 
    private:
     struct Impl;
@@ -59,60 +59,6 @@ MeshAsset& setDrawMode(MeshDrawMode mode);
     bool load() override;
 
     [[nodiscard]] bool modifiable() const;
-};
-
-class MeshSource final : public AssetSource {
-   public:
-    explicit MeshSource(AssetPath filepath);
-    ~MeshSource() override;
-
-    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> getModel(const Pr::string& name);
-    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> loadModel(Pr::string modelName,
-                                                    bool allowReload = true);
-    void unloadModel(const Pr::string& modelName);
-
-    Pr::Ptr<Pr::MaterialInstance> getMaterial(const Pr::string& name);
-    Pr::Ptr<Pr::MaterialInstance> loadMaterial(Pr::string materialName,
-                                               bool allowReload = true);
-    void unloadMaterial(const Pr::string& materialName);
-
-    void reloadFile();
-
-    void unload() override;
-
-    MeshSource(const MeshSource&) = delete;
-    MeshSource(MeshSource&&) = delete;
-    MeshSource& operator=(const MeshSource&) = delete;
-    MeshSource& operator=(MeshSource&&) = delete;
-
-   private:
-    // void updateMesh();
-
-    // Allocated<ImportedModelData> importData_;
-
-    struct LoadedModel {
-        Pr::string name;
-        std::vector<ImportedMesh> mesh_imports;
-        std::vector<Ptr<Mesh>> meshes;
-
-        Pr::Ptr<Pr::ModelAsset> ptr{nullptr};
-    };
-
-    LoadedModel* getLoadedModel(const Pr::string& name);
-    void unloadModel(LoadedModel& loadedModel);
-
-    struct LoadedMaterial {
-        Pr::string name;
-        ImportedMaterial material_import;
-        Pr::Ptr<Pr::MaterialInstance> ptr{nullptr};
-    };
-
-    LoadedMaterial* getLoadedMaterial(const Pr::string& name);
-    void unloadMaterial(LoadedMaterial& loadedMaterial);
-
-    std::vector<LoadedModel> models_;
-    std::vector<LoadedMaterial> materials_;
-    std::vector<Pr::Ptr<Pr::Texture>> textures_;
 };
 
 struct BoundingBox {

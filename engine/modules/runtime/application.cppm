@@ -9,9 +9,6 @@ import presto.core.event;
 
 export namespace Pr {
 
-class WindowCloseEvent;
-class WindowResizeEvent;
-
 class PRESTO_API Application {
    public:
     Application();
@@ -40,16 +37,8 @@ class PRESTO_API Application {
     Application& operator=(Application&&) = delete;
 
    private:
-    bool onWindowClose(WindowCloseEvent& e);
-    bool onWindowResize(WindowResizeEvent& e);
-
-    // void runSystems();
-
     WindowPtr appWindow_;
     bool running_ = true;
-
-    // std::vector<Module*> _modules;
-    // std::vector<System*> _systems;
 
     struct AppOptions {};
 

@@ -22,8 +22,6 @@ struct ImageData {
 };
 
 class ImageAsset final : public Asset {
-    friend class RenderingManager;
-
    public:
     ImageAsset(Pr::string name, Pr::ImageData image)
         : Asset(std::move(name)), image_(std::move(image)) {};

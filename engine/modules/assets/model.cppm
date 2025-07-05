@@ -41,4 +41,58 @@ class ModelAsset final : public Asset {
     Ptr<MeshSource> source_;
 };
 
+class MeshSource final : public AssetSource {
+   public:
+    explicit MeshSource(AssetPath filepath);
+    ~MeshSource() override;
+
+    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> getModel(const Pr::string& name);
+    [[nodiscard]] Pr::Ptr<Pr::ModelAsset> loadModel(Pr::string modelName,
+                                                    bool allowReload = true);
+    void unloadModel(const Pr::string& modelName);
+
+    Pr::Ptr<Pr::MaterialInstance> getMaterial(const Pr::string& name);
+    Pr::Ptr<Pr::MaterialInstance> loadMaterial(Pr::string materialName,
+                                               bool allowReload = true);
+    void unloadMaterial(const Pr::string& materialName);
+
+    void reloadFile();
+
+    void unload() override;
+
+    MeshSource(const MeshSource&) = delete;
+    MeshSource(MeshSource&&) = delete;
+    MeshSource& operator=(const MeshSource&) = delete;
+    MeshSource& operator=(MeshSource&&) = delete;
+
+   private:
+    // void updateMesh();
+
+    // Allocated<ImportedModelData> importData_;
+
+    struct LoadedModel {
+        Pr::string name;
+        std::vector<ImportedMesh> mesh_imports;
+        std::vector<Ptr<Mesh>> meshes;
+
+        Pr::Ptr<Pr::ModelAsset> ptr{nullptr};
+    };
+
+    LoadedModel* getLoadedModel(const Pr::string& name);
+    void unloadModel(LoadedModel& loadedModel);
+
+    struct LoadedMaterial {
+        Pr::string name;
+        ImportedMaterial material_import;
+        Pr::Ptr<Pr::MaterialInstance> ptr{nullptr};
+    };
+
+    LoadedMaterial* getLoadedMaterial(const Pr::string& name);
+    void unloadMaterial(LoadedMaterial& loadedMaterial);
+
+    std::vector<LoadedModel> models_;
+    std::vector<LoadedMaterial> materials_;
+    std::vector<Pr::Ptr<Pr::Texture>> textures_;
+};
+
 }  // namespace Pr

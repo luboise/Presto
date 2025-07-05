@@ -4,6 +4,7 @@ module;
 #include "presto/platform.h"
 
 export module presto.core.manager;
+export import presto.core.types;
 
 import presto.core;
 import std;
@@ -15,6 +16,11 @@ struct UsesModuleFunctions : std::false_type {};
 template <typename T>
 struct UsesModuleFunctions<T, std::void_t<decltype(&T::getModuleName)>>
     : std::true_type {};
+
+#define INTERNAL_MODULE_STATIC_ASSERTION()                               \
+    static_assert(UsesModuleFunctions<T>::value,                         \
+                  "The type T must use the MODULE_FUNCTIONS() macro to " \
+                  "define a static function `getModuleName()`.")
 
 template <class T>
 // requires UsesModuleFunctions<T>::value

@@ -51,11 +51,13 @@ target_sources(
           rendering/shader.cppm
           rendering/pipeline.cppm
           rendering.cppm
+          #
+          rendering/opengl/types.cppm
           rendering/opengl/buffer.cppm
-          rendering/opengl/opengl.cppm
           rendering/opengl/pipeline.cppm
           rendering/opengl/shader.cppm
           rendering/opengl/texture.cppm
+          rendering/opengl/opengl.cppm
           #
           managers/asset_manager.cppm
           managers/entity_manager_impl.cppm

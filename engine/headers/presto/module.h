@@ -18,8 +18,3 @@
                                                                 \
    private:                                                     \
     friend class Application
-
-#define INTERNAL_MODULE_STATIC_ASSERTION()                               \
-    static_assert(UsesModuleFunctions<T>::value,                         \
-                  "The type T must use the MODULE_FUNCTIONS() macro to " \
-                  "define a static function `getModuleName()`.")

@@ -1,4 +1,12 @@
+module;
+#include <GL/gl.h>
+
 export module presto.internal.rendering.opengl:types;
+
+import presto.core.types;
+import presto.core.constants;
+
+import presto.internal.rendering;
 
 export namespace Pr {
 

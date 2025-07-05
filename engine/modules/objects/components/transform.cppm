@@ -1,7 +1,7 @@
 module;
 #include "presto/platform.h"
 
-export module presto.objects.components:transform;
+export module presto.objects.components.transform;
 
 import presto.objects.component;
 import presto.core;
@@ -16,7 +16,7 @@ class PRESTO_API TransformComponent : public Component {
     TransformComponent(Pr::vec3 translation, Pr::vec3 rotation, Pr::vec3 scale);
 
     static mat4 getModelMatrix(Pr::vec3 offset, Pr::vec3 yawPitchRoll,
-                               glm::float32 scale) {
+                               Pr::float32_t scale) {
         return getModelMatrix(offset, yawPitchRoll, Pr::vec3(scale));
     };
 

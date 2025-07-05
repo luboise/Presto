@@ -1,4 +1,5 @@
 module;
+#include <glm/glm.hpp>
 #include "presto/platform.h"
 
 export module presto.objects.components.camera;

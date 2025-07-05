@@ -2,12 +2,14 @@ export module presto.math:transform_data;
 
 import :quaternion;
 
+export namespace Pr {
+
 struct TransformData {
     Pr::vec3 position;
-    Quaternion rotation;
+    Pr::Quaternion rotation;
 
     TransformData();
-    explicit TransformData(Pr::vec3 position, Quaternion rotation = {});
+    explicit TransformData(Pr::vec3 position, Pr::Quaternion rotation = {});
     TransformData(Pr::vec3 position, Pr::vec3 rotation);
 
     Pr::vec3 scale{1, 1, 1};
@@ -30,3 +32,5 @@ struct TransformData {
     TransformData& addTranslation(Pr::vec3);
     TransformData& scaleBy(Pr::vec3);
 };
+
+}  // namespace Pr

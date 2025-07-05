@@ -1,8 +1,13 @@
+module;
+#include "presto/module.h"
+
 export module presto.internal.managers.event_manager_impl;
 
 import presto.objects.entity;
 import presto.core.event;
 import presto.core.event_manager;
+
+import presto.core.manager;
 
 export namespace Pr {
 

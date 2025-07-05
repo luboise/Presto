@@ -1,5 +1,6 @@
 module presto.math;
 
+#include <glm/glm.hpp>
 import :quaternion;
 
 namespace Pr {

@@ -50,6 +50,8 @@ struct PipelineStructure {
     std::vector<PipelineUniformBlock> uniform_blocks;
 
     [[nodiscard]] Pr::size_t stride() const;
+
+    [[nodiscard]] UniformLayout asUniformLayout() const;
 };
 
 class Pipeline {

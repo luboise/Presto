@@ -126,27 +126,14 @@ void Application::initialiseEvents() {
     auto& em{EventManagerImpl::get()};
 
     em.addHandler<WindowResizeEvent>(
-        [this](WindowResizeEvent& e) { this->onWindowResize(e); });
+        [this](WindowResizeEvent& e) { return true; });
 
-    em.addHandler<WindowCloseEvent>(
-        [this](auto& e) -> bool { return this->onWindowClose(e); });
+    em.addHandler<WindowCloseEvent>([this](auto& e) -> bool {
+        this->running_ = false;
+        return true;
+    });
 }
-
-// TODO: Implement this
-bool Application::onWindowResize(WindowResizeEvent& /*e*/) { return true; };
-
-bool Application::onWindowClose(WindowCloseEvent& /*e*/) {
-    this->running_ = false;
-    return true;
-}
-
-/*
-void Application::runSystems() {
-for (auto& system : _systems) {
-    system->Update();
-}
-}
-*/
 
 Window& Application::getWindow() const { return *appWindow_; };
+
 }  // namespace Pr

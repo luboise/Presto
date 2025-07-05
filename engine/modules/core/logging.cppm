@@ -27,8 +27,13 @@ class Logger {
 };
 
 export template <typename... Args>
-void Log(LogLevel level, const char* str, Args&&... args) {
-    Logger::Log(level, std::format(std::move(str), std::move(args...)));
+void Log(LogLevel level, std::format_string<Args...> str, Args&&... args) {
+    Logger::Log(level, std::format(str, std::forward<Args>(args)...));
+};
+
+export template <>
+void Log(LogLevel level, std::format_string<> str) {
+    Logger::Log(level, std::format(str));
 };
 
 export template <typename T>
@@ -42,8 +47,13 @@ void Log(LogLevel level, const std::string& value) {
 };
 
 export template <typename... Args>
-void CoreLog(LogLevel level, const char* str, Args&&... args) {
-    Logger::CoreLog(level, std::format(std::move(str), std::move(args...)));
+void CoreLog(LogLevel level, std::format_string<Args...> str, Args&&... args) {
+    Logger::CoreLog(level, std::format(str, std::forward<Args>(args)...));
+};
+
+export template <>
+void CoreLog(LogLevel level, std::format_string<> str) {
+    Logger::CoreLog(level, std::format(str));
 };
 
 export template <typename T>

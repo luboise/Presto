@@ -57,10 +57,12 @@ Pr::Ptr<Pr::MaterialInstance>& MeshAsset::defaultMaterial() const {
     return impl_->default_material;
 };
 
+/*
 MeshAsset& MeshAsset::setMeshData(MeshData data) {
     impl_->mesh_data = std::move(data);
     return *this;
 };
+*/
 
 MeshSource::MeshSource(AssetPath filepath)
     : AssetSource(std::move(filepath), true) {

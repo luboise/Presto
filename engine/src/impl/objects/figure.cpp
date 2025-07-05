@@ -1,6 +1,8 @@
 module presto.objects.entity;
 import :figure;
 
+import presto.internal.managers;
+
 import std;
 
 namespace Pr {

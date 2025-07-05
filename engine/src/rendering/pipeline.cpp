@@ -43,4 +43,49 @@ Pr::size_t PipelineStructure::stride() const {
                            });
 };
 
+UniformLayout PipelineStructure::asUniformLayout() const {
+    UniformLayout layout{};
+
+    for (const PipelineUniformBlock& block : this->uniform_blocks) {
+        // Ignore the basic uniforms when creating a material layout
+        if (block.name == "GlobalUniforms" || block.name == "ObjectUniforms") {
+            continue;
+        }
+
+        UniformBlock new_block{};
+
+        new_block.bind_point = block.binding;
+        new_block.name = block.name;
+
+        Pr::uint32_t running_offset{0};
+
+        for (const PipelineUniform& uniform : block.uniforms) {
+            new_block.bindings.push_back({
+                .bind_type = UniformBinding::BLOCK,
+                .data_type = uniform.data_type,
+                .name = uniform.name,
+                .offset = running_offset,
+            });
+            running_offset += uniform.size();
+        }
+
+        layout.blocks.push_back(new_block);
+    }
+
+    layout.bindings.resize(this->uniforms.size());
+
+    for (Pr::size_t i{0}; i < this->uniforms.size(); i++) {
+        const PipelineUniform& uniform{this->uniforms[i]};
+
+        layout.bindings[i] = {
+            .bind_type = UniformBinding::SINGLE,
+            .data_type = uniform.data_type,
+            .name = uniform.name,
+            .location = uniform.location,
+        };
+    }
+
+    return layout;
+};
+
 }  // namespace Pr

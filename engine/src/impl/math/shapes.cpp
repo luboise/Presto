@@ -1,4 +1,7 @@
 module presto.math;
+
+#include <glm/glm.hpp>
+
 import :shapes;
 
 namespace Pr {

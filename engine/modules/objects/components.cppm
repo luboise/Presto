@@ -1,7 +1,7 @@
 export module presto.objects.components;
-export import :camera;
-export import :canvas;
-export import :conductor;
-export import :render;
-export import :rigidbody;
-export import :transform;
+export import presto.objects.components.canvas;
+export import presto.objects.components.conductor;
+export import presto.objects.components.camera;
+export import presto.objects.components.render;
+export import presto.objects.components.rigidbody;
+export import presto.objects.components.transform;

@@ -34,6 +34,11 @@ target_sources(
          #
          core.cppm
          #
+         math/shapes.cppm
+         math/quaternion.cppm
+         math/transform_data.cppm
+         math.cppm
+         #
          physics.cppm
          #
          objects/entity.cppm
@@ -62,9 +67,6 @@ target_sources(
          assets/mesh.cppm
          assets/model.cppm
          #
-         assets/material_types.cppm
-         assets/material_traits.cppm
-         assets/material.cppm
          assets.cppm
          #
          handles.cppm
@@ -78,11 +80,6 @@ target_sources(
          runtime/time.cppm
          runtime/application.cppm
          runtime.cppm
-         #
-         math/shapes.cppm
-         math/quaternion.cppm
-         math/transform_data.cppm
-         math.cppm
          #
          input.cppm
          input/events.cppm
