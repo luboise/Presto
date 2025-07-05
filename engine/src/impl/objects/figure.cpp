@@ -3,7 +3,7 @@ import :figure;
 
 import std;
 
-export namespace Pr {
+namespace Pr {
 Figure::Figure(figure_size_t size) {
     Pr::CoreAssert(
         size > 0 && size < PRESTO_FIGURE_MAX_ENTITY_COUNT,

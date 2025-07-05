@@ -53,6 +53,9 @@ target_sources(
          assets/types.cppm
          assets/font.cppm
          assets/image.cppm
+         assets/material_types.cppm
+         assets/material_traits.cppm
+         assets/material.cppm
          assets/mesh.cppm
          assets/model.cppm
          #

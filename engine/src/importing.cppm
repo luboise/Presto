@@ -1,5 +1,7 @@
 export module presto.internal.importing;
 
+import presto.core.types;
+
 export namespace Pr {
 
 struct ImportedVertexAttribute {
@@ -15,7 +17,7 @@ struct ImportedVertexAttribute {
 
 using ImportedAttributeList = std::vector<ImportedVertexAttribute>;
 
-static constexpr Pr::uint8_t PR_NO_MATERIAL_INDEX = -1;
+constexpr Pr::uint8_t PR_NO_MATERIAL_INDEX = -1;
 
 struct ImportedMaterial;
 

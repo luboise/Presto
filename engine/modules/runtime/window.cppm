@@ -16,13 +16,10 @@ struct WindowProperties {
     RENDER_LIBRARY render_library{UNSET};
 };
 
-class EventManager;
-
 // Abstracted window interface to be implemented per platform
 class Window {
    public:
     using WindowPtr = std::unique_ptr<Window>;
-    using EventCallbackFn = std::function<void(EventManager&)>;
 
     Window() = default;
     virtual ~Window() = default;
