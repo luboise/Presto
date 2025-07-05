@@ -1,6 +1,6 @@
 export module presto.internal.rendering:buffer;
 
-import presto.internal.managers.rendering;
+import presto.internal.managers.rendering_manager;
 
 import presto.core.types;
 import presto.utils;

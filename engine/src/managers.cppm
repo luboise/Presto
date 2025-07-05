@@ -1,8 +1,8 @@
 export module presto.internal.managers;
 
-export import presto.internal.managers.asset;
-export import presto.internal.managers.entityimpl;
-export import presto.internal.managers.eventimpl;
-export import presto.internal.managers.physics;
-export import presto.internal.managers.rendering;
-export import presto.internal.managers.input;
+export import presto.internal.managers.asset_manager;
+export import presto.internal.managers.entity_manager_impl;
+export import presto.internal.managers.event_manager_impl;
+export import presto.internal.managers.physics_manager;
+export import presto.internal.managers.rendering_manager;
+export import presto.internal.managers.input_manager;

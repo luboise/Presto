@@ -2,7 +2,7 @@ module presto.assets.mesh;
 
 import std;
 
-import presto.internal.managers.rendering;
+import presto.internal.managers.rendering_manager;
 import presto.internal;
 
 import presto.core.types;

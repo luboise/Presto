@@ -1,5 +1,8 @@
-export module presto.internal.managers.eventimpl;
-import :event;
+export module presto.internal.managers.event_manager_impl;
+
+import presto.objects.entity;
+import presto.core.event;
+import presto.core.event_manager;
 
 export namespace Pr {
 

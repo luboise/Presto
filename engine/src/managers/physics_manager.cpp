@@ -1,4 +1,4 @@
-module presto.internal.managers.physics;
+module presto.internal.managers.physics_manager;
 
 namespace Pr {
 

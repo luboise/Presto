@@ -1,27 +1,15 @@
-module presto.internal.managers.rendering;
+module presto.internal.managers.rendering_manager;
 
-import :types;
-import :pipeline;
-
-import presto.internal;
-import presto.internal.glfw;
 import presto.objects;
-
-import presto.internal.managers;
+import presto.render_types;
 import presto.objects.components;
 
-// STL import
+import presto.internal.utils;
+import presto.internal.glfw;
+import presto.internal.rendering;
+import presto.internal.managers;
+
 import std;
-
-// Public imports
-#include "Presto/Assets/ImportTypes.h"
-
-// Internal imports
-#include "Memory/AllocatorTypes.h"
-
-#include "Rendering/MeshRegistrationData.h"
-#include "Rendering/Renderer.h"
-#include "Utils/IDGenerator.h"
 
 namespace Pr {
 

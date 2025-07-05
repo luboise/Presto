@@ -1,6 +1,6 @@
 module presto.assets.material;
 
-import presto.internal.managers.rendering;
+import presto.internal.managers.rendering_manager;
 
 import std;
 

@@ -3,6 +3,8 @@ module;
 
 export module presto.internal.events;
 
+import std;
+
 import presto.core;
 
 export namespace Pr {

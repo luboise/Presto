@@ -1,4 +1,4 @@
-import module presto.internal.managers.asset;
+import module presto.internal.managers.asset_manager;
 
 import std;
 

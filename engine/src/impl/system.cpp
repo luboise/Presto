@@ -1,5 +1,5 @@
 module presto.system;
-import presto.internal.managers.rendering;
+import presto.internal.managers.rendering_manager;
 
 Pr::VisualExtents Pr::WindowSize() {
     using namespace Pr;

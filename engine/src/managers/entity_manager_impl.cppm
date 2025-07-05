@@ -1,7 +1,7 @@
 module;
 #include "presto/module.h"
 
-export module presto.internal.managers.entityimpl;
+export module presto.internal.managers.entity_manager_impl;
 
 import std;
 

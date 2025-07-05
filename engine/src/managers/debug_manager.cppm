@@ -1,4 +1,4 @@
-export module presto.internal.managers.debug;
+export module presto.internal.managers.debug_manager;
 
 import presto.core.types;
 

@@ -57,16 +57,23 @@ target_sources(
           rendering/opengl/shader.cppm
           rendering/opengl/texture.cppm
           #
-          managers/asset.cppm
-          managers/physics.cppm
-          managers/rendering.cppm
-          managers/entityimpl.cppm
+          managers/asset_manager.cppm
+          managers/entity_manager_impl.cppm
+          managers/event_manager_impl.cppm
+          managers/physics_manager.cppm
+          managers/rendering_manager.cppm
           managers.cppm
           #
           windowdata.cppm
           #
           internal.cppm
-  PRIVATE impl/core/logging.cpp
+  PRIVATE managers/asset_manager.cpp
+          managers/entity_manager_impl.cpp
+          managers/event_manager_impl.cpp
+          managers/physics_manager.cpp
+          managers/rendering_manager.cpp
+          #
+          impl/core/logging.cpp
           impl/core/event_manager.cpp
           #
           impl/assets/types.cpp
@@ -79,6 +86,8 @@ target_sources(
           #
           # impl/math.cpp
           impl/math/shapes.cpp
+          impl/math/quaternion.cpp
+          impl/math/transform_data.cpp
           #
           impl/physics.cpp
           #

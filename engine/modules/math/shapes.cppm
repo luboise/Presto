@@ -13,11 +13,11 @@ module;
 */
 
 export module presto.math:shapes;
+import :transform_data;
 
 import std;
 
 import presto.core.types;
-import presto.objects;
 
 export namespace Pr {
 

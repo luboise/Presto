@@ -1,5 +1,14 @@
+module;
+#include "presto/platform.h"
+
 export module presto.objects.components.camera;
 
+import presto.core.types;
+import presto.core.constants;
+
+import presto.math;
+
+import presto.utils;
 import presto.objects.component;
 
 export namespace Pr {

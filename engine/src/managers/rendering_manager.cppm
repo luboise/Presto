@@ -1,7 +1,7 @@
 module;
 #include "presto/module.h"
 
-export module presto.internal.managers.rendering;
+export module presto.internal.managers.rendering_manager;
 
 import presto.core.constants;
 import presto.core.manager;

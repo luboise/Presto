@@ -5,7 +5,7 @@ import presto.core.platform;
 import presto.internal.managers;
 
 #ifdef PR_DEBUG_BUILD
-import presto.internal.managers.debug;
+import presto.internal.managers.debug_manager;
 #endif
 
 namespace Pr {

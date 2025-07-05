@@ -39,12 +39,15 @@ target_sources(
          objects/entity.cppm
          objects/figure.cppm
          objects/component.cppm
-         objects/components/transform.cppm
          objects/components/conductor.cppm
+         objects/components/camera.cppm
+         #
          objects/components/canvastypes.cppm
          objects/components/canvasbase.cppm
          objects/components/canvasitems.cppm
          objects/components/canvas.cppm
+         #
+         objects/components/transform.cppm
          objects/components/render.cppm
          objects/components/rigidbody.cppm
          objects/components.cppm
@@ -78,6 +81,7 @@ target_sources(
          #
          math/shapes.cppm
          math/quaternion.cppm
+         math/transform_data.cppm
          math.cppm
          #
          input.cppm

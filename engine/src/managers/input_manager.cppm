@@ -1,4 +1,4 @@
-export module presto.internal.managers.input;
+export module presto.internal.managers.input_manager;
 
 export namespace Pr {
 
