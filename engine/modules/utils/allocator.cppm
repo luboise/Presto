@@ -1,13 +1,15 @@
 module;
 
-export module presto.utils:allocator;
+export module presto.utils.allocator;
 
 import std;
 
 import presto.core.constants;
+import presto.core.assert;
+
+import presto.types;
 import presto.utils;
 
-// #include "Utils/IDGenerator.h"
 export namespace Pr {
 
 using allocator_id_t = PR_NUMERIC_ID;

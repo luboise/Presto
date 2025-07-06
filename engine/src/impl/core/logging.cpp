@@ -6,6 +6,8 @@ module;
 
 module presto.core.logging;
 
+import std;
+
 namespace Pr {
 std::shared_ptr<spdlog::logger> Logger::coreLogger_;
 std::shared_ptr<spdlog::logger> Logger::clientLogger_;
@@ -19,7 +21,7 @@ void Logger::init() {
     clientLogger_->set_level(spdlog::level::trace);
 }
 
-void Logger::Log(LogLevel level, Pr::string message) {
+void Logger::Log(LogLevel level, std::string_view message) {
     switch (level) {
         case TRACE: {
             clientLogger_->trace(message);
@@ -39,7 +41,7 @@ void Logger::Log(LogLevel level, Pr::string message) {
     }
 }
 
-void Logger::CoreLog(LogLevel level, Pr::string message) {
+void Logger::CoreLog(LogLevel level, std::string_view message) {
     switch (level) {
         case TRACE: {
             coreLogger_->trace(message);

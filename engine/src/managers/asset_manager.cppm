@@ -1,4 +1,9 @@
+module;
+#include "presto/module.h"
+
 export module presto.internal.managers.asset_manager;
+
+import presto.internal.managers.manager;
 
 import std;
 

@@ -43,8 +43,6 @@ class AssetPath {
 using AssetArg = AssetPath;
 
 class Asset {
-    friend class AssetManager;
-
    public:
     explicit Asset(asset_name_t name = PR_ANY_NAME);
     virtual ~Asset();

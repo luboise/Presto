@@ -5,7 +5,7 @@ import std;
 import presto.core;
 import presto.objects;
 import presto.math;
-import presto.utils;
+import presto.utils.allocator;
 
 import presto.assets.material;
 

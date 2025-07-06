@@ -3,6 +3,7 @@ export module presto.utils;
 export import :file;
 export import :interpolation;
 export import :typemap;
+export import presto.utils.id_generator;
 
 import presto.types.core;
 

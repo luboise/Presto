@@ -1,8 +1,8 @@
 module presto.assets.model;
 
-import presto.internal.rendering.types;
-
 import std;
+
+import presto.core.logging;
 
 namespace Pr {
 bool ModelAsset::load() { return true; };

@@ -1,6 +1,8 @@
-export module presto.internal.utils;
+export module presto.utils.id_generator;
 
 import std;
+
+import presto.core.assert;
 
 export namespace Pr {
 

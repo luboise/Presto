@@ -1,9 +1,13 @@
 module presto.objects;
 
-#include <glm/fwd.hpp>
+import std;
 
 import presto.math;
 import presto.types.core;
+
+import presto.internal.managers;
+
+import presto.objects.components.conductor;
 
 std::vector<Ptr<ConductorComponent>> Pr::GetConductors() {
     auto data{getComponents() | std::views::values |

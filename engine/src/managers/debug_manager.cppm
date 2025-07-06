@@ -2,6 +2,8 @@ export module presto.internal.managers.debug_manager;
 
 import presto.types.core;
 
+import presto.internal.managers.manager;
+
 export namespace Pr {
 
 struct DebugDrawProps {

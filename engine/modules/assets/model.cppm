@@ -2,6 +2,8 @@ export module presto.assets.model;
 
 import std;
 
+export import presto.rendering.texture;
+
 import presto.assets.material;
 import presto.assets.mesh;
 import presto.assets.types;
@@ -14,9 +16,6 @@ export namespace Pr {
 class MeshSource;
 
 class ModelAsset final : public Asset {
-    friend class AssetManager;
-    friend class RenderingManager;
-
    public:
     explicit ModelAsset(asset_name_t);
 
@@ -29,7 +28,8 @@ class ModelAsset final : public Asset {
 
     BoundingBox getBoundingBox();
 
-    ModelAsset& addMesh(AssetPtr<MeshAsset>, AssetPtr<MaterialAsset> = nullptr);
+    ModelAsset& addMesh(Pr::Ptr<Pr::MeshAsset>,
+                        Pr::Ptr<Pr::MaterialInstance> = nullptr);
 
     ModelAsset& clear();
 

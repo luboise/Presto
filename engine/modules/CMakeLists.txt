@@ -21,6 +21,8 @@ target_sources(
          #
          core/concepts.cppm
          #
+         utils/id_generator.cppm
+         utils/allocator.cppm
          utils/file.cppm
          utils/interpolation.cppm
          utils/typemap.cppm
