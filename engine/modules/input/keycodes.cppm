@@ -1,6 +1,6 @@
 export module presto.input:keycodes;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 namespace Input {

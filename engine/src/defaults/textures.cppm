@@ -1,7 +1,7 @@
 export module presto.internal.defaults.textures;
 
 import presto.assets.image;
-import presto.core.types;
+import presto.types.core;
 
 import std;
 

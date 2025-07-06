@@ -7,7 +7,7 @@ import presto.objects.entity;
 import presto.core.event;
 import presto.core.event_manager;
 
-import presto.core.manager;
+import presto.internal.managers.manager;
 
 export namespace Pr {
 

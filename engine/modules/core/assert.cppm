@@ -6,7 +6,7 @@ export module presto.core.assert;
 import std;
 
 import presto.core.logging;
-import presto.core.types;
+import presto.types.core;
 
 #ifndef NDEBUG
 #if defined(PR_PLATFORM_WINDOWS)

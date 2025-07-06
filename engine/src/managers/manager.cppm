@@ -3,8 +3,8 @@ module;
 #include "presto/module.h"
 #include "presto/platform.h"
 
-export module presto.core.manager;
-export import presto.core.types;
+export module presto.internal.managers.manager;
+export import presto.types.core;
 
 import presto.core;
 import std;
@@ -26,8 +26,6 @@ template <class T>
 // requires UsesModuleFunctions<T>::value
 class PRESTO_API Module {
    public:
-    friend class Application;
-
     /**
      * Returns a reference to the current instance of a given module.
      *
@@ -57,22 +55,6 @@ class PRESTO_API Module {
 
     static bool initialised() { return instance_ != nullptr; }
 
-    Module(const Module&) = delete;
-    Module(Module&&) = delete;
-    Module& operator=(const Module&) = delete;
-    Module& operator=(Module&&) = delete;
-
-   protected:
-    using ModulePointer = std::unique_ptr<T, std::function<void(T*)>>;
-
-    static ModulePointer instance_;
-    Module() = default;
-    virtual ~Module() = default;
-
-   private:
-    virtual void update() = 0;
-    virtual void onInit() {};
-
     template <typename... Args>
     static void init(Args&&... args) {
         INTERNAL_MODULE_STATIC_ASSERTION();
@@ -94,6 +76,22 @@ class PRESTO_API Module {
                    typeid(T).name());
         instance_.reset();
     };
+
+    Module(const Module&) = delete;
+    Module(Module&&) = delete;
+    Module& operator=(const Module&) = delete;
+    Module& operator=(Module&&) = delete;
+
+   protected:
+    using ModulePointer = std::unique_ptr<T, std::function<void(T*)>>;
+
+    static ModulePointer instance_;
+    Module() = default;
+    virtual ~Module() = default;
+
+   private:
+    virtual void update() = 0;
+    virtual void onInit() {};
 };
 
 template <typename T>

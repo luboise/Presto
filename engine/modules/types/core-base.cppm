@@ -10,7 +10,7 @@ module;
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-export module presto.core.types:base;
+export module presto.types.core:base;
 
 import std;
 
@@ -45,48 +45,6 @@ using string = std::string;
 
 using FilePath = fs::path;
 
-struct VisualExtents {
-    std::uint16_t width;
-    std::uint16_t height;
-
-    [[nodiscard]] double getAspectRatio() const {
-        return (double)width / (double)height;
-    }
-};
-
-enum class ShaderDataSubType : uint8_t {
-    SHORT,
-    USHORT,
-    INT,
-    UINT,
-    FLOAT,
-    DOUBLE
-};
-
-enum class ShaderDataType : uint8_t {
-    SHORT,
-    USHORT,
-
-    INT,
-    UINT,
-
-    FLOAT,
-    DOUBLE,
-
-    VEC2,
-    DVEC2,
-
-    VEC3,
-    DVEC3,
-
-    VEC4,
-    DVEC4,
-
-    MAT3,
-    DMAT3,
-
-    MAT4,
-    DMAT4
-};
+using PR_NUMERIC_ID = Pr::uint32_t;
 
 }  // namespace Pr

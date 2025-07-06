@@ -4,11 +4,9 @@ module;
 
 export module presto.objects.components.camera;
 
-import presto.core.types;
+import presto.types;
 import presto.core.constants;
-
 import presto.math;
-
 import presto.utils;
 import presto.objects.component;
 
@@ -19,9 +17,6 @@ enum class CameraType { PERSPECTIVE, ORTHOGRAPHIC };
 class PRESTO_API CameraComponent : public Component, LazyCalculator {
     using camera_fov_t = double;
     using camera_distance_t = float;
-
-    friend class EntityManager;
-    friend class EntityManagerImpl;
 
    public:
     struct CameraDistances {

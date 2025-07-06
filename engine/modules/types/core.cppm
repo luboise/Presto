@@ -1,4 +1,4 @@
-export module presto.core.types;
+export module presto.types.core;
 
 export import :base;
 export import :traits;

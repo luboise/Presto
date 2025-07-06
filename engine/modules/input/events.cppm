@@ -5,7 +5,7 @@ export module presto.input:events;
 
 import std;
 
-import presto.core.types;
+import presto.types.core;
 import presto.core.event;
 
 import :keycodes;

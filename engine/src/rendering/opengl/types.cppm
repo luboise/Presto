@@ -3,7 +3,7 @@ module;
 
 export module presto.internal.rendering.opengl:types;
 
-import presto.core.types;
+import presto.types.core;
 import presto.core.constants;
 
 import presto.internal.rendering;

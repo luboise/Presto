@@ -4,7 +4,7 @@ module;
 
 export module presto.utils:file;
 
-import presto.core.types;
+import presto.types.core;
 import presto.assets.types;
 
 using json = nlohmann::json;

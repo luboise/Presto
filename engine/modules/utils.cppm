@@ -4,7 +4,7 @@ export import :file;
 export import :interpolation;
 export import :typemap;
 
-import presto.core.types;
+import presto.types.core;
 
 import presto.runtime.time;
 

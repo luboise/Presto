@@ -1,15 +1,11 @@
-#pragma once
+export module presto.utils.erased_bytes;
 
-#include "Presto/Core/Logging.h"
-#include "Presto/Rendering/UniformTypes.h"
-#include "Presto/Types/CoreTypes.h"
+import std;
 
-#include <array>
-#include <cstring>
-#include <span>
-#include <type_traits>
+import presto.core.logging;
+import presto.types;
 
-namespace Pr {
+export namespace Pr {
 
 class ErasedBytes {
    public:
@@ -19,13 +15,6 @@ class ErasedBytes {
     explicit ErasedBytes(T val) {
         this->reset(std::forward<T>(val));
     }
-
-    /*template <typename T>*/
-    /*    requires std::is_copy_constructible_v<T> &&
-     * std::is_copy_assignable_v<T>*/
-    /*explicit ErasedBytes(T val) {*/
-    /*    this->setData(std::forward<T>(val));*/
-    /*};*/
 
     [[nodiscard]] Pr::size_t size() const { return data_.size(); }
 

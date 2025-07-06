@@ -5,7 +5,8 @@ export module presto.internal.managers.entity_manager_impl;
 
 import std;
 
-import presto.core.manager;
+import presto.core.concepts;
+import presto.internal.managers.manager;
 import presto.objects;
 
 export namespace Pr {

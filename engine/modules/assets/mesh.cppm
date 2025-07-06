@@ -3,6 +3,8 @@ export module presto.assets.mesh;
 import std;
 import presto.core;
 
+import presto.types;
+
 import presto.assets.types;
 import presto.assets.material;
 
@@ -87,6 +89,11 @@ struct BoundingBox {
      * 0.5].
      */
     [[nodiscard]] double getNormalisingFactor() const;
+};
+
+struct MeshDraw {
+    const Pr::Ptr<Pr::MeshAsset> mesh;
+    const Pr::Ptr<Pr::MaterialInstance> material;
 };
 
 }  // namespace Pr

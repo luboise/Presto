@@ -2,7 +2,7 @@ export module presto.core.event.base;
 
 import std;
 
-import presto.core.types;
+import presto.types.core;
 import presto.core.constants;
 import presto.core.concepts;
 

@@ -1,6 +1,10 @@
-export module presto.internal.rendering:texture;
+module;
+#include "presto/platform.h"
 
-import presto.internal;
+export module presto.rendering.texture;
+
+import presto.types;
+import presto.assets.image;
 
 export namespace Pr {
 
@@ -61,19 +65,5 @@ struct TextureTypeDetails<TextureType::TEX2D> {
 template <TextureType T>
     requires requires { typename TextureTypeDetails<T>; }
 using TexInterfaceOf = TextureTypeDetails<T>::TexInterface;
-
-class TextureFactory {
-   protected:
-    using texture_extents_t = Pr::size_t;
-
-   public:
-    template <typename T>
-    using FactoryOutputType = Ptr<T>;
-
-    virtual ~TextureFactory() = default;
-
-    [[nodiscard]] virtual FactoryOutputType<Texture2D> new2D(
-        texture_extents_t width, texture_extents_t height) = 0;
-};
 
 }  // namespace Pr

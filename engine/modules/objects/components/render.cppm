@@ -5,7 +5,7 @@ export module presto.objects.components.render;
 
 import std;
 
-import presto.core.types;
+import presto.types.core;
 import presto.core.platform;
 import presto.objects.component;
 import presto.assets.types;

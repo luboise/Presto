@@ -1,7 +1,9 @@
 module presto.internal.managers.rendering_manager;
 
+import presto.utils.erased_bytes;
+
 import presto.objects;
-import presto.render_types;
+import presto.types.rendering;
 import presto.objects.components;
 
 import presto.internal.utils;
@@ -753,21 +755,8 @@ struct UniformBindingExtra {
     ErasedBytes data;
 };
 
-struct MaterialInstance::Impl {
-    MaterialDefinitionPtr definition;
-    Pr::string name;
-
-    UniformLayout structure;
-
-    std::map<Pr::string, PropertyDetails> property_lookup;
-
-    std::vector<UniformBufferExtra> uniform_buffers;
-    std::vector<UniformBindingExtra> uniform_bindings;
-    std::vector<TexturePtr> textures;
-};
-
-MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
-    impl_ = std::make_unique<Impl>();
+MaterialInstanceImpl::MaterialInstanceImpl(
+    const MaterialDefinitionPtr& definition) {
     impl_->definition = definition;
     impl_->structure = definition->uniformLayout();
 
@@ -819,9 +808,9 @@ MaterialInstance::MaterialInstance(const MaterialDefinitionPtr& definition) {
     }
 }
 
-MaterialInstance::~MaterialInstance() = default;
+MaterialInstanceImpl::~MaterialInstanceImpl() = default;
 
-MaterialInstance::PropertyDetails* MaterialInstance::getBinding(
+MaterialInstanceImpl::PropertyDetails* MaterialInstanceImpl::getBinding(
     const Pr::string& name) {
     if (auto val{impl_->property_lookup.find(name)};
         val != impl_->property_lookup.end()) {
@@ -830,30 +819,30 @@ MaterialInstance::PropertyDetails* MaterialInstance::getBinding(
     return nullptr;
 };
 
-MaterialInstance& MaterialInstance::setName(Pr::string newName) {
+MaterialInstance& MaterialInstanceImpl::setName(Pr::string newName) {
     impl_->name = std::move(newName);
     return *this;
 };
 
-ErasedBytes& MaterialInstance::getUniformDataStore(Pr::size_t index) {
+ErasedBytes& MaterialInstanceImpl::getUniformDataStore(Pr::size_t index) {
     return impl_->uniform_bindings[index].data;
 };
 
-UniformBuffer& MaterialInstance::getUniformBuffer(Pr::size_t index) {
+UniformBuffer& MaterialInstanceImpl::getUniformBuffer(Pr::size_t index) {
     return *impl_->uniform_buffers[index].buffer;
 };
 
-const UniformLayout& MaterialInstance::getUniformStructure() const {
+const UniformLayout& MaterialInstanceImpl::getUniformStructure() const {
     return this->impl_->structure;
 };
 
-pipeline_id_t MaterialInstance::getPipelineId() const {
+pipeline_id_t MaterialInstanceImpl::getPipelineId() const {
     return this->impl_->definition->pipelineId();
 };
 
-Pr::string MaterialInstance::name() const { return impl_->name; };
+Pr::string MaterialInstanceImpl::name() const { return impl_->name; };
 
-void MaterialInstance::bindTo(Pipeline& pipeline) const {
+void MaterialInstanceImpl::bindTo(Pipeline& pipeline) const {
     // Bind each block
     for (const UniformBufferExtra& buffer_details : impl_->uniform_buffers) {
         pipeline.setUniformBlock(buffer_details.bind_point,
@@ -910,8 +899,8 @@ Pr::CoreLog(TRACE,
 };
 
 template <>
-MaterialInstance& MaterialInstance::setProperty(Pr::string name,
-                                                const Ptr<Texture>& data) {
+MaterialInstance& MaterialInstanceImpl::setProperty(Pr::string name,
+                                                    const Ptr<Texture>& data) {
     PropertyDetails* details{getBinding(name)};
 
     if (details == nullptr) {
@@ -946,8 +935,9 @@ MaterialInstance& MaterialInstance::setProperty(Pr::string name,
     return *this;
 };
 
-void MaterialInstance::setFromImport(const ImportedMaterial& imported_material,
-                                     std::vector<TexturePtr>& texturePtrs) {
+void MaterialInstanceImpl::setFromImport(
+    const ImportedMaterial& imported_material,
+    std::vector<TexturePtr>& texturePtrs) {
     for (const auto& value : imported_material.values) {
         if (value.data_type == UniformVariableType::TEXTURE) {
             auto texture_index{

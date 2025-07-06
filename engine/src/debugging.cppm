@@ -1,7 +1,7 @@
 export module presto.internal.debugging;
 
 export import :constants;
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

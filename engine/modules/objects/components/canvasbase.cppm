@@ -12,6 +12,10 @@ import presto.core;
 import presto.utils;
 import presto.assets.mesh;
 
+import presto.types;
+
+import presto.rendering.texture;
+
 export namespace Pr {
 
 /*

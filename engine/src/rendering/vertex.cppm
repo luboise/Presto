@@ -4,7 +4,7 @@ import std;
 
 import :base;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

@@ -17,7 +17,7 @@ import :transform_data;
 
 import std;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

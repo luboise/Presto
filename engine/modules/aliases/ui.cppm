@@ -1,6 +1,6 @@
 export module presto.aliases.ui;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 class CanvasItem;

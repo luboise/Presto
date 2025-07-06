@@ -1,5 +1,5 @@
 export module presto.physics;
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 struct Force;

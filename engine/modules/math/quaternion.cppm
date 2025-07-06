@@ -1,6 +1,6 @@
 export module presto.math:quaternion;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

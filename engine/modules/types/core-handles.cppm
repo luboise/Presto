@@ -1,8 +1,6 @@
-export module presto.core.types:handles;
+export module presto.types.core:handles;
 
 import std;
-
-import presto.core.concepts;
 
 export namespace Pr {
 

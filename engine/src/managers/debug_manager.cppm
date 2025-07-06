@@ -1,6 +1,6 @@
 export module presto.internal.managers.debug_manager;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

@@ -13,8 +13,6 @@ class PRESTO_API Shader {
     friend class Renderer;
 
    public:
-    using uniform_name_t = Pr::string;
-
     virtual void setGlobalUniforms(GlobalUniforms uniforms) = 0;
     virtual void setObjectUniforms(ObjectUniforms uniforms) = 0;
 

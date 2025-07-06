@@ -2,7 +2,7 @@ export module presto.objects.entity:figure;
 
 import std;
 
-import presto.core.types;
+import presto.types.core;
 import presto.objects.entity;
 
 export namespace Pr {

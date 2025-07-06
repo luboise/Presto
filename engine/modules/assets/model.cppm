@@ -2,12 +2,16 @@ export module presto.assets.model;
 
 import std;
 
+import presto.assets.material;
 import presto.assets.mesh;
 import presto.assets.types;
+import presto.assets.importing;
+
 import presto.core;
 
 export namespace Pr {
-struct MeshDraw;
+
+class MeshSource;
 
 class ModelAsset final : public Asset {
     friend class AssetManager;

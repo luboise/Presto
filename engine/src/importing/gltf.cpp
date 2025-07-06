@@ -3,6 +3,7 @@ module presto.internal.gltf;
 import std;
 
 import presto.core;
+import presto.utils.erased_bytes;
 
 namespace Pr {
 

@@ -1,8 +1,7 @@
 export module presto.core.logging;
 
 import std;
-import presto.core.types;
-import presto.runtime.application;
+import presto.types.core;
 
 namespace spdlog {
 class logger;
@@ -13,15 +12,14 @@ namespace Pr {
 export enum LogLevel : Pr::uint8_t { TRACE, INFO, WARN, ERROR, CRITICAL };
 
 class Logger {
-    friend class Application;
-
    public:
     static void Log(LogLevel level, Pr::string message);
     static void CoreLog(LogLevel level, Pr::string message);
 
-   private:
+	// TODO: Fix this being publically visible
     static void init();
 
+   private:
     static std::shared_ptr<spdlog::logger> coreLogger_;
     static std::shared_ptr<spdlog::logger> clientLogger_;
 };

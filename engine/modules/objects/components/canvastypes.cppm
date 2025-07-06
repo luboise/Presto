@@ -1,6 +1,6 @@
 export module presto.objects.components.canvas:types;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

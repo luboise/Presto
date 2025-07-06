@@ -5,7 +5,9 @@ export module presto.internal.events;
 
 import std;
 
-import presto.core;
+import presto.types;
+
+import presto.core.event;
 
 export namespace Pr {
 

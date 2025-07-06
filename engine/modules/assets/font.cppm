@@ -3,7 +3,7 @@ export module presto.assets.font;
 import std;
 
 import presto.assets.types;
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

@@ -2,30 +2,19 @@ export module presto.core.constants;
 
 import std;
 
-import presto.core.types;
+import presto.types;
 
 export namespace Pr {
 
-using PR_NUMERIC_ID = Pr::uint32_t;
-
 enum RENDER_LIBRARY { UNSET, VULKAN, OPENGL, DIRECTX };
-
-using Pr::PR_NUMERIC_ID;
 
 using PR_BIT_TYPE = Pr::uint16_t;
 constexpr PR_BIT_TYPE AS_BIT(Pr::uint8_t x) { return 1U << x; }
 
 constexpr double PR_MIN_NEAR_DISTANCE{0.1};
 
-// Pipelines
-using mesh_context_id_t = Pr::uint32_t;
-
-using mesh_registration_id_t = Pr::uint32_t;
 constexpr mesh_registration_id_t PR_UNREGISTERED{
     static_cast<mesh_registration_id_t>(-1)};
-
-using pipeline_id_t = Pr::uint16_t;
-using material_id_t = Pr::uint16_t;
 
 constexpr pipeline_id_t PR_MIN_USER_PIPELINE_ID{10};
 constexpr mesh_registration_id_t PR_MIN_RUNTIME_MESH_ID{10};
@@ -41,8 +30,6 @@ constexpr pipeline_id_t PR_PIPELINE_DEBUG_3D{3};
 constexpr pipeline_id_t PR_PIPELINE_NONE{static_cast<pipeline_id_t>(-1)};
 
 // Textures
-
-using texture_id_t = Pr::uint16_t;
 constexpr texture_id_t PR_TEX_DIFFUSE_FALLBACK{9};
 constexpr texture_id_t PR_TEX_DIFFUSE_FLAT{10};
 

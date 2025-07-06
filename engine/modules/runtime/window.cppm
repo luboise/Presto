@@ -2,7 +2,7 @@ export module presto.runtime.window;
 
 import std;
 
-import presto.core.types;
+import presto.types;
 import presto.core.constants;
 
 constexpr auto DEFAULT_WIDTH = 2560;

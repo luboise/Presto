@@ -7,16 +7,24 @@ target_sources(
          TYPE
          CXX_MODULES
          FILES
-         core/concepts.cppm
+         types/core-base.cppm
+         types/core-handles.cppm
+         types/core-traits.cppm
+         types/core.cppm
+         types/entity.cppm
+         types/rendering.cppm
+         # types/material-shader.cppm
+         types/material-uniform.cppm
+         types/material-shader.cppm
+         types/material.cppm
+         types.cppm
          #
-         core/types_base.cppm
-         core/type_traits.cppm
-         core/type_handles.cppm
-         core/types.cppm
+         core/concepts.cppm
          #
          utils/file.cppm
          utils/interpolation.cppm
          utils/typemap.cppm
+         utils/erased_bytes.cppm
          utils.cppm
          #
          core/constants.cppm
@@ -26,7 +34,6 @@ target_sources(
          #
          core/platform.cppm
          #
-         core/manager.cppm
          core/event_base.cppm
          core/event_user.cppm
          core/event_manager.cppm
@@ -58,10 +65,13 @@ target_sources(
          objects/components.cppm
          objects.cppm
          #
+         rendering/texture.cppm
+         #
+         assets/image.cppm
+         #
+         assets/importing.cppm
          assets/types.cppm
          assets/font.cppm
-         assets/image.cppm
-         assets/material_types.cppm
          assets/material_traits.cppm
          assets/material.cppm
          assets/mesh.cppm

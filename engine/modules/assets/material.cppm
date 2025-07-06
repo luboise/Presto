@@ -3,11 +3,12 @@ module;
 
 export module presto.assets.material;
 
-import presto.core.types;
+export import presto.types.material;
+export import presto.assets.material.traits;
+
+import presto.types;
 import presto.core.constants;
 import presto.core.concepts;
-export import presto.assets.material.types;
-export import presto.assets.material.traits;
 
 import std;
 
@@ -46,6 +47,17 @@ class PRESTO_API MaterialAsset final :
 
     pipeline_id_t pipelineId_{PR_PIPELINE_NONE};
     UniformLayout uniformLayout_;
+};
+
+class MaterialInstance {
+    friend class MaterialAsset;
+
+   public:
+    virtual MaterialInstance& setName(Pr::string newName) = 0;
+    [[nodiscard]] virtual Pr::string name() const = 0;
+
+    [[nodiscard]] virtual const UniformLayout& getUniformStructure() const = 0;
+    [[nodiscard]] virtual pipeline_id_t getPipelineId() const = 0;
 };
 
 // using Pr::Ptr<Pr::MaterialAsset> = AssetPtr<MaterialAsset>;

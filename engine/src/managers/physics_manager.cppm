@@ -2,7 +2,13 @@ module;
 #include "presto/module.h"
 
 export module presto.internal.managers.physics_manager;
-import presto.objects;
+
+import std;
+
+import presto.objects.components;
+
+import presto.internal.managers.manager;
+import presto.physics;
 
 export namespace Pr {
 

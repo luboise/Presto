@@ -1,11 +1,41 @@
-export module presto.render_types;
+export module presto.types.rendering;
 
-import presto.assets.image;
-import presto.core.types;
-
-#pragma once
+import presto.types.core;
+import std;
 
 export namespace Pr {
+
+struct VisualExtents {
+    std::uint16_t width;
+    std::uint16_t height;
+
+    [[nodiscard]] double getAspectRatio() const {
+        return (double)width / (double)height;
+    }
+};
+
+enum class MeshDrawMode : Pr::uint8_t {
+    POINTS,
+    LINES,
+    LINE_STRIP,
+    TRIANGLES,
+    TRIANGLE_STRIP
+};
+
+using Index = uint32_t;
+
+struct Vertex;
+
+using VertexList = std::vector<Vertex>;
+using IndexList = std::vector<Index>;
+
+using uniform_name_t = Pr::string;
+
+using mesh_context_id_t = Pr::uint32_t;
+using mesh_registration_id_t = Pr::uint32_t;
+using pipeline_id_t = Pr::uint16_t;
+using material_id_t = Pr::uint16_t;
+using texture_id_t = Pr::uint16_t;
 
 namespace DefaultAttributeName {
 

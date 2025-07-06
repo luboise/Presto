@@ -1,6 +1,6 @@
 export module presto.system;
 
-import presto.core.types;
+import presto.types;
 
 export namespace Pr {
 

@@ -1,7 +1,7 @@
 export module presto.internal.rendering:base;
 import :types;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 
@@ -14,9 +14,21 @@ struct ImportedMesh;
 class Pipeline;
 class PipelineBuilder;
 
-class UniformBuffer;
-
 struct PipelineStructure;
+
+class TextureFactory {
+   protected:
+    using texture_extents_t = Pr::size_t;
+
+   public:
+    template <typename T>
+    using FactoryOutputType = Ptr<T>;
+
+    virtual ~TextureFactory() = default;
+
+    [[nodiscard]] virtual FactoryOutputType<Texture2D> new2D(
+        texture_extents_t width, texture_extents_t height) = 0;
+};
 
 class Renderer : protected LazyCalculator {
    public:

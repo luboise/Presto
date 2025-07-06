@@ -5,7 +5,7 @@ import std;
 import presto.internal.managers.rendering_manager;
 import presto.internal;
 
-import presto.core.types;
+import presto.types.core;
 
 export namespace Pr {
 

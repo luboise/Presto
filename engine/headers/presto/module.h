@@ -16,5 +16,5 @@
     Type& operator=(const Type&) = delete;                      \
     Type& operator=(Type&&) = delete;                           \
                                                                 \
-   private:                                                     \
-    friend class Application
+    // private:                                                     \
+    // friend class Application

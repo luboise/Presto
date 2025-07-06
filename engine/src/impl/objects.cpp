@@ -1,8 +1,9 @@
 module presto.objects;
 
-import presto.core.types;
+#include <glm/fwd.hpp>
 
-namespace Pr {
+import presto.math;
+import presto.types.core;
 
 std::vector<Ptr<ConductorComponent>> Pr::GetConductors() {
     auto data{getComponents() | std::views::values |
@@ -47,6 +48,8 @@ void Pr::SetDefaultCameraConductor(
     EntityPtr main_camera{RenderingManager::get().getMainCamera()};
     main_camera->setComponent<ConductorComponent>(ptr);
 };
+
+namespace Pr {
 
 vec3 applyTransformation(const vec3& v, const mat4& transformations) {
     vec4 transformed = transformations * vec4{v, 1};

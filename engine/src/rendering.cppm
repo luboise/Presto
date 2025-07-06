@@ -1,6 +1,6 @@
 export module presto.internal.rendering;
 
-export import presto.core.types;
+export import presto.types.core;
 
 export import :base;
 export import :vertex;

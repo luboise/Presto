@@ -59,6 +59,7 @@ target_sources(
           rendering/opengl/texture.cppm
           rendering/opengl/opengl.cppm
           #
+          managers/manager.cppm
           managers/asset_manager.cppm
           managers/entity_manager_impl.cppm
           managers/event_manager_impl.cppm

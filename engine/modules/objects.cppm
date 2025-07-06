@@ -1,4 +1,5 @@
 module;
+#include <glm/glm.hpp>
 #include "presto/platform.h"
 
 export module presto.objects;
@@ -8,10 +9,8 @@ import std;
 export import presto.objects.components.conductor;
 export import presto.objects.entity;
 
-import presto.core.types;
+import presto.types.core;
 import presto.core.concepts;
-import presto.objects.component;
-import presto.objects.components.conductor;
 import presto.objects.components.camera;
 
 using namespace std::ranges;
@@ -20,51 +19,6 @@ using namespace std::views;
 export namespace Pr {
 
 class EntityOwner;
-class EntityManager;
-
-[[nodiscard]] EntityRef NewLooseEntity();
-
-[[nodiscard]] EntityPtr NewEntity(Pr::vec3 pos = {});
-
-/**
- * @brief  Returns the conductor components belonging to an Entity.
- */
-[[nodiscard]] std::vector<ComponentPtr<ConductorComponent>> GetConductors(
-    const EntityPtr entity);
-
-/**
- * @brief  Returns a new entity which the consumer must keep track of and
- * destroy themselves. It will still handle its own rendering and component
- * calls, but its destruction is bound by the user.
- */
-[[nodiscard]] EntityOwner NewOwnedEntity(Pr::vec3 pos = {});
-
-/**
- * @brief  Gets a reference to the main camera. This is whats used to generate
- * the view of the game world.
- */
-CameraComponent& GetDefaultCamera();
-
-void SetDefaultCameraConductor(const ComponentPtr<ConductorComponent>&);
-
-/**
- * @brief  Creates a new component of any type. The arguments given must
- * match the arguments of the private constructor of that component.
- */
-template <DerivedFrom<Component> T, typename... Args>
-[[nodiscard]] ComponentPtr<T> NewComponent(Args... args) {
-    return EntityManager::Get().newComponent<T>(args...);
-};
-
-// Functions that create components
-namespace CreateComponent {
-
-template <DerivedFrom<ConductorComponent> T, typename... Args>
-ComponentPtr<T> Conductor(Args... args) {
-    return EntityManager::Get().newComponent<T>(args...);
-};
-
-}  // namespace CreateComponent
 
 // Used by EntityManager
 using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
@@ -115,28 +69,6 @@ class PRESTO_API EntityManager {
 
     [[nodiscard]] bool exists(entity_id_t id) const;
 
-    /*
-template <typename T = Entity, typename... Args>
-T *newEntity(Args &&...args) {
-entity_id_t new_id{EntityManager::reserveId()};
-
-Pr::CoreAssert(exists(new_id),
-               "Attempted to create entity using existing id: {}",
-               new_id);
-
-auto new_entity{entity_unique_ptr(
-    new T(new_id, args..uu.),
-
-    [this](Entity *entity) { this->destroyEntity(entity); })};
-
-auto *new_transform{newComponent<Transform>()};
-new_entity->setComponent(new_transform);
-
-entityMap_.emplace(new_id, std::move(new_entity));
-return entityMap_[new_id].get();
-};
-    */
-
     // TODO: Consider making this private. It's not a huge deal either
     // way, and people can just choose which one they use.
     template <typename T, typename... Args>
@@ -179,6 +111,50 @@ return entityMap_[new_id].get();
 
     // ComponentMap components_;
 };
+
+[[nodiscard]] EntityRef NewLooseEntity();
+
+[[nodiscard]] EntityPtr NewEntity(Pr::vec3 pos = {});
+
+/**
+ * @brief  Returns the conductor components belonging to an Entity.
+ */
+[[nodiscard]] std::vector<ComponentPtr<ConductorComponent>> GetConductors(
+    const EntityPtr entity);
+
+/**
+ * @brief  Returns a new entity which the consumer must keep track of and
+ * destroy themselves. It will still handle its own rendering and component
+ * calls, but its destruction is bound by the user.
+ */
+[[nodiscard]] EntityOwner NewOwnedEntity(Pr::vec3 pos = {});
+
+/**
+ * @brief  Gets a reference to the main camera. This is whats used to generate
+ * the view of the game world.
+ */
+CameraComponent& GetDefaultCamera();
+
+void SetDefaultCameraConductor(const ComponentPtr<ConductorComponent>&);
+
+/**
+ * @brief  Creates a new component of any type. The arguments given must
+ * match the arguments of the private constructor of that component.
+ */
+template <DerivedFrom<Component> T, typename... Args>
+[[nodiscard]] ComponentPtr<T> NewComponent(Args... args) {
+    return EntityManager::Get().newComponent<T>(args...);
+};
+
+// Functions that create components
+namespace CreateComponent {
+
+template <DerivedFrom<ConductorComponent> T, typename... Args>
+ComponentPtr<T> Conductor(Args... args) {
+    return EntityManager::Get().newComponent<T>(args...);
+};
+
+}  // namespace CreateComponent
 
 class EntityOwner {
    public:

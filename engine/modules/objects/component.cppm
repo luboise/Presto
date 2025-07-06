@@ -29,8 +29,8 @@ template <ComponentType T>
 using ComponentRef = Ref<T>;
 
 class PRESTO_API Component {
-    friend class EntityManager;
-    friend class EntityManagerImpl;
+    // friend class EntityManager;
+    // friend class EntityManagerImpl;
 
     using ComponentIDBit = Pr::uint32_t;
 

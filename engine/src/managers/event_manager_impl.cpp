@@ -1,6 +1,10 @@
 module presto.internal.managers.event_manager_impl;
 
-export namespace Pr {
+import std;
+
+import presto.objects.components;
+
+namespace Pr {
 
 using ConductorPtr = ComponentPtr<ConductorComponent>;
 
