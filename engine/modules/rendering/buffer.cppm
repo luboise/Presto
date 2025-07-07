@@ -1,4 +1,4 @@
-export module presto.internal.rendering:buffer;
+export module presto.rendering.buffer;
 
 import presto.types.core;
 
@@ -44,7 +44,7 @@ class UniformBuffer {
     void writeAny(const T& val, Pr::size_t offset = 0) {
         this->write(
             std::span(reinterpret_cast<const std::byte*>(&val), sizeof(T)),
-            std::move(offset));
+            offset);
     }
 
     virtual void write(const std::span<const std::byte>& bytes,

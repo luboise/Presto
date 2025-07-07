@@ -11,8 +11,6 @@ import presto.assets.material;
 export namespace Pr {
 
 class Mesh {
-    friend class RenderingManager;
-
    public:
     [[nodiscard]] mesh_registration_id_t registrationId() const;
 
@@ -24,8 +22,6 @@ class Mesh {
 struct BoundingBox;
 
 class MeshAsset final : public Asset {
-    friend class RenderingManager;
-
    public:
     explicit MeshAsset();
     ~MeshAsset() override;

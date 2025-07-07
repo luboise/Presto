@@ -1,6 +1,8 @@
 module presto.objects.components.canvas;
 import :types;
 
+import std;
+
 // export module presto.objects.components:canvas;
 
 [[nodiscard]] Pr::CanvasPosition Pr::Clamped(const CanvasPosition& position) {

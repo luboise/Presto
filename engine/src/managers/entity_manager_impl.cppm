@@ -14,14 +14,14 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
                                            public EntityManager {
     MODULE_FUNCTIONS(EntityManagerImpl);
 
-    friend class Application;
-    friend class Module;
+    // friend class Application;
+    // friend class Module;
 
-    friend void Entity::destroy();
+    // friend void Entity::destroy();
 
     // friend class Module<EntityManagerImpl>;
 
-    friend Figure::~Figure();
+    // friend Figure::~Figure();
 
     using EntityMap = std::map<entity_id_t, EntityPtr>;
 

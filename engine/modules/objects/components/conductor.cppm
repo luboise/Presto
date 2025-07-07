@@ -11,8 +11,8 @@ import presto.objects.component;
 export namespace Pr {
 
 class PRESTO_API ConductorComponent : public Component {
-    friend class EntityManagerImpl;
-    friend class EventManagerImpl;
+    // friend class EntityManagerImpl;
+    // friend class EventManagerImpl;
 
    private:
     using pre_start_callback_t = std::function<void()>;

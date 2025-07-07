@@ -7,6 +7,7 @@ import std;
 export namespace Pr {
 
 enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
+
 using Strictness::LOOSELY_DERIVED;
 using Strictness::STRICTLY_DERIVED;
 

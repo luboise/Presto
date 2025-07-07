@@ -22,8 +22,6 @@ class PRESTO_API MaterialAsset final :
     public std::enable_shared_from_this<MaterialAsset>,
     public Asset {
    public:
-    friend class RenderingManager;
-
     MaterialAsset(Pr::string name, const UniformLayout& structure);
 
     ~MaterialAsset() override = default;

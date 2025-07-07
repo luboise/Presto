@@ -48,7 +48,6 @@ class OpenGLPipeline final : public Pipeline {
 
 class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     friend class OpenGLRenderer;
-    friend class RenderingManager;
 
     static constexpr auto INVALID_SHADER_ID = 0;
 

@@ -47,7 +47,6 @@ target_sources(
           rendering/types.cppm
           rendering/vertex.cppm
           rendering/base.cppm
-          rendering/buffer.cppm
           rendering/shader.cppm
           rendering/pipeline.cppm
           rendering.cppm
@@ -99,8 +98,8 @@ target_sources(
           impl/objects/figure.cpp
           impl/objects/components/camera.cpp
           impl/objects/components/canvas.cpp
-          impl/objects/components/canvasitems.cpp
-          impl/objects/components/canvastypes.cpp
+          impl/objects/components/canvas_items.cpp
+          impl/objects/components/canvas_types.cpp
           impl/objects/components/conductor.cpp
           impl/objects/components/render.cpp
           impl/objects/components/rendersubcomps.cpp

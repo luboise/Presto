@@ -1,14 +1,16 @@
 module;
 #include "presto/platform.h"
 
-export module presto.objects.components.canvas:canvasitems;
+export module presto.objects.components.canvas:canvas_items;
 import :base;
+
+import presto.math;
+
+import presto.assets.image;
 
 import presto.core;
 
 export namespace Pr {
-
-class ImageAsset;
 
 class PRESTO_API CanvasButton : public CanvasItem {
    public:
@@ -19,8 +21,6 @@ class PRESTO_API CanvasButton : public CanvasItem {
    private:
     Pr::Ptr<Pr::ImageAsset> image_;
 };
-
-struct Rectangle;
 
 struct CanvasRectProps {
     Pr::vec2 pos{0, 0};

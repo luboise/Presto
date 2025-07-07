@@ -56,9 +56,9 @@ target_sources(
          objects/components/conductor.cppm
          objects/components/camera.cppm
          #
-         objects/components/canvastypes.cppm
-         objects/components/canvasbase.cppm
-         objects/components/canvasitems.cppm
+         objects/components/canvas_types.cppm
+         objects/components/canvas_base.cppm
+         objects/components/canvas_items.cppm
          objects/components/canvas.cppm
          #
          objects/components/transform.cppm
@@ -67,6 +67,7 @@ target_sources(
          objects/components.cppm
          objects.cppm
          #
+         rendering/buffer.cppm
          rendering/texture.cppm
          #
          assets/image.cppm
@@ -83,7 +84,6 @@ target_sources(
          #
          handles.cppm
          #
-         aliases/asset.cppm
          aliases/object.cppm
          aliases/ui.cppm
          aliases.cppm
@@ -102,4 +102,5 @@ target_sources(
          # Main API importables
          presto.cppm
          entry.cppm
-         system.cppm)
+         system.cppm
+         rendering.cppm)

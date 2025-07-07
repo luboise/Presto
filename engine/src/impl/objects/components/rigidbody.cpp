@@ -1,5 +1,6 @@
-module presto.objects.components;
-import :rigidbody;
+module presto.objects.components.rigidbody;
+
+#include <glm/glm.hpp>
 
 namespace Pr {
 

@@ -1,17 +1,6 @@
 export module presto.aliases.object;
 
-export namespace Pr {
-
-class CameraComponent;
-class ConductorComponent;
-class RigidBodyComponent;
-class TransformComponent;
-class CanvasComponent;
-class RenderComponent;
-
-// Subcomponents
-
-}  // namespace Pr
+import presto.objects.components;
 
 export {
     // Components

@@ -9,8 +9,6 @@ import presto.physics;
 
 export namespace Pr {
 
-class RenderingManager;
-
 class PRESTO_API RigidBodyComponent : public Component {
    public:
     RigidBodyComponent() = default;

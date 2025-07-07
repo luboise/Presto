@@ -7,7 +7,10 @@ import presto.internal.managers.manager;
 
 import std;
 
+import presto.internal.rendering;
+
 import presto.assets;
+import presto.types;
 import presto.internal;
 
 export namespace Pr {

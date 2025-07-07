@@ -2,7 +2,9 @@ module presto.objects.components.canvas;
 
 import std;
 
-export namespace Pr {
+import presto.types;
+
+namespace Pr {
 
 CanvasGroup& CanvasComponent::addGroup(CanvasGroup group) {
     CanvasGroup& new_group{groups_.emplace_back(std::move(group))};
@@ -20,12 +22,12 @@ VisualExtents CanvasComponent::size() const { return size_; };
 
 void CanvasComponent::setSize(VisualExtents extents) { size_ = extents; }
 
-CanvasGroup* CanvasComponent::group(Pr::size_t index) {
-    if (index >= groups_.size()) {
+CanvasGroup* CanvasComponent::group(Pr::size_t groupIndex) {
+    if (groupIndex >= groups_.size()) {
         return nullptr;
     }
 
-    return &groups_[index];
+    return &groups_[groupIndex];
 };
 
 }  // namespace Pr

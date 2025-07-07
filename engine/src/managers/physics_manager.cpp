@@ -1,5 +1,9 @@
 module presto.internal.managers.physics_manager;
 
+import presto.runtime.time;
+
+import presto.objects.components;
+
 namespace Pr {
 
 PhysicsManager::PhysicsManager() = default;

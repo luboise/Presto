@@ -7,11 +7,31 @@ import presto.objects;
 import presto.math;
 import presto.utils.allocator;
 
+import presto.rendering;
+
 import presto.assets.material;
 
 import presto.types.rendering;
 
 export namespace Pr {
+
+struct BaseAttributeTypeDetails {
+    Pr::size_t subtype_size;
+    Pr::size_t count;
+    Pr::size_t size;
+};
+
+template <typename T>
+// TODO: Fix this constraint
+// requires requires { SubTypeDetails<T>::subtype; }
+struct AttributeTypeDetails : BaseAttributeTypeDetails {
+    using details = SubTypeDetails<T>;
+    using subtype = details::subtype;
+
+    static constexpr Pr::size_t subtype_size = sizeof(subtype);
+    static constexpr Pr::size_t count{details::subtype_count};
+    static constexpr Pr::size_t size = subtype_size * count;
+};
 
 struct CanvasDrawDetails {
     mesh_registration_id_t mesh;
@@ -43,13 +63,6 @@ struct MeshData {
     void setVertices(const ImportedAttributeList& attributes);
 };
 
-struct AllocatedPipeline {
-    pipeline_id_t id;
-    Allocated<Pipeline> pipeline;
-    Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
-};
-
-using pipeline_allocator_t = Allocator<pipeline_id_t, AllocatedPipeline>;
 using mesh_allocator_t =
     Allocator<mesh_registration_id_t, MeshRegistrationData>;
 
@@ -92,6 +105,8 @@ enum class ShaderStage { VERTEX, FRAGMENT };
 
 BaseAttributeTypeDetails getShaderTypeDetails(ShaderDataType type);
 
+}  // namespace Pr
+
 Pr::BaseAttributeTypeDetails Pr::getShaderTypeDetails(ShaderDataType type) {
     using namespace Pr;
 
@@ -122,5 +137,3 @@ Pr::BaseAttributeTypeDetails Pr::getShaderTypeDetails(ShaderDataType type) {
 
     return {};
 }
-
-}  // namespace Pr

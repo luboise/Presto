@@ -99,22 +99,4 @@ class AttributeSet {
 
 using attribute_size_t = Pr::size_t;
 
-struct BaseAttributeTypeDetails {
-    Pr::size_t subtype_size;
-    Pr::size_t count;
-    Pr::size_t size;
-};
-
-template <typename T>
-// TODO: Fix this constraint
-// requires requires { SubTypeDetails<T>::subtype; }
-struct AttributeTypeDetails : BaseAttributeTypeDetails {
-    using details = SubTypeDetails<T>;
-    using subtype = details::subtype;
-
-    static constexpr Pr::size_t subtype_size = sizeof(subtype);
-    static constexpr Pr::size_t count{details::subtype_count};
-    static constexpr Pr::size_t size = subtype_size * count;
-};
-
 }  // namespace Pr

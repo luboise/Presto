@@ -1,5 +1,9 @@
 module presto.objects.components.canvas;
-import :canvasitems;
+import :canvas_items;
+
+import std;
+
+import presto.internal.rendering;
 
 // export module presto.objects.components:canvas;
 

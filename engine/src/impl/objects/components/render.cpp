@@ -1,6 +1,8 @@
 module presto.objects.components.render;
 import std;
 
+import presto.core.logging;
+
 namespace Pr {
 
 struct RenderComponent::Impl {

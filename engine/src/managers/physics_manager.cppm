@@ -5,17 +5,18 @@ export module presto.internal.managers.physics_manager;
 
 import std;
 
-import presto.objects.components;
-
 import presto.internal.managers.manager;
 import presto.physics;
+
+import presto.objects;
+import presto.objects.components.rigidbody;
 
 export namespace Pr {
 
 class PhysicsManager final : public Module<PhysicsManager> {
     MODULE_FUNCTIONS(PhysicsManager);
 
-    friend void Entity::checkNewComponent(GenericComponentPtr);
+    // friend void Entity::checkNewComponent(GenericComponentPtr);
 
    public:
     void update() override;

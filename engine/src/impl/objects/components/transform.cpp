@@ -1,27 +1,8 @@
-module presto.objects.components;
-import :transform;
+module presto.objects.components.transform;
+
+#include <glm/glm.hpp>
 
 namespace Pr {
-mat4 TransformData::asModelMat() const {
-    mat4 model{1.0F};
-
-    model = glm::translate(model, this->position);
-
-    model = model * rotation.toMat4();
-
-    /*
-// Apply in reverse order to avoid gimbal lock
-model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
-model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
-    */
-
-    model = glm::scale(model, this->scale);
-
-    return model;
-}
-
-mat4 TransformData::asViewMat() const { return glm::inverse(asModelMat()); }
 
 mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
                                         vec3 scale) {

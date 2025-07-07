@@ -1,7 +1,12 @@
 module presto.internal.managers.entity_manager_impl;
 
 import presto.objects;
+
+import presto.objects.entity:figure;
+
 import presto.internal;
+
+import presto.core;
 
 namespace Pr {
 // Static member declarations
@@ -18,8 +23,6 @@ struct EntityManagerImpl::Impl {
 
     std::queue<EntityPtr> entity_queue;
 };
-
-EntityManager& EntityManager::Get() { return EntityManagerImpl::get(); }
 
 EntityManagerImpl::EntityManagerImpl() : impl_(new Impl()) {};
 

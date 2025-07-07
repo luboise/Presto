@@ -1,12 +1,11 @@
 export module presto.internal.debugging;
 
 export import :constants;
+
 import presto.types.core;
+import presto.objects.components.camera;
 
 export namespace Pr {
-
-class CameraComponent;
-class RenderingManager;
 
 class DebugCameraListener {
    public:

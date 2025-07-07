@@ -8,20 +8,23 @@ import std;
 import presto.types.core;
 import presto.core.platform;
 import presto.objects.component;
+
 import presto.assets.types;
 import presto.assets.model;
+import presto.assets.material;
+
+import presto.math;
 
 export namespace Pr {
 struct QuadSubcomponent;
 
 class PRESTO_API RenderComponent final : public Component {
     // friend class RenderingManager;
-    friend class EntityManager;
-    friend class EntityManagerImpl;
+    // friend class EntityManager;
+    // friend class EntityManagerImpl;
 
     // TODO: Make the render trigger when the entity enters the scene so
     // that this friend declaration isn't necessary
-    friend class RenderingManager;
 
    public:
     RenderComponent();

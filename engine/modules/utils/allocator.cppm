@@ -4,8 +4,7 @@ export module presto.utils.allocator;
 
 import std;
 
-import presto.core.constants;
-import presto.core.assert;
+import presto.core;
 
 import presto.types;
 import presto.utils;

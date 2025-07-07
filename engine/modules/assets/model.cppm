@@ -3,9 +3,9 @@ export module presto.assets.model;
 import std;
 
 export import presto.rendering.texture;
+export import presto.assets.mesh;
 
 import presto.assets.material;
-import presto.assets.mesh;
 import presto.assets.types;
 import presto.assets.importing;
 

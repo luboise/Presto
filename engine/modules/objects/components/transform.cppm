@@ -8,7 +8,6 @@ import presto.core;
 import presto.math;
 
 export namespace Pr {
-class RenderingManager;
 
 class PRESTO_API TransformComponent : public Component {
    public:
@@ -65,6 +64,5 @@ class PRESTO_API TransformComponent : public Component {
     // void round();
 
     // mat4 _modelView;
-    friend class RenderingManager;
 };
 }  // namespace Pr

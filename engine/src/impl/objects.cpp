@@ -55,6 +55,8 @@ void Pr::SetDefaultCameraConductor(
 
 namespace Pr {
 
+EntityManager& EntityManager::Get() { return EntityManagerImpl::get(); }
+
 vec3 applyTransformation(const vec3& v, const mat4& transformations) {
     vec4 transformed = transformations * vec4{v, 1};
     transformed /= transformed.w;

@@ -8,8 +8,6 @@ import presto.types.core;
 export namespace Pr {
 
 class FontAsset final : public Asset {
-    friend class RenderingManager;
-
    public:
     explicit FontAsset(Pr::string name);
 

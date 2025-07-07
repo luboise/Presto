@@ -141,8 +141,6 @@ void loadImageOnGpu(ImageAsset&);
 };
 
 class MaterialInstanceImpl : public MaterialInstance {
-    friend class RenderingManager;
-
    public:
     explicit MaterialInstanceImpl(const Pr::Ptr<Pr::MaterialAsset>&);
     ~MaterialInstanceImpl();

@@ -27,8 +27,6 @@ struct CanvasItemAttributes;
 class UniformBuffer;
 
 class PRESTO_API CanvasItem : LazyCalculator {
-    friend class RenderingManager;
-
    public:
     CanvasItem();
     explicit CanvasItem(CanvasPosition position);
@@ -68,7 +66,6 @@ class PRESTO_API CanvasItem : LazyCalculator {
 
 class PRESTO_API CanvasGroup {
     friend class CanvasComponent;
-    friend class RenderingManager;
 
    public:
     ~CanvasGroup() = default;
@@ -93,15 +90,14 @@ class PRESTO_API CanvasGroup {
 };
 
 class CanvasComponent : public Component {
-    friend class EntityManager;
-    friend class EntityManagerImpl;
-    friend class RenderingManager;
+    // friend class EntityManager;
+    // friend class EntityManagerImpl;
 
    public:
     // ~CanvasComponent() override;
     CanvasGroup& addGroup(CanvasGroup = {});
 
-    CanvasGroup* group(Pr::size_t index = 0);
+    CanvasGroup* group(Pr::size_t groupIndex = 0);
 
     /**
      * @brief  Creates a new canvas group and returns it. The new canvas group
