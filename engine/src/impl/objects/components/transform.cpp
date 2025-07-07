@@ -1,6 +1,6 @@
 module presto.objects.components.transform;
 
-#include <glm/glm.hpp>
+import presto.ext.glm;
 
 namespace Pr {
 

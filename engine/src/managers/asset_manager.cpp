@@ -1,6 +1,6 @@
 module presto.internal.managers.asset_manager;
 
-#include <stb_image.h>
+#define STB_IMAGE_IMPLEMENTATION
 
 import presto.utils;
 

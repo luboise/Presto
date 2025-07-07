@@ -2,7 +2,7 @@ export module presto.internal.struct_uniform_buffer;
 
 import presto.utils;
 
-export import presto.internal.rendering.types;
+import presto.internal.rendering;
 
 import std;
 

@@ -1,6 +1,6 @@
 module presto.math;
 
-#include <glm/glm.hpp>
+import presto.ext.glm;
 
 import :shapes;
 

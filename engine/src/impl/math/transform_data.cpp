@@ -1,10 +1,10 @@
 module presto.math;
 
+import presto.ext.glm;
+
 import :transform_data;
 
 import presto.core;
-
-#include <glm/glm.hpp>
 
 namespace Pr {
 

@@ -3,9 +3,9 @@ module;
 
 export module presto.internal.rendering.opengl:buffer;
 
-import std;
-
 import presto.internal.rendering;
+
+import std;
 
 export namespace Pr {
 

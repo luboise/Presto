@@ -34,6 +34,9 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
+          ext/glm.cppm
+          ext/stb.cppm
+          #
           common.cppm
           common.types.cppm
           events.cppm

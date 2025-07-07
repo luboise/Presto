@@ -1,6 +1,6 @@
 module presto.objects.components.camera;
 
-#include <glm/glm.hpp>
+import presto.ext.glm;
 
 import presto.math;
 import presto.objects;

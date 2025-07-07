@@ -1,5 +1,4 @@
 module;
-#include <glm/glm.hpp>
 #include "presto/platform.h"
 
 export module presto.objects.components.camera;
@@ -9,6 +8,8 @@ import presto.core.constants;
 import presto.math;
 import presto.utils;
 import presto.objects.base;
+
+import std;
 
 export namespace Pr {
 
@@ -54,9 +55,9 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     CameraComponent& setPosition(vec3 newPos);
 
     template <typename... Args>
-        requires std::constructible_from<glm::vec3, Args...>
+        requires std::constructible_from<Pr::vec3, Args...>
     CameraComponent& setPosition(Args&&... args) {
-        return setPosition(glm::vec3{std::forward<Args>(args)...});
+        return setPosition(Pr::vec3{std::forward<Args>(args)...});
     }
 
     CameraComponent& rotate(Pr::vec3 rot);
@@ -65,9 +66,9 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     CameraComponent& setRotation(Pr::vec3 rot);
 
     template <typename... Args>
-        requires std::constructible_from<glm::vec3, Args...>
+        requires std::constructible_from<Pr::vec3, Args...>
     CameraComponent& setRotation(Args&&... args) {
-        return setRotation(glm::vec3{std::forward<Args>(args)...});
+        return setRotation(Pr::vec3{std::forward<Args>(args)...});
     }
 
     [[nodiscard]] Rectangle distanceRect(camera_distance_t distance) const;
@@ -83,7 +84,7 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     Pr::vec3 focusPoint_{0, 0, 0};
 
     // FOV of the camera (default of 90deg)
-    camera_fov_t verticalFov_{glm::radians(90.0F)};
+    camera_fov_t verticalFov_{Pr::Math::Radians(90.0F)};
     CameraDistances distances_{.near = 0.1, .far = 1000};
 
     // TODO: Move the default extents somewhere else
@@ -94,7 +95,7 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
 
     void recalculate();
 
-    glm::mat4 viewMatrix_{1};
-    glm::mat4 projectionMatrix_{1};
+    Pr::mat4 viewMatrix_{1};
+    Pr::mat4 projectionMatrix_{1};
 };
 }  // namespace Pr

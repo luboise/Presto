@@ -5,6 +5,7 @@ export module presto.internal.rendering:shader;
 
 import :renderer;
 import :vertex;
+import :types;
 
 export namespace Pr {
 

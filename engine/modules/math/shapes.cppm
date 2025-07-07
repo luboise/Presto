@@ -1,22 +1,9 @@
-module;
-
-#define GLM_ENABLE_EXPERIMENTAL
-#define GLM_FORCE_RADIANS
-#include <glm/glm.hpp>
-
-/*
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-*/
-
 export module presto.math:shapes;
 import :transform_data;
 
 import std;
 
+import presto.math;
 import presto.types.core;
 
 export namespace Pr {
@@ -30,7 +17,9 @@ struct LineSegmentBase {
     T p1;
     T p2;
 
-    [[nodiscard]] Pr::float32_t length() const { return glm::length(p2 - p1); }
+    [[nodiscard]] Pr::float32_t length() const {
+        return Pr::Math::Length(p2 - p1);
+    }
 };
 
 using LineSegment = LineSegmentBase<vec3>;

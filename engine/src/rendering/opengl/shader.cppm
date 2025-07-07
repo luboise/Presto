@@ -3,9 +3,13 @@ module;
 
 export module presto.internal.rendering.opengl:shader;
 
-import std;
+import :buffer;
+
+import presto.types.material;
 
 import presto.internal.rendering;
+
+import std;
 
 export namespace Pr {
 class OpenGLShader final : public Shader {
