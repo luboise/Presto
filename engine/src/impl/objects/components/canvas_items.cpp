@@ -3,11 +3,19 @@ import :canvas_items;
 
 import std;
 
-import presto.internal.rendering;
-
 // export module presto.objects.components:canvas;
+import presto.types;
+import presto.core;
+
+import presto.assets.image;
+
+import presto.rendering.texture;
+import presto.rendering.buffer;
+
+import presto.internal.struct_uniform_buffer;
 
 namespace Pr {
+
 struct CanvasItem::Impl {
     StructUniformBuffer<CanvasItemAttributes> struct_buffer{};
     CanvasItemAttributes attributes{};

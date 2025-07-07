@@ -1,5 +1,7 @@
-export module presto.internal.rendering:base;
+export module presto.internal.rendering:renderer;
+
 import :types;
+import :pipeline;
 
 import presto.types.core;
 import presto.utils;

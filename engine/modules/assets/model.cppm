@@ -6,7 +6,7 @@ export import presto.rendering.texture;
 export import presto.assets.mesh;
 
 import presto.assets.material;
-import presto.assets.types;
+import presto.assets.asset;
 import presto.assets.importing;
 
 import presto.core;

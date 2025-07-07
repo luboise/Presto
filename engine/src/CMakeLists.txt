@@ -46,11 +46,11 @@ target_sources(
           #
           glfw.cppm
           #
-          rendering/base.cppm
           rendering/types.cppm
+          rendering/pipeline.cppm
+          rendering/renderer.cppm
           rendering/vertex.cppm
           rendering/shader.cppm
-          rendering/pipeline.cppm
           rendering.cppm
           #
           rendering/opengl/types.cppm
@@ -68,8 +68,9 @@ target_sources(
           managers/rendering_manager.cppm
           managers.cppm
           #
-          windowdata.cppm
+          window_data.cppm
           #
+          struct_uniform_buffer.cppm
           internal.cppm
   PRIVATE managers/asset_manager.cpp
           managers/entity_manager_impl.cpp

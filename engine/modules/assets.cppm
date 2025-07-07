@@ -4,7 +4,7 @@ export import presto.assets.font;
 export import presto.assets.image;
 export import presto.assets.material;
 export import presto.assets.model;
-export import presto.assets.types;
+export import presto.assets.asset;
 
 import presto.types;
 

@@ -1,5 +1,9 @@
+module;
+#include "presto/platform.h"
+
 export module presto.internal.rendering:shader;
 
+import :renderer;
 import :vertex;
 
 export namespace Pr {

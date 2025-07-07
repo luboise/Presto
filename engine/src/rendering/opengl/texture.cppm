@@ -1,6 +1,15 @@
-export module presto.internal.rendering.opengl:texture;
+module;
+#include <GL/glew.h>
 
-import presto.internal.rendering:texture;
+export module presto.internal.rendering.opengl:texture;
+import presto.internal.rendering;
+
+import presto.assets.image;
+import presto.rendering.texture;
+
+import presto.types;
+
+import std;
 
 export namespace Pr {
 

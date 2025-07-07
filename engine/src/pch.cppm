@@ -5,7 +5,7 @@ export import presto.math;
 
 export import std;
 
-export import presto.assets.types;
+export import presto.assets.asset;
 
 // TODO: Come back to this later when doing native Windows input
 /*

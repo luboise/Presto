@@ -1,4 +1,8 @@
-import module presto.internal.managers.asset_manager;
+module presto.internal.managers.asset_manager;
+
+#include <stb_image.h>
+
+import presto.utils;
 
 import std;
 

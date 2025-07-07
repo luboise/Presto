@@ -5,7 +5,7 @@ import std;
 import presto.core;
 import presto.runtime;
 import presto.internal.events;
-import presto.internal.windowdata;
+import presto.internal.window_data;
 
 import presto.runtime.window;
 

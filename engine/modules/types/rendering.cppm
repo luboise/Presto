@@ -23,10 +23,6 @@ enum class MeshDrawMode : Pr::uint8_t {
 };
 
 using Index = uint32_t;
-
-struct Vertex;
-
-using VertexList = std::vector<Vertex>;
 using IndexList = std::vector<Index>;
 
 using uniform_name_t = Pr::string;

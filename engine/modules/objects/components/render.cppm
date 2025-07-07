@@ -9,7 +9,7 @@ import presto.types.core;
 import presto.core.platform;
 import presto.objects.base;
 
-import presto.assets.types;
+import presto.assets.asset;
 import presto.assets.model;
 import presto.assets.material;
 

@@ -3,7 +3,7 @@ export module presto.assets.image;
 import std;
 
 import presto.types.core;
-import presto.assets.types;
+import presto.assets.asset;
 
 export namespace Pr {
 struct ImageData {

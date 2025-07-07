@@ -1,4 +1,4 @@
-export module presto.assets.types;
+export module presto.assets.asset;
 
 import std;
 

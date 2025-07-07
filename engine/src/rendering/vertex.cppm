@@ -2,9 +2,10 @@ export module presto.internal.rendering:vertex;
 
 import std;
 
-import :base;
+import :renderer;
 
 import presto.types.core;
+import presto.assets.importing;
 
 export namespace Pr {
 
@@ -23,6 +24,8 @@ struct Vertex {
 };
 */
 struct Vertex {};
+
+using VertexList = std::vector<Vertex>;
 
 struct Vertex3D : public Vertex {
     Pr::vec3 vertexPosition;

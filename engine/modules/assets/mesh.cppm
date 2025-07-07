@@ -5,7 +5,7 @@ import presto.core;
 
 import presto.types;
 
-import presto.assets.types;
+import presto.assets.asset;
 import presto.assets.material;
 
 export namespace Pr {

@@ -1,4 +1,4 @@
-export module presto.internal.windowdata;
+export module presto.internal.window_data;
 
 // For types/concepts
 import presto.core;

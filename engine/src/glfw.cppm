@@ -1,6 +1,6 @@
 export module presto.internal.glfw;
 
-import presto.internal.windowdata;
+import presto.internal.window_data;
 
 import presto.input;
 import presto.runtime.window;

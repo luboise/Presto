@@ -1,3 +1,6 @@
+module;
+#include <GL/gl.h>
+
 export module presto.internal.rendering.opengl:buffer;
 
 import std;

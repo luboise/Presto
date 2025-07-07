@@ -4,6 +4,7 @@ import std;
 
 import :types;
 
+import presto.assets.asset;
 import presto.core;
 
 export namespace Pr {
@@ -53,6 +54,16 @@ struct PipelineStructure {
 
     [[nodiscard]] UniformLayout asUniformLayout() const;
 };
+
+class Pipeline;
+
+struct AllocatedPipeline {
+    pipeline_id_t id;
+    Allocated<Pipeline> pipeline;
+    Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
+};
+
+using pipeline_allocator_t = Allocator<pipeline_id_t, AllocatedPipeline>;
 
 class Pipeline {
     friend class PipelineBuilder;
@@ -154,13 +165,5 @@ class PipelineBuilderImpl : public PipelineBuilder {
         pipelines_ = &pipelines;
     };
 };
-
-struct AllocatedPipeline {
-    pipeline_id_t id;
-    Allocated<Pipeline> pipeline;
-    Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
-};
-
-using pipeline_allocator_t = Allocator<pipeline_id_t, AllocatedPipeline>;
 
 }  // namespace Pr

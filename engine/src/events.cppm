@@ -6,8 +6,9 @@ export module presto.internal.events;
 import std;
 
 import presto.types;
-
 import presto.core.event;
+
+import presto.internal.window_data;
 
 export namespace Pr {
 
@@ -35,8 +36,6 @@ class WindowResizeEvent : public Event {
    private:
     unsigned width, height;
 };
-
-struct WindowData;
 
 class FramebufferResizedEvent : public Event {
    public:

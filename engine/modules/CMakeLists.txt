@@ -72,7 +72,7 @@ target_sources(
          assets/image.cppm
          #
          assets/importing.cppm
-         assets/types.cppm
+         assets/asset.cppm
          assets/font.cppm
          assets/material_traits.cppm
          assets/material.cppm

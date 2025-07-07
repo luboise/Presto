@@ -12,7 +12,7 @@ import presto.core.concepts;
 
 import std;
 
-import presto.assets.types;
+import presto.assets.asset;
 
 export namespace Pr {
 
