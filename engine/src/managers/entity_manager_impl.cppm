@@ -28,9 +28,6 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
    public:
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
-    [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<EntityPtr> newEntities(Pr::size_t count);
-
     EntityPtr getEntityByID(entity_id_t id);
 
     std::vector<EntityPtr> findAll();

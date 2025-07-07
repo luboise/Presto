@@ -8,8 +8,6 @@ import presto.types.core;
 
 export namespace Pr {
 
-struct PipelineAttribute;
-
 /*
 struct Vertex {
     [[nodiscard]] constexpr std::vector<PipelineAttribute>
@@ -98,5 +96,17 @@ class AttributeSet {
 };
 
 using attribute_size_t = Pr::size_t;
+
+struct MeshData {
+    pipeline_id_t pipeline_id{PR_PIPELINE_ANY};
+
+    MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
+    AnyVertexList vertices;
+    IndexList indices;
+    // [[nodiscard]] BoundingBox getBoundingBox() const;
+    //
+
+    void setVertices(const ImportedAttributeList& attributes);
+};
 
 }  // namespace Pr

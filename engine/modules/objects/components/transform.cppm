@@ -3,7 +3,7 @@ module;
 
 export module presto.objects.components.transform;
 
-import presto.objects.component;
+import presto.objects.base;
 import presto.core;
 import presto.math;
 

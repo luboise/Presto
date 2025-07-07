@@ -4,7 +4,7 @@ export module presto.utils:typemap;
 
 import std;
 
-import presto.objects.component;
+import presto.objects.base;
 
 export namespace Pr {
 

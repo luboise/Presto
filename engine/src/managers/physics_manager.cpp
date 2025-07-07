@@ -1,7 +1,8 @@
 module presto.internal.managers.physics_manager;
 
-import presto.runtime.time;
+#include <glm/glm.hpp>
 
+import presto.runtime.time;
 import presto.objects.components;
 
 namespace Pr {

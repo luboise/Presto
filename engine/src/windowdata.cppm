@@ -2,29 +2,27 @@ export module presto.internal.windowdata;
 
 // For types/concepts
 import presto.core;
+import presto.core.concepts;
 import presto.core.event;
 
-import presto.runtime.window;
-import presto.internal.managers;
+import presto.types;
 
-epoxrt namespace Pr {
-    class Renderer;
+import presto.internal.managers.event_manager_impl;
 
-    struct WindowData {
-        Pr::string title;
+export namespace Pr {
+struct WindowData {
+    Pr::string title;
 
-        VisualExtents window_size;
-        VisualExtents framebuffer_size;
+    VisualExtents window_size;
+    VisualExtents framebuffer_size;
 
-        bool VSync{false};
+    bool VSync{false};
 
-        Renderer* pRenderer{nullptr};
-
-        template <typename T>
-            requires DerivedFrom<T, Event>
-        void templated_event_callback(T event) {
-            EventManagerImpl::get().handle<T>(event);
-        };
+    template <typename T>
+        requires DerivedFrom<T, Event>
+    void templated_event_callback(T event) {
+        EventManagerImpl::get().handle<T>(event);
     };
+};
 
 }  // namespace Pr

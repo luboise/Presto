@@ -3,7 +3,7 @@ module;
 
 export module presto.internal.managers.event_manager_impl;
 
-import presto.objects.entity;
+import presto.objects.base;
 import presto.core.event;
 import presto.core.event_manager;
 import presto.objects;
@@ -22,7 +22,7 @@ class EventManagerImpl final : public Module<EventManagerImpl>,
     ~EventManagerImpl() override = default;
 
     void update() override {};
-    void registerCallbacks(Entity*);
+    // void registerCallbacks(Entity*);
 
     template <typename E>
     void dispatchInternal(E& event) {

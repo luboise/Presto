@@ -14,8 +14,6 @@ struct CanvasItem::Impl {
 
     mesh_registration_id_t mesh_id{PR_MESH_QUAD};
 
-    // CanvasDrawDetails draw_details;
-
     Pr::Ptr<Pr::Texture> texture;
 };
 
@@ -56,14 +54,6 @@ CanvasItem& CanvasItem::setAttributes(CanvasItemAttributes attributes) {
 
 CanvasItem::~CanvasItem() = default;
 CanvasItem::CanvasItem(CanvasItem&&) noexcept = default;
-
-// void CanvasItem::setDrawDetails(CanvasDrawDetails details) {
-//     impl_->draw_details = details;
-// };
-//
-// const CanvasDrawDetails& CanvasItem::drawDetails() const {
-//     return impl_->draw_details;
-// };
 
 [[nodiscard]] mesh_registration_id_t CanvasItem::meshId() const {
     return impl_->mesh_id;

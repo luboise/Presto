@@ -1,116 +1,21 @@
 module;
-#include <glm/glm.hpp>
-#include "presto/platform.h"
 
 export module presto.objects;
 
-import std;
-
+export import presto.objects.base;
 export import presto.objects.components.conductor;
-export import presto.objects.entity;
+export import presto.objects.base;
+export import presto.types.entity;
 
 import presto.types.core;
 import presto.core.concepts;
 import presto.objects.components.camera;
 
-using namespace std::ranges;
-using namespace std::views;
+import std;
 
 export namespace Pr {
 
 class EntityOwner;
-
-// Used by EntityManager
-using ComponentFilter = std::function<bool(const GenericComponentPtr&)>;
-
-using ComponentList = std::vector<GenericComponentPtr>;
-using ComponentDatabase = std::map<class_id_t, ComponentList>;
-using ComponentSearchResults =
-    filter_view<all_t<join_view<elements_view<ref_view<ComponentDatabase>, 1>>>,
-                ComponentFilter>;
-
-class PRESTO_API EntityManager {
-    // friend class Application;
-
-    // friend Figure::~Figure();
-
-    using EntityMap = std::map<entity_id_t, EntityPtr>;
-
-   public:
-    static EntityManager& Get();
-
-    using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
-
-    [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
-    std::vector<EntityPtr> newEntities(Pr::size_t count);
-
-    EntityPtr getEntityByID(entity_id_t id);
-
-    std::vector<EntityPtr> findAll();
-
-    std::vector<EntityPtr> findWhere(auto filter);
-
-    ComponentSearchResults findComponentsWhere(const ComponentFilter& =
-                                                   [](auto&) { return true; });
-
-    template <ComponentType T>
-    std::vector<ComponentPtr<T>>& findComponentsByType() {
-        return *getComponentList<T>();
-    }
-
-    template <ComponentType T>
-    std::vector<T>* getComponents() {}
-
-    void addTagToEntity(Entity& entity, entity_tag_name_t tag);
-
-    entity_tag_id_t createTag(const entity_tag_name_t& tagName);
-    [[nodiscard]] entity_tag_id_t getTagId(
-        const entity_tag_name_t& tagName) const;
-
-    [[nodiscard]] bool exists(entity_id_t id) const;
-
-    // TODO: Consider making this private. It's not a huge deal either
-    // way, and people can just choose which one they use.
-    template <typename T, typename... Args>
-    // TODO: Fix this concept
-    // requires std::constructible_from<T, Args...>
-    ComponentPtr<T> newComponent(Args&&... args) {
-        std::vector<ComponentPtr<T>>* list{getComponentList<T>()};
-
-        // std::unique_ptr<Component> new_component{new T};
-        ComponentPtr<T> new_component{new T(std::forward<Args>(args)...)};
-
-        component_id_t new_id{reserveId()};
-        new_component->id_ = new_id;
-
-        auto& emplaced{list->emplace_back(new_component)};
-
-        return std::dynamic_pointer_cast<T>(emplaced);
-    };
-
-   private:
-    void instantiateEntities();
-    void collectGarbage();
-
-    template <ComponentType T>
-    std::vector<ComponentPtr<T>>* getComponentList() {
-        auto it{componentDatabase_.find(ClassID<T>)};
-
-        if (it == componentDatabase_.end()) {
-            auto emplaced{
-                componentDatabase_.emplace(ClassID<T>, ComponentList{})};
-            it = componentDatabase_.find(ClassID<T>);
-        }
-
-        return reinterpret_cast<std::vector<ComponentPtr<T>>*>(&(it->second));
-    }
-
-    entity_id_t reserveId();
-
-    ComponentDatabase componentDatabase_;
-
-    // ComponentMap components_;
-};
 
 [[nodiscard]] EntityRef NewLooseEntity();
 

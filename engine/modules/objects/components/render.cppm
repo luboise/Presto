@@ -7,7 +7,7 @@ import std;
 
 import presto.types.core;
 import presto.core.platform;
-import presto.objects.component;
+import presto.objects.base;
 
 import presto.assets.types;
 import presto.assets.model;

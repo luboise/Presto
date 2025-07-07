@@ -8,7 +8,7 @@ import presto.types;
 import presto.core.constants;
 import presto.math;
 import presto.utils;
-import presto.objects.component;
+import presto.objects.base;
 
 export namespace Pr {
 

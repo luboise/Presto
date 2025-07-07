@@ -69,4 +69,9 @@ model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
 
 mat4 TransformData::asViewMat() const { return glm::inverse(asModelMat()); }
 
+TransformData& TransformData::addRotation(Pr::vec3 r) {
+    this->rotation = Quaternion::fromEuler(r) * this->rotation;
+    return *this;
+};
+
 }  // namespace Pr

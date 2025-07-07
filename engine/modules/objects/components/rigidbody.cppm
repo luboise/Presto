@@ -2,7 +2,7 @@ module;
 #include "presto/platform.h"
 
 export module presto.objects.components.rigidbody;
-import presto.objects.component;
+import presto.objects.base;
 
 import presto.core;
 import presto.physics;

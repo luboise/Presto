@@ -50,9 +50,8 @@ target_sources(
          #
          physics.cppm
          #
-         objects/entity.cppm
+         objects/base.cppm
          objects/figure.cppm
-         objects/component.cppm
          objects/components/conductor.cppm
          objects/components/camera.cppm
          #

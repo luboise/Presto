@@ -33,8 +33,21 @@ void Entity::checkNewComponent(GenericComponentPtr componentPtr) {
     const auto conductor_ptr{
         std::dynamic_pointer_cast<ConductorComponent>(componentPtr)};
 
+    // Handle new conductors
     if (conductor_ptr != nullptr) {
-        EventManagerImpl::get().registerCallbacks(this);
+        for (const Ptr<ConductorComponent>& conductor :
+             Pr::GetConductors(EntityPtr{this})) {
+            if (conductor->registered_) {
+                Pr::Assert(
+                    entity == conductor->entity,
+                    "A Conductor component has been assigned to multiple "
+                    "different entities.");
+                continue;
+            }
+
+            conductor->registered_ = true;
+            conductor->entity = entity;
+        }
     }
 
     auto rigidbody_ptr{

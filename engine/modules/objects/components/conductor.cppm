@@ -5,14 +5,13 @@ export module presto.objects.components.conductor;
 
 import std;
 
-import presto.objects.entity;
-import presto.objects.component;
+import presto.objects.base;
+import presto.objects.base;
 
 export namespace Pr {
 
 class PRESTO_API ConductorComponent : public Component {
-    // friend class EntityManagerImpl;
-    // friend class EventManagerImpl;
+    friend class Entity;
 
    private:
     using pre_start_callback_t = std::function<void()>;

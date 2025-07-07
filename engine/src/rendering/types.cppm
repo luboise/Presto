@@ -33,11 +33,6 @@ struct AttributeTypeDetails : BaseAttributeTypeDetails {
     static constexpr Pr::size_t size = subtype_size * count;
 };
 
-struct CanvasDrawDetails {
-    mesh_registration_id_t mesh;
-    TransformData transform;
-};
-
 struct MeshRegistrationData {
     // The ID of the mesh's place in the RenderingManager
     mesh_registration_id_t render_manager_id;
@@ -49,18 +44,6 @@ struct MeshRegistrationData {
     MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
     // The ID that points to the internal details in the renderer
     mesh_context_id_t context_id{-1U};
-};
-
-struct MeshData {
-    pipeline_id_t pipeline_id{PR_PIPELINE_ANY};
-
-    MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
-    AnyVertexList vertices;
-    IndexList indices;
-    // [[nodiscard]] BoundingBox getBoundingBox() const;
-    //
-
-    void setVertices(const ImportedAttributeList& attributes);
 };
 
 using mesh_allocator_t =

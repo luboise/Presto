@@ -7,24 +7,28 @@ import std;
 
 import :types;
 
-import presto.objects.component;
+import presto.objects.base;
 import presto.core;
 import presto.utils;
 import presto.assets.mesh;
 
 import presto.types;
 
+import presto.rendering.buffer;
 import presto.rendering.texture;
 
 export namespace Pr {
 
 /*
 struct CanvasDrawDetails;
-struct UniformBuffer;
-struct CanvasItemAttributes;
 */
 
-class UniformBuffer;
+/*
+struct CanvasDrawDetails {
+mesh_registration_id_t mesh;
+TransformData transform;
+};
+*/
 
 class PRESTO_API CanvasItem : LazyCalculator {
    public:
@@ -53,9 +57,6 @@ class PRESTO_API CanvasItem : LazyCalculator {
     CanvasItem& operator=(CanvasItem&&) noexcept;
 
    protected:
-    // void setDrawDetails(CanvasDrawDetails);
-    // [[nodiscard]] virtual const CanvasDrawDetails& drawDetails() const;
-
     void setMeshId(mesh_registration_id_t);
     [[nodiscard]] mesh_registration_id_t meshId() const;
 

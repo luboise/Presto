@@ -2,19 +2,12 @@ export module presto.internal.rendering:base;
 import :types;
 
 import presto.types.core;
+import presto.utils;
+
+import presto.objects.components.camera;
+import presto.internal.glfw;
 
 export namespace Pr {
-
-class GLFWAppWindow;
-class CameraComponent;
-class ImageData;
-class UniformLayout;
-struct ImportedMesh;
-
-class Pipeline;
-class PipelineBuilder;
-
-struct PipelineStructure;
 
 class TextureFactory {
    protected:

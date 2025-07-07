@@ -1,8 +1,9 @@
 module presto.internal.managers.entity_manager_impl;
 
 import presto.objects;
+import presto.objects.components;
 
-import presto.objects.entity:figure;
+import presto.types;
 
 import presto.internal;
 
@@ -33,44 +34,13 @@ EntityManagerImpl::~EntityManagerImpl() {
     delete impl_;
 };
 
-void EntityManagerImpl::update() {
-    // TODO: Move this somewhere cached instead
-    for (const auto& entity : impl_->entity_map | std::views::values) {
-        for (const auto& script : Pr::GetConductors(entity)) {
-            script->update();
-        }
-    }
-}
-
 // Methods
-EntityPtr EntityManagerImpl::newEntity(const entity_name_t& name) {
-    entity_id_t new_id = EntityManagerImpl::reserveId();
-
-    Pr::CoreAssert(
-        std::ranges::none_of(impl_->entity_map | std::views::keys,
-                             [new_id](auto& key) { return key == new_id; }),
-        "Attempted to create entity using existing id: {}", new_id);
-
-    EntityPtr new_entity(new Entity(new_id, name));
-
-    auto new_transform{newComponent<TransformComponent>()};
-    new_entity->setComponent(new_transform);
-
-    Pr::CoreAssert(
-        new_entity.get() != nullptr,
-        "Internal error: A new entity handle has been retrieved as nullptr.");
-
-    impl_->entity_queue.push(new_entity);
-
-    return new_entity;
-}
-
 void EntityManagerImpl::destroyEntity(Entity* entity_ptr) {
     // Delete the entity
-    auto num_erased{impl_->entity_map.erase(entity_ptr->id_)};
+    auto num_erased{impl_->entity_map.erase(entity_ptr->id())};
 
-    Pr::CoreAssert(num_erased == 1, std::format("Entity was not erased: {}",
-                                                fmt::ptr(entity_ptr)));
+    Pr::CoreAssert(num_erased == 1, std::format("Entity was not erased: 0x{}",
+                                                (Pr::uint64_t)(entity_ptr)));
 
     // Send event
     Pr::ObjectDestroyedEvent(static_cast<void*>(entity_ptr));
@@ -132,36 +102,5 @@ bool EntityManagerImpl::exists(entity_id_t id) const {
     return std::ranges::none_of(impl_->entity_map | std::views::keys,
                                 [id](auto& key) { return key == id; });
 };
-
-std::vector<EntityPtr> EntityManagerImpl::newEntities(Pr::size_t count) {
-    Pr::CoreAssert(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
-                   "Invalid entity count construction requested.");
-    std::vector<EntityPtr> entities(count);
-
-    for (Pr::size_t i = 0; i < count; i++) {
-        entities[i] = newEntity("Entity");
-    }
-
-    return entities;
-};
-
-void EntityManagerImpl::instantiateEntities() {
-    EntityPtr entity{};
-    while (!impl_->entity_queue.empty()) {
-        entity = std::move(impl_->entity_queue.front());
-        impl_->entity_queue.pop();
-
-        for (auto& components{entity->components_};
-             auto& [key, component] : components) {
-            Pr::CoreAssert(
-                component != nullptr,
-                "Null component found when instantiating new entities.");
-            component->onEnterScene();
-            component->enteredScene_ = true;
-        }
-
-        impl_->entity_map.emplace(entity->id_, std::move(entity));
-    };
-}
 
 }  // namespace Pr

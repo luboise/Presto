@@ -44,9 +44,11 @@ target_sources(
           defaults/meshes.cppm
           defaults/textures.cppm
           #
+          glfw.cppm
+          #
+          rendering/base.cppm
           rendering/types.cppm
           rendering/vertex.cppm
-          rendering/base.cppm
           rendering/shader.cppm
           rendering/pipeline.cppm
           rendering.cppm
