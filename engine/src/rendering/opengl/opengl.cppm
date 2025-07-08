@@ -7,16 +7,20 @@ import presto.internal;
 
 import :types;
 import :base;
+import :shader;
 
 import presto.utils;
 
 export namespace Pr {
-class GLFWAppWindow;
-class OpenGLPipeline;
-/*
-   The renderer.
-   */
-class OpenGLUniformBuffer;
+
+struct OpenGLMeshContext {
+    mesh_context_id_t id{-1U};
+
+    OpenGLVAO vao;
+
+    GLenum draw_mode{GL_TRIANGLES};
+    // GLsizei index_count{0};
+};
 
 class OpenGLRenderer final : public Renderer {
    public:

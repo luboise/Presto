@@ -1,4 +1,9 @@
-module presto.internal.glfw;
+module;
+#include <GLFW/glfw3.h>
+
+export module presto.internal.glfw:impl;
+
+import :base;
 
 import std;
 

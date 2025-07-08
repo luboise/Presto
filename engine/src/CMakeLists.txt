@@ -47,6 +47,8 @@ target_sources(
           defaults/textures.cppm
           #
           glfw.cppm
+          glfw-base.cppm
+          glfw-impl.cppm
           #
           rendering/types.cppm
           rendering/pipeline.cppm
@@ -64,6 +66,7 @@ target_sources(
           #
           managers/manager.cppm
           managers/asset_manager.cppm
+          managers/asset_manager-image.cppm
           managers/entity_manager_impl.cppm
           managers/event_manager_impl.cppm
           managers/physics_manager.cppm
@@ -119,7 +122,6 @@ target_sources(
           #
           impl/system.cpp
           #
-          glfw.cpp
           create_window.cpp)
 
 add_subdirectory(resources)

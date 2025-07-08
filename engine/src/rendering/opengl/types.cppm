@@ -3,6 +3,11 @@ module;
 
 export module presto.internal.rendering.opengl:types;
 
+import std;
+
+export import presto.types.material;
+export import presto.types.rendering;
+
 import presto.types.core;
 import presto.core.constants;
 
@@ -59,15 +64,6 @@ struct OpenGLMeshInfo {
     GLuint vao{};
 
     int draw_mode{};
-};
-
-struct OpenGLMeshContext {
-    mesh_context_id_t id{-1U};
-
-    OpenGLVAO vao;
-
-    GLenum draw_mode{GL_TRIANGLES};
-    // GLsizei index_count{0};
 };
 
 constexpr GLint getGLAttribType(ShaderDataSubType subType) {

@@ -1,6 +1,15 @@
+module;
+#include <GL/glew.h>
+
 export module presto.internal.rendering.opengl:pipeline;
 
-// import presto.internal.rendering.opengl;
+import std;
+
+import :types;
+
+import presto.core.logging;
+import presto.types.material;
+import presto.types.rendering;
 
 import presto.internal.rendering;
 

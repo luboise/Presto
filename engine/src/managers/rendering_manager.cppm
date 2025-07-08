@@ -3,16 +3,24 @@ module;
 
 export module presto.internal.managers.rendering_manager;
 
+import std;
+
 import presto.core.constants;
-import presto.types.core;
+
+import presto.types;
+import presto.types.rendering;
+
+import presto.objects;
+import presto.objects.components;
 
 import presto.assets.image;
 import presto.assets.material;
+import presto.utils.erased_bytes;
 
 import presto.internal.managers.manager;
 import presto.internal.rendering;
 
-import presto.utils.erased_bytes;
+import presto.internal.glfw;
 
 export namespace Pr {
 
@@ -20,7 +28,6 @@ class MaterialInstance;
 
 class RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
-
     friend bool ImageAsset::load();
     friend bool MaterialAsset::load();
 
