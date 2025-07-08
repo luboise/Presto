@@ -7,8 +7,8 @@ Pr::CollisionResult Pr::Colliding(const Ray& ray, const Plane& plane) {
     // For xz plane only
     // auto t_value{(ray.D.y - plane.N.y) / ray.D.y};
 
-    auto t_value{-(glm::dot(ray.origin - plane.point, plane.normal) /
-                   glm::dot(ray.direction, plane.normal))};
+    auto t_value{-(Pr::Math::Dot(ray.origin - plane.point, plane.normal) /
+                   Pr::Math::Dot(ray.direction, plane.normal))};
 
     if (!ray.contains(t_value)) {
         res.colliding = false;

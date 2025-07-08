@@ -1,9 +1,6 @@
-module;
-#include <glm/glm.hpp>
+export module ext.glm;
 
-export module presto.ext.glm;
+export import glm;
 
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS
-
-export namespace a = glm;

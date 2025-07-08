@@ -1,9 +1,13 @@
+module;
+#include <glm/glm.hpp>
+
 export module presto.math:shapes;
 import :transform_data;
 
 import std;
 
-import presto.math;
+import :types;
+
 import presto.types.core;
 
 export namespace Pr {
@@ -17,9 +21,7 @@ struct LineSegmentBase {
     T p1;
     T p2;
 
-    [[nodiscard]] Pr::float32_t length() const {
-        return Pr::Math::Length(p2 - p1);
-    }
+    [[nodiscard]] Pr::float32_t length() const { return glm::length(p2 - p1); }
 };
 
 using LineSegment = LineSegmentBase<vec3>;
@@ -101,7 +103,7 @@ struct Ray {
 
         return Ray{.origin = a,
                    .magnitude = glm::length(diff),
-                   .direction = glm::normalize(diff)};
+                   .direction = Pr::Math::Normalise(diff)};
     };
 };
 

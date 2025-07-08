@@ -2,14 +2,13 @@ export module presto.physics;
 import presto.types.core;
 
 export namespace Pr {
-struct Force;
-
-void AddPersistentForce(Force);
 
 struct Force {
     vec3 velocity{0, 0, 0};
     vec3 angular_velocity{0, 0, 0};
 };
+
+void AddPersistentForce(Force);
 
 // TODO: Work out operator semantics
 Force operator+(Force& left, Force& right);

@@ -2,6 +2,8 @@ module presto.internal.glfw;
 
 import std;
 
+import presto.runtime.window.internal;
+
 import presto.core;
 import presto.runtime;
 import presto.internal.events;
@@ -10,11 +12,6 @@ import presto.internal.window_data;
 import presto.runtime.window;
 
 #define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-Pr::Window::WindowPtr Pr::Create(const WindowProperties& props) {
-    return std::make_unique<GLFWAppWindow>(props);
-}
 
 namespace Pr {
 bool GLFWAppWindow::s_GLFWInitialised = false;

@@ -1,9 +1,11 @@
 module presto.objects.components.camera;
 
-import presto.ext.glm;
+import glm;
 
 import presto.math;
 import presto.objects;
+
+import presto.core.assert;
 
 namespace Pr {
 CameraComponent::CameraComponent() : LazyCalculator() { this->setDirty(); }
@@ -53,13 +55,13 @@ void CameraComponent::recalculate() {
     // Calculate offset pointing at origin with the y axis up
     if (type_ == CameraType::PERSPECTIVE) {
         if (useFocus_) {
-            viewMatrix_ =
-                glm::lookAt(transform_.position, focusPoint_, vec3(0, 1, 0));
+            viewMatrix_ = glm::ext::lookAt(transform_.position, focusPoint_,
+                                           vec3(0, 1, 0));
         } else {
             viewMatrix_ = transform_.asViewMat();
         }
 
-        projectionMatrix_ = glm::perspectiveFov<double>(
+        projectionMatrix_ = glm::ext::perspectiveFov<double>(
             verticalFov_, extents_.width, extents_.height, distances_.near,
             distances_.far);
     } else if (type_ == CameraType::ORTHOGRAPHIC) {
@@ -67,14 +69,14 @@ void CameraComponent::recalculate() {
         viewMatrix_ = transform_.asViewMat();
 
         projectionMatrix_ =
-            glm::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
-                       -(extents_.height / 2.0F), (extents_.height / 2.0F),
-                       distances_.near, distances_.far);
+            glm::ext::ortho(-(extents_.width / 2.0F), (extents_.width / 2.0F),
+                            -(extents_.height / 2.0F), (extents_.height / 2.0F),
+                            distances_.near, distances_.far);
     }
 }
 
 CameraComponent& CameraComponent::setFOV(camera_fov_t fovDegrees) {
-    verticalFov_ = glm::radians(fovDegrees);
+    verticalFov_ = Pr::Math::Radians(fovDegrees);
 
     setDirty();
     return *this;
@@ -88,9 +90,9 @@ CameraComponent& CameraComponent::setDistances(CameraDistances distances) {
     }
 
     Pr::Assert(distances.far > distances.near,
-               "The camera's far distance must be at least the near distance.")
+               "The camera's far distance must be at least the near distance.");
 
-        distances_ = distances;
+    distances_ = distances;
 
     setDirty();
     return *this;

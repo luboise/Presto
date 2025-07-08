@@ -1,8 +1,11 @@
 module presto.math;
 
-import presto.ext.glm;
-
 import :shapes;
+
+import glm;
+import std;
+
+import presto.types.core;
 
 namespace Pr {
 
@@ -124,7 +127,7 @@ if (Intersects2D(rec, LineSegment2D{copy.p1, copy.p2}) ||
 copy = tri;
 
 mat4 rotation_matrix{
-    glm::rotate(mat4{1}, glm::radians(90.0f), vec3(0.0f, 1.0f, 0.0f))};
+    glm::ext::rotate(mat4{1}, Pr::Math::Radians(90.0f), vec3(0.0f, 1.0f, 0.0f))};
 
 copy.p1 = vec4{copy.p1, 1} * rotation_matrix;
 copy.p1.z = 0;
@@ -152,7 +155,7 @@ vec3 Pr::ClosestPointTo(const LineSegment& segment,
 
     // Get the scalar projection of the point onto the line
     // 0 means its closest to the origin p1
-    float32_t scalar_projection{glm::dot(a, v) / glm::dot(v, v)};
+    float32_t scalar_projection{Pr::Math::Dot(a, v) / Pr::Math::Dot(v, v)};
 
     if (scalar_projection <= 0) {
         return segment.p1;
@@ -178,7 +181,7 @@ bool Intersects2D(const Rectangle& rect, LineSegment2D segment) {
     }
 
     vec2 diff{segment.p2 - segment.p1};
-    vec2 norm{glm::normalize(diff)};
+    vec2 norm{Pr::Math::Normalise(diff)};
 
     // Invert to avoid division in next step
     norm.x =

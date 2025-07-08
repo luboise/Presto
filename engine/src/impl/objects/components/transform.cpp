@@ -1,6 +1,6 @@
 module presto.objects.components.transform;
 
-import presto.ext.glm;
+import glm;
 
 namespace Pr {
 
@@ -8,13 +8,16 @@ mat4 TransformComponent::getModelMatrix(vec3 offset, vec3 yawPitchRoll,
                                         vec3 scale) {
     mat4 model{1.0F};
 
-    model = glm::translate(model, offset);
+    model = glm::ext::translate(model, offset);
 
-    model = glm::rotate(model, glm::radians(yawPitchRoll.x), vec3(0, 1, 0));
-    model = glm::rotate(model, glm::radians(yawPitchRoll.y), vec3(1, 0, 0));
-    model = glm::rotate(model, glm::radians(yawPitchRoll.z), vec3(0, 0, 1));
+    model = glm::ext::rotate(model, Pr::Math::Radians(yawPitchRoll.x),
+                             vec3(0, 1, 0));
+    model = glm::ext::rotate(model, Pr::Math::Radians(yawPitchRoll.y),
+                             vec3(1, 0, 0));
+    model = glm::ext::rotate(model, Pr::Math::Radians(yawPitchRoll.z),
+                             vec3(0, 0, 1));
 
-    model = glm::scale(model, scale);
+    model = glm::ext::scale(model, scale);
 
     return model;
 }

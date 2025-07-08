@@ -34,7 +34,6 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
-          ext/glm.cppm
           ext/stb.cppm
           #
           common.cppm
@@ -120,6 +119,7 @@ target_sources(
           #
           impl/system.cpp
           #
-          glfw.cpp)
+          glfw.cpp
+          create_window.cpp)
 
 add_subdirectory(resources)

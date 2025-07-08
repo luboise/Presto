@@ -1,6 +1,7 @@
 module presto.objects.components.rigidbody;
 
-import presto.ext.glm;
+import glm;
+import glm;
 
 namespace Pr {
 
@@ -8,11 +9,11 @@ namespace Pr {
     return force_;
 }
 
-void RigidBodyComponent::addVelocity(vec3 vel) {
+void RigidBodyComponent::addVelocity(Pr::vec3 vel) {
     this->setVelocity(velocity() + vel);
 };
 
-void RigidBodyComponent::addAngularVelocity(vec3 angularVel) {
+void RigidBodyComponent::addAngularVelocity(Pr::vec3 angularVel) {
     this->setAngularVelocity(angularVelocity() + angularVel);
 };
 
@@ -38,14 +39,14 @@ void RigidBodyComponent::setForce(Force f) { force_ = f; };
 
 void RigidBodyComponent::setDrag(float drag) { drag_ = drag; };
 
-vec3 RigidBodyComponent::velocity() const { return force_.velocity; }
-vec3 RigidBodyComponent::angularVelocity() const {
+Pr::vec3 RigidBodyComponent::velocity() const { return force_.velocity; }
+Pr::vec3 RigidBodyComponent::angularVelocity() const {
     return force_.angular_velocity;
 };
 
-void RigidBodyComponent::setVelocity(vec3 vel) { force_.velocity = vel; };
+void RigidBodyComponent::setVelocity(Pr::vec3 vel) { force_.velocity = vel; };
 
-void RigidBodyComponent::setAngularVelocity(vec3 angularVel) {
+void RigidBodyComponent::setAngularVelocity(Pr::vec3 angularVel) {
     force_.angular_velocity = angularVel;
 };
 

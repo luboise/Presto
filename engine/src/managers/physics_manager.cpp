@@ -1,6 +1,6 @@
 module presto.internal.managers.physics_manager;
 
-import presto.ext.glm;
+import glm;
 
 import presto.runtime.time;
 import presto.objects.components;

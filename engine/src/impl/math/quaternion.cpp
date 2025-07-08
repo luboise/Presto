@@ -1,6 +1,9 @@
 module presto.math;
 
-import presto.ext.glm;
+import glm;
+
+import std;
+import presto.types.core;
 
 import :quaternion;
 
@@ -33,10 +36,10 @@ Quaternion Quaternion::operator*(const Quaternion& q) const {
 
 Quaternion Quaternion::fromEuler(Pr::float32_t xPitch, Pr::float32_t yYaw,
                                  Pr::float32_t zRoll) {
-    glm::vec3 e = glm::radians(glm::vec3(xPitch, yYaw, zRoll));
+    Pr::vec3 e = glm::radians(Pr::vec3(xPitch, yYaw, zRoll));
 
-    glm::vec3 c = glm::cos(e * 0.5F);
-    glm::vec3 s = glm::sin(e * 0.5F);
+    Pr::vec3 c = glm::cos(e * 0.5F);
+    Pr::vec3 s = glm::sin(e * 0.5F);
 
     Quaternion q;
     q.w = c.x * c.y * c.z + s.x * s.y * s.z;
@@ -88,9 +91,10 @@ Pr::vec3 Quaternion::toEuler() const {
     float roll = std::atan2(sinr_cosp, cosr_cosp);
 
     float sinp = 2.0F * (w * y - z * x);
-    float pitch = NAN;
+    float pitch = std::numeric_limits<float>::quiet_NaN();
+
     if (std::abs(sinp) >= 1.0F) {
-        pitch = std::copysign<float>(M_PI / 2.0F,
+        pitch = std::copysign<float>(std::numbers::pi / 2.0F,
                                      sinp);  // use 90 degrees if out of range
     } else {
         pitch = std::asin(sinp);

@@ -43,6 +43,7 @@ target_sources(
          #
          core.cppm
          #
+         math/types.cppm
          math/shapes.cppm
          math/quaternion.cppm
          math/transform_data.cppm

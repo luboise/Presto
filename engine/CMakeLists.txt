@@ -30,6 +30,17 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 include(functions)
 
 target_sources(
+  ${PRESTO_ENGINE_NAME}
+  PUBLIC FILE_SET
+         presto_ext_modules
+         TYPE
+         CXX_MODULES
+         BASE_DIRS
+         "${CMAKE_CURRENT_SOURCE_DIR}/../ext/"
+         FILES
+         "${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/glm/glm.cppm")
+
+target_sources(
   ${PRESTO_ENGINE_NAME} PUBLIC FILE_SET presto_modules TYPE CXX_MODULES
                                BASE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/modules")
 add_subdirectory(modules)

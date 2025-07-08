@@ -1,18 +1,9 @@
 module;
 
-// #include <glm/gtc/type_precision.hpp>
-
-#include <glm/detail/type_float.hpp>
-#include <glm/detail/type_mat3x4.hpp>
-#include <glm/detail/type_mat4x4.hpp>
-#include <glm/gtc/type_precision.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-
 export module presto.types.core:base;
 
 import std;
+import glm;
 
 export namespace Pr {
 

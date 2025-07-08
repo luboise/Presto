@@ -1,6 +1,6 @@
 module presto.math;
 
-import presto.ext.glm;
+import glm;
 
 import :transform_data;
 
@@ -51,18 +51,19 @@ Pr::vec3 TransformData::downwards() const { return -upwards(); }
 mat4 TransformData::asModelMat() const {
     mat4 model{1.0F};
 
-    model = glm::translate(model, this->position);
+    model = glm::ext::translate(model, this->position);
 
     model = model * rotation.toMat4();
 
     /*
 // Apply in reverse order to avoid gimbal lock
-model = glm::rotate(model, glm::radians(this->rotation.z), vec3(0, 0, 1));
-model = glm::rotate(model, glm::radians(this->rotation.y), vec3(0, 1, 0));
-model = glm::rotate(model, glm::radians(this->rotation.x), vec3(1, 0, 0));
+model = glm::ext::rotate(model, Pr::Math::Radians(this->rotation.z), vec3(0, 0,
+1)); model = glm::ext::rotate(model, Pr::Math::Radians(this->rotation.y),
+vec3(0, 1, 0)); model = glm::ext::rotate(model,
+Pr::Math::Radians(this->rotation.x), vec3(1, 0, 0));
     */
 
-    model = glm::scale(model, this->scale);
+    model = glm::ext::scale(model, this->scale);
 
     return model;
 }

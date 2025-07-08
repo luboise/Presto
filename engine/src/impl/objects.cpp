@@ -69,12 +69,12 @@ vec3 applyRotations(const vec3& v, const vec3& rotations) {
 
     return rotations * v;
 
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.z), {0, 0, 1});
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.y), {0, 1, 0});
-    transformation =
-        glm::rotate(transformation, glm::radians(rotations.x), {1, 0, 0});
+    transformation = glm::ext::rotate(
+        transformation, Pr::Math::Radians(rotations.z), {0, 0, 1});
+    transformation = glm::ext::rotate(
+        transformation, Pr::Math::Radians(rotations.y), {0, 1, 0});
+    transformation = glm::ext::rotate(
+        transformation, Pr::Math::Radians(rotations.x), {1, 0, 0});
 
     return applyTransformation(v, transformation);
 }

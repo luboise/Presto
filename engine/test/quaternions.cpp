@@ -12,15 +12,15 @@ TEST(QuaternionTests, AxisConstructor) {
 
     q = Quaternion{45, {1, 0, 0}};
     ASSERT_NEAR(q.w, 0.92387, NEAR_DISTANCE);
-    ASSERT_NEAR(std::sin(glm::radians(45.F) / 2), q.xyz.x, NEAR_DISTANCE);
+    ASSERT_NEAR(std::sin(Pr::Math::Radians(45.F) / 2), q.xyz.x, NEAR_DISTANCE);
 
     q = Quaternion{45, {0, 1, 0}};
     ASSERT_NEAR(q.w, 0.92387, NEAR_DISTANCE);
-    ASSERT_NEAR(std::sin(glm::radians(45.F) / 2), q.xyz.y, NEAR_DISTANCE);
+    ASSERT_NEAR(std::sin(Pr::Math::Radians(45.F) / 2), q.xyz.y, NEAR_DISTANCE);
 
     q = Quaternion{45, {0, 0, 1}};
     ASSERT_NEAR(q.w, 0.92387, NEAR_DISTANCE);
-    ASSERT_NEAR(std::sin(glm::radians(45.F) / 2), q.xyz.z, NEAR_DISTANCE);
+    ASSERT_NEAR(std::sin(Pr::Math::Radians(45.F) / 2), q.xyz.z, NEAR_DISTANCE);
 }
 
 TEST(QuaternionTests, PointMultiplication) {
