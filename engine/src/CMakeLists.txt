@@ -34,7 +34,7 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
-          ext/stb.cppm
+          loaders/image_loader.cppm
           #
           common.cppm
           common.types.cppm
@@ -66,7 +66,6 @@ target_sources(
           #
           managers/manager.cppm
           managers/asset_manager.cppm
-          managers/asset_manager-image.cppm
           managers/entity_manager_impl.cppm
           managers/event_manager_impl.cppm
           managers/physics_manager.cppm
@@ -101,18 +100,17 @@ target_sources(
           #
           impl/physics.cpp
           #
-          impl/objects.cpp
-          impl/objects/entity.cpp
+          impl/objects/base.cpp
           impl/objects/figure.cpp
           impl/objects/components/camera.cpp
           impl/objects/components/canvas.cpp
           impl/objects/components/canvas_items.cpp
           impl/objects/components/canvas_types.cpp
-          impl/objects/components/conductor.cpp
           impl/objects/components/render.cpp
           impl/objects/components/rendersubcomps.cpp
           impl/objects/components/rigidbody.cpp
           impl/objects/components/transform.cpp
+          impl/objects.cpp
           #
           impl/runtime.cpp
           impl/runtime/application.cpp

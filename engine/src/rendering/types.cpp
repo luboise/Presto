@@ -1,5 +1,4 @@
-module presto.internal.rendering;
-import :types;
+module presto.internal.rendering.types;
 
 import std;
 

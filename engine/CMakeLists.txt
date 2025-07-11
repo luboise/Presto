@@ -1,5 +1,5 @@
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++
-# -lc++abi")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++
+-lc++abi")
 add_library(${PRESTO_ENGINE_NAME} SHARED)
 
 set_property(TARGET ${PRESTO_ENGINE_NAME} PROPERTY CXX_MODULE_STD 1)
@@ -11,8 +11,8 @@ target_include_directories(${PRESTO_ENGINE_NAME}
 target_compile_definitions(PrestoEngine PUBLIC GLM_ENABLE_CXX_20)
 
 target_include_directories(
-  ${PRESTO_ENGINE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include
-                               ${CMAKE_CURRENT_SOURCE_DIR}/../ext/glm/include)
+  ${PRESTO_ENGINE_NAME}
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ext/spdlog/include)
 
 target_include_directories(
   ${PRESTO_ENGINE_NAME}

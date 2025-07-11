@@ -6,6 +6,8 @@ export module presto.assets.material;
 export import presto.types.material;
 export import presto.assets.material.traits;
 
+import presto.rendering.texture;
+
 import presto.types;
 import presto.core.constants;
 import presto.core.concepts;
@@ -22,7 +24,8 @@ class PRESTO_API MaterialAsset final :
     public std::enable_shared_from_this<MaterialAsset>,
     public Asset {
    public:
-    MaterialAsset(Pr::string name, const UniformLayout& structure);
+    MaterialAsset(Pr::string name, pipeline_id_t pipelineId,
+                  const UniformLayout& structure);
 
     ~MaterialAsset() override = default;
 
@@ -51,11 +54,16 @@ class MaterialInstance {
     friend class MaterialAsset;
 
    public:
+    virtual ~MaterialInstance() = default;
+
     virtual MaterialInstance& setName(Pr::string newName) = 0;
     [[nodiscard]] virtual Pr::string name() const = 0;
 
     [[nodiscard]] virtual const UniformLayout& getUniformStructure() const = 0;
     [[nodiscard]] virtual pipeline_id_t getPipelineId() const = 0;
+
+    virtual MaterialInstance& setProperty(Pr::string name,
+                                          const Ptr<Texture>& data) = 0;
 };
 
 // using Pr::Ptr<Pr::MaterialAsset> = AssetPtr<MaterialAsset>;

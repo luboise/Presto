@@ -6,10 +6,11 @@ export module presto.internal.rendering.opengl;
 import presto.internal;
 
 import :types;
-import :base;
 import :shader;
 
 import presto.utils;
+import presto.utils.allocator;
+import presto.internal.glfw;
 
 export namespace Pr {
 

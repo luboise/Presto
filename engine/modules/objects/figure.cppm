@@ -1,4 +1,4 @@
-export module presto.objects.entity:figure;
+export module presto.objects.figure;
 
 import std;
 

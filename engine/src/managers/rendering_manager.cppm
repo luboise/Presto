@@ -5,7 +5,16 @@ export module presto.internal.managers.rendering_manager;
 
 import std;
 
+import presto.assets.image;
+import presto.assets.material;
+import presto.assets.mesh;
+import presto.assets.importing;
+
 import presto.core.constants;
+import presto.core.concepts;
+import presto.core.logging;
+
+import presto.handles;
 
 import presto.types;
 import presto.types.rendering;
@@ -13,23 +22,20 @@ import presto.types.rendering;
 import presto.objects;
 import presto.objects.components;
 
-import presto.assets.image;
-import presto.assets.material;
+import presto.math;
+
 import presto.utils.erased_bytes;
+
+import presto.rendering;
 
 import presto.internal.managers.manager;
 import presto.internal.rendering;
-
 import presto.internal.glfw;
 
 export namespace Pr {
 
-class MaterialInstance;
-
 class RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
-    friend bool ImageAsset::load();
-    friend bool MaterialAsset::load();
 
    public:
     ~RenderingManager() override;
@@ -204,10 +210,33 @@ class MaterialInstanceImpl : public MaterialInstance {
    private:
     MaterialDefinitionPtr definition;
 
+    struct PropertyDetails {
+        UniformBinding binding;
+        // Data index is the index of the uniform block for block variables, and
+        // the index of the data for regular uniform variables
+        Pr::size_t data_index{};
+    };
+
+    PropertyDetails* getBinding(const Pr::string& name);
+    UniformBuffer& getUniformBuffer(Pr::size_t index);
+    ErasedBytes& getUniformDataStore(Pr::size_t index);
+
     Pr::string name;
     UniformLayout structure;
 
     std::map<Pr::string, PropertyDetails> property_lookup;
+
+    struct UniformBufferExtra {
+        Pr::uint8_t bind_point;
+        Allocated<UniformBuffer> buffer;
+    };
+
+    struct UniformBindingExtra {
+        Pr::uint8_t location;
+
+        UniformVariableType data_type;
+        ErasedBytes data;
+    };
 
     std::vector<UniformBufferExtra> uniform_buffers;
     std::vector<UniformBindingExtra> uniform_bindings;
@@ -215,7 +244,7 @@ class MaterialInstanceImpl : public MaterialInstance {
 };
 
 template <>
-MaterialInstanceImpl& MaterialInstanceImpl::setProperty(
-    Pr::string name, const Ptr<Texture>& data);
+MaterialInstance& MaterialInstanceImpl::setProperty(Pr::string name,
+                                                    const Ptr<Texture>& data);
 
 }  // namespace Pr

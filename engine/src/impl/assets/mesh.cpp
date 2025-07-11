@@ -5,9 +5,13 @@ import std;
 import presto.internal.managers.rendering_manager;
 import presto.internal;
 
+import presto.assets.image;
+
+import presto.internal.rendering;
+
 import presto.types.core;
 
-export namespace Pr {
+namespace Pr {
 
 struct MeshAsset::Impl {
     MeshData mesh_data;
@@ -74,7 +78,7 @@ void MeshSource::unload() {
 };
 
 Pr::Ptr<Pr::ModelAsset> MeshSource::getModel(const Pr::string& name) {
-    if (LoadedModel * loaded{getLoadedModel(name)}; loaded != nullptr) {
+    if (LoadedModel* loaded{getLoadedModel(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
 
@@ -82,7 +86,7 @@ Pr::Ptr<Pr::ModelAsset> MeshSource::getModel(const Pr::string& name) {
 };
 
 Pr::Ptr<Pr::MaterialInstance> MeshSource::getMaterial(const Pr::string& name) {
-    if (LoadedMaterial * loaded{getLoadedMaterial(name)}; loaded != nullptr) {
+    if (LoadedMaterial* loaded{getLoadedMaterial(name)}; loaded != nullptr) {
         return loaded->ptr;
     }
 
@@ -179,149 +183,6 @@ void MeshSource::reloadFile() {
         }
     }
 };
-
-MeshSource::~MeshSource() {
-    if (loaded()) {
-        unload();
-    }
-};
-
-MeshSource::LoadedModel* MeshSource::getLoadedModel(const Pr::string& name) {
-    auto found{std::ranges::find_if(models_, [&name](const LoadedModel& model) {
-        return model.name == name;
-    })};
-    return found == models_.end() ? nullptr : found.base();
-};
-
-MeshSource::LoadedMaterial* MeshSource::getLoadedMaterial(
-    const Pr::string& name) {
-    auto found{std::ranges::find_if(materials_,
-                                    [&name](const LoadedMaterial& material) {
-                                        return material.name == name;
-                                    })};
-    return found == materials_.end() ? nullptr : found.base();
-};
-
-Pr::Ptr<Pr::ModelAsset> MeshSource::loadModel(Pr::string modelName,
-                                              bool allowReload) {
-    LoadedModel* model{getLoadedModel(modelName)};
-    if (model == nullptr) {
-        Pr::CoreLog(
-            WARN,
-            "Unable to load {} as it couldn't be found in {}. Skipping this "
-            "request.",
-            modelName, this->path().string());
-        return nullptr;
-    }
-
-    // If the model has been loaded previously
-    if (model->ptr != nullptr) {
-        if (!allowReload) {
-            return model->ptr;
-        }
-
-        unloadModel(*model);
-
-    } else {
-        Ptr<ModelAsset> new_ptr{
-            AssetManager::get().newAsset<ModelAsset>(modelName)};
-
-        model->ptr = std::move(new_ptr);
-    }
-
-    // Past this point, it is assumed that the ModelAsset is empty
-    Pr::CoreAssert(
-        model->ptr->meshCount() == 0,
-        "A model asset that was just cleared must have 0 meshes in it.");
-
-    for (ImportedMesh& imported_mesh : model->mesh_imports) {
-        MeshData data{
-            .draw_mode = imported_mesh.draw_mode,
-            .vertices{},
-            .indices = imported_mesh.indices,
-        };
-        data.setVertices(imported_mesh.attributes);
-
-        Ptr<Mesh> new_mesh{RenderingManager::get().loadMesh(data)};
-
-        Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
-
-        // If the mesh has a material, try to load it
-        if (imported_mesh.hasMaterial()) {
-            if (!materials_.empty() &&
-                imported_mesh.material_index <= materials_.size()) {
-                LoadedMaterial& loaded_material{
-                    materials_[imported_mesh.material_index]};
-
-                // TODO: Make this not do the lookup and just load it on the
-                // spot if performance is bad
-                default_material = loadMaterial(loaded_material.name);
-            }
-        }
-
-        model->ptr->addMesh(new_mesh, default_material);
-    }
-
-    return model->ptr;
-};
-
-void MeshSource::unloadModel(LoadedModel& loadedModel) {
-    // If the model has been loaded previously
-    if (loadedModel.ptr != nullptr) {
-        // Remove the meshes from the ModelAsset
-        loadedModel.ptr->clear();
-    }
-
-    // Destroy the meshes in the renderer
-    for (Ptr<Mesh>& mesh : loadedModel.meshes) {
-        RenderingManager::get().unloadMesh(std::move(mesh));
-    }
-    loadedModel.meshes.clear();
-};
-
-void MeshSource::unloadModel(const Pr::string& modelName) {
-    LoadedModel* model{getLoadedModel(modelName)};
-
-    if (model == nullptr) {
-        Pr::CoreLog(WARN,
-                    "Unable to load {} as it couldn't be found in {}. Skipping "
-                    "this "
-                    "request.",
-                    modelName, this->path().string());
-        return;
-    }
-
-    this->unloadModel(*model);
-}
-
-Pr::Ptr<Pr::MaterialInstance> MeshSource::loadMaterial(Pr::string materialName,
-                                                       bool allowReload) {
-    LoadedMaterial* material{getLoadedMaterial(materialName)};
-    if (material == nullptr) {
-        Pr::CoreLog(WARN,
-                    "Unable to load {} as it couldn't be found in {}. Skipping "
-                    "this "
-                    "request.",
-                    materialName, this->path().string());
-        return nullptr;
-    }
-
-    if (material->ptr != nullptr) {
-        if (!allowReload) {
-            return nullptr;
-        }
-
-        // TODO: Add unloading here
-    } else {
-        material->ptr = RenderingManager::get().createMaterial(
-            MaterialType::DEFAULT_3D, material->name);
-    }
-
-    // Update the existing material pointer with the new values from the
-    // file
-    material->ptr->setFromImport(material->material_import, textures_);
-    return material->ptr;
-}
 
 void BoundingBox::merge(const BoundingBox& other) {
     this->x_min = std::min(x_min, other.x_min);

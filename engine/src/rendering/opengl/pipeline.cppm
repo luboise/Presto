@@ -8,10 +8,11 @@ import std;
 import :types;
 
 import presto.core.logging;
+import presto.core.assert;
 import presto.types.material;
 import presto.types.rendering;
 
-import presto.internal.rendering;
+import presto.internal.rendering.types;
 
 export namespace Pr {
 
@@ -57,8 +58,6 @@ class OpenGLPipeline final : public Pipeline {
 
 class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
     friend class OpenGLRenderer;
-
-    static constexpr auto INVALID_SHADER_ID = 0;
 
    public:
     OpenGLPipelineBuilder& setAttributesOverride(

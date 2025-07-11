@@ -1,5 +1,4 @@
-module presto.objects.entity;
-import :figure;
+module presto.objects.figure;
 
 import presto.internal.managers;
 

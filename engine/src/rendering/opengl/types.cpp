@@ -1,6 +1,6 @@
 module presto.internal.rendering.opengl;
-
 import :types;
+
 import presto.core;
 
 import std;

@@ -53,7 +53,6 @@ target_sources(
          #
          objects/base.cppm
          objects/figure.cppm
-         objects/components/conductor.cppm
          objects/components/camera.cppm
          #
          objects/components/canvas_types.cppm
@@ -67,6 +66,7 @@ target_sources(
          objects/components.cppm
          objects.cppm
          #
+         rendering/drawables.cppm
          rendering/buffer.cppm
          rendering/texture.cppm
          #

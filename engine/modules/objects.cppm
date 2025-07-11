@@ -3,8 +3,6 @@ module;
 export module presto.objects;
 
 export import presto.objects.base;
-export import presto.objects.components.conductor;
-export import presto.objects.base;
 export import presto.types.entity;
 
 import presto.types.core;

@@ -743,18 +743,6 @@ void RenderingManager::usePipeline(pipeline_id_t id) {
     getPipeline(id)->pipeline->bind();
 }
 
-struct UniformBufferExtra {
-    Pr::uint8_t bind_point;
-    Allocated<UniformBuffer> buffer;
-};
-
-struct UniformBindingExtra {
-    Pr::uint8_t location;
-
-    UniformVariableType data_type;
-    ErasedBytes data;
-};
-
 MaterialInstanceImpl::MaterialInstanceImpl(
     const MaterialDefinitionPtr& definition) {
     impl_->definition = definition;

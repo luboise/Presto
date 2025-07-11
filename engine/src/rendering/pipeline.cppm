@@ -2,10 +2,17 @@ export module presto.internal.rendering:pipeline;
 
 import std;
 
-import :types;
-
-import presto.assets.asset;
 import presto.core;
+import presto.types;
+
+import presto.rendering.buffer;
+
+import presto.utils.allocator;
+
+import presto.assets.material;
+import presto.assets.asset;
+
+import presto.internal.rendering.types;
 
 export namespace Pr {
 

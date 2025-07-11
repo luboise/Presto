@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.40)
 
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "a9e1cf81-9932-4810-974b-6eccaf14e457")
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -44,6 +44,8 @@ find_program(
   GLSLC_PATH
   NAMES glslc
   HINTS Vulkan::glslc)
+
+add_compile_definitions(SPDLOG_USE_STD_FORMAT)
 
 if(NOT TARGET spdlog)
   # find_package(spdlog REQUIRED)

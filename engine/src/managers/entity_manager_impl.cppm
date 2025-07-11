@@ -15,13 +15,7 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     MODULE_FUNCTIONS(EntityManagerImpl);
 
     // friend class Application;
-    // friend class Module;
-
-    // friend void Entity::destroy();
-
-    // friend class Module<EntityManagerImpl>;
-
-    // friend Figure::~Figure();
+    friend class Module;
 
     using EntityMap = std::map<entity_id_t, EntityPtr>;
 
@@ -29,10 +23,6 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     using ComponentMap = std::map<component_id_t, GenericComponentPtr>;
 
     EntityPtr getEntityByID(entity_id_t id);
-
-    std::vector<EntityPtr> findAll();
-
-    std::vector<EntityPtr> findWhere(auto filter);
 
     ComponentSearchResults findComponentsWhere(const ComponentFilter& =
                                                    [](auto&) { return true; });
@@ -43,41 +33,12 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
         return *getComponentList<T>();
     }
 
-    template <ComponentType T>
-    std::vector<T>* getComponents() {}
-
     void addTagToEntity(Entity& entity, entity_tag_name_t tag);
     void update() override;
 
     entity_tag_id_t createTag(const entity_tag_name_t& tagName);
     [[nodiscard]] entity_tag_id_t getTagId(
         const entity_tag_name_t& tagName) const;
-
-    [[nodiscard]] bool exists(entity_id_t id) const;
-
-    /*
-template <typename T = Entity, typename... Args>
-T *newEntity(Args &&...args) {
-entity_id_t new_id{EntityManagerImpl::reserveId()};
-
-Pr::CoreAssert(exists(new_id),
-               "Attempted to create entity using existing id: {}",
-               new_id);
-
-auto new_entity{entity_unique_ptr(
-    new T(new_id, args..uu.),
-
-    [this](Entity *entity) { this->destroyEntity(entity); })};
-
-auto *new_transform{newComponent<Transform>()};
-new_entity->setComponent(new_transform);
-
-entityMap_.emplace(new_id, std::move(new_entity));
-return entityMap_[new_id].get();
-};
-    */
-
-    entity_id_t reserveId();
 
    protected:
     EntityManagerImpl();
@@ -103,10 +64,6 @@ return entityMap_[new_id].get();
     void destroyEntity(Entity* entity);
 
     ComponentDatabase componentDatabase_;
-
-    struct Impl;
-    Impl* impl_;
-
-    // ComponentMap components_;
 };
+
 }  // namespace Pr

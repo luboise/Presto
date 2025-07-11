@@ -92,7 +92,7 @@ struct Subcomponent {
 };
 
 class PRESTO_API Entity {
-    // friend class EntityManagerImpl;
+    friend class EntityManager;
 
    public:
     Entity() = delete;
@@ -172,6 +172,8 @@ class PRESTO_API EntityManager {
     [[nodiscard]] EntityPtr newEntity(const entity_name_t& name = "Entity");
     std::vector<EntityPtr> newEntities(Pr::size_t count);
 
+    void destroyEntity(Entity* entity_ptr);
+
     EntityPtr getEntityByID(entity_id_t id);
 
     std::vector<EntityPtr> findAll();
@@ -217,10 +219,16 @@ class PRESTO_API EntityManager {
     };
 
    protected:
-    void instantiateEntities();
+    EntityManager();
+    ~EntityManager();
+
+	void instantiateEntities();
     void update();
 
    private:
+    struct Impl;
+    Impl* impl_;
+
     void collectGarbage();
 
     template <ComponentType T>
@@ -239,4 +247,35 @@ class PRESTO_API EntityManager {
     entity_id_t reserveId();
     ComponentDatabase componentDatabase_;
 };
+
+class PRESTO_API ConductorComponent : public Component {
+    friend class Entity;
+    friend class EntityManager;
+
+   private:
+    using pre_start_callback_t = std::function<void()>;
+
+    virtual void start() {};
+    virtual void update() {};
+
+    // virtual void on(KeyEvent& /*unused*/) { handlesKeyEvents_ = false; };
+    // bool handlesKeyEvents_{true};
+
+    void onEnterScene() override;
+
+    bool registered_{false};
+
+    std::list<pre_start_callback_t> preStartCallbacks_;
+
+   protected:
+    Entity* entity;
+
+    void addPreStartCallback(const pre_start_callback_t& callback);
+
+    // Conductor() = default;
+
+   public:
+    // ~Conductor() override = default;
+};
+
 }  // namespace Pr

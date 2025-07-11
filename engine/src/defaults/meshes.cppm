@@ -2,6 +2,9 @@ export module presto.internal.defaults.meshes;
 
 import presto.core.constants;
 import presto.internal.rendering;
+import presto.types.rendering;
+
+import std;
 
 export {
     using namespace Pr;

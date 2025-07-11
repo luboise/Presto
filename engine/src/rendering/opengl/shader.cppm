@@ -4,9 +4,10 @@ module;
 export module presto.internal.rendering.opengl:shader;
 
 import :buffer;
+import :types;
 
+import presto.assets.asset;
 import presto.types.material;
-
 import presto.internal.rendering;
 
 import std;
@@ -35,7 +36,7 @@ class OpenGLShader final : public Shader {
     void setUniform(uniform_name_t property, Pr::vec4 value) override;
     void setUniform(uniform_name_t property, Pr::mat4 value) override;
 
-    inline void setMat4(uniform_name_t property, float* value);
+    void setMat4(uniform_name_t property, float* value);
 
     OpenGLShader& setShader(const AssetArg& shaderPath, ShaderStage type);
     OpenGLShader& setShader(const char* data, ShaderStage type);

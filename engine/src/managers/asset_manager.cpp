@@ -1,9 +1,8 @@
 module presto.internal.managers.asset_manager;
 
-#define STB_IMAGE_IMPLEMENTATION
-
 import presto.utils;
-import :image;
+
+import presto.loaders.image_loader;
 
 import std;
 
@@ -54,5 +53,19 @@ Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
 
     return nullptr;
 };
+
+Pr::Ptr<Pr::ImageAsset> AssetManager::loadImageFromDisk(
+    const AssetArg& filepath, const asset_name_t& customName) {
+    ImageLoader loader{};
+    auto new_image{loader.load(filepath)};
+
+    auto new_resource{std::make_shared<ImageAsset>(customName, new_image)};
+
+    const auto key = new_resource->name();
+
+    assets_[AssetType::IMAGE][key] = new_resource;
+
+    return new_resource;
+}
 
 }  // namespace Pr

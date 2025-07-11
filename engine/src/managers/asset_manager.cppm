@@ -7,8 +7,6 @@ import presto.internal.managers.manager;
 
 import std;
 
-import :image;
-
 import presto.internal.rendering;
 
 import presto.assets;

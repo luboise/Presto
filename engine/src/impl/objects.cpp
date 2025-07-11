@@ -2,15 +2,20 @@ module presto.objects;
 
 import std;
 
+import presto.core.assert;
+
 import presto.math;
 import presto.types.core;
 
 import presto.internal.managers;
 
-import presto.objects.components.conductor;
+import presto.handles;
 
-std::vector<Ptr<ConductorComponent>> Pr::GetConductors() {
-    auto data{getComponents() | std::views::values |
+import presto.objects.base;
+import presto.objects.components.transform;
+
+std::vector<Ptr<ConductorComponent>> Pr::GetConductors(EntityPtr entity) {
+    auto data{entity->components() | std::views::values |
               std::views::transform(
                   [](auto& val) -> ComponentPtr<ConductorComponent> {
                       return std::dynamic_pointer_cast<ConductorComponent>(val);
@@ -53,103 +58,26 @@ void Pr::SetDefaultCameraConductor(
     main_camera->setComponent<ConductorComponent>(ptr);
 };
 
-namespace Pr {
+Entity* EntityOwner::operator->() { return entity_.get(); }
 
-EntityManager& EntityManager::Get() { return EntityManagerImpl::get(); }
+EntityOwner::EntityOwner() { entity_ = EntityManagerImpl::get().newEntity(); };
 
-vec3 applyTransformation(const vec3& v, const mat4& transformations) {
-    vec4 transformed = transformations * vec4{v, 1};
-    transformed /= transformed.w;
-
-    return vec3{transformed};
-};
-
-vec3 applyRotations(const vec3& v, const vec3& rotations) {
-    mat4 transformation{1};
-
-    return rotations * v;
-
-    transformation = glm::ext::rotate(
-        transformation, Pr::Math::Radians(rotations.z), {0, 0, 1});
-    transformation = glm::ext::rotate(
-        transformation, Pr::Math::Radians(rotations.y), {0, 1, 0});
-    transformation = glm::ext::rotate(
-        transformation, Pr::Math::Radians(rotations.x), {1, 0, 0});
-
-    return applyTransformation(v, transformation);
-}
-
-entity_id_t EntityManager::reserveId() {
-    return EntityManagerImpl::get().reserveId();
-};
-
-EntityPtr EntityManager::newEntity(const entity_name_t& name) {
-    entity_id_t new_id = EntityManagerImpl::reserveId();
-
-    Pr::CoreAssert(
-        std::ranges::none_of(impl_->entity_map | std::views::keys,
-                             [new_id](auto& key) { return key == new_id; }),
-        "Attempted to create entity using existing id: {}", new_id);
-
-    EntityPtr new_entity(new Entity(new_id, name));
-
-    auto new_transform{newComponent<TransformComponent>()};
-    new_entity->setComponent(new_transform);
-
-    Pr::CoreAssert(
-        new_entity.get() != nullptr,
-        "Internal error: A new entity handle has been retrieved as nullptr.");
-
-    impl_->entity_queue.push(new_entity);
-
-    return new_entity;
-};
-
-// MapFilterView<EntityManagerImpl::ComponentMap>
-ComponentSearchResults EntityManager::findComponentsWhere(
-    const ComponentFilter& filter) {
-    return componentDatabase_ | std::views::values | std::views::join |
-           std::views::filter(filter);
-}
-
-void EntityManager::instantiateEntities() {
-    EntityPtr entity{};
-    while (!impl_->entity_queue.empty()) {
-        entity = std::move(impl_->entity_queue.front());
-        impl_->entity_queue.pop();
-
-        for (auto& components{entity->components()};
-             auto& [key, component] : components) {
-            Pr::CoreAssert(
-                component != nullptr,
-                "Null component found when instantiating new entities.");
-            component->onEnterScene();
-            component->enteredScene_ = true;
-        }
-
-        impl_->entity_map.emplace(entity->id(), std::move(entity));
-    };
-}
-
-void EntityManager::newEntities(Pr::size_t count) {
-    Pr::CoreAssert(count > 0 && count < PRESTO_FIGURE_MAX_ENTITY_COUNT,
-                   "Invalid entity count construction requested.");
-    std::vector<EntityPtr> entities(count);
-
-    for (Pr::size_t i = 0; i < count; i++) {
-        entities[i] = newEntity("Entity");
+EntityOwner::~EntityOwner() {
+    if (entity_ != nullptr) {
+        entity_->destroy();
     }
+};
 
-    return entities;
-}
+EntityOwner& EntityOwner::operator=(EntityOwner&& other) noexcept {
+    this->entity_ = other.entity_;
+    other.entity_ = nullptr;
 
-void EntityManager::update() {
-    // TODO: Move this somewhere cached instead
-    for (const auto& entity : impl_->entity_map | std::views::values) {
-        for (const auto& script : Pr::GetConductors(entity)) {
-            script->update();
-        }
-    }
-}
+    return *this;
+};
+
+EntityOwner::EntityOwner(EntityOwner&& other) noexcept
+    : entity_(std::move(other.entity_)) {
+    other.entity_ = nullptr;
+};
 
 }  // namespace Pr

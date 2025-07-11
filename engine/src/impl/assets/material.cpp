@@ -5,11 +5,11 @@ import presto.internal.managers.rendering_manager;
 import std;
 
 namespace Pr {
+
 MaterialAsset::MaterialAsset(Pr::string name, pipeline_id_t pipelineId,
                              const UniformLayout& layout)
-    : Asset(std::move(name)), pipelineId_(pipelineId) {
+    : Asset(std::move(name)), pipelineId_(pipelineId), uniformLayout_(layout) {
     // TODO: Put validation checks here before overwriting
-    this->uniformLayout_ = layout;
 }
 
 UniformLayout MaterialAsset::uniformLayout() const { return uniformLayout_; }

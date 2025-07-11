@@ -15,6 +15,8 @@ import presto.internal.rendering;
 
 export namespace Pr {
 
+constexpr auto INVALID_SHADER_ID = 0;
+
 constexpr GLenum OpenGLTypeFromPrestoType(ShaderDataType type) {
     switch (type) {
         case ShaderDataType::SHORT:

@@ -1,4 +1,4 @@
-export module presto.internal.rendering:types;
+export module presto.internal.rendering.types;
 
 import std;
 

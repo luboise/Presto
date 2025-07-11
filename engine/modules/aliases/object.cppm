@@ -1,6 +1,7 @@
 export module presto.aliases.object;
 
 import presto.objects.components;
+import presto.objects.base;
 
 export {
     // Components
