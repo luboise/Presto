@@ -7,14 +7,14 @@ import :base;
 
 import std;
 
-import presto.runtime.window.internal;
-
 import presto.core;
 import presto.runtime;
 import presto.internal.events;
 import presto.internal.window_data;
 
 import presto.runtime.window;
+
+import presto.internal.glfw;
 
 #define GLFW_INCLUDE_VULKAN
 

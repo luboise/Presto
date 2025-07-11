@@ -40,14 +40,14 @@ class PRESTO_API EntityManagerImpl final : public Module<EntityManagerImpl>,
     [[nodiscard]] entity_tag_id_t getTagId(
         const entity_tag_name_t& tagName) const;
 
+    void collectGarbage();
+    void instantiateEntities();
+
    protected:
     EntityManagerImpl();
     ~EntityManagerImpl() override;
 
    private:
-    void instantiateEntities();
-    void collectGarbage();
-
     template <ComponentType T>
     std::vector<ComponentPtr<T>>* getComponentList() {
         auto it{componentDatabase_.find(ClassID<T>)};

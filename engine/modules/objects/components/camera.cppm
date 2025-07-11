@@ -20,6 +20,8 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     using camera_distance_t = float;
 
    public:
+    CameraComponent();
+
     struct CameraDistances {
         camera_distance_t near;
         camera_distance_t far;
@@ -76,8 +78,6 @@ class PRESTO_API CameraComponent : public Component, LazyCalculator {
     [[nodiscard]] Rectangle nearRectangle() const;
 
    private:
-    CameraComponent();
-
     CameraType type_{CameraType::PERSPECTIVE};
 
     bool useFocus_{false};

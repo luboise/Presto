@@ -6,6 +6,11 @@ import std;
 
 export namespace Pr {
 
+template <class... Ts>
+struct VisitorOverloads : Ts... {
+    using Ts::operator()...;
+};
+
 enum class Strictness { STRICTLY_DERIVED, LOOSELY_DERIVED };
 
 using Strictness::LOOSELY_DERIVED;
@@ -40,7 +45,7 @@ using Scalar = float;
 
 template <typename T>
 concept Scalable = requires(T a, Scalar b) {
-    { a* b } -> std::convertible_to<T>;
+    { a * b } -> std::convertible_to<T>;
     { a / b } -> std::convertible_to<T>;
 };
 

@@ -1,7 +1,7 @@
 module;
 #include <stb_image.h>
 
-export module presto.loaders.image_loader;
+export module presto.internal.loading.image_loader;
 
 import std;
 

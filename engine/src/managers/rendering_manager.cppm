@@ -34,6 +34,106 @@ import presto.internal.glfw;
 
 export namespace Pr {
 
+class MaterialInstanceImpl final : public MaterialInstance {
+   public:
+    explicit MaterialInstanceImpl(const Pr::Ptr<Pr::MaterialAsset>&);
+    ~MaterialInstanceImpl() override;
+
+    void setFromImport(const ImportedMaterial& imported_material,
+                       std::vector<Pr::Ptr<Pr::Texture>>& texturePtrs);
+
+    MaterialInstance& setProperty(Pr::string name,
+                                  const Ptr<Texture>& data) override;
+
+    [[nodiscard]] Pr::string name() const override;
+    MaterialInstance& setName(Pr::string newName) override;
+    [[nodiscard]] const UniformLayout& getUniformStructure() const override;
+    [[nodiscard]] pipeline_id_t getPipelineId() const override;
+
+    template <typename T>
+        requires requires { sizeof(T); } &&
+                 // Ensure that T is not a pointer
+                 requires { !is_any_pointer_type_v<T>; }
+    MaterialInstance& setProperty(Pr::string name, const T& data) {
+        PropertyDetails* details{getBinding(name)};
+
+        if (details == nullptr) {
+            Pr::CoreLog(
+                WARN,
+                "Unable to find \"{}\" in MaterialInstance of pipeline {}. "
+                "Skipping this write.",
+                name, this->getPipelineId());
+            return *this;
+        }
+
+        if (sizeof(data) != details->binding.size()) {
+            Pr::CoreLog(
+                ERROR,
+                "The size of data being written to material property {} must "
+                "be of "
+                "size {}. Received size {}.",
+                name, details->binding.size(), sizeof(data));
+            return *this;
+        }
+
+        switch (details->binding.bind_type) {
+            case UniformBinding::SINGLE: {
+                getUniformDataStore(details->data_index).write(data);
+                break;
+            }
+            case UniformBinding::BLOCK: {
+                ErasedBytes bytes{data};
+
+                getUniformBuffer(details->data_index)
+                    .write(bytes.getData(), details->binding.offset);
+                break;
+            }
+            default: {
+                Pr::CoreLog(ERROR, "Unhandled UniformBinding case.");
+            }
+        }
+
+        return *this;
+    };
+
+    void bindTo(Pipeline& pipeline) const;
+
+   private:
+    MaterialDefinitionPtr definition_;
+
+    struct PropertyDetails {
+        UniformBinding binding;
+        // Data index is the index of the uniform block for block variables, and
+        // the index of the data for regular uniform variables
+        Pr::size_t data_index{};
+    };
+
+    PropertyDetails* getBinding(const Pr::string& name);
+    UniformBuffer& getUniformBuffer(Pr::size_t index);
+    ErasedBytes& getUniformDataStore(Pr::size_t index);
+
+    Pr::string name_;
+    UniformLayout structure_;
+
+    std::map<Pr::string, PropertyDetails> propertyLookup_;
+
+    struct UniformBufferExtra {
+        Pr::uint8_t bind_point;
+        Allocated<UniformBuffer> buffer;
+    };
+
+    struct UniformBindingExtra {
+        Pr::uint8_t location;
+
+        UniformVariableType data_type;
+        ErasedBytes data;
+    };
+
+    std::vector<UniformBufferExtra> uniformBuffers_;
+    std::vector<UniformBindingExtra> uniformBindings_;
+    std::vector<TexturePtr> textures_;
+};
+
 class RenderingManager final : public Module<RenderingManager> {
     MODULE_FUNCTIONS(RenderingManager);
 
@@ -151,96 +251,6 @@ void loadImageOnGpu(ImageAsset&);
 
     struct Impl;
     Allocated<Impl> impl_;
-};
-
-class MaterialInstanceImpl : public MaterialInstance {
-   public:
-    explicit MaterialInstanceImpl(const Pr::Ptr<Pr::MaterialAsset>&);
-    ~MaterialInstanceImpl();
-
-    void setFromImport(const ImportedMaterial& imported_material,
-                       std::vector<Pr::Ptr<Pr::Texture>>& texturePtrs);
-
-    template <typename T>
-        requires requires { sizeof(T); } &&
-                 // Ensure that T is not a pointer
-                 requires { !is_any_pointer_type_v<T>; }
-    MaterialInstance& setProperty(Pr::string name, const T& data) {
-        PropertyDetails* details{getBinding(name)};
-
-        if (details == nullptr) {
-            Pr::CoreLog(
-                WARN,
-                "Unable to find \"{}\" in MaterialInstance of pipeline {}. "
-                "Skipping this write.",
-                name, this->getPipelineId());
-            return *this;
-        }
-
-        if (sizeof(data) != details->binding.size()) {
-            Pr::CoreLog(
-                ERROR,
-                "The size of data being written to material property {} must "
-                "be of "
-                "size {}. Received size {}.",
-                name, details->binding.size(), sizeof(data));
-            return *this;
-        }
-
-        switch (details->binding.bind_type) {
-            case UniformBinding::SINGLE: {
-                getUniformDataStore(details->data_index).write(data);
-                break;
-            }
-            case UniformBinding::BLOCK: {
-                ErasedBytes bytes{data};
-
-                getUniformBuffer(details->data_index)
-                    .write(bytes.getData(), details->binding.offset);
-                break;
-            }
-            default: {
-                Pr::CoreLog(ERROR, "Unhandled UniformBinding case.");
-            }
-        }
-
-        return *this;
-    };
-
-   private:
-    MaterialDefinitionPtr definition;
-
-    struct PropertyDetails {
-        UniformBinding binding;
-        // Data index is the index of the uniform block for block variables, and
-        // the index of the data for regular uniform variables
-        Pr::size_t data_index{};
-    };
-
-    PropertyDetails* getBinding(const Pr::string& name);
-    UniformBuffer& getUniformBuffer(Pr::size_t index);
-    ErasedBytes& getUniformDataStore(Pr::size_t index);
-
-    Pr::string name;
-    UniformLayout structure;
-
-    std::map<Pr::string, PropertyDetails> property_lookup;
-
-    struct UniformBufferExtra {
-        Pr::uint8_t bind_point;
-        Allocated<UniformBuffer> buffer;
-    };
-
-    struct UniformBindingExtra {
-        Pr::uint8_t location;
-
-        UniformVariableType data_type;
-        ErasedBytes data;
-    };
-
-    std::vector<UniformBufferExtra> uniform_buffers;
-    std::vector<UniformBindingExtra> uniform_bindings;
-    std::vector<TexturePtr> textures;
 };
 
 template <>

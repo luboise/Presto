@@ -30,4 +30,6 @@ CanvasGroup* CanvasComponent::group(Pr::size_t groupIndex) {
     return &groups_[groupIndex];
 };
 
+std::vector<CanvasGroup>& CanvasComponent::groups() { return groups_; };
+
 }  // namespace Pr

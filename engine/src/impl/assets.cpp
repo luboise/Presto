@@ -1,7 +1,7 @@
-module presto.internal.assets;
+module presto.assets;
 
 import presto.internal.managers;
-import presto.assets;
+import presto.core.logging;
 
 import std;
 
@@ -58,14 +58,13 @@ Ptr<FontSource> CreateFontSource(const AssetArg& filepath) {
     return AssetManager::get().addAssetSource<FontSource>(filepath);
 };
 
-Pr::Ptr<Pr::MaterialInstance> Pr::NewMaterial(MaterialType type,
-                                              Pr::string name) {
+Pr::Ptr<Pr::MaterialInstance> NewMaterial(MaterialType type, Pr::string name) {
     using namespace Pr;
 
     return RenderingManager::get().createMaterial(type, std::move(name));
 };
 
-Pr::Ptr<Pr::MaterialInstance> Pr::FindMaterial(const Pr::string& name) {
+Pr::Ptr<Pr::MaterialInstance> FindMaterial(const Pr::string& name) {
     using namespace Pr;
 
     return RenderingManager::get().findMaterial(name);

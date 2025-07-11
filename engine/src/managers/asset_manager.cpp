@@ -2,7 +2,9 @@ module presto.internal.managers.asset_manager;
 
 import presto.utils;
 
-import presto.loaders.image_loader;
+import presto.core.concepts;
+import presto.assets.image;
+import presto.internal.loading.image_loader;
 
 import std;
 
@@ -30,8 +32,8 @@ Pr::Ptr<Pr::MaterialAsset> AssetManager::createMaterialDefinition(
         return nullptr;
     }
 
-    Pr::Ptr<Pr::MaterialAsset> new_definition{
-        std::make_shared<MaterialAsset>(name, structure)};
+    Pr::Ptr<Pr::MaterialAsset> new_definition{std::make_shared<MaterialAsset>(
+        name, structure.pipeline_id, structure.asUniformLayout())};
 
     assets_[AssetType::MATERIAL_DEFINITION][name] = new_definition;
 
@@ -56,16 +58,29 @@ Ptr<MaterialAsset> AssetManager::getMaterialDefinition(pipeline_id_t id) {
 
 Pr::Ptr<Pr::ImageAsset> AssetManager::loadImageFromDisk(
     const AssetArg& filepath, const asset_name_t& customName) {
+    Pr::Ptr<Pr::ImageAsset> ret{nullptr};
+
     ImageLoader loader{};
     auto new_image{loader.load(filepath)};
 
-    auto new_resource{std::make_shared<ImageAsset>(customName, new_image)};
+    const auto visitor = VisitorOverloads{
+        [&filepath](Pr::string errorMessage) {
+            Pr::Log(ERROR, "Unable to load asset {}, with error {}",
+                    filepath.string(), errorMessage);
+        },
+        [this, &ret, &customName](const Pr::ImageData& new_image) {
+            auto new_resource{
+                std::make_shared<ImageAsset>(customName, new_image)};
+            const auto key = new_resource->name();
+            assets_[AssetType::IMAGE][key] = new_resource;
 
-    const auto key = new_resource->name();
+            ret = new_resource;
+        },
+    };
 
-    assets_[AssetType::IMAGE][key] = new_resource;
+    std::visit(visitor, new_image);
 
-    return new_resource;
+    return ret;
 }
 
 }  // namespace Pr

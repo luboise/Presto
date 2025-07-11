@@ -49,14 +49,11 @@ class PRESTO_API TransformComponent : public Component {
     [[nodiscard]] Pr::vec3 getPitch() const;
     [[nodiscard]] Pr::vec3 getRoll() const;
 
-    // void setRounding(bool x, bool y, bool z) { useRounding_ = {x, y, z};
-    // }
-
-   private:
     [[nodiscard]] mat4 getModelView() const {
         return transformData_.asModelMat();
     };
 
+   private:
     TransformData transformData_;
 
     // std::array<bool, 3> useRounding_{false};

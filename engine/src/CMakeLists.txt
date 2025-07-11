@@ -34,7 +34,10 @@ target_sources(
           TYPE
           CXX_MODULES
           FILES
+          loaders/loader_interfaces.cppm
           loaders/image_loader.cppm
+          loaders/gltf_loader.cppm
+          loading.cppm
           #
           common.cppm
           common.types.cppm
@@ -65,6 +68,7 @@ target_sources(
           rendering/opengl/opengl.cppm
           #
           managers/manager.cppm
+          managers/debug_manager.cppm
           managers/asset_manager.cppm
           managers/entity_manager_impl.cppm
           managers/event_manager_impl.cppm
@@ -81,6 +85,8 @@ target_sources(
           managers/event_manager_impl.cpp
           managers/physics_manager.cpp
           managers/rendering_manager.cpp
+          #
+          impl/utils.cpp
           #
           impl/core/logging.cpp
           impl/core/event_manager.cpp

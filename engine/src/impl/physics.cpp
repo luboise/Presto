@@ -4,6 +4,8 @@ import presto.internal.managers;
 
 import glm;
 
+using Pr::Force;
+
 Force operator+(Force& left, Force& right) {
     const Force new_force{
         .velocity = left.velocity + right.velocity,

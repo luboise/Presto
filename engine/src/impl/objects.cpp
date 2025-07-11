@@ -14,6 +14,8 @@ import presto.handles;
 import presto.objects.base;
 import presto.objects.components.transform;
 
+using Pr::Ptr, Pr::ConductorComponent;
+
 std::vector<Ptr<ConductorComponent>> Pr::GetConductors(EntityPtr entity) {
     auto data{entity->components() | std::views::values |
               std::views::transform(
@@ -57,6 +59,8 @@ void Pr::SetDefaultCameraConductor(
     EntityPtr main_camera{RenderingManager::get().getMainCamera()};
     main_camera->setComponent<ConductorComponent>(ptr);
 };
+
+namespace Pr {
 
 Entity* EntityOwner::operator->() { return entity_.get(); }
 

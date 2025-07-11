@@ -56,9 +56,10 @@ class PRESTO_API CanvasItem : LazyCalculator {
     CanvasItem& operator=(const CanvasItem&) = delete;
     CanvasItem& operator=(CanvasItem&&) noexcept;
 
+    [[nodiscard]] mesh_registration_id_t meshId() const;
+
    protected:
     void setMeshId(mesh_registration_id_t);
-    [[nodiscard]] mesh_registration_id_t meshId() const;
 
    private:
     struct Impl;
@@ -76,7 +77,7 @@ class PRESTO_API CanvasGroup {
         items_[index] = std::move(item);
     }
 
-    [[nodiscard]] const auto& items() const { return this->items_; }
+    [[nodiscard]] std::vector<CanvasItem>& items() { return this->items_; }
 
     CanvasGroup(const CanvasGroup&) = default;
     CanvasGroup(CanvasGroup&&) = default;
@@ -95,10 +96,13 @@ class CanvasComponent : public Component {
     // friend class EntityManagerImpl;
 
    public:
+    CanvasComponent();
+
     // ~CanvasComponent() override;
     CanvasGroup& addGroup(CanvasGroup = {});
 
     CanvasGroup* group(Pr::size_t groupIndex = 0);
+    [[nodiscard]] std::vector<CanvasGroup>& groups();
 
     /**
      * @brief  Creates a new canvas group and returns it. The new canvas group
@@ -112,8 +116,6 @@ class CanvasComponent : public Component {
     void setSize(VisualExtents);
 
    private:
-    CanvasComponent();
-
     VisualExtents size_{.width = 1, .height = 1};
     std::vector<CanvasGroup> groups_;
 };

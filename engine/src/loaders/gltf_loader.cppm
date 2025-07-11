@@ -1,6 +1,7 @@
-export module presto.internal.gltf;
+export module presto.internal.loading.gltf_loader;
 
-import presto.internal.importing;
+import presto.internal.loading.loader_interfaces;
+import std;
 
 export namespace Pr {
 

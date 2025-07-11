@@ -12,10 +12,11 @@ export namespace Pr {
 
 class Mesh {
    public:
+    // TODO: Make this hidden
+    explicit Mesh(mesh_registration_id_t id);
     [[nodiscard]] mesh_registration_id_t registrationId() const;
 
    private:
-    explicit Mesh(mesh_registration_id_t id);
     mesh_registration_id_t registrationId_{PR_UNREGISTERED};
 };
 
@@ -39,7 +40,7 @@ MeshAsset& setIndices(IndexList indices);
 MeshAsset& setDrawMode(MeshDrawMode mode);
     */
 
-    // MeshAsset& setMeshData(MeshData data);
+    MeshAsset& setMeshData(MeshData data);
 
     [[nodiscard]] Pr::Ptr<Pr::MaterialInstance>& defaultMaterial() const;
     MeshAsset& setDefaultMaterial(const Pr::Ptr<Pr::MaterialInstance>&);

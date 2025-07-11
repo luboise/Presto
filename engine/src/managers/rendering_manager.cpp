@@ -1,17 +1,26 @@
 module presto.internal.managers.rendering_manager;
 
+import presto.utils;
 import presto.utils.erased_bytes;
 
-import presto.objects;
-import presto.types.rendering;
-import presto.objects.components;
+import presto.assets.model;
 
-import presto.internal.utils;
+import presto.objects;
+import presto.objects.components;
+import presto.types.rendering;
+
+import presto.core.assert;
+
+import presto.internal.events;
 import presto.internal.glfw;
 import presto.internal.rendering;
 import presto.internal.managers;
+import presto.internal.defaults;
 
 import std;
+import glm;
+
+#include "presto/platform.h"
 
 namespace Pr {
 
@@ -24,7 +33,7 @@ struct RenderingManager::Impl {
     IDGenerator<material_id_t> material_ids;
     IDGenerator<texture_id_t> texture_ids;
 
-    std::vector<Pr::Ptr<Pr::MaterialInstance>> materials;
+    std::vector<Pr::Ptr<Pr::MaterialInstanceImpl>> materials;
 
     pipeline_allocator_t pipelines{PR_MIN_USER_PIPELINE_ID};
 
@@ -364,13 +373,13 @@ void RenderingManager::update() {
         impl_->cam_2d->setExtents(canvas_size);
         renderer_->setCameraData(GlobalUniforms{
             .view{mat4{1}},
-            .projection{glm::ortho(0.F, static_cast<float>(canvas_size.width),
-                                   static_cast<float>(canvas_size.height), 0.F,
-                                   -1.F, 1.F)}});
+            .projection{glm::gtc::ortho(
+                0.F, static_cast<float>(canvas_size.width),
+                static_cast<float>(canvas_size.height), 0.F, -1.F, 1.F)}});
 
-        for (CanvasGroup& group : ptr->groups_) {
+        for (CanvasGroup& group : ptr->groups()) {
             // Render each canvasitem where it should be
-            for (CanvasItem& canvasItem : group.items_) {
+            for (CanvasItem& canvasItem : group.items()) {
                 if (canvasItem.texture() == nullptr) {
                     this->getTexture(PR_TEX_DIFFUSE_FALLBACK)->bind(2);
                 } else {
@@ -429,7 +438,8 @@ void RenderingManager::setWindow(GLFWAppWindow* window) {
 void RenderingManager::setMainCamera(const EntityPtr& mainCam) {
     Pr::CoreAssert(RenderingManager::initialised(),
                    "Unable to set camera when the RenderingManager is "
-                   "uninitialised.") impl_->cam_active_entity = mainCam;
+                   "uninitialised.");
+    impl_->cam_active_entity = mainCam;
 }
 
 const PipelineStructure* RenderingManager::getPipelineStructure(
@@ -472,7 +482,7 @@ Ptr<MaterialInstance> RenderingManager::createMaterial(MaterialType type,
         definition != nullptr,
         "A default pipeline can't have a null shared pointer to it.");
 
-    auto new_instance{std::make_shared<MaterialInstance>(definition)};
+    auto new_instance{std::make_shared<MaterialInstanceImpl>(definition)};
     new_instance->setName(std::move(name));
 
     impl_->materials.push_back(new_instance);
@@ -573,7 +583,7 @@ Ptr<Mesh> RenderingManager::loadMesh(MeshData meshData,
     mesh_registration_id_t registration_id{pair.first};
     pair.second->render_manager_id = registration_id;
 
-    Ptr<Mesh> new_mesh{Ptr<Mesh>{new Mesh(pair.first)}};
+    Ptr<Mesh> new_mesh{std::make_shared<Mesh>(registration_id)};
 
     return new_mesh;
 };
@@ -587,12 +597,15 @@ void RenderingManager::unloadMesh(Ptr<Mesh>&& ptr) {
         return;
     }
 
-    if (!ptr.unique()) {
-        Pr::CoreLog(
-            WARN, "Unable to unload mesh with id {} as it is currently in use.",
-            ptr->registrationId());
-        return;
-    }
+    // TODO: Reimplement this with proper reference tracking
+    /*
+if (!ptr.unique()) {
+    Pr::CoreLog(
+        WARN, "Unable to unload mesh with id {} as it is currently in use.",
+        ptr->registrationId());
+    return;
+}
+    */
 
     impl_->mesh_registrations.release(ptr->registrationId());
 };
@@ -653,7 +666,8 @@ void RenderingManager::switchMaterial(
     // Update material if changed
     if (impl_->current.material.expired() ||
         impl_->current.material.lock() != material) {
-        material->bindTo(*impl_->current.pipeline->pipeline);
+        std::dynamic_pointer_cast<MaterialInstanceImpl>(material)->bindTo(
+            *impl_->current.pipeline->pipeline);
         impl_->current.material = material;
     }
 };
@@ -745,45 +759,44 @@ void RenderingManager::usePipeline(pipeline_id_t id) {
 
 MaterialInstanceImpl::MaterialInstanceImpl(
     const MaterialDefinitionPtr& definition) {
-    impl_->definition = definition;
-    impl_->structure = definition->uniformLayout();
+    this->definition_ = definition;
+    this->structure_ = definition->uniformLayout();
 
     RenderingManager& rm{RenderingManager::get()};
 
     // Allocate a buffer for each uniform block (needed for hotswap)
-    impl_->uniform_buffers.resize(impl_->structure.blocks.size());
-    for (Pr::size_t i{0}; i < impl_->structure.blocks.size(); i++) {
-        const UniformBlock& block{impl_->structure.blocks[i]};
+    this->uniformBuffers_.resize(this->structure_.blocks.size());
+    for (Pr::size_t i{0}; i < this->structure_.blocks.size(); i++) {
+        const UniformBlock& block{this->structure_.blocks[i]};
 
-        impl_->uniform_buffers[i] = {
+        this->uniformBuffers_[i] = {
             .bind_point = block.bind_point,
             .buffer = rm.createUniformBuffer(block.size())};
 
         for (const UniformBinding& binding : block.bindings) {
-            impl_->property_lookup[binding.name] = {
+            propertyLookup_[binding.name] = {
                 .binding{binding},
                 .data_index = i,
             };
         }
     }
 
-    Pr::size_t naked_binding_count{impl_->structure.bindings.size()};
+    Pr::size_t naked_binding_count{this->structure_.bindings.size()};
 
-    impl_->uniform_bindings.resize(naked_binding_count);
+    this->uniformBindings_.resize(naked_binding_count);
     for (Pr::size_t i = 0; i < naked_binding_count; i++) {
-        const UniformBinding& binding{impl_->structure.bindings[i]};
-        impl_->property_lookup[binding.name] = {.binding = binding,
-                                                .data_index = i};
+        const UniformBinding& binding{this->structure_.bindings[i]};
+        propertyLookup_[binding.name] = {.binding = binding, .data_index = i};
 
-        impl_->uniform_bindings[i] = {
+        this->uniformBindings_[i] = {
             .location = static_cast<Pr::uint8_t>(binding.location),
             .data_type = binding.data_type,
             .data = ErasedBytes{ByteArray(binding.size())}};
 
         if (binding.data_type == UniformVariableType::TEXTURE) {
-            impl_->uniform_bindings[i].data.reset(
+            this->uniformBindings_[i].data.reset(
                 static_cast<ImportTypeOf<UniformVariableType::TEXTURE>>(
-                    impl_->textures.size()));
+                    this->textures_.size()));
 
             TexturePtr tex{nullptr};
 
@@ -791,7 +804,7 @@ MaterialInstanceImpl::MaterialInstanceImpl(
                 tex = rm.getTexture(PR_TEX_DIFFUSE_FALLBACK);
             }
 
-            impl_->textures.push_back(tex);
+            this->textures_.push_back(tex);
         }
     }
 }
@@ -800,45 +813,44 @@ MaterialInstanceImpl::~MaterialInstanceImpl() = default;
 
 MaterialInstanceImpl::PropertyDetails* MaterialInstanceImpl::getBinding(
     const Pr::string& name) {
-    if (auto val{impl_->property_lookup.find(name)};
-        val != impl_->property_lookup.end()) {
+    if (auto val{propertyLookup_.find(name)}; val != propertyLookup_.end()) {
         return &(val->second);
     }
     return nullptr;
 };
 
 MaterialInstance& MaterialInstanceImpl::setName(Pr::string newName) {
-    impl_->name = std::move(newName);
+    name_ = std::move(newName);
     return *this;
 };
 
 ErasedBytes& MaterialInstanceImpl::getUniformDataStore(Pr::size_t index) {
-    return impl_->uniform_bindings[index].data;
+    return uniformBindings_[index].data;
 };
 
 UniformBuffer& MaterialInstanceImpl::getUniformBuffer(Pr::size_t index) {
-    return *impl_->uniform_buffers[index].buffer;
+    return *uniformBuffers_[index].buffer;
 };
 
 const UniformLayout& MaterialInstanceImpl::getUniformStructure() const {
-    return this->impl_->structure;
+    return structure_;
 };
 
 pipeline_id_t MaterialInstanceImpl::getPipelineId() const {
-    return this->impl_->definition->pipelineId();
+    return definition_->pipelineId();
 };
 
-Pr::string MaterialInstanceImpl::name() const { return impl_->name; };
+Pr::string MaterialInstanceImpl::name() const { return name_; };
 
 void MaterialInstanceImpl::bindTo(Pipeline& pipeline) const {
     // Bind each block
-    for (const UniformBufferExtra& buffer_details : impl_->uniform_buffers) {
+    for (const UniformBufferExtra& buffer_details : uniformBuffers_) {
         pipeline.setUniformBlock(buffer_details.bind_point,
                                  *buffer_details.buffer);
     }
     // Bind each singular uniform
 
-    for (const UniformBindingExtra& binding : impl_->uniform_bindings) {
+    for (const UniformBindingExtra& binding : uniformBindings_) {
 #define SWITCH_CASE(type)                                          \
     case type:                                                     \
         pipeline.setUniform(binding.location,                      \
@@ -856,7 +868,7 @@ void MaterialInstanceImpl::bindTo(Pipeline& pipeline) const {
 
             case UniformVariableType::TEXTURE: {
                 auto texture_index{binding.data.as<Pr::uint8_t>()};
-                const TexturePtr& texture{impl_->textures[texture_index]};
+                const TexturePtr& texture{textures_[texture_index]};
 
                 if (texture == nullptr) {
                     /*
@@ -886,7 +898,20 @@ Pr::CoreLog(TRACE,
     }
 };
 
-template <>
+void MaterialInstanceImpl::setFromImport(
+    const ImportedMaterial& imported_material,
+    std::vector<TexturePtr>& texturePtrs) {
+    for (const auto& value : imported_material.values) {
+        if (value.data_type == UniformVariableType::TEXTURE) {
+            auto texture_index{
+                value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
+            this->setProperty(value.name, texturePtrs[texture_index]);
+        } else {
+            this->setProperty(value.name, value.data);
+        }
+    }
+};
+
 MaterialInstance& MaterialInstanceImpl::setProperty(Pr::string name,
                                                     const Ptr<Texture>& data) {
     PropertyDetails* details{getBinding(name)};
@@ -913,28 +938,14 @@ MaterialInstance& MaterialInstanceImpl::setProperty(Pr::string name,
 
     auto texture_index{getUniformDataStore(details->data_index)
                            .as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
-    PR_CORE_ASSERT(
-        texture_index < impl_->textures.size(),
+    Pr::CoreAssert(
+        texture_index < textures_.size(),
         std::format("Texture index {} must be in bounds for array of size {}.",
-                    texture_index, impl_->textures.size()));
+                    texture_index, textures_.size()));
 
-    impl_->textures[texture_index] = data;
+    textures_[texture_index] = data;
 
     return *this;
-};
-
-void MaterialInstanceImpl::setFromImport(
-    const ImportedMaterial& imported_material,
-    std::vector<TexturePtr>& texturePtrs) {
-    for (const auto& value : imported_material.values) {
-        if (value.data_type == UniformVariableType::TEXTURE) {
-            auto texture_index{
-                value.data.as<ImportTypeOf<UniformVariableType::TEXTURE>>()};
-            this->setProperty(value.name, texturePtrs[texture_index]);
-        } else {
-            this->setProperty(value.name, value.data);
-        }
-    }
 };
 
 }  // namespace Pr

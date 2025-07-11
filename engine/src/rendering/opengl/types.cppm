@@ -8,6 +8,8 @@ import std;
 export import presto.types.material;
 export import presto.types.rendering;
 
+import presto.core.logging;
+
 import presto.types.core;
 import presto.core.constants;
 
@@ -76,6 +78,11 @@ constexpr GLint getGLAttribType(ShaderDataSubType subType) {
             return GL_UNSIGNED_INT;
         case ShaderDataSubType::FLOAT:
             return GL_FLOAT;
+        default: {
+            Pr::CoreLog(ERROR, "Unhandled shader data sub type: {}",
+                        static_cast<int>(subType));
+            return GL_FLOAT;
+        }
     }
 }
 
@@ -92,7 +99,7 @@ ShaderDataType getShaderDataType(GLint type, GLint count);
 UniformVariableType getUniformVariableType(GLint type, GLint count);
 std::vector<PipelineAttribute> getAttributesFromShader(GLuint program);
 
-const auto default_uniform_filter = [](auto index) { return index == -1; };
+constexpr auto default_uniform_filter = [](auto index) { return index == -1; };
 
 std::vector<PipelineUniform> getUniformsFromShader(
     GLuint program,

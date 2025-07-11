@@ -1,8 +1,17 @@
 module presto.runtime.application;
 
+#include "presto/platform.h"
+
 import presto.core.event;
 import presto.core.platform;
+
+import presto.runtime;
+import presto.utils;
+
 import presto.internal.managers;
+import presto.internal.create_window;
+import presto.internal.glfw;
+import presto.internal.events;
 
 #ifdef PR_DEBUG_BUILD
 import presto.internal.managers.debug_manager;
@@ -12,7 +21,7 @@ namespace Pr {
 
 Application::Application() {
     // TODO: Fix this to be injected
-    this->appWindow_ = Window::create();
+    this->appWindow_ = CreateWindow();
 
     EventManagerImpl::init();
     this->initialiseEvents();  // Initialise application events in EventManager
@@ -125,8 +134,7 @@ void Application::run() {
 void Application::initialiseEvents() {
     auto& em{EventManagerImpl::get()};
 
-    em.addHandler<WindowResizeEvent>(
-        [this](WindowResizeEvent& e) { return true; });
+    em.addHandler<WindowResizeEvent>([](WindowResizeEvent& e) { return true; });
 
     em.addHandler<WindowCloseEvent>([this](auto& e) -> bool {
         this->running_ = false;

@@ -2,6 +2,8 @@ module presto.objects.figure;
 
 import presto.internal.managers;
 
+import presto.core.assert;
+
 import std;
 
 namespace Pr {

@@ -1,6 +1,14 @@
+module;
+#include "presto/module.h"
+#include "presto/platform.h"
+
 export module presto.internal.managers.debug_manager;
 
+import std;
+
 import presto.types.core;
+import presto.runtime.window;
+import presto.math;
 
 import presto.internal.managers.manager;
 

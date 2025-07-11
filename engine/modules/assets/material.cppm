@@ -64,6 +64,9 @@ class MaterialInstance {
 
     virtual MaterialInstance& setProperty(Pr::string name,
                                           const Ptr<Texture>& data) = 0;
+
+   protected:
+    MaterialInstance() = default;
 };
 
 // using Pr::Ptr<Pr::MaterialAsset> = AssetPtr<MaterialAsset>;

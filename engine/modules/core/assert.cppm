@@ -34,6 +34,15 @@ inline constexpr bool ASSERTIONS_ENABLED = false;
 
 export namespace Pr {
 
+inline void Assert(bool condition, Pr::string message);
+inline void CoreAssert(bool condition, Pr::string message);
+
+template <typename... Args>
+inline void Assert(bool condition, std::format_string<Args...> str,
+                   Args&&... args) {
+    Assert(condition, std::format(str, std::forward<Args>(args)...));
+};
+
 inline void Assert(bool condition, Pr::string message) {
     if constexpr (ASSERTIONS_ENABLED) {
         if (!condition) {
@@ -42,6 +51,12 @@ inline void Assert(bool condition, Pr::string message) {
         }
     }
 }
+
+template <typename... Args>
+inline void CoreAssert(bool condition, std::format_string<Args...> str,
+                       Args&&... args) {
+    CoreAssert(condition, std::format(str, std::forward<Args>(args)...));
+};
 
 // TODO: Move to private fragment
 inline void CoreAssert(bool condition, Pr::string message) {
