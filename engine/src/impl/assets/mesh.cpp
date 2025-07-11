@@ -33,6 +33,16 @@ bool MeshAsset::load() {
     return impl_->mesh->registrationId() != PR_UNREGISTERED;
 }
 
+MeshAsset& MeshAsset::setMesh(Ptr<Mesh> mesh) {
+    Pr::Assert(impl_->mesh == nullptr,
+               "You shouldn't write a new Mesh to a live MeshAsset.");
+
+    impl_->mesh = std::move(mesh);
+    return *this;
+};
+
+Ptr<Mesh> MeshAsset::mesh() const { return impl_->mesh; };
+
 MeshAsset& MeshAsset::setDefaultMaterial(
     const Pr::Ptr<Pr::MaterialInstance>& material) {
     if (!modifiable()) {
@@ -63,10 +73,12 @@ Pr::Ptr<Pr::MaterialInstance>& MeshAsset::defaultMaterial() const {
     return impl_->default_material;
 };
 
+/*
 MeshAsset& MeshAsset::setMeshData(MeshData data) {
     impl_->mesh_data = std::move(data);
     return *this;
 };
+*/
 
 void BoundingBox::merge(const BoundingBox& other) {
     this->x_min = std::min(x_min, other.x_min);

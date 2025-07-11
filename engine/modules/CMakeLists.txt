@@ -66,6 +66,7 @@ target_sources(
          objects/components.cppm
          objects.cppm
          #
+         rendering/vertices.cppm
          rendering/drawables.cppm
          rendering/buffer.cppm
          rendering/texture.cppm

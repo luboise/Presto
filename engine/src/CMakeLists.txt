@@ -54,6 +54,7 @@ target_sources(
           glfw-impl.cppm
           #
           rendering/types.cppm
+          rendering/processing.cppm
           rendering/pipeline.cppm
           rendering/renderer.cppm
           rendering/vertex.cppm
@@ -87,6 +88,8 @@ target_sources(
           managers/rendering_manager.cpp
           #
           impl/utils.cpp
+          #
+          impl/rendering/vertices.cpp
           #
           impl/core/logging.cpp
           impl/core/event_manager.cpp

@@ -1,5 +1,13 @@
 export module presto.internal.rendering:processing;
 
+import presto.assets.importing;
+import presto.rendering.vertices;
+
+import presto.types.core;
+import presto.types.rendering;
+
+import presto.core;
+
 import std;
 
 export namespace Pr {

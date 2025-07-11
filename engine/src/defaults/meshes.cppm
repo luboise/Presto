@@ -4,6 +4,8 @@ import presto.core.constants;
 import presto.internal.rendering;
 import presto.types.rendering;
 
+import presto.rendering.vertices;
+
 import std;
 
 export namespace Pr::DefaultMeshes {

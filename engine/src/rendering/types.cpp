@@ -3,13 +3,6 @@ module presto.internal.rendering.types;
 import std;
 
 namespace Pr {
-void MeshData::setVertices(const ImportedAttributeList& attributes) {
-    auto processed{processVertices<Vertex3D>(attributes)};
-
-    // TODO: Put checks here to make sure the processed vertices are well
-    // formed
-    this->vertices = std::move(processed);
-}
 
 // Mesh functions
 Mesh::Mesh(mesh_registration_id_t id) : registrationId_(id) {};

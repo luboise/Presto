@@ -4,6 +4,9 @@ import std;
 import presto.core;
 
 import presto.types;
+import presto.types.rendering;
+
+import presto.rendering.vertices;
 
 import presto.assets.asset;
 import presto.assets.material;
@@ -41,6 +44,10 @@ MeshAsset& setDrawMode(MeshDrawMode mode);
     */
 
     MeshAsset& setMeshData(MeshData data);
+
+    MeshAsset& setMesh(Ptr<Mesh> mesh);
+
+    [[nodiscard]] Ptr<Mesh> mesh() const;
 
     [[nodiscard]] Pr::Ptr<Pr::MaterialInstance>& defaultMaterial() const;
     MeshAsset& setDefaultMaterial(const Pr::Ptr<Pr::MaterialInstance>&);

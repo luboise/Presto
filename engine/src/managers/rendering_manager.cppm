@@ -3,6 +3,8 @@ module;
 
 export module presto.internal.managers.rendering_manager;
 
+import presto.rendering.vertices;
+
 import std;
 
 import presto.assets.image;

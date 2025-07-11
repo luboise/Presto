@@ -7,6 +7,8 @@ import :renderer;
 import presto.types.core;
 import presto.assets.importing;
 
+import presto.rendering.vertices;
+
 export namespace Pr {
 
 /*
@@ -23,39 +25,73 @@ struct Vertex {
     Vertex& operator=(Vertex&&) = default;
 };
 */
-struct Vertex {};
-
-using VertexList = std::vector<Vertex>;
-
-struct Vertex3D : public Vertex {
-    Pr::vec3 vertexPosition;
-    Pr::vec3 colour = {1, 1, 1};
-    Pr::vec3 normal;
-    Pr::vec2 tex_coords;
-
-    [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();
-};
-
-struct VertexUI : public Vertex {
-    Pr::vec2 vertexPosition;
-    Pr::vec4 colour;
-    Pr::vec2 tex_coords;
-
-    [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();
-};
 
 #ifndef NDEBUG
 struct VertexDebug : public Vertex {
     Pr::vec3 vertexPosition;
     Pr::vec4 colour{1, 1, 1, 1};
-
-    [[nodiscard]] static std::vector<PipelineAttribute> getPipelineAttributes();
 };
 #endif
 
-using AnyVertexType = std::variant<Vertex3D, VertexUI>;
-using AnyVertexList =
-    std::variant<std::vector<Vertex3D>, std::vector<VertexUI>>;
+template <typename T>
+struct VertexTypeTraits {
+    static_assert(false, "No type trait instantiation defined.");
+};
+
+template <>
+struct VertexTypeTraits<Vertex3D> {
+    static constexpr auto PipelineAttributes =
+        std::to_array({PipelineAttribute{.layout = 0,
+                                         .type = ShaderDataType::VEC3,
+                                         .name = DefaultAttributeName::POSITION,
+                                         .offset = 0},
+                       PipelineAttribute{.layout = 1,
+                                         .type = ShaderDataType::VEC3,
+                                         .name = DefaultAttributeName::COLOUR,
+                                         .offset = 12},
+                       PipelineAttribute{.layout = 2,
+                                         .type = ShaderDataType::VEC3,
+                                         .name = DefaultAttributeName::NORMAL,
+                                         .offset = 24},
+                       PipelineAttribute{
+                           .layout = 3,
+                           .type = ShaderDataType::VEC2,
+                           .name = DefaultAttributeName::TEXCOORDS,
+                           .offset = 36,
+                       }});
+};  // namespace Pr
+
+template <>
+struct VertexTypeTraits<VertexUI> {
+    static constexpr auto PipelineAttributes = std::to_array({
+        PipelineAttribute{.layout = 0,
+                          .type = ShaderDataType::VEC2,
+                          .name = DefaultAttributeName::POSITION,
+                          .offset = 0},
+        PipelineAttribute{.layout = 1,
+                          .type = ShaderDataType::VEC4,
+                          .name = DefaultAttributeName::COLOUR,
+                          .offset = 8},
+        PipelineAttribute{.layout = 2,
+                          .type = ShaderDataType::VEC2,
+                          .name = DefaultAttributeName::TEXCOORDS,
+                          .offset = 20},
+    });
+};
+
+template <>
+struct VertexTypeTraits<VertexDebug> {
+    static constexpr auto PipelineAttributes = std::to_array({
+        PipelineAttribute{.layout = 0,
+                          .type = ShaderDataType::VEC3,
+                          .name = DefaultAttributeName::POSITION,
+                          .offset = 0},
+        PipelineAttribute{.layout = 1,
+                          .type = ShaderDataType::VEC4,
+                          .name = DefaultAttributeName::COLOUR,
+                          .offset = 12},
+    });
+};
 
 using vertex_binding_t = Pr::uint16_t;
 
@@ -99,17 +135,5 @@ class AttributeSet {
 };
 
 using attribute_size_t = Pr::size_t;
-
-struct MeshData {
-    pipeline_id_t pipeline_id{PR_PIPELINE_ANY};
-
-    MeshDrawMode draw_mode{MeshDrawMode::TRIANGLES};
-    AnyVertexList vertices;
-    IndexList indices;
-    // [[nodiscard]] BoundingBox getBoundingBox() const;
-    //
-
-    void setVertices(const ImportedAttributeList& attributes);
-};
 
 }  // namespace Pr

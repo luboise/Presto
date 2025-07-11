@@ -5,6 +5,8 @@ import std;
 import presto.core.logging;
 import presto.assets.image;
 
+import presto.rendering.vertices;
+
 import presto.internal.managers.asset_manager;
 import presto.internal.managers.rendering_manager;
 import presto.internal.rendering;
@@ -116,7 +118,8 @@ Pr::Ptr<Pr::ModelAsset> MeshSource::loadModel(Pr::string modelName,
                        "Mesh {} could not be loaded from MeshSource.",
                        modelName);
         Ptr<MeshAsset> new_mesh_asset{
-            AssetManager::get().newAsset<MeshAsset>(new_mesh)};
+            AssetManager::get().newAsset<MeshAsset>()};
+        new_mesh_asset->setMesh(new_mesh);
 
         Pr::Ptr<Pr::MaterialInstance> default_material{nullptr};
 
