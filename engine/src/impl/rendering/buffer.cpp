@@ -1,5 +1,6 @@
-module presto.internal.rendering;
-import :buffer;
+module presto.rendering.buffer;
+
+import presto.core.logging;
 
 namespace Pr {
 

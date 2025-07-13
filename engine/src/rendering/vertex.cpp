@@ -1,4 +1,8 @@
-export module presto.internal.rendering:vertex;
+module presto.internal.rendering;
+
+import :vertex;
+
+import presto.core;
 
 import std;
 
@@ -32,7 +36,7 @@ void AttributeSet::addAttribute(VertexAttribute attrib) {
         "An AttributeSet must be locked in order to add new attributes.");
 
     // Check that the new attribute hasn't already been added to the map
-    Pr::CoreAssert(attributes_.find(attrib.index) == attributes_.end(),
+    Pr::CoreAssert(!attributes_.contains(attrib.index),
                    std::format("Attempted to bind an attribute to the "
                                "same index twice (index: {})",
                                attrib.index));

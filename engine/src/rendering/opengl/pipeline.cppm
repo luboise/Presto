@@ -3,160 +3,128 @@ module;
 
 export module presto.internal.rendering.opengl:pipeline;
 
+import :base;
+
 import std;
 
-import :types;
+namespace Pr {
+using Pr::UniformVariableType;
 
-import presto.core.logging;
-import presto.core.assert;
-import presto.types.material;
-import presto.types.rendering;
+OpenGLPipeline::OpenGLPipeline(
+    pipeline_id_t id, GLuint vertexShader, GLuint fragmentShader,
+    const std::vector<PipelineAttribute>& attributesOverride)
+    : Pipeline(id), shaderProgram_(glCreateProgram()) {
+    glAttachShader(shaderProgram_, vertexShader);
+    glAttachShader(shaderProgram_, fragmentShader);
 
-import presto.internal.rendering.types;
+    glLinkProgram(shaderProgram_);
+    Pr::Assert(OpenGLUtils::ShaderProgramLinkedCorrectly(shaderProgram_),
+               "Shader program failed to link.");
 
-export namespace Pr {
+    if (!attributesOverride.empty()) {
+        pipelineStructure_.attributes = attributesOverride;
+    } else {
+        pipelineStructure_.attributes =
+            Introspection::getAttributesFromShader(shaderProgram_);
+    }
 
-class OpenGLPipeline final : public Pipeline {
-    friend class OpenGLRenderer;
-    friend class OpenGLDrawManager;
-    friend class OpenGLPipelineBuilder;
+    auto color_attrib{std::ranges::find_if(
+        pipelineStructure_.attributes, [](PipelineAttribute& attrib) {
+            return attrib.name == DefaultAttributeName::COLOUR;
+        })};
+    if (color_attrib == pipelineStructure_.attributes.end()) {
+        pipelineStructure_.uses_alpha_channel = false;
+    } else {
+        pipelineStructure_.uses_alpha_channel =
+            color_attrib->type == ShaderDataType::VEC4;
+    }
 
-    explicit OpenGLPipeline(
-        pipeline_id_t id, GLuint vertexShader, GLuint fragmentShader,
-        const std::vector<PipelineAttribute>& attributeOverrides = {});
-    ~OpenGLPipeline() override;
+    pipelineStructure_.uniforms =
+        Introspection::getUniformsFromShader(shaderProgram_);
+    pipelineStructure_.uniform_blocks =
+        Introspection::getUniformBlocksFromShader(shaderProgram_);
 
-   public:
-    uniform_index_t getIndex(uniform_name_t name) override;
+    // Find all bound uniform textures
+    GLint location{};
+    for (PipelineUniform& uniform : pipelineStructure_.uniforms) {
+        if (uniform.data_type != UniformVariableType::TEXTURE) {
+            continue;
+        }
 
-    void setUniform(uniform_index_t index, Pr::uint32_t value) override;
+        location = glGetUniformLocation(shaderProgram_, uniform.name.data());
+        GLint bind_point{};
+        glGetUniformiv(shaderProgram_, location, &bind_point);
 
-    void setUniform(uniform_index_t index, Pr::int32_t value) override;
-    void setUniform(uniform_index_t index, Pr::float32_t value) override;
+        uniform.location = static_cast<decltype(uniform.location)>(bind_point);
+    }
 
-    void setUniform(uniform_index_t index, Pr::vec2 value) override;
-    void setUniform(uniform_index_t index, Pr::vec3 value) override;
-    void setUniform(uniform_index_t index, Pr::vec4 value) override;
-    void setUniform(uniform_index_t index, Pr::mat4 value) override;
+    pipelineStructure_.uses_global_uniforms =
+        std::ranges::any_of(pipelineStructure_.uniform_blocks,
+                            [](const PipelineUniformBlock& block) -> bool {
+                                return block.name == "GlobalUniforms";
+                            });
 
-    // void setProperties(const UniformLayout& inStructure) override;
-
-    void setUniformBlock(uniform_index_t index, UniformBuffer& buffer) override;
-
-   private:
-    void bind() override;
-    void unbind() override;
-
-    // Map which converts the name of a uniform to its external index
-    std::map<uniform_name_t, uniform_index_t> nameToIndex_;
-
-    // Map which converts the name of a uniform to its external index
-    std::map<uniform_index_t, GLint> indexToBinding_;
-
-    GLuint shaderProgram_{0};
+    pipelineStructure_.uses_object_uniforms =
+        std::ranges::any_of(pipelineStructure_.uniform_blocks,
+                            [](const PipelineUniformBlock& block) -> bool {
+                                return block.name == "ObjectUniforms";
+                            });
 };
 
-class OpenGLPipelineBuilder final : public PipelineBuilderImpl {
-    friend class OpenGLRenderer;
-
-   public:
-    OpenGLPipelineBuilder& setAttributesOverride(
-        std::vector<PipelineAttribute> attributes) {
-        this->attributesOverride_ = std::move(attributes);
-
-        return *this;
+void OpenGLPipeline::bind() {
+    if (this->pipelineStructure_.uses_alpha_channel) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glDisable(GL_BLEND);
     }
 
-    OpenGLPipelineBuilder& clearAttributesOverride() {
-        attributesOverride_.clear();
-        return *this;
+    glUseProgram(shaderProgram_);
+}
+
+void OpenGLPipeline::unbind() { glUseProgram(0); }
+
+OpenGLPipeline::~OpenGLPipeline() { glDeleteProgram(shaderProgram_); };
+
+uniform_index_t OpenGLPipeline::getIndex(uniform_name_t name) {
+    if (auto found{nameToIndex_.find(name)}; found != nameToIndex_.end()) {
+        return found->second;
     }
 
-    PipelineBuilder& setShader(const char* data, ShaderStage type) override {
-        switch (type) {
-            case ShaderStage::VERTEX: {
-                GLuint vs{glCreateShader(GL_VERTEX_SHADER)};
+    return PR_INVALID_UNIFORM;
+};
 
-                glShaderSource(vs, 1, &data, nullptr);
-                glCompileShader(vs);
+void OpenGLPipeline::setUniformBlock(uniform_index_t index,
+                                     UniformBuffer& buffer) {
+    buffer.bind(index);
+};
 
-                Pr::CoreAssert(OpenGLUtils::ShaderCompiledCorrectly(vs),
-                               "Vertex shader failed to compile.");
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::mat4 value) {
+    glUniformMatrix4fv(indexToBinding_[index], 1, GL_FALSE,
+                       glm::gtc::value_ptr(value));
+};
 
-                vertexShader_.id = vs;
-                break;
-            }
-            case ShaderStage::FRAGMENT: {
-                GLuint fs{glCreateShader(GL_FRAGMENT_SHADER)};
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::float32_t value) {
+    glUniform1f(indexToBinding_[index], value);
+};
 
-                glShaderSource(fs, 1, &data, nullptr);
-                glCompileShader(fs);
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::int32_t value) {
+    glUniform1i(indexToBinding_[index], value);
+};
 
-                Pr::CoreAssert(OpenGLUtils::ShaderCompiledCorrectly(fs),
-                               "Fragment shader failed to compile.");
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::uint32_t value) {
+    glUniform1ui(indexToBinding_[index], value);
+};
 
-                fragmentShader_.id = fs;
-                break;
-            }
-            default: {
-                Pr::CoreLog(ERROR, "Invalid shader set in OpenGL Pipeline.");
-            }
-        }
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec2 value) {
+    glUniform2fv(indexToBinding_[index], 1, glm::gtc::value_ptr(value));
+};
 
-        return *dynamic_cast<PipelineBuilder*>(this);
-    };
-
-    Allocated<Pipeline> build() override {
-        if (id() == PR_PIPELINE_NONE) {
-            Pr::CoreLog(ERROR,
-                        "A pipeline can't be build using an id of "
-                        "PR_PIPELINE_NONE. Unable to build pipeline.");
-            return nullptr;
-        }
-        if (vertexShader_.id == INVALID_SHADER_ID) {
-            Pr::CoreLog(
-                ERROR,
-                "Vertex shader was unassigned when building the pipeline. "
-                "Unable to build pipeline.");
-            return nullptr;
-        }
-        if (fragmentShader_.id == INVALID_SHADER_ID) {
-            Pr::CoreLog(ERROR,
-                        "Fragment shader was unassigned when building the "
-                        "pipeline. Unable to build pipeline.");
-            return nullptr;
-        }
-
-        Allocated<Pipeline> pipeline{new OpenGLPipeline(
-            id(), vertexShader_.id, fragmentShader_.id, attributesOverride_)};
-
-        if (!attributesOverride_.empty()) {
-        }
-
-        return pipeline;
-    };
-
-   private:
-    OpenGLPipelineBuilder() = default;
-
-    // OpenGLRenderer* renderer_{nullptr};
-
-    struct ShaderAllocation {
-        GLuint id{0};
-
-        explicit ShaderAllocation(GLuint id) : id(id) {};
-        ~ShaderAllocation() { glDeleteShader(id); }
-
-        ShaderAllocation(const ShaderAllocation&) = delete;
-        ShaderAllocation& operator=(const ShaderAllocation&) = delete;
-        ShaderAllocation(ShaderAllocation&&) = default;
-        ShaderAllocation& operator=(ShaderAllocation&&) = default;
-    };
-
-    std::vector<PipelineAttribute> attributesOverride_;
-
-    ShaderAllocation vertexShader_{INVALID_SHADER_ID};
-    ShaderAllocation fragmentShader_{INVALID_SHADER_ID};
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec3 value) {
+    glUniform3fv(indexToBinding_[index], 1, glm::gtc::value_ptr(value));
+};
+void OpenGLPipeline::setUniform(uniform_index_t index, Pr::vec4 value) {
+    glUniform4fv(indexToBinding_[index], 1, glm::gtc::value_ptr(value));
 };
 
 }  // namespace Pr

@@ -2,12 +2,9 @@ module presto.internal.rendering.types;
 
 import std;
 
+import presto.assets.mesh;
+
 namespace Pr {
-
-// Mesh functions
-Mesh::Mesh(mesh_registration_id_t id) : registrationId_(id) {};
-
-mesh_registration_id_t Mesh::registrationId() const { return registrationId_; }
 
 /*
 BoundingBox MeshData::getBoundingBox() const {
@@ -38,15 +35,5 @@ BoundingBox MeshData::getBoundingBox() const {
     return box;
 };
 */
-
-[[nodiscard]] Pr::size_t UniformBlock::size() const {
-    return std::accumulate(
-        this->bindings.begin(), this->bindings.end(), Pr::size_t{0},
-        [](auto sum, const auto& binding) { return sum + binding.size(); });
-};
-
-[[nodiscard]] Pr::size_t UniformBinding::size() const {
-    return SizeOfType(this->data_type);
-};
 
 }  // namespace Pr

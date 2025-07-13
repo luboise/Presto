@@ -1,7 +1,10 @@
-module presto.internal.rendering.opengl;
+module;
+#include "presto/platform.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+export module presto.internal.rendering.opengl:renderer;
 
 import std;
 
@@ -16,7 +19,9 @@ import presto.internal.events;
 import presto.internal.glfw;
 import presto.core.constants;
 import presto.utils;
-import presto.defaults.textures;
+import presto.internal.defaults.textures;
+
+import presto.rendering.vertices;
 
 namespace Pr {
 
@@ -54,7 +59,8 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         "assets/shaders/default/opengl/default_3d.vert")};
     Pr::string frag{Utils::File::ReadAssetFile(
         "assets/shaders/default/opengl/default_3d.frag")};
-    builder.setAttributesOverride(Vertex3D::getPipelineAttributes())
+    builder
+        .setAttributesOverride(VertexTypeTraits<Vertex3D>::PipelineAttributes)
         .setId(PR_PIPELINE_DEFAULT_3D)
         .setShader(vert.c_str(), ShaderStage::VERTEX)
         .setShader(frag.c_str(), ShaderStage::FRAGMENT);
@@ -64,7 +70,8 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
         "assets/shaders/default/opengl/default_ui.vert");
     frag = Utils::File::ReadAssetFile(
         "assets/shaders/default/opengl/default_ui.frag");
-    builder.setAttributesOverride(VertexUI::getPipelineAttributes())
+    builder
+        .setAttributesOverride(VertexTypeTraits<VertexUI>::PipelineAttributes)
         .setId(PR_PIPELINE_DEFAULT_UI)
         .setShader(vert.c_str(), ShaderStage::VERTEX)
         .setShader(frag.c_str(), ShaderStage::FRAGMENT);
@@ -75,7 +82,9 @@ Renderer::AllocatedPipelineList OpenGLRenderer::createDefaultPipelines() {
             "assets/shaders/default/opengl/debug_3d.vert");
         frag = Utils::File::ReadAssetFile(
             "assets/shaders/default/opengl/debug_3d.frag");
-        builder.setAttributesOverride(VertexDebug::getPipelineAttributes())
+        builder
+            .setAttributesOverride(
+                VertexTypeTraits<VertexDebug>::PipelineAttributes)
             .setId(PR_PIPELINE_DEBUG_3D)
             .setShader(vert.c_str(), ShaderStage::VERTEX)
             .setShader(frag.c_str(), ShaderStage::FRAGMENT);
@@ -154,12 +163,12 @@ void OpenGLRenderer::render(MeshRegistrationData& data) {
 
 void OpenGLRenderer::updateUniforms() {
     // TODO: Move these binds somewhere else
-    globalUniformBuffer_->write(
+    globalUniformBuffer_->UniformBuffer::write(
         std::span<std::byte>(reinterpret_cast<std::byte*>(&globalUniforms_),
                              sizeof(GlobalUniforms)));
     globalUniformBuffer_->bind(0);
 
-    objectUniformBuffer_->write(
+    objectUniformBuffer_->UniformBuffer::write(
         std::span<std::byte>(reinterpret_cast<std::byte*>(&objectUniforms_),
                              sizeof(ObjectUniforms)));
     objectUniformBuffer_->bind(1);

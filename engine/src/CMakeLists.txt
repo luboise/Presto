@@ -66,7 +66,9 @@ target_sources(
           rendering/opengl/pipeline.cppm
           rendering/opengl/shader.cppm
           rendering/opengl/texture.cppm
-          rendering/opengl/opengl.cppm
+          rendering/opengl/renderer.cppm
+          rendering/opengl/base.cppm
+          rendering/opengl.cppm
           #
           managers/manager.cppm
           managers/debug_manager.cppm
@@ -87,9 +89,18 @@ target_sources(
           managers/physics_manager.cpp
           managers/rendering_manager.cpp
           #
+          rendering/pipeline.cpp
+          rendering/shader.cpp
+          rendering/types.cpp
+          rendering/vertex.cpp
+          rendering/opengl/texture.cpp
+          #
           impl/utils.cpp
           #
+          impl/types/material.cpp
+          #
           impl/rendering/vertices.cpp
+          impl/rendering/buffer.cpp
           #
           impl/core/logging.cpp
           impl/core/event_manager.cpp

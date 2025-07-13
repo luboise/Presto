@@ -62,3 +62,5 @@ void Logger::CoreLog(LogLevel level, std::string_view message) {
 }
 
 }  // namespace Pr
+
+void Pr::InitLogger() { Logger::init(); }

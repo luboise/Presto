@@ -2,7 +2,7 @@ export module presto.entry;
 
 import std;
 
-import presto.runtime.application;
+export import presto.runtime.application;
 
 // #ifdef PR_PLATFORM_WINDOWS
 

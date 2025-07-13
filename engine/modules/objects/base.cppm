@@ -222,7 +222,7 @@ class PRESTO_API EntityManager {
     EntityManager();
     ~EntityManager();
 
-	void instantiateEntities();
+    void instantiateEntities();
     void update();
 
    private:

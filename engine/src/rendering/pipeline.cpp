@@ -2,6 +2,10 @@ module presto.internal.rendering;
 import :pipeline;
 
 import presto.core;
+import presto.types;
+import presto.utils;
+
+import presto.assets.asset;
 
 import std;
 

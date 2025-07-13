@@ -24,6 +24,8 @@ class Logger {
     static std::shared_ptr<spdlog::logger> clientLogger_;
 };
 
+export void InitLogger();
+
 export template <typename... Args>
 void Log(LogLevel level, std::format_string<Args...> str, Args&&... args) {
     Logger::Log(level, std::format(str, std::forward<Args>(args)...));

@@ -117,4 +117,9 @@ double BoundingBox::getNormalisingFactor() const {
     return 0.5 / max;
 }
 
+// Mesh functions
+Mesh::Mesh(mesh_registration_id_t id) : registrationId_(id) {};
+
+mesh_registration_id_t Mesh::registrationId() const { return registrationId_; }
+
 }  // namespace Pr
