@@ -9,7 +9,7 @@ import presto.types.core;
 
 import presto.internal.managers;
 
-import presto.handles;
+import presto.types.handles;
 
 import presto.objects.base;
 import presto.objects.components.transform;

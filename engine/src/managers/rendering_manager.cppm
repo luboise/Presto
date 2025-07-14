@@ -16,7 +16,7 @@ import presto.core.constants;
 import presto.core.concepts;
 import presto.core.logging;
 
-import presto.handles;
+import presto.types.handles;
 
 import presto.types;
 import presto.types.rendering;

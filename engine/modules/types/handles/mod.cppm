@@ -1,4 +1,4 @@
-export module presto.handles;
+export module presto.types.handles;
 
 import presto.assets;
 import presto.types.core;

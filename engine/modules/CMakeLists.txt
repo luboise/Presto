@@ -17,7 +17,7 @@ target_sources(
          types/material-uniform.cppm
          types/material-shader.cppm
          types/material.cppm
-         types.cppm
+         types/mod.cppm
          #
          core/concepts.cppm
          #
@@ -27,7 +27,7 @@ target_sources(
          utils/interpolation.cppm
          utils/typemap.cppm
          utils/erased_bytes.cppm
-         utils.cppm
+         utils/mod.cppm
          #
          core/constants.cppm
          #
@@ -40,16 +40,16 @@ target_sources(
          core/event_user.cppm
          core/event_manager.cppm
          core/event.cppm
-         #
-         core.cppm
+         core/mod.cppm
          #
          math/types.cppm
          math/shapes.cppm
          math/quaternion.cppm
          math/transform_data.cppm
-         math.cppm
+         math/mod.cppm
          #
-         physics.cppm
+         physics/mod.cppm
+         # physics/collision/mod.cppm
          #
          objects/base.cppm
          objects/figure.cppm
@@ -64,15 +64,15 @@ target_sources(
          objects/components/render.cppm
          objects/components/rigidbody.cppm
          objects/components.cppm
-         objects.cppm
+         objects/mod.cppm
          #
          rendering/vertices.cppm
          rendering/drawables.cppm
          rendering/buffer.cppm
          rendering/texture.cppm
+         rendering/mod.cppm
          #
          assets/image.cppm
-         #
          assets/importing.cppm
          assets/asset.cppm
          assets/font.cppm
@@ -80,28 +80,26 @@ target_sources(
          assets/material.cppm
          assets/mesh.cppm
          assets/model.cppm
+         assets/mod.cppm
          #
-         assets.cppm
-         #
-         handles.cppm
+         types/handles/mod.cppm
          #
          aliases/object.cppm
          aliases/ui.cppm
-         aliases.cppm
+         aliases/mod.cppm
          #
          runtime/window.cppm
          runtime/time.cppm
          runtime/application.cppm
-         runtime.cppm
+         runtime/mod.cppm
          #
-         input.cppm
+         input/mod.cppm
          input/events.cppm
          input/keycodes.cppm
          #
-         debugging.cppm
+         debugging/mod.cppm
          #
          # Main API importables
-         presto.cppm
+         mod.cppm
          entry.cppm
-         system.cppm
-         rendering.cppm)
+         system.cppm)
