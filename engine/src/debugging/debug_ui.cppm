@@ -1,18 +1,82 @@
-module presto.internal.debugging;
-import presto.internal;
-
-import presto.aliases.object;
-import presto.internal.managers;
-import presto.objects;
-import presto.runtime.window;
-
-import std;
-
+module;
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 
+export module presto.internal.debugging:debug_ui;
+
+import presto.internal.managers.entity_manager_impl;
+import presto.internal.managers.rendering_manager;
+
+import presto.internal.managers.debug_manager;
+import presto.types.core;
+
+import presto.runtime.window;
+
+import std;
+import glm;
+
+export namespace Pr {
+
+class DebugUI {
+   public:
+    enum class EditorState { EDITING, SELECTING_A_FILE, SELECTING_A_FOLDER };
+
+    static EditorState getEditorState() { return state_; };
+
+    static void initialise(Pr::Window* windowPtr,
+                           std::function<void()> exitCallback);
+
+    static void modalPopup(Pr::string message);
+    static void errorPopup(Pr::string message);
+
+    static void shutdown();
+
+    static void draw();
+
+    static void render();
+
+    static void reloadState();
+
+   private:
+    inline static DebugCameraListener debugCamera_;
+
+    inline static bool visible_{false};
+
+    inline static EditorState state_{EditorState::EDITING};
+    inline static EntityPtr selectedEntity_{nullptr};
+
+    inline static std::vector<Pr::string> errorMessages_;
+
+    static void drawMainEditor();
+
+    inline static bool showEntityBrowser_{true};
+    static void drawEntityBrowser();
+
+    inline static bool showComponentBrowser_{true};
+    static void drawComponentBrowser();
+
+    inline static bool showCameraBrowser_{true};
+    static void drawCameraBrowser();
+
+    static void drawCameraModifier(Ptr<CameraComponent>);
+    static void drawCameraModifier(CameraComponent&);
+
+    static void drawSelectedComponent();
+
+    static void handleInput();
+
+    inline static Ptr<Component> selectedComponent_;
+
+    inline static std::function<void()> exitCallback_;
+
+    inline static CheckedComponentBits componentBits_{-1U};
+};
+
+}  // namespace Pr
+
+module :private;
 namespace Pr {
 
 void DebugUI::initialise(Pr::Window* windowPtr,
@@ -309,7 +373,7 @@ void DebugUI::handleInput() {
     static float movement_speed{5};
 
     if (debugCamera_.enabled()) {
-        Camera& camera{debugCamera_.camera()};
+        CameraComponent& camera{debugCamera_.camera()};
 
         if (ImGui::IsKeyPressed(ImGuiKey_7)) {
             movement_speed *= 2;
@@ -504,11 +568,11 @@ void DebugUI::drawSelectedComponent() {
 
     if (selectedComponent_->isOfType<CameraComponent>()) {
         drawCameraModifier(
-            std::dynamic_pointer_cast<Camera>(selectedComponent_));
+            std::dynamic_pointer_cast<CameraComponent>(selectedComponent_));
     }
 };
 
-void DebugUI::drawCameraModifier(Ptr<Camera> cameraPtr) {
+void DebugUI::drawCameraModifier(Ptr<CameraComponent> cameraPtr) {
     if (cameraPtr == nullptr) {
         ImGui::Text("No camera present.");
         return;
@@ -577,9 +641,10 @@ void DebugUI::drawCameraBrowser() {
     static auto& rm{RenderingManager::get()};
 
     if (ImGui::Begin("Camera Browser")) {
-        Ptr<Camera> main_camera{rm.getMainCamera()->getComponent<Camera>()};
+        Ptr<CameraComponent> main_camera{
+            rm.getMainCamera()->getComponent<Camera>()};
 
-        static Ptr<Camera> current_camera{main_camera};
+        static Ptr<CameraComponent> current_camera{main_camera};
 
         auto enabled{debugCamera_.enabled()};
         DebugComponents::CheckboxChooser(
@@ -592,7 +657,7 @@ void DebugUI::drawCameraBrowser() {
                     return component->template isOfType<Camera>();
                 })};
 
-        std::vector<Ptr<Camera>> cameras;
+        std::vector<Ptr<CameraComponent>> cameras;
         std::ranges::for_each(components, [&cameras](auto& component) {
             cameras.push_back(std::dynamic_pointer_cast<Camera>(component));
         });
@@ -612,36 +677,37 @@ void DebugUI::drawCameraBrowser() {
 
                 ImGui::TableHeadersRow();
 
-                std::ranges::for_each(cameras, [&main_camera](
-                                                   Ptr<Camera>& camera) {
-                    ImGui::TableNextRow();
+                std::ranges::for_each(
+                    cameras, [&main_camera](Ptr<CameraComponent>& camera) {
+                        ImGui::TableNextRow();
 
-                    bool camera_is_main{camera == main_camera};
+                        bool camera_is_main{camera == main_camera};
 
-                    ImGui::PushID(static_cast<int>(camera->id()));
+                        ImGui::PushID(static_cast<int>(camera->id()));
 
-                    ImGui::TableNextColumn();
+                        ImGui::TableNextColumn();
 
-                    if (ImGui::Checkbox("", &camera_is_main)) {
-                    }
+                        if (ImGui::Checkbox("", &camera_is_main)) {
+                        }
 
-                    ImGui::TableNextColumn();
+                        ImGui::TableNextColumn();
 
-                    ImGui::Text("%u", camera->id());
+                        ImGui::Text("%u", camera->id());
 
-                    ImGui::TableNextColumn();
-                    ImGui::Text("%s", camera->type() == CameraType::PERSPECTIVE
-                                          ? "Perspective"
-                                          : "Orthographic");
+                        ImGui::TableNextColumn();
+                        ImGui::Text("%s",
+                                    camera->type() == CameraType::PERSPECTIVE
+                                        ? "Perspective"
+                                        : "Orthographic");
 
-                    ImGui::TableNextColumn();
+                        ImGui::TableNextColumn();
 
-                    if (ImGui::Button("Edit")) {
-                        current_camera = camera;
-                    }
+                        if (ImGui::Button("Edit")) {
+                            current_camera = camera;
+                        }
 
-                    ImGui::PopID();
-                });
+                        ImGui::PopID();
+                    });
 
                 ImGui::EndTable();
             }
@@ -662,23 +728,4 @@ void DebugUI::drawCameraBrowser() {
     }
 };
 
-DebugCameraListener::DebugCameraListener() { camera_ = nullptr; };
-
-DebugCameraListener::DebugCameraListener(RenderingManager& rm) {
-    camera_ = rm.getDebugCamera();
-};
-
-void DebugCameraListener::toggle() {
-    if (camera_ == nullptr) {
-        Pr::CoreLog(ERROR, "Unable to doggle debug camera on, as it is null.");
-        return;
-    }
-
-    enabled_ = !enabled_;
-    RenderingManager::get().setUsingDebugCamera(enabled_);
-};
-
-bool DebugCameraListener::enabled() const { return enabled_; };
-
-CameraComponent& DebugCameraListener::camera() { return *camera_; };
 }  // namespace Pr

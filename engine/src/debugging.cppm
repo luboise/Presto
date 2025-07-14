@@ -1,9 +1,13 @@
 export module presto.internal.debugging;
 
-export import :constants;
+export import :debug_constants;
 
 import presto.types.core;
 import presto.objects.components.camera;
+
+import presto.internal.managers.rendering_manager;
+
+import std;
 
 export namespace Pr {
 
@@ -22,60 +26,29 @@ class DebugCameraListener {
     Ptr<CameraComponent> camera_;
 };
 
-class DebugUI {
-   public:
-    enum class EditorState { EDITING, SELECTING_A_FILE, SELECTING_A_FOLDER };
+}  // namespace Pr
 
-    static constexpr Pr::scene_name_t NO_SCENE_SELECTED = "NOSCENE";
+module :private;
 
-    static EditorState getEditorState() { return state_; };
+namespace Pr {
 
-    static void initialise(Pr::Window* windowPtr,
-                           std::function<void()> exitCallback);
+DebugCameraListener::DebugCameraListener() { camera_ = nullptr; };
 
-    static void modalPopup(Pr::string message);
-    static void errorPopup(Pr::string message);
-
-    static void shutdown();
-
-    static void draw();
-
-    static void render();
-
-    static void reloadState();
-
-   private:
-    inline static DebugCameraListener debugCamera_;
-
-    inline static bool visible_{false};
-
-    inline static EditorState state_{EditorState::EDITING};
-    inline static EntityPtr selectedEntity_{nullptr};
-
-    inline static std::vector<Pr::string> errorMessages_;
-
-    static void drawMainEditor();
-
-    inline static bool showEntityBrowser_{true};
-    static void drawEntityBrowser();
-
-    inline static bool showComponentBrowser_{true};
-    static void drawComponentBrowser();
-
-    inline static bool showCameraBrowser_{true};
-    static void drawCameraBrowser();
-
-    static void drawCameraModifier(Ptr<CameraComponent>);
-    static void drawCameraModifier(CameraComponent&);
-
-    static void drawSelectedComponent();
-
-    static void handleInput();
-
-    inline static Ptr<Component> selectedComponent_;
-
-    inline static std::function<void()> exitCallback_;
-
-    inline static CheckedComponentBits componentBits_{-1U};
+DebugCameraListener::DebugCameraListener(RenderingManager& rm) {
+    camera_ = rm.getDebugCamera();
 };
+
+void DebugCameraListener::toggle() {
+    if (camera_ == nullptr) {
+        Pr::CoreLog(ERROR, "Unable to doggle debug camera on, as it is null.");
+        return;
+    }
+
+    enabled_ = !enabled_;
+    RenderingManager::get().setUsingDebugCamera(enabled_);
+};
+
+bool DebugCameraListener::enabled() const { return enabled_; };
+
+CameraComponent& DebugCameraListener::camera() { return *camera_; };
 }  // namespace Pr

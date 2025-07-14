@@ -1,9 +1,12 @@
-#pragma once
-
-#include <type_traits>
+module;
 #include "imgui.h"
 
-namespace Pr {
+export module presto.internal.debugging:debug_components;
+
+import std;
+import presto.types.core;
+
+export namespace Pr {
 
 template <typename T>
 struct EnumMember {

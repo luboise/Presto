@@ -3,8 +3,9 @@ export module presto.debugging;
 import presto.core;
 import presto.aliases.object;
 
+import presto.math;
+
 export namespace Pr {
-struct Cube;
 
 /**
  * @brief  Draws a line on the next frame. This has no memory, so debug draws

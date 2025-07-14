@@ -1,31 +1,8 @@
 add_subdirectory(impl)
-target_include_directories(${PRESTO_ENGINE_NAME}
-                           PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+# target_include_directories(${PRESTO_ENGINE_NAME} PRIVATE
+# "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # add_subdirectory(assets)
-
-if(PRESTO_DEBUG_BUILD)
-  internal_modules(debuggingconstants.cppm debugging.cppm)
-
-  if(NOT DEFINED IMGUI_DIR)
-    message(
-      FATAL_ERROR
-        "IMGUI_DIR is not defined. The project can not link the debug libraries."
-    )
-  endif()
-
-  target_include_directories(${PRESTO_ENGINE_NAME} PRIVATE ${IMGUI_DIR})
-
-  target_sources(
-    ${PRESTO_ENGINE_NAME}
-    PRIVATE ${IMGUI_DIR}/imgui.cpp
-            ${IMGUI_DIR}/imgui_draw.cpp
-            ${IMGUI_DIR}/imgui_tables.cpp
-            ${IMGUI_DIR}/imgui_widgets.cpp
-            ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-            ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-            ${IMGUI_DIR}/imgui_demo.cpp)
-endif()
 
 target_sources(
   ${PRESTO_ENGINE_NAME}
@@ -71,7 +48,6 @@ target_sources(
           rendering/opengl.cppm
           #
           managers/manager.cppm
-          managers/debug_manager.cppm
           managers/asset_manager.cppm
           managers/entity_manager_impl.cppm
           managers/event_manager_impl.cppm
@@ -140,6 +116,43 @@ target_sources(
           #
           impl/system.cpp
           #
-          create_window.cpp)
+          create_window.cpp
+          rendering.cpp
+          #
+          impl/debugging.cpp)
+
+if(PRESTO_DEBUG_BUILD)
+  target_sources(
+    ${PRESTO_ENGINE_NAME}
+    PRIVATE FILE_SET
+            presto_internal_modules
+            TYPE
+            CXX_MODULES
+            FILES
+            debugging.cppm
+            debugging/debug_constants.cppm
+            debugging/debug_components.cppm
+            debugging/debug_ui.cppm
+            managers/debug_manager.cppm
+    PRIVATE managers/debug_manager.cpp)
+
+  if(NOT DEFINED IMGUI_DIR)
+    message(
+      FATAL_ERROR
+        "IMGUI_DIR is not defined. The project can not link the debug libraries."
+    )
+  endif()
+
+  target_include_directories(${PRESTO_ENGINE_NAME} PRIVATE ${IMGUI_DIR})
+  target_sources(
+    ${PRESTO_ENGINE_NAME}
+    PRIVATE ${IMGUI_DIR}/imgui.cpp
+            ${IMGUI_DIR}/imgui_draw.cpp
+            ${IMGUI_DIR}/imgui_tables.cpp
+            ${IMGUI_DIR}/imgui_widgets.cpp
+            ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+            ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+            ${IMGUI_DIR}/imgui_demo.cpp)
+endif()
 
 add_subdirectory(resources)

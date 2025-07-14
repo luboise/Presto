@@ -1,4 +1,4 @@
-module presto.internal.debugging:constants;
+module presto.internal.debugging:debug_constants;
 
 import presto.core;
 

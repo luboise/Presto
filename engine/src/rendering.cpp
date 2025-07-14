@@ -1,11 +1,17 @@
 module presto.internal.rendering;
 
-import :base;
+import std;
+
+import :renderer;
+
+import presto.core.constants;
+import presto.types;
+
 import presto.objects.components;
 import presto.internal.rendering.opengl;
 import presto.internal.glfw;
 
-export namespace Pr {
+namespace Pr {
 void Renderer::setCameraData(CameraComponent& camera) {
     globalUniforms_ = {.view = camera.getViewMatrix(),
                        .projection = camera.getProjectionMatrix()};
