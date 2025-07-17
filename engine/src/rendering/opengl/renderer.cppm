@@ -206,8 +206,6 @@ bool OpenGLRenderer::createMeshContext(MeshRegistrationData& registration,
         return false;
     }
 
-    OpenGLVAO new_vao{};
-
     Allocated<OpenGLMeshContext> new_context{new OpenGLMeshContext{
         .vao = {dynamic_cast<OpenGLBuffer*>(registration.vertices.get()),
                 dynamic_cast<OpenGLBuffer*>(registration.indices.get()),
