@@ -1,15 +1,24 @@
 pub(crate) use crate::traits::Resize;
+
 mod glfw_window;
 
-pub fn create(params: WindowParams) -> Box<impl WindowLike> {
-    glfw_window::GLFWWindow::from_params(params)
+use crate::window::glfw_window::GLFWWindow;
+
+pub fn create(params: WindowParams) -> WindowInitResult<Box<impl WindowLike>> {
+    match GLFWWindow::from_params(params) {
+        Ok(w) => Ok(Box::new(w)),
+        Err(_e) => Err(WindowInitError {}),
+    }
 }
+
+pub trait WindowLike: Resize {}
 
 pub struct WindowParams {
-    pub width: u16,
-    pub height: u16,
+    pub width: u32,
+    pub height: u32,
 }
 
-pub trait WindowLike: Resize {
-    fn from_params(params: WindowParams) -> Box<Self>;
-}
+type WindowInitResult<T> = std::result::Result<T, WindowInitError>;
+
+#[derive(Debug, Clone)]
+pub struct WindowInitError {}

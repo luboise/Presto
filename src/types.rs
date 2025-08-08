@@ -1,4 +1,4 @@
-pub type Size2D = Size<u16>;
+pub type Size2D = Size<u32>;
 
 #[derive(Copy, Clone)]
 pub struct Size<T: Copy + Clone> {
